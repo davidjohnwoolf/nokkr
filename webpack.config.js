@@ -5,11 +5,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const production = process.env.NODE_ENV === 'production';
 
 const extractSass = new ExtractTextPlugin({
-    filename: production ? 'styles.[hash:10].min.css' : 'styles.[hash:10].css'
+    filename: production ? 'styles.[hash:10].min.css' : 'styles.css'
 });
 
 module.exports = {
-    devtool: 'source-map',
+    devtool: production ? 'source-map' : '',
     entry: './src/app.js',
     module: {
         rules: [
@@ -39,6 +39,6 @@ module.exports = {
     output: {
         path: path.join(__dirname, 'dist'),
         publicPath: '/',
-        filename: production ? 'bundle.[hash:10].min.js' : 'bundle.[hash:10].js'
+        filename: production ? 'bundle.[hash:10].min.js' : 'bundle.js'
     }
 }
