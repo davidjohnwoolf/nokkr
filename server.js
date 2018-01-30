@@ -12,7 +12,7 @@ const Users = require('./controllers/users');
 // connect database from MongoDB Atlas
 mongoose.connect(`mongodb+srv://platform2kadmin:${process.env.DB_PASSWORD}@platform2k-2kpxf.mongodb.net/test`);
 
-//get default connection
+// get default connection
 const db = mongoose.connection;
 
 // bind connection to error event (to get notification of connection errors)
@@ -23,6 +23,4 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use('/user', Users);
 
-app.listen(8080, function() {
-    console.log(`listening on port ${port}...`);
-});
+app.listen(8080, () => console.log(`listening on port ${port}...`));
