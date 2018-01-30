@@ -21,6 +21,8 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 // static files
 app.use(express.static(path.join(__dirname, 'dist')));
 
+// routes
 app.use('/user', Users);
 
+// start server
 app.listen(8080, () => console.log(`listening on port ${port}...`));
