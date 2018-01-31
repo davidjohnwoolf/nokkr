@@ -30,3 +30,5 @@ app.use('/user', Users);
 
 // start server
 app.listen(process.env.PORT || 8080, () => console.log('server listening...'));
+
+module.exports = app;
