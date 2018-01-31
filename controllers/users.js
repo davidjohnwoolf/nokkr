@@ -26,7 +26,7 @@ router.post('/', (req, res) => {
         if (req.body.password === req.body.passwordConfirmation) {
             const user = new User(req.body);
             
-            user.save((err) => {
+            user.save(err => {
                 if (err) return res.json(err);
                 
                 return res.json({ successMessage: 'User created successfully' });
