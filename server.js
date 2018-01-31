@@ -1,12 +1,12 @@
-// load environment variables from .env file
+// load environment variables
 require('dotenv').config();
 
+const config = require('./config');
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
 const app = express();
 const mongoose = require('mongoose');
-const port = process.env.PORT || 8080;
 
 const Users = require('./controllers/users');
 
@@ -29,4 +29,6 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.use('/user', Users);
 
 // start server
-app.listen(8080, () => console.log(`listening on port ${port}...`));
+app.listen(process.env.PORT || 8080, () => {
+    console.log(`listening on port ${process.env.PORT || 8080}...`);
+});
