@@ -8,3 +8,4 @@ config.leadStatuses = [];
 
 config.userSlots = 5;
 
+module.exports = config;
