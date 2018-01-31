@@ -6,11 +6,12 @@ const userSchema = new Schema({
     email: { type: String, required: true, index: { unique: true }, match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ },
     username: { type: String, required: true },
     password: { type: String, required: true },
-    isAdmin: Boolean
+    isAdmin: Boolean,
+    createdAt: { type: Date, default: Date.now }
 });
 
 userSchema.pre('save', function(next) {
-    let user = this;
+    const user = this;
      
     // check if user password is new or modified
     if (!user.isModified('password')) return next();
