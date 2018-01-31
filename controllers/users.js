@@ -29,7 +29,7 @@ router.post('/', (req, res) => {
             }
             
             user.save(() => {
-                if (err) return res.json(error);
+                if (err) return res.json(err);
                 
                 return res.json({ successMessage: 'User created successfully' });
             });
