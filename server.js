@@ -13,7 +13,11 @@ const mongoose = require('mongoose');
 const Users = require('./controllers/users');
 
 // connect database
-mongoose.connect(process.env.DB, () => console.log('database running...'));
+if (process.env.NODE_ENV !== 'test') {
+    mongoose.connect(process.env.DB, () => console.log('database running...'));
+} else {
+    mongoose.connect(process.env.DB_TEST, () => console.log('test database running...'));
+}
 
 // get default connection
 const db = mongoose.connection;

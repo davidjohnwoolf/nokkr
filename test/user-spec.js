@@ -11,13 +11,7 @@ const server = require('../server');
 chai.use(chaiHttp);
 
 describe('users', () => {
-    beforeEach(done => {
-        User.remove({}, err => {
-            if (err) return err;
-            
-            done();
-        });
-    });
+
 	describe('get users', () => {
 		it('should fetch list of users', done => {
 			chai.request(server)
