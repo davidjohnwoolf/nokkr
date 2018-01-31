@@ -19,6 +19,8 @@ router.get('/', (req, res) => {
 // create
 router.post('/', (req, res) => {
     User.findOne({ username: req.body.username }, (err, user) => {
+        if (err) return res.json(err);
+        
         if (user) return res.json({ errorMessage: 'Username exists' });
         
         if (req.body.password === req.body.passwordConfirmation) {
@@ -28,8 +30,8 @@ router.post('/', (req, res) => {
                 user[value] = req.body[value];
             }
             
-            user.save(() => {
-                if (err) return res.json(err);
+            user.save((saveErr) => {
+                if (saveErr) return res.json(saveErr);
                 
                 return res.json({ successMessage: 'User created successfully' });
             });
