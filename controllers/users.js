@@ -24,14 +24,14 @@ router.post('/', (req, res) => {
         if (user) return res.json({ errorMessage: 'Username exists' });
         
         if (req.body.password === req.body.passwordConfirmation) {
-            const user = {};
-            
-            for (let value in req.body) {
-                user[value] = req.body[value];
+            const user = {
+                username: req.body.username,
+                email: req.body.email,
+                password: req.body.password
             }
             
-            user.save((saveErr) => {
-                if (saveErr) return res.json(saveErr);
+            user.save((err) => {
+                if (err) return res.json(err);
                 
                 return res.json({ successMessage: 'User created successfully' });
             });
