@@ -3,10 +3,11 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 
 const userSchema = new Schema({
-    email: { type: String, required: true, index: { unique: true }, match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ },
+    name: { type: String, required: true },
     username: { type: String, required: true },
+    email: { type: String, required: true, index: { unique: true }, match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ },
     password: { type: String, required: true },
-    isAdmin: Boolean,
+    isAdmin: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now }
 });
 
