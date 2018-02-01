@@ -21,7 +21,7 @@ router.post('/', (req, res) => {
     User.findOne({ username: req.body.username }, (err, user) => {
         if (err) return res.json(err);
         
-        if (user) return res.json({ errorMessage: 'Username exists' });
+        if (user) return res.json({ error: 'Username exists' });
         
         if (req.body.password === req.body.passwordConfirmation) {
             const user = new User(req.body);
@@ -29,11 +29,12 @@ router.post('/', (req, res) => {
             user.save(err => {
                 if (err) return res.json(err);
                 
-                return res.json({ successMessage: 'User created successfully', user });
+                return res.json({ message: 'User created', user });
             });
             
         } else {
-            return res.json({ errorMessage: 'Passwords do not match' });
+            
+            return res.json({ error: 'Passwords do not match' });
         }
     });
 });
@@ -44,6 +45,50 @@ router.get('/:id', (req, res) => {
         if (err) return res.json(err);
         
         res.json(user);
+    });
+});
+
+// update
+router.put('/:id', (req, res) => {
+    User.findOne({ username: req.body.username }, (err, user) => {
+        if (err) return res.json(err);
+        
+        if (user && user._id != req.params.id) {
+            
+            res.json({ error: 'Username already exists' });
+        } else {
+            
+            User.findOne({ _id: req.params.id }, (err, user) => {
+                if (err) return res.json(err);
+                
+                if (!req.body.password || (req.body.password === req.body.passwordConfirmation)) {
+        
+                    for (let key in req.body) {
+                    	user[key] = req.body[key];
+                    }
+                    
+                    user.save(err => {
+                        if (err) return res.json(err);
+                        
+                        return res.json({ message: 'User updated', user });
+                    });
+                    
+                } else {
+                    
+                    return res.json({ error: 'Passwords do not match' });
+                }
+                
+            });
+        }
+    });
+});
+
+// destroy
+router.delete('/:id', (req, res) => {
+    User.remove({ _id: req.params.id }, (err, user) => {
+    	if (err) return res.json(err);
+    
+    	res.json({ message: 'User deleted' });
     });
 });
 
