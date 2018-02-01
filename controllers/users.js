@@ -29,12 +29,21 @@ router.post('/', (req, res) => {
             user.save(err => {
                 if (err) return res.json(err);
                 
-                return res.json({ successMessage: 'User created successfully' });
+                return res.json({ successMessage: 'User created successfully', user });
             });
             
         } else {
             return res.json({ errorMessage: 'Passwords do not match' });
         }
+    });
+});
+
+// show
+router.get('/:id', (req, res) => {
+    User.findOne({ _id: req.params.id }, (err, user) => {
+        if (err) return res.json(err);
+        
+        res.json(user);
     });
 });
 
