@@ -18,7 +18,8 @@ describe('users', () => {
         });
     });
 
-	describe('get users', () => {
+	describe('get index', () => {
+
 		it('should fetch list of users', done => {
 			chai.request(server)
 				.get('/user')
@@ -33,7 +34,7 @@ describe('users', () => {
 		});
 	});
 	
-	describe('post users', () => {
+	describe('post user', () => {
 		it('should post user successfully', done => {
 			const user = {
 				name: 'David Woolf',
@@ -54,9 +55,6 @@ describe('users', () => {
 					res.body.user.should.have.property('name').eql('David Woolf');
 	                res.body.user.should.have.property('username').eql('davidwoolf');
 	                res.body.user.should.have.property('email').eql('test@example.com');
-	                
-	                //check hash outcome
-	                res.body.user.should.have.property('password').not.eql('password');
 	                res.body.user.should.have.property('isAdmin').eql(false);
 					done();
 				});
