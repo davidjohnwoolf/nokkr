@@ -68,8 +68,7 @@ describe('users', () => {
 				username: 'davidwoolf',
 				email: 'test@example.com',
 				password: 'password',
-				passwordConfirmation: 'password1',
-				isAdmin: false
+				passwordConfirmation: 'password1'
 			};
 			
 			chai.request(server)
@@ -80,7 +79,7 @@ describe('users', () => {
 				    
 					res.should.have.status(200);
 					res.body.should.be.a('object');
-					res.body.should.have.property('errorMessage').eql('Passwords do not match');
+					res.body.should.have.property('error').eql('Passwords do not match');
 					done();
 				});
 		});
