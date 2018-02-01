@@ -29,7 +29,17 @@ router.post('/', (req, res) => {
             user.save(err => {
                 if (err) return res.json(err);
                 
-                return res.json({ message: 'User created', user });
+                return res.json({
+                    message: 'User created',
+                    user: {
+                        name: user.name,
+                        username: user.username,
+                        email: user.email,
+                        isAdmin: user.isAdmin,
+                        createdAt: user.createdAt,
+                        id: user._id
+                    }
+                });
             });
             
         } else {
@@ -44,7 +54,14 @@ router.get('/:id', (req, res) => {
     User.findOne({ _id: req.params.id }, (err, user) => {
         if (err) return res.json(err);
         
-        res.json(user);
+        res.json({
+            name: user.name,
+            username: user.username,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            createdAt: user.createdAt,
+            id: user._id
+        });
     });
 });
 
@@ -70,7 +87,7 @@ router.put('/:id', (req, res) => {
                     user.save(err => {
                         if (err) return res.json(err);
                         
-                        return res.json({ message: 'User updated', user });
+                        return res.json({ message: 'User updated', id: user._id });
                     });
                     
                 } else {
