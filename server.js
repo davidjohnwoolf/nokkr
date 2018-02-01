@@ -16,7 +16,7 @@ const Users = require('./controllers/users');
 if (process.env.NODE_ENV !== 'test') {
     mongoose.connect(process.env.DB, () => console.log('database running...'));
 } else {
-    mongoose.connect(process.env.DB_TEST, () => console.log('test database running...'));
+    mongoose.connect(process.env.DB_TEST);
 }
 
 // get default connection
@@ -26,7 +26,7 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // middleware
-app.use(logger('dev'));
+if (process.env.NODE_ENV !== 'test') app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'dist')));
 
 // routes
