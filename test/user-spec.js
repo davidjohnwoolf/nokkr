@@ -14,12 +14,15 @@ chai.use(chaiHttp);
 
 describe('users', () => {
 	beforeEach(done => {
+		// clear DB
         User.remove({}, (err) => {
         	if (err) return err;
            done();
         });
 	});
+	
 	beforeEach(done => {
+		// add test user to DB
         const user = {
 			name: 'Jane Doe',
 			username: 'janedoe',
@@ -40,7 +43,7 @@ describe('users', () => {
 			});
     });
 
-	describe('get index', () => {
+	describe('index', () => {
 
 		it('should fetch list of users', done => {
 			chai.request(server)
@@ -56,7 +59,7 @@ describe('users', () => {
 		});
 	});
 	
-	describe('get user', () => {
+	describe('show', () => {
 
 		it('should fetch user by id', done => {
 			chai.request(server)
@@ -75,7 +78,7 @@ describe('users', () => {
 		});
 	});
 	
-	describe('post user', () => {
+	describe('create', () => {
 		
 		it('should post user successfully', done => {
 			const user = {
@@ -102,7 +105,7 @@ describe('users', () => {
 				});
 		});
 		
-		it('should throw password error', done => {
+		it('should throw password error if passwords do not match', done => {
 			const user = {
 				name: 'John Doe',
 				username: 'johndoe',
