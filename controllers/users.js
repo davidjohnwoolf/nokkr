@@ -87,7 +87,17 @@ router.put('/:id', (req, res) => {
                     user.save(err => {
                         if (err) return res.json(err);
                         
-                        return res.json({ message: 'User updated' });
+                        return res.json({
+                            message: 'User updated',
+                            user: {
+                                name: user.name,
+                                username: user.username,
+                                email: user.email,
+                                isAdmin: user.isAdmin,
+                                createdAt: user.createdAt,
+                                id: user._id
+                            }
+                        });
                     });
                     
                 } else {

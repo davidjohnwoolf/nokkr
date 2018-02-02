@@ -127,4 +127,24 @@ describe('users', () => {
 				});
 		});
 	});
+	
+	describe('update', () => {
+
+		it('should change username', done => {
+			chai.request(server)
+				.put(`/user/${userId}`)
+				.send({ email: 'jane@example.com' })
+				.end((err, res) => {
+				    if (err) return err;
+				    
+					res.should.have.status(200);
+					res.body.should.be.a('object');
+					res.body.user.name.should.eql('Jane Doe');
+					res.body.user.username.should.eql('janedoe');
+					res.body.user.email.should.eql('jane@example.com');
+					res.body.user.isAdmin.should.eql(false);
+					done();
+				});
+		});
+	});
 });
