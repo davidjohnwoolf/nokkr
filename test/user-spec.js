@@ -139,6 +139,7 @@ describe('users', () => {
 				    
 					res.should.have.status(200);
 					res.body.should.be.a('object');
+					res.body.message.should.eql('User updated');
 					res.body.user.name.should.eql('Jane Doe');
 					res.body.user.username.should.eql('janedoe');
 					res.body.user.email.should.eql('jane@example.com');
