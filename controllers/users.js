@@ -21,7 +21,7 @@ router.post('/', (req, res) => {
     User.findOne({ username: req.body.username }, (err, user) => {
         if (err) return res.json(err);
         
-        if (user) return res.json({ error: 'Username exists' });
+        if (user) return res.json({ error: 'Username already exists' });
         
         if (req.body.password === req.body.passwordConfirmation) {
             const user = new User(req.body);

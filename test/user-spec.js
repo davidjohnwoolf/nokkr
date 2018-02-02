@@ -99,6 +99,7 @@ describe('users', () => {
 				    
 					res.should.have.status(200);
 					res.body.should.be.a('object');
+					res.body.message.should.eql('User created');
 					res.body.user.name.should.eql('John Doe');
 	                res.body.user.username.should.eql('johndoe');
 	                res.body.user.email.should.eql('johndoe@example.com');
@@ -125,6 +126,30 @@ describe('users', () => {
 					res.should.have.status(200);
 					res.body.should.be.a('object');
 					res.body.error.should.eql('Passwords do not match');
+					done();
+				});
+		});
+		
+		it('should throw username exists error', done => {
+			const user = {
+				name: 'John Doe',
+				
+				// username exists
+				username: 'janedoe',
+				email: 'johndoe@example.com',
+				password: 'password1',
+				passwordConfirmation: 'password2'
+			};
+			
+			chai.request(server)
+				.post('/user')
+				.send(user)
+				.end((err, res) => {
+				    if (err) return err;
+				    
+					res.should.have.status(200);
+					res.body.should.be.a('object');
+					res.body.error.should.eql('Username already exists');
 					done();
 				});
 		});
@@ -181,6 +206,20 @@ describe('users', () => {
 					res.should.have.status(200);
 					res.body.should.be.a('object');
 					res.body.error.should.eql('Username already exists');
+					done();
+				});
+		});
+		
+		it('should throw passwords don\'t match error', done => {
+			chai.request(server)
+				.put(`/user/${userId}`)
+				.send({ password: 'password1', passwordConfirmation: 'password2' })
+				.end((err, res) => {
+				    if (err) return err;
+				    
+					res.should.have.status(200);
+					res.body.should.be.a('object');
+					res.body.error.should.eql('Passwords do not match');
 					done();
 				});
 		});
