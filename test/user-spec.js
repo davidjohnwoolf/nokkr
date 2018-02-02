@@ -132,11 +132,9 @@ describe('users', () => {
 		
 		it('should throw username exists error', done => {
 			const user = {
-				name: 'John Doe',
-				
-				// username exists
+				name: 'Jill Doe',
 				username: 'janedoe',
-				email: 'johndoe@example.com',
+				email: 'jilldoe@example.com',
 				password: 'password1',
 				passwordConfirmation: 'password2'
 			};
