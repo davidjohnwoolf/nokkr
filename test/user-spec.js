@@ -35,6 +35,7 @@ describe('users', () => {
 	});
 	
 	describe('post user', () => {
+		
 		it('should post user successfully', done => {
 			const user = {
 				name: 'David Woolf',
@@ -52,10 +53,10 @@ describe('users', () => {
 				    
 					res.should.have.status(200);
 					res.body.should.be.a('object');
-					res.body.user.should.have.property('name').eql('David Woolf');
-	                res.body.user.should.have.property('username').eql('davidwoolf');
-	                res.body.user.should.have.property('email').eql('test@example.com');
-	                res.body.user.should.have.property('isAdmin').eql(false);
+					res.body.user.name.should.eql('David Woolf');
+	                res.body.user.username.should.eql('davidwoolf');
+	                res.body.user.email.should.eql('test@example.com');
+	                res.body.user.isAdmin.should.eql(false);
 					done();
 				});
 		});
@@ -77,7 +78,7 @@ describe('users', () => {
 				    
 					res.should.have.status(200);
 					res.body.should.be.a('object');
-					res.body.should.have.property('error').eql('Passwords do not match');
+					res.body.error.should.eql('Passwords do not match');
 					done();
 				});
 		});
