@@ -38,6 +38,8 @@ describe('users', () => {
 			    if (err) return err;
 			    
 			    res.body.user.name.should.eql('Jane Doe');
+			    
+			    // save userId for later tests
 			    userId = res.body.user.id;
 				done();
 			});
@@ -129,8 +131,29 @@ describe('users', () => {
 	});
 	
 	describe('update', () => {
+		
+		beforeEach(done => {
+			// add 2nd test user to DB
+	        const user = {
+				name: 'James Doe',
+				username: 'jamesdoe',
+				email: 'jamesedoe@example.com',
+				password: 'password',
+				passwordConfirmation: 'password'
+			};
+			
+			chai.request(server)
+				.post('/user')
+				.send(user)
+				.end((err, res) => {
+				    if (err) return err;
+				    
+				    res.body.user.name.should.eql('James Doe');
+					done();
+				});
+	    });
 
-		it('should change username', done => {
+		it('should update email', done => {
 			chai.request(server)
 				.put(`/user/${userId}`)
 				.send({ email: 'jane@example.com' })
@@ -144,6 +167,38 @@ describe('users', () => {
 					res.body.user.username.should.eql('janedoe');
 					res.body.user.email.should.eql('jane@example.com');
 					res.body.user.isAdmin.should.eql(false);
+					done();
+				});
+		});
+		
+		it('should throw username exists error', done => {
+			chai.request(server)
+				.put(`/user/${userId}`)
+				.send({ username: 'jamesdoe' })
+				.end((err, res) => {
+				    if (err) return err;
+				    
+				    console.log(res.body.user);
+				    
+					res.should.have.status(200);
+					res.body.should.be.a('object');
+					res.body.error.should.eql('Username already exists');
+					done();
+				});
+		});
+	});
+	
+	describe('delete', () => {
+
+		it('should delete user', done => {
+			chai.request(server)
+				.delete(`/user/${userId}`)
+				.end((err, res) => {
+				    if (err) return err;
+				    
+					res.should.have.status(200);
+					res.body.should.be.a('object');
+					res.body.message.should.eql('User deleted');
 					done();
 				});
 		});
