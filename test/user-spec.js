@@ -107,7 +107,7 @@ describe('users', () => {
 				});
 		});
 		
-		it('should throw password error if passwords do not match', done => {
+		it('should throw passwords don\'t match error', done => {
 			const user = {
 				name: 'John Doe',
 				username: 'johndoe',
@@ -177,8 +177,6 @@ describe('users', () => {
 				.send({ username: 'jamesdoe' })
 				.end((err, res) => {
 				    if (err) return err;
-				    
-				    console.log(res.body.user);
 				    
 					res.should.have.status(200);
 					res.body.should.be.a('object');
