@@ -130,6 +130,28 @@ describe('users', () => {
 				});
 		});
 		
+		it('should throw password requirements error', done => {
+			const user = {
+				name: 'John Doe',
+				username: 'johndoe',
+				email: 'johndoe@example.com',
+				password: 'Password8',
+				passwordConfirmation: 'Password8'
+			};
+			
+			chai.request(server)
+				.post('/user')
+				.send(user)
+				.end((err, res) => {
+				    if (err) return err;
+				    
+					res.should.have.status(200);
+					res.body.should.be.a('object');
+					res.body.error.should.eql('Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character');
+					done();
+				});
+		});
+		
 		it('should throw username exists error', done => {
 			const user = {
 				name: 'Jill Doe',
@@ -194,20 +216,6 @@ describe('users', () => {
 				});
 		});
 		
-		it('should throw username exists error', done => {
-			chai.request(server)
-				.put(`/user/${userJaneId}`)
-				.send({ username: 'jamesdoe' })
-				.end((err, res) => {
-				    if (err) return err;
-				    
-					res.should.have.status(200);
-					res.body.should.be.a('object');
-					res.body.error.should.eql('Username already exists');
-					done();
-				});
-		});
-		
 		it('should throw passwords don\'t match error', done => {
 			chai.request(server)
 				.put(`/user/${userJaneId}`)
@@ -218,6 +226,35 @@ describe('users', () => {
 					res.should.have.status(200);
 					res.body.should.be.a('object');
 					res.body.error.should.eql('Passwords do not match');
+					done();
+				});
+		});
+		
+		it('should throw password requirements error', done => {
+			
+			chai.request(server)
+				.put(`/user/${userJaneId}`)
+				.send({ password: 'password8!1', passwordConfirmation: 'password8!1' })
+				.end((err, res) => {
+				    if (err) return err;
+				    
+					res.should.have.status(200);
+					res.body.should.be.a('object');
+					res.body.error.should.eql('Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character');
+					done();
+				});
+		});
+		
+		it('should throw username exists error', done => {
+			chai.request(server)
+				.put(`/user/${userJaneId}`)
+				.send({ username: 'jamesdoe' })
+				.end((err, res) => {
+				    if (err) return err;
+				    
+					res.should.have.status(200);
+					res.body.should.be.a('object');
+					res.body.error.should.eql('Username already exists');
 					done();
 				});
 		});
