@@ -8,11 +8,11 @@ const should = chai.should();
 const User = require('../models/user');
 const server = require('../server');
 
-let userId = '';
-
 chai.use(chaiHttp);
 
 describe('users', () => {
+	let userJaneId = '';
+	
 	beforeEach(done => {
 		// clear DB
         User.remove({}, (err) => {
@@ -39,8 +39,8 @@ describe('users', () => {
 			    
 			    res.body.user.name.should.eql('Jane Doe');
 			    
-			    // save userId for later tests
-			    userId = res.body.user.id;
+			    // save userJaneId for later tests
+			    userJaneId = res.body.user.id;
 				done();
 			});
     });
@@ -65,7 +65,7 @@ describe('users', () => {
 
 		it('should fetch user by id', done => {
 			chai.request(server)
-				.get(`/user/${userId}`)
+				.get(`/user/${userJaneId}`)
 				.end((err, res) => {
 				    if (err) return err;
 				    
@@ -178,7 +178,7 @@ describe('users', () => {
 
 		it('should update email', done => {
 			chai.request(server)
-				.put(`/user/${userId}`)
+				.put(`/user/${userJaneId}`)
 				.send({ email: 'jane@example.com' })
 				.end((err, res) => {
 				    if (err) return err;
@@ -196,7 +196,7 @@ describe('users', () => {
 		
 		it('should throw username exists error', done => {
 			chai.request(server)
-				.put(`/user/${userId}`)
+				.put(`/user/${userJaneId}`)
 				.send({ username: 'jamesdoe' })
 				.end((err, res) => {
 				    if (err) return err;
@@ -210,7 +210,7 @@ describe('users', () => {
 		
 		it('should throw passwords don\'t match error', done => {
 			chai.request(server)
-				.put(`/user/${userId}`)
+				.put(`/user/${userJaneId}`)
 				.send({ password: 'password1', passwordConfirmation: 'password2' })
 				.end((err, res) => {
 				    if (err) return err;
@@ -227,7 +227,7 @@ describe('users', () => {
 
 		it('should delete user', done => {
 			chai.request(server)
-				.delete(`/user/${userId}`)
+				.delete(`/user/${userJaneId}`)
 				.end((err, res) => {
 				    if (err) return err;
 				    
