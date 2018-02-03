@@ -27,8 +27,8 @@ describe('users', () => {
 			name: 'Jane Doe',
 			username: 'janedoe',
 			email: 'janedoe@example.com',
-			password: 'password',
-			passwordConfirmation: 'password'
+			password: 'Password8!',
+			passwordConfirmation: 'Password8!'
 		};
 		
 		chai.request(server)
@@ -87,8 +87,8 @@ describe('users', () => {
 				name: 'John Doe',
 				username: 'johndoe',
 				email: 'johndoe@example.com',
-				password: 'password',
-				passwordConfirmation: 'password'
+				password: 'Password8!',
+				passwordConfirmation: 'Password8!'
 			};
 			
 			chai.request(server)
@@ -113,8 +113,8 @@ describe('users', () => {
 				name: 'John Doe',
 				username: 'johndoe',
 				email: 'johndoe@example.com',
-				password: 'password',
-				passwordConfirmation: 'password1'
+				password: 'Password8!',
+				passwordConfirmation: 'Password8!1'
 			};
 			
 			chai.request(server)
@@ -135,8 +135,8 @@ describe('users', () => {
 				name: 'Jill Doe',
 				username: 'janedoe',
 				email: 'jilldoe@example.com',
-				password: 'password1',
-				passwordConfirmation: 'password2'
+				password: 'Password8!1',
+				passwordConfirmation: 'Password8!2'
 			};
 			
 			chai.request(server)
@@ -161,8 +161,8 @@ describe('users', () => {
 				name: 'James Doe',
 				username: 'jamesdoe',
 				email: 'jamesedoe@example.com',
-				password: 'password',
-				passwordConfirmation: 'password'
+				password: 'Password8!',
+				passwordConfirmation: 'Password8!'
 			};
 			
 			chai.request(server)
@@ -211,7 +211,7 @@ describe('users', () => {
 		it('should throw passwords don\'t match error', done => {
 			chai.request(server)
 				.put(`/user/${userJaneId}`)
-				.send({ password: 'password1', passwordConfirmation: 'password2' })
+				.send({ password: 'Password8!1', passwordConfirmation: 'Password8!2' })
 				.end((err, res) => {
 				    if (err) return err;
 				    

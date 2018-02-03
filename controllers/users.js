@@ -24,23 +24,32 @@ router.post('/', (req, res) => {
         if (user) return res.json({ error: 'Username already exists' });
         
         if (req.body.password === req.body.passwordConfirmation) {
-            const user = new User(req.body);
             
-            user.save(err => {
-                if (err) return res.json(err);
+            if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,24}/.test(req.body.password)) {
+                const user = new User(req.body);
+                
+                user.save(err => {
+                    if (err) return res.json(err);
+                    
+                    return res.json({
+                        message: 'User created',
+                        user: {
+                            name: user.name,
+                            username: user.username,
+                            email: user.email,
+                            isAdmin: user.isAdmin,
+                            createdAt: user.createdAt,
+                            id: user._id
+                        }
+                    });
+                });
+                
+            } else {
                 
                 return res.json({
-                    message: 'User created',
-                    user: {
-                        name: user.name,
-                        username: user.username,
-                        email: user.email,
-                        isAdmin: user.isAdmin,
-                        createdAt: user.createdAt,
-                        id: user._id
-                    }
+                    error: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character'
                 });
-            });
+            }
             
         } else {
             
@@ -79,26 +88,35 @@ router.put('/:id', (req, res) => {
                 if (err) return res.json(err);
                 
                 if (!req.body.password || (req.body.password === req.body.passwordConfirmation)) {
-        
-                    for (let key in req.body) {
-                    	user[key] = req.body[key];
-                    }
                     
-                    user.save(err => {
-                        if (err) return res.json(err);
+                    if (!req.body.password || /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,24}/.test(req.body.password)) {
+        
+                        for (let key in req.body) {
+                        	user[key] = req.body[key];
+                        }
+                        
+                        user.save(err => {
+                            if (err) return res.json(err);
+                            
+                            return res.json({
+                                message: 'User updated',
+                                user: {
+                                    name: user.name,
+                                    username: user.username,
+                                    email: user.email,
+                                    isAdmin: user.isAdmin,
+                                    createdAt: user.createdAt,
+                                    id: user._id
+                                }
+                            });
+                        });
+                    
+                    } else {
                         
                         return res.json({
-                            message: 'User updated',
-                            user: {
-                                name: user.name,
-                                username: user.username,
-                                email: user.email,
-                                isAdmin: user.isAdmin,
-                                createdAt: user.createdAt,
-                                id: user._id
-                            }
+                            error: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character'
                         });
-                    });
+                    }
                     
                 } else {
                     
