@@ -64,7 +64,7 @@ dist/
 .DS_Store
 
 # project notes
-notes/
+project-notes/
 
 # aws
 .c9/
