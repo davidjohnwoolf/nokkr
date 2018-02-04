@@ -1,2 +1,44 @@
+@import variables
+
+// General
+
 body
     font-family: 'Lucida Grande'
+    background: $white
+
+// Site Header
+
+.site-header
+    background: $dark-grey
+    color: #fff
+    
+    .navigation
+        display: flex
+        list-style-type: none
+        margin: 0
+        padding: 0
+        
+        li
+            display: block
+            width: 100%
+            text-align: center
+            width: 20%
+            
+            &:first-child
+               width: 40%
+            
+            a
+                display: block
+                width: 100%
+                padding: 1em 0
+                color: $white
+                transition: all 100ms
+                text-decoration: none
+                
+                &.active
+                    background: $white
+                    color: $dark-grey
+                
+                &:hover
+                    background: $white
+                    color: $dark-grey
