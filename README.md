@@ -1,1 +1,3 @@
-platform2k - a door to door dealer management platform
+# Platform2k
+
+### A door to door sales and dealer management platform
