@@ -13,19 +13,29 @@ class Navigation extends React.Component {
     				        <Link to="/" className="active">Home</Link>
     				    </li>
     				    <li>
-    				        <Link to="/"><span className="fa fa-map"></span></Link>
+    				        <Link to="/">
+    				            <span className="fa fa-map"></span>
+    				        </Link>
     				    </li>
     				    <li>
-    				        <Link to="/"><span className="fa fa-users"></span></Link>
+    				        <Link to="/">
+    				            <span className="fa fa-users"></span>
+    				        </Link>
     				    </li>
     			        <li>
-    				        <Link to="/"><span className="fa fa-calendar"></span></Link>
+    				        <Link to="/">
+    				            <span className="fa fa-calendar"></span>
+    				        </Link>
     				    </li>
     				    <li>
-    				        <Link to="/"><span className="fa fa-search"></span></Link>
+    				        <Link to="/">
+    				            <span className="fa fa-search"></span>
+    				        </Link>
     				    </li>
     				    <li>
-    				        <Link to="/"><span className="fa fa-bars"></span></Link>
+    				        <Link to="/">
+    				            <span className="fa fa-bars"></span>
+    				        </Link>
     				    </li>
     				</ul>
     			</nav>
