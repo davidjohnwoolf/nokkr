@@ -9,18 +9,18 @@ import Navigation from './components/navigation';
 import Dashboard from './components/dashboard';
 
 ReactDOM.render(
-    <div>
-        <header className="site-header">
-            <Navigation />
-        </header>
-        <Router>
+    <Router>
+        <div>
+            <header className="site-header">
+                <Navigation />
+            </header>
             <Switch>
                 <Route path="/" component={ Dashboard } />
         		<Route path="/area" component={ Dashboard } />
         		<Route path="/lead" component={ Dashboard } />
         		<Route path="/appointment" component={ Dashboard } />
     		</Switch>
-		</Router>
-    </div>,
+        </div>
+    </Router>,
     document.querySelector('#app')
 );
