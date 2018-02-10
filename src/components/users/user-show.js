@@ -1,13 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { fetchUser } from '../../actions/users';
+import { fetchUser } from '../../actions/users.action';
 
 class UserShow extends React.Component {
     
     componentDidMount() {
-		this.props.fetchUser(this.props.match.params.id);
-		console.log(this.props)
+		if (!this.props.user) this.props.fetchUser(this.props.match.params.id);
+		console.log(this.props);
 	}
     
     render() {
@@ -16,14 +16,19 @@ class UserShow extends React.Component {
         
         return (
             <div className="component-page user-show">
-                <h1>{ this.props.user }</h1>
+                <h1>User Name</h1>
             </div>
         );
     }
 }
 
-function mapStateToProps(state, ownProps) {
+const mapStateToProps = state => {
 	return { user: state.user };
-}
+};
 
-export default connect(mapStateToProps, { fetchUser })(UserShow);
+const mapDispatchToProps = dispatch => {
+    return { fetchUser };
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserShow);

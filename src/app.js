@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import promise from 'redux-promise';
 
-import reducers from './reducers/users.js';
+import reducers from './reducers/users.reducer.js';
 
 import Navigation from './components/layout/navigation';
 import Placeholder from './components/placeholder';
