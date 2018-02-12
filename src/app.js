@@ -12,6 +12,7 @@ import reducers from './reducers/users.reducer.js';
 
 import Navigation from './components/layout/navigation';
 import Placeholder from './components/placeholder';
+import UserIndex from './components/users/user-index';
 import UserShow from './components/users/user-show';
 
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
@@ -29,6 +30,7 @@ ReactDOM.render(
             		<Route path="/lead" component={ Placeholder } />
             		<Route path="/appointment" component={ Placeholder } />
             		<Route path="/user/:id" component={ UserShow } />
+            		<Route path="/user" component={ UserIndex } />
         		</Switch>
             </div>
         </Router>

@@ -1,8 +1,19 @@
 import axios from 'axios';
-const ROOT_URL = 'https://2aef31351d4842269d972b6db3d4fed6.vfs.cloud9.us-west-2.amazonaws.com/user';
 
 export const FETCH_USER = 'FETCH_USER';
+export const FETCH_USERS = 'FETCH_USERS';
 
+// fetch list of users
+export const fetchUsers = () => {
+    const request = axios.get('/user');
+    
+    return {
+        type: FETCH_USERS,
+        payload: request
+    };
+}
+
+// fetch user by id
 export const fetchUser = id => {
     const request = axios.get(`/user/${id}`);
     
@@ -11,3 +22,4 @@ export const fetchUser = id => {
         payload: request
     };
 }
+
