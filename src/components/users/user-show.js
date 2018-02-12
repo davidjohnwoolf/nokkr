@@ -13,8 +13,6 @@ class UserShow extends React.Component {
         
         const { user } = this.props;
         
-        console.log(this.props);
-        
         return (
             <div className="component-page user-show">
                 <h1>{ user ? user.name : '' }</h1>
