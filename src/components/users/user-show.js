@@ -5,19 +5,30 @@ import { fetchUser } from '../../actions/users.action';
 
 class UserShow extends React.Component {
     
-    componentDidMount() {
-		if (!this.props.user) this.props.fetchUser(this.props.match.params.id);
-	}
+	constructor(props) {
+        super(props);
+        this.props.fetchUser(this.props.match.params.id);
+    }
+    
+    renderUser() {
+        const { user } = this.props;
+        
+        if (!user) return;
+        
+        return (
+            <div>
+                <h1>{ user.name } <span className="edit-icon fa fa-pencil-square-o"></span></h1>
+                <h4>{ user.username } <span className="edit-icon fa fa-pencil-square-o"></span></h4>
+                <address>{ user.email } <span className="edit-icon fa fa-pencil-square-o"></span></address>
+            </div>
+        );
+    }
     
     render() {
         
-        const { user } = this.props;
-        
         return (
             <div className="component-page user-show">
-                <h1>{ user ? user.name : '' }</h1>
-                <h4>{ user ? user.username : '' }</h4>
-                <address>{ user ? user.email : '' }</address>
+                { this.renderUser() }
             </div>
         );
     }

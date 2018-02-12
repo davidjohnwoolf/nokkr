@@ -1,24 +1,28 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import { fetchUsers } from '../../actions/users.action';
 
 class UserIndex extends React.Component {
     
-    componentDidMount() {
-		if (!this.props.users) this.props.fetchUsers();
-	}
+    constructor(props) {
+        super(props);
+        this.props.fetchUsers();
+    }
 	
     renderUsers() {
+        const { users } = this.props;
+        
+        if (!users) return;
+        
         return (
-            this.props.users.map((user) => {
+            users.map((user) => {
                 return (
                     <li key={ user._id }>
-                        <h4>{ user.name }</h4>
-                        <span>
-                            <a href="">Edit</a>
-                            <a href="">Delete</a>
-                        </span>
+                        <Link to={ `/user/${user._id}` }>
+				            { user.name }
+				        </Link>
                     </li>
                 );
             })
@@ -27,12 +31,10 @@ class UserIndex extends React.Component {
     
     render() {
         
-        const { users } = this.props;
-        
         return (
             <div className="component-page user-index">
                 <ul className="column-list">
-                    { users ? this.renderUsers() : '' }
+                    { this.renderUsers() }
                 </ul>
             </div>
         );
