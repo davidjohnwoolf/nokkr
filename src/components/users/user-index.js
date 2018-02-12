@@ -31,7 +31,7 @@ class UserIndex extends React.Component {
         
         return (
             <div className="component-page user-index">
-                <ul>
+                <ul class="column-list">
                     { users ? this.renderUsers() : '' }
                 </ul>
             </div>
