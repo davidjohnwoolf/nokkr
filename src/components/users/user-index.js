@@ -20,7 +20,7 @@ class UserIndex extends React.Component {
                             <a href="">Delete</a>
                         </span>
                     </li>
-                )
+                );
             })
         );
     }
