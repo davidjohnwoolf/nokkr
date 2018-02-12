@@ -1,4 +1,4 @@
-import { FETCH_USER, FETCH_USERS } from '../actions/users.action';
+import { FETCH_USER, FETCH_USERS, CREATE_USER } from '../actions/users.action';
 
 export default function(state = {}, action) {
 
@@ -8,7 +8,10 @@ export default function(state = {}, action) {
         
         case FETCH_USERS:
             return { ...state, users: action.payload.data };
-        
+            
+        case CREATE_USER:
+            return { ...state, message: action.payload.data };
+            
         default:
             return state;
     }

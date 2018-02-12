@@ -2,6 +2,7 @@ import axios from 'axios';
 
 export const FETCH_USER = 'FETCH_USER';
 export const FETCH_USERS = 'FETCH_USERS';
+export const CREATE_USER = 'CREATE_USER';
 
 // fetch list of users
 export const fetchUsers = () => {
@@ -19,6 +20,16 @@ export const fetchUser = id => {
     
     return {
         type: FETCH_USER,
+        payload: request
+    };
+}
+
+// create user
+export const createUser = user => {
+    const request = axios.post('/user', user);
+    
+    return {
+        type: CREATE_USER,
         payload: request
     };
 }

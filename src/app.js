@@ -14,6 +14,7 @@ import Navigation from './components/layout/navigation';
 import Placeholder from './components/placeholder';
 import UserIndex from './components/users/user-index';
 import UserShow from './components/users/user-show';
+import UserCreate from './components/users/user-create';
 
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
 
@@ -29,6 +30,7 @@ ReactDOM.render(
             		<Route path="/area" component={ Placeholder } />
             		<Route path="/lead" component={ Placeholder } />
             		<Route path="/appointment" component={ Placeholder } />
+            		<Route path="/user/new" component={ UserCreate } />
             		<Route path="/user/:id" component={ UserShow } />
             		<Route path="/user" component={ UserIndex } />
         		</Switch>
