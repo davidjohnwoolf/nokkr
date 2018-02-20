@@ -125,7 +125,7 @@ describe('users', () => {
 				    
 					res.should.have.status(200);
 					res.body.should.be.a('object');
-					res.body.error.should.eql('Passwords do not match');
+					res.body.error.should.eql(true);
 					done();
 				});
 		});
@@ -147,7 +147,7 @@ describe('users', () => {
 				    
 					res.should.have.status(200);
 					res.body.should.be.a('object');
-					res.body.error.should.eql('Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character');
+					res.body.error.should.eql(true);
 					done();
 				});
 		});
@@ -169,7 +169,7 @@ describe('users', () => {
 				    
 					res.should.have.status(200);
 					res.body.should.be.a('object');
-					res.body.error.should.eql('Username already exists');
+					res.body.error.should.eql(true);
 					done();
 				});
 		});
@@ -225,7 +225,7 @@ describe('users', () => {
 				    
 					res.should.have.status(200);
 					res.body.should.be.a('object');
-					res.body.error.should.eql('Passwords do not match');
+					res.body.error.should.eql(true);
 					done();
 				});
 		});
@@ -240,7 +240,7 @@ describe('users', () => {
 				    
 					res.should.have.status(200);
 					res.body.should.be.a('object');
-					res.body.error.should.eql('Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character');
+					res.body.error.should.eql(true);
 					done();
 				});
 		});
@@ -254,7 +254,7 @@ describe('users', () => {
 				    
 					res.should.have.status(200);
 					res.body.should.be.a('object');
-					res.body.error.should.eql('Username already exists');
+					res.body.error.should.eql(true);
 					done();
 				});
 		});

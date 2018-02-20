@@ -21,7 +21,10 @@ router.post('/', (req, res) => {
     User.findOne({ username: req.body.username }, (err, user) => {
         if (err) return res.json(err);
         
-        if (user) return res.json({ error: 'Username already exists' });
+        if (user) return res.json({
+            error: true,
+            message: 'Username already exists'
+        });
         
         if (req.body.password === req.body.passwordConfirmation) {
             
@@ -47,13 +50,17 @@ router.post('/', (req, res) => {
             } else {
                 
                 return res.json({
-                    error: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character'
+                    error: true,
+                    message: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character'
                 });
             }
             
         } else {
             
-            return res.json({ error: 'Passwords do not match' });
+            return res.json({
+                error: true,
+                message: 'Passwords do not match'
+            });
         }
     });
 });
@@ -81,7 +88,10 @@ router.put('/:id', (req, res) => {
         
         if (user && (user._id !== req.params.id)) {
             
-            res.json({ error: 'Username already exists' });
+            res.json({
+                error: true,
+                message: 'Username already exists'
+            });
         } else {
             
             User.findOne({ _id: req.params.id }, (err, user) => {
@@ -114,13 +124,14 @@ router.put('/:id', (req, res) => {
                     } else {
                         
                         return res.json({
-                            error: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character'
+                            error: true,
+                            message: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character'
                         });
                     }
                     
                 } else {
                     
-                    return res.json({ error: 'Passwords do not match' });
+                    return res.json({ error: true, message: 'Passwords do not match' });
                 }
                 
             });
