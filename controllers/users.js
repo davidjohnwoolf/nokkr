@@ -22,8 +22,7 @@ router.post('/', (req, res) => {
         if (err) return res.json(err);
         
         if (user) return res.json({
-            error: true,
-            message: 'Username already exists'
+            error: 'Username already exists'
         });
         
         if (req.body.password === req.body.passwordConfirmation) {
@@ -50,16 +49,14 @@ router.post('/', (req, res) => {
             } else {
                 
                 return res.json({
-                    error: true,
-                    message: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character'
+                    error: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character'
                 });
             }
             
         } else {
             
             return res.json({
-                error: true,
-                message: 'Passwords do not match'
+                error: 'Passwords do not match'
             });
         }
     });
@@ -88,10 +85,7 @@ router.put('/:id', (req, res) => {
         
         if (user && (user._id !== req.params.id)) {
             
-            res.json({
-                error: true,
-                message: 'Username already exists'
-            });
+            res.json({ error: 'Username already exists' });
         } else {
             
             User.findOne({ _id: req.params.id }, (err, user) => {
@@ -124,14 +118,13 @@ router.put('/:id', (req, res) => {
                     } else {
                         
                         return res.json({
-                            error: true,
-                            message: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character'
+                            error: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character'
                         });
                     }
                     
                 } else {
                     
-                    return res.json({ error: true, message: 'Passwords do not match' });
+                    return res.json({ error: 'Passwords do not match' });
                 }
                 
             });

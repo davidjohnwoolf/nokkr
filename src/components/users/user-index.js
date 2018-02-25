@@ -14,7 +14,11 @@ class UserIndex extends React.Component {
     renderUsers() {
         const { users } = this.props;
         
+        console.log('before user check', users);
+        
         if (!users) return;
+        
+        console.log('after user check', users);
         
         return (
             users.map((user) => {
@@ -42,7 +46,7 @@ class UserIndex extends React.Component {
 }
 
 const mapStateToProps = state => {
-	return { users: state.users };
+	return { users: state.usersReducer.users };
 };
 
 

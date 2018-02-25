@@ -8,13 +8,12 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import promise from 'redux-promise';
 
-import reducers from './reducers/users.reducer.js';
+import reducers from './reducers';
 
 import Navigation from './components/layout/navigation';
-import Placeholder from './components/placeholder';
 import UserIndex from './components/users/user-index';
 import UserShow from './components/users/user-show';
-import UserCreate from './components/users/user-create';
+import UserNewForm from './components/users/user-new-form';
 
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
 
@@ -26,11 +25,7 @@ ReactDOM.render(
                     <Navigation />
                 </header>
                 <Switch>
-                    <Route exact path="/" component={ Placeholder } />
-            		<Route path="/area" component={ Placeholder } />
-            		<Route path="/lead" component={ Placeholder } />
-            		<Route path="/appointment" component={ Placeholder } />
-            		<Route path="/user/new" component={ UserCreate } />
+            		<Route path="/user/new" component={ UserNewForm } />
             		<Route path="/user/:id" component={ UserShow } />
             		<Route path="/user" component={ UserIndex } />
         		</Switch>

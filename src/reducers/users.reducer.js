@@ -7,10 +7,8 @@ export default function(state = {}, action) {
             return { ...state, user: action.payload.data };
         
         case FETCH_USERS:
+            console.log('fetch users');
             return { ...state, users: action.payload.data };
-            
-        case CREATE_USER:
-            return { ...state, message: action.payload.data };
             
         default:
             return state;

@@ -61,3 +61,31 @@ body
     
     &:hover
         color: $color-primary
+
+// forms
+
+.form
+    .form-field
+    
+        .form-input
+            display: block
+            padding: 10px
+            margin-bottom: 5px
+        
+        .form-error-message
+            color: $error-red
+            padding-bottom: 5px
+    
+        &.form-error input
+            box-shadow: 0 0 5px $error-red
+    
+    .form-submit
+        border: none
+        padding: 10px
+        color: $white
+        background-color: $color-primary
+        transition: all 200ms
+        cursor: pointer
+        
+        &:hover
+            background-color: $color-primary-light
