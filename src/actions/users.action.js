@@ -9,8 +9,6 @@ export const CREATE_USER = 'CREATE_USER';
 export const fetchUsers = () => {
     const request = axios.get('/user');
     
-    console.log('Request:', request);
-    
     return {
         type: FETCH_USERS,
         payload: request
