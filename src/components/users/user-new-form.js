@@ -4,6 +4,20 @@ import { connect } from 'react-redux';
 
 import { createUser } from '../../actions/users.action';
 
+const validation = {
+    required: value => value ? undefined : 'Required',
+    password: value => {
+        return value && /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,24}/.test(value)
+            ? undefined
+            : 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character'
+    },
+    match: () => {
+        return document.querySelector('[name=password]').value === document.querySelector('[name=passwordConfirmation]').value
+            ? undefined
+            : 'Passwords must match'
+    }
+};
+
 class UserNewForm extends React.Component {
     
     renderField(field) {
@@ -19,7 +33,7 @@ class UserNewForm extends React.Component {
 					{ ...field.input }
 				/>
 				<div className="form-error-message">
-					{ touched ? error : '' }
+					{ touched && (error && <span>{ error }</span>) }
 				</div>
 			</div>
 		);
@@ -28,6 +42,7 @@ class UserNewForm extends React.Component {
     onSubmit(values) {
 		this.props.createUser(values, (res) => {
 		    if (res.data.error) {
+		           // make this happen in line with redux methodology
 		        document.querySelector('.form-errors').innerHTML = res.data.error;
 		    } else {
 		        this.props.history.push('/?message=Created+User+Successfully');
@@ -36,7 +51,8 @@ class UserNewForm extends React.Component {
 	}
     
     render() {
-        const { errors, handleSubmit } = this.props;
+        const { handleSubmit, submitting } = this.props;
+
         return (
             <div className="component-page user-create">
                 <h1>New User</h1>
@@ -49,32 +65,37 @@ class UserNewForm extends React.Component {
                         name="name"
                         component={ this.renderField }
                         type="text"
+                        validate={[ validation.required ]}
                     />
                     <Field
                         placeholder="Username"
                         name="username"
                         component={ this.renderField }
                         type="text"
+                        validate={[ validation.required ]}
                     />
                     <Field
                         placeholder="Email"
                         name="email"
                         component={ this.renderField }
                         type="email"
+                        validate={[ validation.required ]}
                     />
                     <Field
                         placeholder="Password"
                         name="password"
                         component={ this.renderField }
                         type="password"
+                        validate={[ validation.password ]}
                     />
                     <Field
                         placeholder="Password Confirmation"
                         name="passwordConfirmation"
                         component={ this.renderField }
                         type="password"
+                        validate={[ validation.match ]}
                     />
-                    <button className="form-submit" type="submit">
+                    <button className="form-submit" type="submit" disabled={ submitting }>
                         Create User
                     </button>
                 </form>
@@ -82,28 +103,6 @@ class UserNewForm extends React.Component {
         );
     }
 }
-
-/*function validate(values) {
-	const errors = {};
-	
-	if (!values.name) errors.name = "Please enter a full name";
-
-	if (!values.username) errors.username = "Please enter a username";
-	
-	if (!values.email) errors.email = "Please enter an email address";
-
-	if (!values.password) errors.password = "Please enter a password";
-	
-	if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,24}/.test(values.password)) {
-	    errors.password = "Password must contain one uppercase letter, one lowercase letter, one number and a special character and be 8-24 characters long";
-	}
-	
-	if (!values.passwordConfirmation) errors.passwordConfirmation = "Please enter your password again";
-	
-	if (values.passwordConfirmation !== values.password) errors.passwordConfirmation = "Passwords must match";
-
-	return errors;
-}*/
 
 export default reduxForm({
   form: 'userNewForm'
