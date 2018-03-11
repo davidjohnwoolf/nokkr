@@ -43,7 +43,7 @@ class UserNewForm extends React.Component {
 		this.props.createUser(values, (res) => {
 		    if (res.data.error) {
 		           // make this happen in line with redux methodology
-		        document.querySelector('.form-errors').innerHTML = res.data.error;
+		        document.querySelector('.form-server-errors').innerHTML = res.data.error;
 		    } else {
 		        this.props.history.push('/?message=Created+User+Successfully');
 		    }
@@ -57,7 +57,7 @@ class UserNewForm extends React.Component {
             <div className="component-page user-create">
                 <h1>New User</h1>
                 
-                <div className="form-errors"></div>
+                <div className="form-server-errors"></div>
                 
                 <form className="form" onSubmit={ handleSubmit(this.onSubmit.bind(this)) }>
                     <Field
@@ -93,7 +93,7 @@ class UserNewForm extends React.Component {
                         name="passwordConfirmation"
                         component={ this.renderField }
                         type="password"
-                        validate={[ validation.match ]}
+                        validate={[ validation.password, validation.match ]}
                     />
                     <button className="form-submit" type="submit" disabled={ submitting }>
                         Create User
