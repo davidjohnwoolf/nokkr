@@ -3,7 +3,7 @@ import axios from 'axios';
 export const FETCH_USER = 'FETCH_USER';
 export const FETCH_USERS = 'FETCH_USERS';
 export const CREATE_USER = 'CREATE_USER';
-//export const CREATE_USER_ERROR = 'CREATE_USER_ERROR';
+export const UPDATE_USER = 'UPDATE_USER';
 
 // fetch list of users
 export const fetchUsers = () => {
@@ -38,3 +38,15 @@ export const createUser = (user, callback) => {
     };
 }
 
+// create user
+export const updateUser = (user, callback) => {
+    const request = axios.put('/user', user)
+        .then(response => {
+            callback(response);
+        });
+    
+    return {
+        type: UPDATE_USER,
+        payload: request
+    };
+}

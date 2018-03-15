@@ -14,6 +14,7 @@ import Navigation from './components/layout/navigation';
 import UserIndex from './components/users/user-index';
 import UserShow from './components/users/user-show';
 import UserNewForm from './components/users/user-new-form';
+import UserEditForm from './components/users/user-edit-form';
 
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
 
@@ -26,6 +27,7 @@ ReactDOM.render(
                 </header>
                 <Switch>
             		<Route path="/user/new" component={ UserNewForm } />
+            		<Route path="/user/:id/edit" component={ UserEditForm } />
             		<Route path="/user/:id" component={ UserShow } />
             		<Route path="/user" component={ UserIndex } />
         		</Switch>
