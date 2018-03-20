@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field, reduxForm, initialize } from 'redux-form';
+import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 
 import { fetchUser, updateUser } from '../../actions/users.action';
