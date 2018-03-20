@@ -4,6 +4,7 @@ export const FETCH_USER = 'FETCH_USER';
 export const FETCH_USERS = 'FETCH_USERS';
 export const CREATE_USER = 'CREATE_USER';
 export const UPDATE_USER = 'UPDATE_USER';
+export const DELETE_USER = 'DELETE_USER';
 
 // fetch list of users
 export const fetchUsers = () => {
@@ -47,6 +48,16 @@ export const updateUser = (id, user, callback) => {
     
     return {
         type: UPDATE_USER,
+        payload: request
+    };
+}
+
+// delete user
+export const deleteUser = (id, user, callback) => {
+    const request = axios.delete(`/user/${id}`);
+    
+    return {
+        type: DELETE_USER,
         payload: request
     };
 }
