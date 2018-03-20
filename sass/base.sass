@@ -9,6 +9,9 @@ body
     font-family: Helvetica
     background: $white
 
+a
+    text-decoration: none
+
 // Site Header
 
 .site-header
@@ -94,3 +97,27 @@ body
         
         &:hover
             background-color: $color-primary-light
+
+// buttons
+
+.edit-button
+    border: none
+    display: inline-block
+    margin: 5px 0
+    padding: 10px 20px
+    background: $color-primary
+    color: $white
+    transition: all 100ms
+    &:hover
+        background: $black
+
+.delete-button
+    border: none
+    display: inline-block
+    margin: 5px 0
+    padding: 10px 20px
+    background: $error-red
+    color: $white
+    transition: all 100ms
+    &:hover
+        background: $black
