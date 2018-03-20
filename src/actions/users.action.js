@@ -39,8 +39,8 @@ export const createUser = (user, callback) => {
 }
 
 // create user
-export const updateUser = (user, callback) => {
-    const request = axios.put('/user', user)
+export const updateUser = (id, user, callback) => {
+    const request = axios.put(`/user/${id}`, user)
         .then(response => {
             callback(response);
         });

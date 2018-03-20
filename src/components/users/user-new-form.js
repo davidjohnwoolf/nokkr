@@ -3,7 +3,7 @@ import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 
 import { createUser } from '../../actions/users.action';
-import { validation } from './helpers';
+import { validation } from '../helpers/users.helpers';
 
 class UserNewForm extends React.Component {
     
@@ -29,7 +29,7 @@ class UserNewForm extends React.Component {
     onSubmit(values) {
 		this.props.createUser(values, (res) => {
 		    if (res.data.error) {
-		        // make this happen in line with redux methodology
+		        // make this happen in line with redux methodology, make a prop
 		        document.querySelector('.form-server-errors').innerHTML = res.data.error;
 		    } else {
 		        this.props.history.push('/?message=Created+User+Successfully');
