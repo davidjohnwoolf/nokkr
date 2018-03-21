@@ -13,8 +13,8 @@ import reducers from './reducers';
 import Navigation from './components/layout/navigation';
 import UserIndex from './components/users/user-index';
 import UserShow from './components/users/user-show';
-import UserNewForm from './components/users/user-new-form';
-import UserEditForm from './components/users/user-edit-form';
+import UserNew from './components/users/user-new';
+import UserEdit from './components/users/user-edit';
 
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
 
@@ -26,8 +26,8 @@ ReactDOM.render(
                     <Navigation />
                 </header>
                 <Switch>
-            		<Route path="/user/new" component={ UserNewForm } />
-            		<Route path="/user/:id/edit" component={ UserEditForm } />
+            		<Route path="/user/new" component={ UserNew } />
+            		<Route path="/user/:id/edit" component={ UserEdit } />
             		<Route path="/user/:id" component={ UserShow } />
             		<Route path="/user" component={ UserIndex } />
         		</Switch>
