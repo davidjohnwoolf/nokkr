@@ -1,6 +1,7 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import { fetchUser, updateUser } from '../../actions/users.action';
 import { validation } from '../helpers/users.helpers';
@@ -114,6 +115,7 @@ class UserEditForm extends React.Component {
                     <button className="form-submit" type="submit" disabled={ submitting }>
                         Update User
                     </button>
+                    <Link className="default-button" to={ `/user/${ this.props.match.params.id }` }>Cancel</Link>
                 </form>
             </div>
         );
