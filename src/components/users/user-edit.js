@@ -5,12 +5,13 @@ import { connect } from 'react-redux';
 import { fetchUser, updateUser } from '../../actions/users.action';
 import { validation } from '../helpers/users.helpers';
 
-let initialized = false;
+let initialized;
 
 class UserEditForm extends React.Component {
     
     componentDidMount() {
         this.props.fetchUser(this.props.match.params.id);
+        initialized = false;
     }
     
     componentDidUpdate() {
