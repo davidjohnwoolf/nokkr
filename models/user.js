@@ -22,7 +22,7 @@ const userSchema = new Schema({
 
 userSchema.pre('save', function(next) {
     const user = this;
-     
+    
     // check if user password is new or modified
     if (!user.isModified('password')) return next();
     
