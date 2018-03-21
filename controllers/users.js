@@ -83,7 +83,7 @@ router.put('/:id', (req, res) => {
     User.findOne({ username: req.body.username }, (err, user) => {
         if (err) return res.json(err);
         
-        if (user && (user._id !== req.params.id)) {
+        if (user && (user.id !== req.params.id)) {
             
             res.json({ error: 'Username already exists' });
         } else {
