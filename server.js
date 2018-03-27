@@ -10,6 +10,7 @@ const app = express();
 const mongoose = require('mongoose');
 
 // controllers
+const Authentication = require('./controllers/authentication');
 const Users = require('./controllers/users');
 
 // connect database
@@ -31,6 +32,7 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 // routes
 app.use('/user', Users);
+app.use('/', Authentication);
 
 // start server
 app.listen(process.env.PORT || 8080, () => console.log('server listening...'));

@@ -11,6 +11,7 @@ import promise from 'redux-promise';
 import reducers from './reducers';
 
 import Navigation from './components/layout/navigation';
+import Login from './components/authentication/login';
 import UserIndex from './components/users/user-index';
 import UserShow from './components/users/user-show';
 import UserNew from './components/users/user-new';
@@ -26,6 +27,7 @@ ReactDOM.render(
                     <Navigation />
                 </header>
                 <Switch>
+            		<Route path="/login" component={ Login } />
             		<Route path="/user/new" component={ UserNew } />
             		<Route path="/user/:id/edit" component={ UserEdit } />
             		<Route path="/user/:id" component={ UserShow } />
