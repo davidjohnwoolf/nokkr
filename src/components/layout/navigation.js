@@ -12,7 +12,7 @@ class Navigation extends React.Component {
 				        <Link to="/" className="active">Home</Link>
 				    </li>
 				    <li>
-				        <Link to="/">
+				        <Link to="/user">
 				            <span className="fa fa-map"></span>
 				        </Link>
 				    </li>

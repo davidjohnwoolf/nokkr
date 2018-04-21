@@ -8,6 +8,8 @@ const path = require('path');
 const logger = require('morgan');
 const app = express();
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const expressJWT = require('express-jwt');
 
 // controllers
 const Authentication = require('./controllers/authentication');
@@ -31,6 +33,7 @@ if (process.env.NODE_ENV !== 'test') app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'dist')));
 
 // routes
+//app.use(expressJWT({ secret: process.env.JWT_SECRET }).unless({ path: ['/login'] }));
 app.use('/user', Users);
 app.use('/', Authentication);
 

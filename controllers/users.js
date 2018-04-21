@@ -3,6 +3,8 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const User = require('../models/user');
 
+//const isAuthorized = require('../helpers/auth.helper.js');
+
 // body parser middleware
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
