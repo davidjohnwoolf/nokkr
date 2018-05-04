@@ -7,6 +7,7 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import promise from 'redux-promise';
+import setAuthToken from './middleware/set-auth-token';
 
 import reducers from './reducers';
 
@@ -17,7 +18,7 @@ import UserShow from './components/users/user-show';
 import UserNew from './components/users/user-new';
 import UserEdit from './components/users/user-edit';
 
-const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
+const createStoreWithMiddleware = applyMiddleware(promise, setAuthToken)(createStore);
 
 ReactDOM.render(
     <Provider store={createStoreWithMiddleware(reducers)}>

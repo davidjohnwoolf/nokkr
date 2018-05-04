@@ -34,7 +34,7 @@ class LoginForm extends React.Component {
 		        document.querySelector('.form-server-errors').innerHTML = res.data.error;
 		    } else {
 		        // secure this shit
-		        window.sessionStorage.platform2k_token = res.data.token;
+		        window.sessionStorage.platform2kToken = res.data.token;
 		        this.props.history.push('/?message=Logged+In+Successfully');
 		    }
 		});
