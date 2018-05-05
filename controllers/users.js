@@ -14,7 +14,19 @@ router.get('/', (req, res) => {
     User.find({}, (err, users) => {
         if (err) return res.json(err);
         
-        return res.json(users);
+        const safeUsers = [];
+        
+        users.forEach(function(c) {
+            safeUsers.push({
+                isAdmin: c.isAdmin,
+                createdAt: c.createdAt,
+                id: c._id,
+                name: c.name,
+                username: c.username,
+            });
+        });
+        
+        return res.json(safeUsers);
     });
 });
 

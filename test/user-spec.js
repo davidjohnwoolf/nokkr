@@ -5,7 +5,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const should = chai.should();
 
-const User = require('../models/user');
+const User = require('../models/users');
 const server = require('../server');
 
 chai.use(chaiHttp);
@@ -32,7 +32,7 @@ describe('users', () => {
 		};
 		
 		chai.request(server)
-			.post('/user')
+			.post('/users')
 			.send(user)
 			.end((err, res) => {
 			    if (err) return err;
@@ -49,7 +49,7 @@ describe('users', () => {
 
 		it('should fetch list of users', done => {
 			chai.request(server)
-				.get('/user')
+				.get('/users')
 				.end((err, res) => {
 				    if (err) return err;
 				    
@@ -65,7 +65,7 @@ describe('users', () => {
 
 		it('should fetch user by id', done => {
 			chai.request(server)
-				.get(`/user/${userJaneId}`)
+				.get(`/users/${userJaneId}`)
 				.end((err, res) => {
 				    if (err) return err;
 				    
@@ -92,7 +92,7 @@ describe('users', () => {
 			};
 			
 			chai.request(server)
-				.post('/user')
+				.post('/users')
 				.send(user)
 				.end((err, res) => {
 				    if (err) return err;
@@ -118,7 +118,7 @@ describe('users', () => {
 			};
 			
 			chai.request(server)
-				.post('/user')
+				.post('/users')
 				.send(user)
 				.end((err, res) => {
 				    if (err) return err;
@@ -140,7 +140,7 @@ describe('users', () => {
 			};
 			
 			chai.request(server)
-				.post('/user')
+				.post('/users')
 				.send(user)
 				.end((err, res) => {
 				    if (err) return err;
@@ -162,7 +162,7 @@ describe('users', () => {
 			};
 			
 			chai.request(server)
-				.post('/user')
+				.post('/users')
 				.send(user)
 				.end((err, res) => {
 				    if (err) return err;
@@ -188,7 +188,7 @@ describe('users', () => {
 			};
 			
 			chai.request(server)
-				.post('/user')
+				.post('/users')
 				.send(user)
 				.end((err, res) => {
 				    if (err) return err;
@@ -200,7 +200,7 @@ describe('users', () => {
 
 		it('should update email', done => {
 			chai.request(server)
-				.put(`/user/${userJaneId}`)
+				.put(`/users/${userJaneId}`)
 				.send({ email: 'jane@example.com' })
 				.end((err, res) => {
 				    if (err) return err;
@@ -218,7 +218,7 @@ describe('users', () => {
 		
 		it('should throw passwords don\'t match error', done => {
 			chai.request(server)
-				.put(`/user/${userJaneId}`)
+				.put(`/users/${userJaneId}`)
 				.send({ password: 'Password8!1', passwordConfirmation: 'Password8!2' })
 				.end((err, res) => {
 				    if (err) return err;
@@ -233,7 +233,7 @@ describe('users', () => {
 		it('should throw password requirements error', done => {
 			
 			chai.request(server)
-				.put(`/user/${userJaneId}`)
+				.put(`/users/${userJaneId}`)
 				.send({ password: 'password8!1', passwordConfirmation: 'password8!1' })
 				.end((err, res) => {
 				    if (err) return err;
@@ -247,7 +247,7 @@ describe('users', () => {
 		
 		it('should throw username exists error', done => {
 			chai.request(server)
-				.put(`/user/${userJaneId}`)
+				.put(`/users/${userJaneId}`)
 				.send({ username: 'jamesdoe' })
 				.end((err, res) => {
 				    if (err) return err;
@@ -264,7 +264,7 @@ describe('users', () => {
 
 		it('should delete user', done => {
 			chai.request(server)
-				.delete(`/user/${userJaneId}`)
+				.delete(`/users/${userJaneId}`)
 				.end((err, res) => {
 				    if (err) return err;
 				    

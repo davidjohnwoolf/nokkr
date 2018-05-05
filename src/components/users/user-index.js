@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { fetchUsers } from '../../actions/users.action';
+import { fetchUsers } from '../../actions/users';
 
 class UserIndex extends React.Component {
     
@@ -14,15 +14,15 @@ class UserIndex extends React.Component {
     renderUsers() {
         const { users } = this.props;
         
+        console.log(users)
+        
         if (!users) return;
         
         return (
             users.map((user) => {
                 return (
-                    <li key={ user._id }>
-                        <Link to={ `/user/${user._id}` }>
-				            { user.name }
-				        </Link>
+                    <li key={ user.id }>
+				        { user.name }
                     </li>
                 );
             })
@@ -33,6 +33,7 @@ class UserIndex extends React.Component {
         
         return (
             <div className="component-page user-index">
+                <h1>Users</h1>
                 <ul className="column-list">
                     { this.renderUsers() }
                 </ul>
@@ -41,9 +42,7 @@ class UserIndex extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-	return { users: state.usersReducer.users };
-};
+const mapStateToProps = state => ({ users: state.usersReducer.users });
 
 
 export default connect(mapStateToProps, { fetchUsers })(UserIndex);
