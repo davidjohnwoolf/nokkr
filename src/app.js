@@ -9,6 +9,7 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
 import reducers from './reducers';
+import UserShow from './components/users/user-show';
 import UserIndex from './components/users/user-index';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
@@ -18,6 +19,7 @@ ReactDOM.render(
         <Router>
             <div>
                 <Switch>
+                    <Route path="/users/:id" component={ UserShow } />
             		<Route path="/users" component={ UserIndex } />
         		</Switch>
             </div>
