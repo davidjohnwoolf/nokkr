@@ -14,8 +14,6 @@ class UserIndex extends React.Component {
     renderUsers() {
         const { users } = this.props;
         
-        console.log(users)
-        
         if (!users) return;
         
         return (
