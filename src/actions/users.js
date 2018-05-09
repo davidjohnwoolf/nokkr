@@ -21,14 +21,27 @@ export const fetchUser = (id) => {
     }
 };
 
-export const createUser = (user) => {
+export const createUser = (user, callback) => {
     const request = axios.post('/users', user);
     
     return dispatch => {
         request.then(res => {
-            if (res.data.error) return dispatch({ type: CREATE_USER_ERROR, error: res.data.error });
+
+            if (res.data.error) {
+                dispatch({
+                    type: CREATE_USER_ERROR,
+                    error: res.data.error
+                });
+                callback();
+            }
             
-            if (res.data.message) return dispatch({ type: CREATE_USER_SUCCESS, message: res.data.message });
+            if (res.data.message) {
+                dispatch({
+                    type: CREATE_USER_SUCCESS,
+                    message: res.data.message
+                });
+                callback();
+            }
         });
     }
 };

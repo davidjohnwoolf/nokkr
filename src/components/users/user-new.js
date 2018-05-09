@@ -10,10 +10,19 @@ class UserShow extends React.Component {
         //check if success or error
         //if error display message
         //if success redirect to login and display message
-        e.preventDefault();
-        this.props.createUser({ name: 'David' });
         
-        console.log(this.props.error, this.props.message);
+        e.preventDefault();
+        
+        this.props.createUser({
+            name: document.querySelector('input[name=name]').value,
+            username: document.querySelector('input[name=username]').value,
+            email: document.querySelector('input[name=email]').value,
+            password: document.querySelector('input[name=password]').value,
+            passwordConfirmation: document.querySelector('input[name=passwordConfirmation]').value
+        }, () => {
+            if (this.props.error) document.querySelector('.error-message').innerHTML = this.props.error;
+            if (this.props.message)document.querySelector('.error-message').innerHTML = this.props.message;
+        });
     }
     
     render() {
@@ -21,6 +30,7 @@ class UserShow extends React.Component {
         return (
             <div className="component-page user-new form-component">
                 <h1>Create User</h1>
+                <div className="error-message"></div>
                 <form id="user-new-form">
                     <input name="name" placeholder="name" />
                     <input name="username" placeholder="username" />
@@ -34,6 +44,15 @@ class UserShow extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({ message: state.usersReducer.message, error: state.usersReducer.error });
+const mapStateToProps = state => {
+    // figure out best way to do this
+    if (state.usersReducer.error) {
+        return { error: state.usersReducer.error }
+    } else if (state.usersReducer.message) {
+        return { message: state.usersReducer.message };
+    } else {
+        return {};
+    }
+};
 
 export default connect(mapStateToProps, { createUser })(UserShow);
