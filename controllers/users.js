@@ -36,7 +36,7 @@ router.post('/', (req, res) => {
         if (err) return res.json(err);
         
         if (user) return res.json({
-            error: 'Username already exists'
+            error: 'Username or email already exists'
         });
         
         if (req.body.password === req.body.passwordConfirmation) {
