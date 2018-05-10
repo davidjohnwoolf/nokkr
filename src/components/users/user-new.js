@@ -20,8 +20,11 @@ class UserShow extends React.Component {
             password: document.querySelector('input[name=password]').value,
             passwordConfirmation: document.querySelector('input[name=passwordConfirmation]').value
         }, () => {
-            if (this.props.error) document.querySelector('.error-message').innerHTML = this.props.error;
-            if (this.props.message)document.querySelector('.error-message').innerHTML = this.props.message;
+            if (this.props.error) document.querySelector('.user-new .error-message').innerHTML = this.props.error;
+            if (this.props.message) {
+                document.querySelector('body > .message').innerHTML = this.props.message;
+                this.props.history.push('/users');
+            }
         });
     }
     
@@ -45,14 +48,7 @@ class UserShow extends React.Component {
 }
 
 const mapStateToProps = state => {
-    // figure out best way to do this
-    if (state.usersReducer.error) {
-        return { error: state.usersReducer.error }
-    } else if (state.usersReducer.message) {
-        return { message: state.usersReducer.message };
-    } else {
-        return {};
-    }
+    return { error: state.usersReducer.error, message: state.usersReducer.message }
 };
 
 export default connect(mapStateToProps, { createUser })(UserShow);
