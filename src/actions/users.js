@@ -21,7 +21,8 @@ export const fetchUser = (id) => {
     }
 };
 
-export const createUser = (user, callback) => {
+export const createUser = (user) => {
+    //maybe use async await and fetch
     const request = axios.post('/users', user);
     
     return dispatch => {
@@ -32,7 +33,6 @@ export const createUser = (user, callback) => {
                     type: CREATE_USER_ERROR,
                     error: res.data.error
                 });
-                callback();
             }
             
             if (res.data.message) {
@@ -40,7 +40,6 @@ export const createUser = (user, callback) => {
                     type: CREATE_USER_SUCCESS,
                     message: res.data.message
                 });
-                callback();
             }
         });
     }
