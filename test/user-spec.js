@@ -169,7 +169,7 @@ describe('users', () => {
 				    
 					res.should.have.status(200);
 					res.body.should.be.a('object');
-					res.body.error.should.eql('Username already exists');
+					res.body.error.should.eql('Username or email already exists');
 					done();
 				});
 		});
