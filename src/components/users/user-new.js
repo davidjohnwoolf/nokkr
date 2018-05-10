@@ -8,20 +8,20 @@ class UserShow extends React.Component {
     constructor(props) {
         super(props);
         
-         this.handleSubmit = this.handleSubmit.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this)
     }
     
     // componentWillRecieveProps?
     componentDidUpdate() {
-        if (this.props.error) {
-            document.querySelector('.user-new .error-message').innerHTML = this.props.error;
+        const { error, message, history } = this.props;
+        
+        if (error) {
+            document.querySelector('.user-new .error-message').innerHTML = error;
         }
         
-        if (this.props.message) {
-             //document.querySelector('body > .message').innerHTML = this.props.message;
-             
+        if (message) {
             //set up flash message
-            this.props.history.push('/users');
+            history.push('/users');
         }
     }
     
