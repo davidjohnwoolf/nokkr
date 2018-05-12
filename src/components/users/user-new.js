@@ -2,35 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import validationRules from '../../helpers/validation-rules';
 import Field from '../forms/field';
 import { createUser } from '../../actions/users';
-
-//export to helper
-const rules = {
-    required: value => value ? undefined : 'Required',
-    password: value => {
-        return (
-            value && /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,24}/.test(value)
-                ? undefined
-                : 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character'
-        );
-    },
-    passwordMatch: () => {
-        return (
-            document.querySelector('input[name=password]').value === document.querySelector('input[name=passwordConfirmation]').value
-                ? undefined
-                : 'Passwords must match'
-        );
-    }
-};
-
-const validation = {
-    name: [rules.required],
-    username: [rules.required],
-    email: [rules.required],
-    password: [rules.required, rules.password],
-    passwordConfirmation: [rules.required, rules.passwordMatch]
-};
 
 //remake server errors
 //give form green style on untouched itmes with mouseover?
@@ -50,23 +24,19 @@ class UserNew extends React.Component {
                 },
                 username: {
                     value: '',
-                    error: '',
-                    touched: false
+                    error: ''
                 },
                 email: {
                     value: '',
-                    error: '',
-                    touched: false
+                    error: ''
                 },
                 password: {
                     value: '',
-                    error: '',
-                    touched: false
+                    error: ''
                 },
                 passwordConfirmation: {
                     value: '',
-                    error: '',
-                    touched: false
+                    error: ''
                 }
             },
             formValid: false
@@ -135,8 +105,8 @@ class UserNew extends React.Component {
     render() {
         return (
                 
-            <section className="section user-new">
-                <div className="container">
+            <section className="section columns is-centered user-new">
+                <div className="container column is-half">
                     <h1 className="title">Create User</h1>
                     <div className="error-message"></div>
                     <form id="user-new-form" onSubmit={ this.handleSubmit }>
@@ -201,6 +171,14 @@ class UserNew extends React.Component {
         );
     }
 }
+
+const validation = {
+    name: [validationRules.required],
+    username: [validationRules.required],
+    email: [validationRules.required],
+    password: [validationRules.required, validationRules.password],
+    passwordConfirmation: [validationRules.required, validationRules.passwordMatch]
+};
 
 const mapStateToProps = state => {
     return { error: state.usersReducer.error, message: state.usersReducer.message };
