@@ -24,6 +24,15 @@ module.exports = {
                 exclude: /node_modules/
             },
             {
+                test: /\.css$/,
+                use: extractSass.extract({
+                    use: [
+                        { loader: 'css-loader' }
+                    ]
+                }),
+                exclude: /node_modules/
+            },
+            {
                 test: /\.(js|jsx)$/,
                 loaders: ['babel-loader'],
                 exclude: /node_modules/

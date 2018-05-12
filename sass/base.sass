@@ -57,78 +57,8 @@ a
 
 // Classes
 
-.edit-icon
-    font-size: 14px
-    margin-left: 10px
-    cursor: pointer
-    
-    &:hover
-        color: $color-primary
+.field-error input
+    border: $error-red 1px solid
 
-// forms
-
-.form-server-errors
+.field-error-message
     color: $error-red
-
-.form
-        
-    .form-field
-    
-        .form-input
-            display: block
-            padding: 10px
-            margin-bottom: 5px
-            border: 1px $light-grey solid
-        
-        .form-error-message
-            color: $error-red
-            padding-bottom: 5px
-    
-        &.form-error input
-            box-shadow: 0 0 5px $error-red
-    
-    .form-submit
-        border: none
-        padding: 10px 20px
-        color: $white
-        background-color: $color-primary
-        transition: all 200ms
-        cursor: pointer
-        
-        &:hover
-            background-color: $black
-
-// buttons
-
-.edit-button
-    border: none
-    display: inline-block
-    margin: 5px 0
-    padding: 10px 20px
-    background: $color-primary
-    color: $white
-    transition: all 100ms
-    &:hover
-        background: $black
-
-.delete-button
-    border: none
-    display: inline-block
-    margin: 5px 0
-    padding: 10px 20px
-    background: $error-red
-    color: $white
-    transition: all 100ms
-    &:hover
-        background: $black
-
-.default-button
-    border: none
-    display: inline-block
-    margin: 5px 0
-    padding: 10px 20px
-    background: $dark-grey
-    color: $white
-    transition: all 100ms
-    &:hover
-        background: $black
