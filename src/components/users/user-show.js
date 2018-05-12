@@ -27,11 +27,13 @@ class UserShow extends React.Component {
         if (!user) return;
         
         return (
-            <div className="component-page user-show">
-                <h1>{ user.name }</h1>
-                <h4>{ user.username }</h4>
-                <address>{ user.email }</address>
-            </div>
+            <section className="section user-show">
+                <div className="container">
+                    <h1 className="title">{ user.name }</h1>
+                    <h4 className="subtitle">{ user.username }</h4>
+                    <address>{ user.email }</address>
+                </div>
+            </section>
         );
     }
     

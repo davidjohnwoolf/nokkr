@@ -32,6 +32,9 @@ const validation = {
     passwordConfirmation: [rules.required, rules.passwordMatch]
 };
 
+//remake server errors
+//give form green style on untouched itmes with mouseover?
+
 
 class UserNew extends React.Component {
     
