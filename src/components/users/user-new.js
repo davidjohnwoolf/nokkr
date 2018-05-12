@@ -50,7 +50,7 @@ class UserNew extends React.Component {
         const { error: serverError, message, history } = this.props;
         
         if (serverError) {
-            document.querySelector('.user-new .error-message').innerHTML = serverError;
+            document.querySelector('.user-new .server-error').innerHTML = serverError;
         }
         
         if (message) {
@@ -60,12 +60,14 @@ class UserNew extends React.Component {
     }
     
     handleUserInput(e, rules) {
-        //refactor this mess in a functional way and review validation scheme generally
+        //how to make password match for passwordConfirmation apply when password is changed?
         const fields = { ...this.state.fields };
         let formValid = true;
+        let error;
         
+        //handle entire form rules
         for (let key in validation ) {
-            validation[key].forEach((rule, i) => {
+            validation[key].forEach(rule => {
                 let result = rule(document.querySelector(`input[name=${ key }`).value);
                 
                 if (result) {
@@ -73,14 +75,14 @@ class UserNew extends React.Component {
                 }
             });
         }
-            
-        rules.forEach((rule) => {
+        
+        //handle target rules
+        rules.forEach((rule, i, a) => {
             let result = rule(e.target.value);
             
-            fields[e.target.name].error = result;
-            this.setState({ fields });
-            
-            return fields[e.target.name].error;
+            if (result) error = result;
+
+            fields[e.target.name].error = error;
         });
 
         fields[e.target.name].value = e.target.value;
@@ -108,7 +110,7 @@ class UserNew extends React.Component {
             <section className="section columns is-centered user-new">
                 <div className="container column is-half">
                     <h1 className="title">Create User</h1>
-                    <div className="error-message"></div>
+                    <p className="help is-danger server-error"></p>
                     <form id="user-new-form" onSubmit={ this.handleSubmit }>
                     
                         <Field
