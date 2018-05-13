@@ -33,7 +33,7 @@ class UserIndex extends React.Component {
             <section className="section user-index">
                 <div className="container">
                     <h1 className="title">Users</h1>
-                    <nav class="panel">
+                    <nav className="panel">
                         { this.renderUsers() }
                     </nav>
                 </div>
