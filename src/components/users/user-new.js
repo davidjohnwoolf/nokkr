@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import validationRules from '../../helpers/validation-rules';
+import { required, password, passwordMatch } from '../../helpers/validation-rules';
 import Field from '../forms/field';
 import { createUser } from '../../actions/users';
 
@@ -64,7 +64,7 @@ class UserNew extends React.Component {
         for (let key in validation ) {
             validation[key].forEach(rule => {
                 //make this more functional if possible, less reliant on html
-                if (rule(this.state.fields.key.value)) formValid = false;
+                if (rule(this.state.fields[key].value)) formValid = false;
             });
         }
         
@@ -83,77 +83,77 @@ class UserNew extends React.Component {
     }
     
     handleSubmit(e) {
-        //set rules
         
         e.preventDefault();
         
         const userData = { ...this.state.fields };
         
-        for (let key in userData) {
-            userData[key] = userData[key].value;
-        }
+        for (let key in userData) { userData[key] = userData[key].value; }
         
         this.props.createUser({ ...userData });
     }
     
     render() {
+        const { handleSubmit, handleUserInput, state } = this;
+        const { name, username, email, password, passwordConfirmation } = validation;
+        
         return (
                 
             <section className="section columns is-centered user-new">
                 <div className="container column is-half">
                     <h1 className="title">Create User</h1>
                     <p className="help is-danger server-error"></p>
-                    <form id="user-new-form" onSubmit={ this.handleSubmit }>
+                    <form id="user-new-form" onSubmit={ handleSubmit }>
                     
                         <Field
                             name="name"
                             type="text"
                             placeholder="name"
-                            value={ this.state.fields.name.value }
-                            handleUserInput={ this.handleUserInput }
-                            rules={ validation.name }
-                            error={ this.state.fields.name.error }
+                            value={ state.fields.name.value }
+                            handleUserInput={ handleUserInput }
+                            rules={ name }
+                            error={ state.fields.name.error }
                         />
                         <Field
                             name="username"
                             type="text"
                             placeholder="username"
-                            value={ this.state.fields.username.value }
-                            handleUserInput={ this.handleUserInput }
-                            rules={ validation.username }
-                            error={ this.state.fields.username.error }
+                            value={ state.fields.username.value }
+                            handleUserInput={ handleUserInput }
+                            rules={ username }
+                            error={ state.fields.username.error }
                         />
                         <Field
                             name="email"
                             type="email"
                             placeholder="email"
-                            value={ this.state.fields.email.value }
-                            handleUserInput={ this.handleUserInput }
-                            rules={ validation.email }
-                            error={ this.state.fields.email.error }
+                            value={ state.fields.email.value }
+                            handleUserInput={ handleUserInput }
+                            rules={ email }
+                            error={ state.fields.email.error }
                         />
                         <Field
                             name="password"
                             type="password"
                             placeholder="password"
-                            value={ this.state.fields.password.value }
-                            handleUserInput={ this.handleUserInput }
-                            rules={ validation.password }
-                            error={ this.state.fields.password.error }
+                            value={ state.fields.password.value }
+                            handleUserInput={ handleUserInput }
+                            rules={ password }
+                            error={ state.fields.password.error }
                         />
                         <Field
                             name="passwordConfirmation"
                             type="password"
                             placeholder="password confirmation"
-                            value={ this.state.fields.passwordConfirmation.value }
-                            handleUserInput={ this.handleUserInput }
-                            rules={ validation.passwordConfirmation }
-                            error={ this.state.fields.passwordConfirmation.error }
+                            value={ state.fields.passwordConfirmation.value }
+                            handleUserInput={ handleUserInput }
+                            rules={ passwordConfirmation }
+                            error={ state.fields.passwordConfirmation.error }
                         />
                         
                         <div className="field is-grouped">
                             <div className="control">
-                                <button disabled={ !this.state.formValid } className="button is-primary" type="submit">Submit</button>
+                                <button disabled={ !state.formValid } className="button is-primary" type="submit">Submit</button>
                             </div>
                             <div className="control">
                                 <Link className="button is-light" to="/users">Cancel</Link>
@@ -169,11 +169,11 @@ class UserNew extends React.Component {
 //is this the right place for this?
 //create email rules
 const validation = {
-    name: [validationRules.required],
-    username: [validationRules.required],
-    email: [validationRules.required],
-    password: [validationRules.required, validationRules.password],
-    passwordConfirmation: [validationRules.required, validationRules.passwordMatch]
+    name: [required],
+    username: [required],
+    email: [required],
+    password: [required, password],
+    passwordConfirmation: [required, passwordMatch]
 };
 
 const mapStateToProps = state => {
