@@ -131,7 +131,7 @@ class UserNew extends React.Component {
                             placeholder="email"
                             value={ this.state.fields.email.value }
                             handleUserInput={ this.handleUserInput }
-                            rules={ validation.email /*create email rules*/ }
+                            rules={ validation.email }
                             error={ this.state.fields.email.error }
                         />
                         <Field
@@ -169,6 +169,7 @@ class UserNew extends React.Component {
 }
 
 //is this the right place for this?
+//create email rules
 const validation = {
     name: [validationRules.required],
     username: [validationRules.required],
