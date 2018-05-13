@@ -11,7 +11,6 @@ class UserNew extends React.Component {
     constructor(props) {
         super(props);
         
-        //set local component state for user inputs
         this.state = {
             fields: {
                 name: {
@@ -65,7 +64,7 @@ class UserNew extends React.Component {
         for (let key in validation ) {
             validation[key].forEach(rule => {
                 //make this more functional if possible, less reliant on html
-                if (rule(document.querySelector(`input[name=${ key }`).value)) formValid = false;
+                if (rule(this.state.fields.key.value)) formValid = false;
             });
         }
         
@@ -77,10 +76,9 @@ class UserNew extends React.Component {
 
             fields[e.target.name].error = error;
         });
-        
-        console.log()
 
         fields[e.target.name].value = e.target.value;
+        
         this.setState({ fields, formValid });
     }
     
