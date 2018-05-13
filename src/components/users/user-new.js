@@ -13,27 +13,13 @@ class UserNew extends React.Component {
         
         this.state = {
             fields: {
-                name: {
-                    value: '',
-                    error: '',
-                },
-                username: {
-                    value: '',
-                    error: ''
-                },
-                email: {
-                    value: '',
-                    error: ''
-                },
-                password: {
-                    value: '',
-                    error: ''
-                },
-                passwordConfirmation: {
-                    value: '',
-                    error: ''
-                }
+                name: { value: '', error: '', rules: [required] },
+                username: { value: '', error: '', rules: [required] },
+                email: { value: '', error: '', rules: [required] },
+                password: { value: '', error: '', rules: [required, password] },
+                passwordConfirmation: { value: '', error: '', rules: [required, passwordMatch] }
             },
+            serverError: '',
             formValid: false
         };
 
@@ -44,27 +30,21 @@ class UserNew extends React.Component {
     componentDidUpdate() {
         const { error: serverError, message, history } = this.props;
         
-        if (serverError) {
-            document.querySelector('.user-new .server-error').innerHTML = serverError;
-        }
+        if (serverError !== this.state.serverError) this.setState({ serverError });
         
-        if (message) {
-            //set up flash message
-            history.push('/users');
-        }
+        if (message) history.push('/users');
     }
     
     handleUserInput(e, rules) {
-        //how to make password match for passwordConfirmation apply when password is changed?
+
         const fields = { ...this.state.fields };
         let formValid = true;
         let error;
         
         //handle all rules
-        for (let key in validation ) {
-            validation[key].forEach(rule => {
-                //make this more functional if possible, less reliant on html
-                if (rule(this.state.fields[key].value)) formValid = false;
+        for (let key in fields ) {
+            fields[key].rules.forEach(rule => {
+                if (rule(fields[key].value)) formValid = false;
             });
         }
         
@@ -94,69 +74,76 @@ class UserNew extends React.Component {
     }
     
     render() {
-        const { handleSubmit, handleUserInput, state } = this;
-        const { name, username, email, password, passwordConfirmation } = validation;
+        const { handleSubmit, handleUserInput } = this;
+        const { name, username, email, password, passwordConfirmation } = this.state.fields;
         
         return (
                 
             <section className="section columns is-centered user-new">
                 <div className="container column is-half">
                     <h1 className="title">Create User</h1>
-                    <p className="help is-danger server-error"></p>
+                    <p className="help is-danger server-error">{ this.state.serverError }</p>
                     <form id="user-new-form" onSubmit={ handleSubmit }>
                     
                         <Field
                             name="name"
                             type="text"
                             placeholder="name"
-                            value={ state.fields.name.value }
+                            value={ name.value }
                             handleUserInput={ handleUserInput }
-                            rules={ name }
-                            error={ state.fields.name.error }
+                            rules={ name.rules }
+                            error={ name.error }
                         />
                         <Field
                             name="username"
                             type="text"
                             placeholder="username"
-                            value={ state.fields.username.value }
+                            value={ username.value }
                             handleUserInput={ handleUserInput }
-                            rules={ username }
-                            error={ state.fields.username.error }
+                            rules={ username.rules }
+                            error={ username.error }
                         />
                         <Field
                             name="email"
                             type="email"
                             placeholder="email"
-                            value={ state.fields.email.value }
+                            value={ email.value }
                             handleUserInput={ handleUserInput }
-                            rules={ email }
-                            error={ state.fields.email.error }
+                            rules={ email.rules }
+                            error={ email.error }
                         />
                         <Field
                             name="password"
                             type="password"
                             placeholder="password"
-                            value={ state.fields.password.value }
+                            value={ password.value }
                             handleUserInput={ handleUserInput }
-                            rules={ password }
-                            error={ state.fields.password.error }
+                            rules={ password.rules }
+                            error={ password.error }
                         />
                         <Field
                             name="passwordConfirmation"
                             type="password"
                             placeholder="password confirmation"
-                            value={ state.fields.passwordConfirmation.value }
+                            value={ passwordConfirmation.value }
                             handleUserInput={ handleUserInput }
-                            rules={ passwordConfirmation }
-                            error={ state.fields.passwordConfirmation.error }
+                            rules={ passwordConfirmation.rules }
+                            error={ passwordConfirmation.error }
                         />
                         
                         <div className="field is-grouped">
                             <div className="control">
-                                <button disabled={ !state.formValid } className="button is-primary" type="submit">Submit</button>
+                                <button
+                                    disabled={ !this.state.formValid }
+                                    className="button is-primary"
+                                    type="submit">
+                                    Submit
+                                </button>
                             </div>
                             <div className="control">
-                                <Link className="button is-light" to="/users">Cancel</Link>
+                                <Link className="button is-light" to="/users">
+                                    Cancel
+                                </Link>
                             </div>
                         </div>
                     </form>
@@ -165,16 +152,6 @@ class UserNew extends React.Component {
         );
     }
 }
-
-//is this the right place for this?
-//create email rules
-const validation = {
-    name: [required],
-    username: [required],
-    email: [required],
-    password: [required, password],
-    passwordConfirmation: [required, passwordMatch]
-};
 
 const mapStateToProps = state => {
     return { error: state.usersReducer.error, message: state.usersReducer.message };
