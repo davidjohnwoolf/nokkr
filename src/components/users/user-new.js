@@ -6,10 +6,6 @@ import validationRules from '../../helpers/validation-rules';
 import Field from '../forms/field';
 import { createUser } from '../../actions/users';
 
-//remake server errors
-//give form green style on untouched itmes with mouseover?
-
-
 class UserNew extends React.Component {
     
     constructor(props) {
@@ -65,28 +61,26 @@ class UserNew extends React.Component {
         let formValid = true;
         let error;
         
-        //handle entire form rules
+        //handle all rules
         for (let key in validation ) {
             validation[key].forEach(rule => {
-                let result = rule(document.querySelector(`input[name=${ key }`).value);
-                
-                if (result) {
-                    formValid = false;
-                }
+                //make this more functional if possible, less reliant on html
+                if (rule(document.querySelector(`input[name=${ key }`).value)) formValid = false;
             });
         }
         
         //handle target rules
-        rules.forEach((rule, i, a) => {
+        rules.forEach(rule => {
             let result = rule(e.target.value);
             
             if (result) error = result;
 
             fields[e.target.name].error = error;
         });
+        
+        console.log()
 
         fields[e.target.name].value = e.target.value;
-        
         this.setState({ fields, formValid });
     }
     
@@ -95,13 +89,13 @@ class UserNew extends React.Component {
         
         e.preventDefault();
         
-        this.props.createUser({
-            name: document.querySelector('input[name=name]').value,
-            username: document.querySelector('input[name=username]').value,
-            email: document.querySelector('input[name=email]').value,
-            password: document.querySelector('input[name=password]').value,
-            passwordConfirmation: document.querySelector('input[name=passwordConfirmation]').value
-        });
+        const userData = { ...this.state.fields };
+        
+        for (let key in userData) {
+            userData[key] = userData[key].value;
+        }
+        
+        this.props.createUser({ ...userData });
     }
     
     render() {
@@ -174,6 +168,7 @@ class UserNew extends React.Component {
     }
 }
 
+//is this the right place for this?
 const validation = {
     name: [validationRules.required],
     username: [validationRules.required],
