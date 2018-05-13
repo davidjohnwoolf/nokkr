@@ -32,7 +32,7 @@ class UserNew extends React.Component {
         
         if (serverError !== this.state.serverError) this.setState({ serverError });
         
-        if (message) history.push('/users');
+        if (message === 'User created') history.push('/users');
     }
     
     handleUserInput(e, rules) {
