@@ -30,7 +30,7 @@ class UserNew extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     
-    componentDidUpdate(props) {
+    componentDidUpdate() {
         const { serverError, successMessage, history, sendMessage } = this.props;
         
         if (serverError !== this.state.serverError) this.setState({ serverError });
