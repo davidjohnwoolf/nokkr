@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { required, password, passwordMatch } from '../../helpers/validation-rules';
 import Field from '../forms/field';
 import { createUser } from '../../actions/users';
+import { sendMessage } from '../../actions/flash-messages';
 
 class UserNew extends React.Component {
     
@@ -27,16 +28,20 @@ class UserNew extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     
-    componentDidUpdate() {
-        const { error: serverError, message, history } = this.props;
+    componentDidUpdate(props) {
+        const { serverError, successMessage, history, sendMessage } = this.props;
         
         if (serverError !== this.state.serverError) this.setState({ serverError });
         
-        if (message === 'User created') history.push('/users');
+        if (successMessage === 'User created') {
+            sendMessage(successMessage);
+            history.push('/users');
+        }
     }
     
     handleUserInput(e, rules) {
-
+        
+        //export these functions to helper
         const fields = { ...this.state.fields };
         let formValid = true;
         let error;
@@ -154,7 +159,7 @@ class UserNew extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return { error: state.usersReducer.error, message: state.usersReducer.message };
+    return { serverError: state.users.serverError, successMessage: state.users.successMessage };
 };
 
-export default connect(mapStateToProps, { createUser })(UserNew);
+export default connect(mapStateToProps, { createUser, sendMessage })(UserNew);

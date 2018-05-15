@@ -13,7 +13,7 @@ export const fetchUsers = () => {
     }
 };
 
-export const fetchUser = (id) => {
+export const fetchUser = id => {
     const request = axios.get(`/users/${id}`);
     
     return dispatch => {
@@ -21,7 +21,7 @@ export const fetchUser = (id) => {
     }
 };
 
-export const createUser = (user) => {
+export const createUser = user => {
     //maybe use async await and fetch
     const request = axios.post('/users', user);
     
@@ -31,14 +31,14 @@ export const createUser = (user) => {
             if (res.data.error) {
                 dispatch({
                     type: CREATE_USER_ERROR,
-                    error: res.data.error
+                    serverError: res.data.error
                 });
             }
             
             if (res.data.message) {
                 dispatch({
                     type: CREATE_USER_SUCCESS,
-                    message: res.data.message
+                    successMessage: res.data.message
                 });
             }
         });

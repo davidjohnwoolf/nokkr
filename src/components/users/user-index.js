@@ -42,7 +42,7 @@ class UserIndex extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({ users: state.usersReducer.users });
+const mapStateToProps = state => ({ users: state.users.users });
 
 
 export default connect(mapStateToProps, { fetchUsers })(UserIndex);

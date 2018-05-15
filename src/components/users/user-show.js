@@ -47,6 +47,6 @@ class UserShow extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({ user: state.usersReducer.user });
+const mapStateToProps = state => ({ user: state.users.user });
 
 export default connect(mapStateToProps, { fetchUser })(UserShow);

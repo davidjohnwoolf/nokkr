@@ -10,10 +10,10 @@ export default function(state = {}, action) {
             return { ...state, users: action.payload.data };
         
         case CREATE_USER_ERROR:
-            return { ...state, error: action.error };
+            return { ...state, serverError: action.serverError };
         
         case CREATE_USER_SUCCESS:
-            return { ...state, message: action.message };
+            return { ...state, successMessage: action.successMessage };
             
         default:
             return state;
