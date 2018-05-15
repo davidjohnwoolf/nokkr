@@ -11,6 +11,7 @@ import thunk from 'redux-thunk';
 import reducers from './reducers';
 import FlashMessage from './components/helpers/flash-messages';
 import UserNew from './components/users/user-new';
+import UserEdit from './components/users/user-edit';
 import UserShow from './components/users/user-show';
 import UserIndex from './components/users/user-index';
 
@@ -24,6 +25,7 @@ ReactDOM.render(
                 <div>
                     <Switch>
                         <Route path="/users/new" component={ UserNew } />
+                        <Route path="/users/:id/edit" component={ UserEdit } />
                         <Route path="/users/:id" component={ UserShow } />
                 		<Route path="/users" component={ UserIndex } />
             		</Switch>
