@@ -7,7 +7,7 @@ class UserShow extends React.Component {
     
 	constructor(props) {
         super(props);
-        this.props.fetchUser(this.props.match.params.id);
+        props.fetchUser(this.props.match.params.id);
     }
     
     //handleDelete() {

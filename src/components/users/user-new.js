@@ -12,7 +12,7 @@ class UserNew extends React.Component {
     constructor(props) {
         super(props);
         
-        this.props.clearUserMessages();
+        props.clearUserMessages();
         
         this.state = {
             fields: {

@@ -12,8 +12,8 @@ class UserEdit extends React.Component {
     constructor(props) {
         super(props);
         
-        this.props.clearUserMessages();
-        this.props.fetchUser(this.props.match.params.id);
+        props.clearUserMessages();
+        props.fetchUser(this.props.match.params.id);
         
         //move rules outside of the state since they are static?
         this.state = {
@@ -34,7 +34,7 @@ class UserEdit extends React.Component {
     }
     
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log(nextProps);
+
         const fields = { ...prevState.fields };
         const { user } = nextProps;
         
@@ -66,6 +66,8 @@ class UserEdit extends React.Component {
         let formValid = true;
         let error;
         
+        //typing something in password field then stopping is not working
+        
         //handle all rules
         for (let key in fields ) {
             fields[key].rules.forEach(rule => {
@@ -93,9 +95,15 @@ class UserEdit extends React.Component {
         
         const userData = { ...this.state.fields };
         
-        for (let key in userData) { userData[key] = userData[key].value; }
+        for (let key in userData) {
+            if (userData[key].value) {
+                userData[key] = userData[key].value;
+            } else {
+                delete userData[key];
+            }
+        }
         
-        this.props.updateUser({ ...userData });
+        this.props.updateUser(this.props.match.params.id, { ...userData });
     }
     
     render() {
