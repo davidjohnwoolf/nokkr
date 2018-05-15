@@ -4,6 +4,7 @@ export const FETCH_USERS = 'FETCH_USERS';
 export const FETCH_USER = 'FETCH_USER';
 export const CREATE_USER_SUCCESS = 'CREATE_USER_SUCCESS';
 export const CREATE_USER_ERROR = 'CREATE_USER_ERROR';
+export const CLEAR_USER_MESSAGES = 'CLEAR_USER_MESSAGES';
 
 export const fetchUsers = () => {
     const request = axios.get('/users');
@@ -18,6 +19,12 @@ export const fetchUser = id => {
     
     return dispatch => {
         request.then(res => dispatch({ type: FETCH_USER, payload: res }));
+    }
+};
+
+export const clearUserMessages = user => {
+    return dispatch => {
+        dispatch({ type: CLEAR_USER_MESSAGES });
     }
 };
 

@@ -6,15 +6,12 @@ class FlashMessage extends React.Component {
     constructor(props) {
         super(props);
     }
-    
-    componentDidUpdate() {
-        console.log(this.props.message);
-    }
-    
+
     render() {
         const { message, closeMessage } = this.props;
+        
         return (
-            <section className="section">
+            <section className={ message ? 'section' : 'is-invisible' }>
                 <div className="container">
                     <div className="notification is-primary">
                         <button className="delete" onClick={ closeMessage }></button>

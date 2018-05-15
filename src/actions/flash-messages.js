@@ -5,7 +5,7 @@ export const sendMessage = message => {
     return dispatch => {
         dispatch({
             type: SEND_MESSAGE,
-            flashMessage: message
+            message: message
         });
     }
 }
@@ -14,7 +14,7 @@ export const closeMessage = () => {
     return dispatch => {
         dispatch({
             type: CLOSE_MESSAGE,
-            flashMessage: ''
+            message: ''
         });
     }
 }

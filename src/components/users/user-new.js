@@ -4,13 +4,15 @@ import { Link } from 'react-router-dom';
 
 import { required, password, passwordMatch } from '../../helpers/validation-rules';
 import Field from '../forms/field';
-import { createUser } from '../../actions/users';
+import { createUser, clearUserMessages } from '../../actions/users';
 import { sendMessage } from '../../actions/flash-messages';
 
 class UserNew extends React.Component {
     
     constructor(props) {
         super(props);
+        
+        this.props.clearUserMessages();
         
         this.state = {
             fields: {
@@ -162,4 +164,4 @@ const mapStateToProps = state => {
     return { serverError: state.users.serverError, successMessage: state.users.successMessage };
 };
 
-export default connect(mapStateToProps, { createUser, sendMessage })(UserNew);
+export default connect(mapStateToProps, { clearUserMessages, createUser, sendMessage })(UserNew);

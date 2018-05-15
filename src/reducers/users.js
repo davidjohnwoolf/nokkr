@@ -1,4 +1,10 @@
-import { FETCH_USER, FETCH_USERS, CREATE_USER_ERROR, CREATE_USER_SUCCESS } from '../actions/users';
+import {
+    FETCH_USER,
+    FETCH_USERS,
+    CREATE_USER_ERROR,
+    CREATE_USER_SUCCESS,
+    CLEAR_USER_MESSAGES
+} from '../actions/users';
 
 export default function(state = {}, action) {
 
@@ -14,6 +20,9 @@ export default function(state = {}, action) {
         
         case CREATE_USER_SUCCESS:
             return { ...state, successMessage: action.successMessage };
+            
+        case CLEAR_USER_MESSAGES:
+            return { ...state, successMessage: '', serverError: '' };
             
         default:
             return state;
