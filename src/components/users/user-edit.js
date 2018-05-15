@@ -7,6 +7,8 @@ import Field from '../forms/field';
 import { fetchUser, updateUser, clearUserMessages } from '../../actions/users';
 import { sendMessage } from '../../actions/flash-messages';
 
+//regarding lifecycle method warnings https://github.com/reduxjs/react-redux/issues/890
+
 class UserEdit extends React.Component {
     
     constructor(props) {

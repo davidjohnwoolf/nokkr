@@ -19,9 +19,11 @@ class UserIndex extends React.Component {
         return (
             users.map((user) => {
                 return (
-                    <Link to={ `/users/${ user.id }` } key={ user.id } className="panel-block">
-			            { user.name }
-			        </Link>
+                    <div className="panel-block" key={ user.id }>
+                        <Link to={ `/users/${ user.id }` }>
+    			            { user.name }
+    			        </Link>
+			        </div>
                 );
             })
         );

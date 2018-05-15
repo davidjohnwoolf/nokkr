@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
+import { Link } from 'react-router-dom';
 import { fetchUser } from '../../actions/users';
 
 class UserShow extends React.Component {
@@ -32,6 +32,7 @@ class UserShow extends React.Component {
                     <h1 className="title">{ user.name }</h1>
                     <h4 className="subtitle">{ user.username }</h4>
                     <address>{ user.email }</address>
+                    <Link to={ `/users/${ this.props.match.params.id }/edit` } className="button is-link">Edit</Link>
                 </div>
             </section>
         );

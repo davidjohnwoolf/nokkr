@@ -3,6 +3,8 @@ import {
     FETCH_USERS,
     CREATE_USER_ERROR,
     CREATE_USER_SUCCESS,
+    UPDATE_USER_ERROR,
+    UPDATE_USER_SUCCESS,
     CLEAR_USER_MESSAGES
 } from '../actions/users';
 
@@ -19,6 +21,12 @@ export default function(state = {}, action) {
             return { ...state, serverError: action.serverError };
         
         case CREATE_USER_SUCCESS:
+            return { ...state, successMessage: action.successMessage };
+            
+        case UPDATE_USER_ERROR:
+            return { ...state, serverError: action.serverError };
+        
+        case UPDATE_USER_SUCCESS:
             return { ...state, successMessage: action.successMessage };
             
         case CLEAR_USER_MESSAGES:
