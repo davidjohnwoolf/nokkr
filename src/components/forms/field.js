@@ -6,9 +6,10 @@ class Field extends React.Component {
     }
     
     render() {
-        const { name, type, placeholder, value, handleUserInput, rules, error } = this.props;
+        const { name, type, placeholder, value, handleUserInput, rules, error, message } = this.props;
         return (
             <div className="field">
+                <p className="help">{ message }</p>
                 <div className="control">
                     <input
                         className={ `input ${ error ? 'is-danger' : '' }` }

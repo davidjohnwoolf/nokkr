@@ -155,6 +155,7 @@ class UserEdit extends React.Component {
                             handleUserInput={ handleUserInput }
                             rules={ password.rules }
                             error={ password.error }
+                            message="If staying the same, leave password fields blank"
                         />
                         <Field
                             name="passwordConfirmation"
