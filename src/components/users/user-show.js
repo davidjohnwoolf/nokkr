@@ -1,25 +1,34 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchUser } from '../../actions/users';
+import { fetchUser, deleteUser, clearUserMessages } from '../../actions/users';
+import { sendMessage } from '../../actions/flash-messages';
 
 class UserShow extends React.Component {
     
 	constructor(props) {
         super(props);
+        
+        props.clearUserMessages();
         props.fetchUser(this.props.match.params.id);
+        
+        this.handleDelete = this.handleDelete.bind(this);
     }
     
-    //handleDelete() {
-    //     if (confirm('Are you sure you want to delete this user?')) {
-    //         this.props.deleteUser(this.props.match.params.id);
-    //         this.props.history.push(`/user/?message=Deleted+User+Successfully`);
-    //     }
-    // }
-    // in renderUser
-    // <button onClick={ this.handleDelete.bind(this) } className="delete-button">
-    //     Delete User
-    // </button>
+    componentDidUpdate() {
+        const { successMessage, history, sendMessage } = this.props;
+        
+        if (successMessage === 'User deleted') {
+            sendMessage(successMessage);
+            history.push('/users');
+        }
+    }
+    
+    handleDelete() {
+        if (confirm('Are you sure you want to delete this user?  This is not reversible.')) {
+            this.props.deleteUser(this.props.match.params.id);
+        }
+    }
     
     renderUser() {
         const { user } = this.props;
@@ -33,6 +42,9 @@ class UserShow extends React.Component {
                     <h4 className="subtitle">{ user.username }</h4>
                     <address>{ user.email }</address>
                     <Link to={ `/users/${ this.props.match.params.id }/edit` } className="button is-link">Edit</Link>
+                    <button onClick={ this.handleDelete } className="button is-danger">
+                        Delete User
+                    </button>
                 </div>
             </section>
         );
@@ -48,6 +60,6 @@ class UserShow extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({ user: state.users.user });
+const mapStateToProps = state => ({ user: state.users.user, successMessage: state.users.successMessage });
 
-export default connect(mapStateToProps, { fetchUser })(UserShow);
+export default connect(mapStateToProps, { fetchUser, deleteUser, sendMessage, clearUserMessages })(UserShow);

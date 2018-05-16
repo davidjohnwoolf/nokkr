@@ -5,6 +5,7 @@ import {
     CREATE_USER_SUCCESS,
     UPDATE_USER_ERROR,
     UPDATE_USER_SUCCESS,
+    DELETE_USER,
     CLEAR_USER_MESSAGES
 } from '../actions/users';
 
@@ -27,6 +28,9 @@ export default function(state = {}, action) {
             return { ...state, serverError: action.serverError };
         
         case UPDATE_USER_SUCCESS:
+            return { ...state, successMessage: action.successMessage };
+            
+        case DELETE_USER:
             return { ...state, successMessage: action.successMessage };
             
         case CLEAR_USER_MESSAGES:

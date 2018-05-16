@@ -6,6 +6,7 @@ export const CREATE_USER_SUCCESS = 'CREATE_USER_SUCCESS';
 export const CREATE_USER_ERROR = 'CREATE_USER_ERROR';
 export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
 export const UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
+export const DELETE_USER = 'DELETE_USER';
 export const CLEAR_USER_MESSAGES = 'CLEAR_USER_MESSAGES';
 
 //why are you getting the console error when not using those methods?
@@ -15,7 +16,7 @@ export const fetchUsers = () => {
     
     return dispatch => {
         request.then(res => dispatch({ type: FETCH_USERS, payload: res }));
-    }
+    };
 };
 
 export const fetchUser = id => {
@@ -23,13 +24,13 @@ export const fetchUser = id => {
     
     return dispatch => {
         request.then(res => dispatch({ type: FETCH_USER, payload: res }));
-    }
+    };
 };
 
 export const clearUserMessages = user => {
     return dispatch => {
         dispatch({ type: CLEAR_USER_MESSAGES });
-    }
+    };
 };
 
 export const createUser = user => {
@@ -53,7 +54,7 @@ export const createUser = user => {
                 });
             }
         });
-    }
+    };
 };
 
 export const updateUser = (id, user) => {
@@ -78,5 +79,13 @@ export const updateUser = (id, user) => {
                 });
             }
         });
-    }
+    };
+};
+
+export const deleteUser = id => {
+    const request = axios.delete(`/users/${id}`);
+    
+    return dispatch => {
+        request.then(res => dispatch({ type: DELETE_USER, successMessage: res.data.message }));
+    };
 };
