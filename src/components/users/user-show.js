@@ -38,13 +38,39 @@ class UserShow extends React.Component {
         return (
             <section className="section user-show">
                 <div className="container">
-                    <h1 className="title">{ user.name }</h1>
-                    <h4 className="subtitle">{ user.username }</h4>
-                    <address>{ user.email }</address>
-                    <Link to={ `/users/${ this.props.match.params.id }/edit` } className="button is-link">Edit</Link>
-                    <button onClick={ this.handleDelete } className="button is-danger">
-                        Delete User
-                    </button>
+                    <div className="card">
+                        <header className="card-header">
+                            <h1 className="card-header-title">
+                                { user.name }
+                            </h1>
+                        </header>
+                        <div className="card-content">
+                            <div class="content">
+                                <p>
+                                    <h6 classsName="title is-6">Username</h6>
+                                    <address>{ user.username }</address>
+                                </p>
+                                <p>
+                                    <h6 classsName="title is-6">Email</h6>
+                                    <address>{ user.email }</address>
+                                </p>
+                            </div>
+                            <p className="buttons">
+                                <Link to={ `/users/${ this.props.match.params.id }/edit` } className="button is-link is-outlined">
+                                    <span>Edit User</span>
+                                    <span className="icon is-small">
+                                        <i className="far fa-edit"></i>
+                                    </span>
+                                </Link>
+                                <a onClick={ this.handleDelete } className="button is-danger is-outlined">
+                                    <span>Delete User</span>
+                                    <span className="icon is-small">
+                                        <i className="fas fa-times"></i>
+                                    </span>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </section>
         );

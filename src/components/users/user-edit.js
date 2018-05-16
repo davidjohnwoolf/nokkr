@@ -176,7 +176,7 @@ class UserEdit extends React.Component {
                                 </button>
                             </div>
                             <div className="control">
-                                <Link className="button is-light" to="/users">
+                                <Link className="button is-light" to={ `/users/${ this.props.match.params.id }` }>
                                     Cancel
                                 </Link>
                             </div>
