@@ -56,13 +56,13 @@ class UserShow extends React.Component {
                                 </p>
                             </div>
                             <p className="buttons">
-                                <Link to={ `/users/${ this.props.match.params.id }/edit` } className="button is-link is-outlined">
+                                <Link to={ `/users/${ this.props.match.params.id }/edit` } className="button is-link">
                                     <span>Edit User</span>
                                     <span className="icon is-small">
                                         <i className="far fa-edit"></i>
                                     </span>
                                 </Link>
-                                <a onClick={ this.handleDelete } className="button is-danger is-outlined">
+                                <a onClick={ this.handleDelete } className="button is-danger">
                                     <span>Delete User</span>
                                     <span className="icon is-small">
                                         <i className="fas fa-times"></i>
