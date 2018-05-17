@@ -9,10 +9,10 @@ class Field extends React.Component {
         const { name, type, placeholder, value, handleUserInput, rules, error, message } = this.props;
         return (
             <div className="field">
-                <p className="help">{ message }</p>
-                <div className="control">
+                <small>{ message }</small>
+                <div className="input">
                     <input
-                        className={ `input ${ error ? 'is-danger' : '' }` }
+                        className={ error ? 'input-error' : 'input' }
                         name={ name }
                         type={ type }
                         placeholder={ placeholder }
@@ -20,7 +20,7 @@ class Field extends React.Component {
                         onChange={ event => handleUserInput(event, rules) }
                     />
                 </div>
-                <p className="help is-danger">{ error }</p>
+                <small className="error">{ error }</small>
             </div>
         );
     }

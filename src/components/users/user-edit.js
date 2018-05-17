@@ -166,6 +166,7 @@ class UserEdit extends React.Component {
                             rules={ passwordConfirmation.rules }
                             error={ passwordConfirmation.error }
                         />
+                        <div className="submit-block">
                             <button
                                 disabled={ !this.state.formValid }
                                 className="btn-submit"
@@ -175,7 +176,6 @@ class UserEdit extends React.Component {
                             <Link className="btn-base" to={ `/users/${ this.props.match.params.id }` }>
                                 Cancel
                             </Link>
-                            </div>
                         </div>
                     </form>
                 </section>
