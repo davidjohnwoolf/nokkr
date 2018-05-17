@@ -114,11 +114,11 @@ class UserEdit extends React.Component {
         
         return (
                 
-            <section className="section columns is-centered user-edit">
-                <div className="container column is-half">
-                    <h1 className="title">Edit User</h1>
-                    <p className="help is-danger server-error">{ this.state.serverError }</p>
-                    <form id="user-new-form" onSubmit={ handleSubmit }>
+            <main id="user-edit">
+                <section className="form">
+                    <h1>Edit User</h1>
+                    <p className="error">{ this.state.serverError }</p>
+                    <form onSubmit={ handleSubmit }>
                     
                         <Field
                             name="name"
@@ -166,25 +166,20 @@ class UserEdit extends React.Component {
                             rules={ passwordConfirmation.rules }
                             error={ passwordConfirmation.error }
                         />
-                        
-                        <div className="field is-grouped">
-                            <div className="control">
-                                <button
-                                    disabled={ !this.state.formValid }
-                                    className="button is-primary"
-                                    type="submit">
-                                    Submit
-                                </button>
-                            </div>
-                            <div className="control">
-                                <Link className="button is-light" to={ `/users/${ this.props.match.params.id }` }>
-                                    Cancel
-                                </Link>
+                            <button
+                                disabled={ !this.state.formValid }
+                                className="btn-submit"
+                                type="submit">
+                                Submit
+                            </button>
+                            <Link className="btn-base" to={ `/users/${ this.props.match.params.id }` }>
+                                Cancel
+                            </Link>
                             </div>
                         </div>
                     </form>
-                </div>
-            </section>
+                </section>
+            </main>
         );
     }
 }
