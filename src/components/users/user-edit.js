@@ -114,10 +114,10 @@ class UserEdit extends React.Component {
         
         return (
                 
-            <main id="user-edit">
+            <main id="user-edit" className="content">
                 <section className="form">
                     <h1>Edit User</h1>
-                    <p className="error">{ this.state.serverError }</p>
+                    <small className="server-error">{ this.state.serverError }</small>
                     <form onSubmit={ handleSubmit }>
                     
                         <Field
@@ -166,14 +166,14 @@ class UserEdit extends React.Component {
                             rules={ passwordConfirmation.rules }
                             error={ passwordConfirmation.error }
                         />
-                        <div className="submit-block">
+                        <div className="btn-group">
                             <button
                                 disabled={ !this.state.formValid }
-                                className="btn-submit"
+                                className="btn btn-primary"
                                 type="submit">
                                 Submit
                             </button>
-                            <Link className="btn-base" to={ `/users/${ this.props.match.params.id }` }>
+                            <Link className="btn btn-cancel" to={ `/users/${ this.props.match.params.id }` }>
                                 Cancel
                             </Link>
                         </div>

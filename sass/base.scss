@@ -1,0 +1,290 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,900');
+@import 'variables';
+@import 'mixins';
+
+// create gutters and use EMs and look out for opportunities for mixins
+// ====================================================================
+
+//Elements
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-size: $font-size;
+    font-family: $font-family;
+    color: $black;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: $gutter-lg 0 $gutter 0;
+}
+
+p {
+    margin: $gutter 0;
+}
+
+a {
+    color: $primary;
+    transition: $transition;
+    text-decoration: none;
+    
+    &:hover {
+        color: $primary-light;
+    }
+}
+
+address {
+    font-style: normal;
+    margin: $gutter 0;
+}
+
+input, textarea {
+    margin: ($gutter / 4) 0;
+    padding: $gutter;
+    width: 100%;
+    color: $black;
+    border: $border;
+    box-shadow: inset 0 1px 2px rgba(10, 10, 10, .1);
+    border-radius: $radius;
+    
+    &::placeholder {
+        color: $gray-light;
+    }
+    
+    &:focus {
+        box-shadow: 0 0 3px $primary;
+        outline: none;
+    }
+}
+
+//Containers
+
+.content {
+    margin: 0 auto;
+    padding: $gutter;
+    
+    @include media-xs {
+        width: 90%;
+    }
+    
+    @include media-sm {
+        width: 80%;
+    }
+    
+    @include media-md {
+        width: 70%;
+    }
+    
+    @include media-lg {
+        width: 60%;
+    }
+    
+    @include media-xl-plus {
+        width: 50%;
+    }
+}
+
+//Cards
+
+.card {
+    box-shadow: 0 2px 3px $gray-transparent, 0 0 0 1px $gray-transparent;
+    
+    > header {
+        border-bottom: $border;
+        padding: $gutter-lg;
+        
+        > h1 {
+            margin: 0;
+        }
+    }
+    
+    > section {
+        padding: $gutter-lg;
+    }
+    
+    > footer {
+        border-top: $border;
+        padding: $gutter-lg;
+        
+        > .btn-group .btn {
+            margin: 0;
+        }
+    }
+}
+
+//Forms
+
+.form {
+    padding: $gutter-lg;
+    
+    > form {
+    
+        > .field {
+            margin: $gutter-xs 0;
+            
+            > .input-message {
+                display: inline-block;
+                font-style: italic;
+                margin-top: $gutter;
+            }
+            
+            > .input {
+                > .input-error {
+                    border-color: $error;
+                    &:focus {
+                        box-shadow: 0 0 3px $error;
+                        outline: none;
+                    }
+                }
+            }
+            
+            > .input-error-message {
+                display: inline-block;
+                color: $error;
+            }
+        }
+    }
+    
+    > .server-error {
+        color: $error;
+        margin: $gutter 0;
+    }
+}
+
+//Index
+
+.index {
+    padding: $gutter-lg;
+}
+
+//Lists
+
+.link-list {
+    box-shadow: 0 2px 3px $gray-transparent, 0 0 0 1px $gray-transparent;
+    padding: 0;
+    
+    > li {
+        list-style: none;
+        border-bottom: $border;
+        
+        > a {
+            display: block;
+            padding: $gutter-lg;
+            color: $gray-dark;
+            
+            &:hover {
+                color: $white;
+                background: $primary;
+            }
+        }
+        
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+}
+
+//Buttons
+
+.btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.btn {
+    border: none;
+    padding: $gutter $gutter-lg;
+    margin: $gutter 0;
+    color: $white;
+    text-decoration: none;
+    transition: $transition;
+    line-height: normal;
+    border-radius: $radius;
+    
+    > .icon-front {
+        display: inline-block;
+        margin-right: $gutter-sm;
+    }
+    
+    &:hover {
+        color: $white;
+        cursor: pointer;
+    }
+}
+
+.btn-primary {
+    background: $primary;
+    
+    &:hover {
+        background: $primary-light;
+    }
+}
+
+.btn-cancel {
+    background: $gray;
+    
+    &:hover {
+        background: $gray-light;
+    }
+}
+
+.btn-danger {
+    background: $error;
+    
+    &:hover {
+        background: $error-light;
+    }
+}
+
+//Messages
+
+.flash-message {
+    display: flex;
+    justify-content: space-between;
+    padding: $gutter-sm $gutter;
+    background: $success;
+    color: $white;
+    position: fixed;
+    top: $gutter-lg;
+    right: $gutter-lg;
+    border-radius: $radius;
+    
+    > p {
+        margin: $gutter-sm $gutter;
+    }
+    
+    > button {
+        transition: $transition;
+        margin: 0;
+        color: $white;
+        padding: $gutter-sm $gutter;
+        border: none;
+        background: transparent;
+        
+        &:hover {
+            opacity: .75;
+            cursor: pointer;
+        }
+    }
+}
+
+//General Classes
+
+.invisible {
+    display: none;
+}
+
+//Other
+
+//remove hover state as well?
+[disabled] {
+    opacity: .5;
+    cursor: not-allowed !important;
+}

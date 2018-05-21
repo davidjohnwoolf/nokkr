@@ -86,11 +86,11 @@ class UserNew extends React.Component {
         
         return (
                 
-            <section className="section columns is-centered user-new">
-                <div className="container column is-half">
-                    <h1 className="title">Create User</h1>
-                    <p className="help is-danger server-error">{ this.state.serverError }</p>
-                    <form id="user-new-form" onSubmit={ handleSubmit }>
+            <main id="user-new" className="content">
+                <section className="form">
+                    <h1>Create User</h1>
+                    <small className="server-error">{ this.state.serverError }</small>
+                    <form onSubmit={ handleSubmit }>
                     
                         <Field
                             name="name"
@@ -138,24 +138,20 @@ class UserNew extends React.Component {
                             error={ passwordConfirmation.error }
                         />
                         
-                        <div className="field is-grouped">
-                            <div className="control">
-                                <button
-                                    disabled={ !this.state.formValid }
-                                    className="button is-primary"
-                                    type="submit">
-                                    Submit
-                                </button>
-                            </div>
-                            <div className="control">
-                                <Link className="button is-light" to="/users">
-                                    Cancel
-                                </Link>
-                            </div>
+                        <div className="btn-group">
+                            <button
+                                disabled={ !this.state.formValid }
+                                className="btn btn-primary"
+                                type="submit">
+                                Submit
+                            </button>
+                            <Link className="btn btn-cancel" to="/users">
+                                Cancel
+                            </Link>
                         </div>
                     </form>
-                </div>
-            </section>
+                </section>
+            </main>
         );
     }
 }

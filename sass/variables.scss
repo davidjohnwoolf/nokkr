@@ -1,0 +1,46 @@
+//Colors
+
+$primary-dark: #1e80c6;
+$primary: #2b90d9;
+$primary-light: #3fa2e9;
+$white: #fff;
+$black: #111;
+$gray-dark: #777;
+$gray: #999;
+$gray-light: #bbb;
+$gray-xlight: #ddd;
+$gray-transparent: rgba(10,10,10,.1);
+$error-dark: #b73333;
+$error: #da3c3c;
+$error-light: #f25a5a;
+$warning: #f17f42;
+$success: #10a887;
+
+//Break Points
+
+$break-xs: 480px;
+$break-sm: 768px;
+$break-md: 992px;
+$break-lg: 1200px;
+$break-xl: 1500px;
+
+//Spacing
+
+$gutter-xs: .25rem;
+$gutter-sm: .5rem;
+$gutter: 1rem;
+$gutter-lg: 2rem;
+$radius: .2rem;
+
+//Borders
+
+$border: 1px $gray-xlight solid;
+
+//Fonts
+
+$font-size: 1.6rem;
+$font-family: 'Roboto', sans-serif;
+
+//Animations
+
+$transition: 200ms all ease-in-out;

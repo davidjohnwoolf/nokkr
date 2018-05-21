@@ -1,5 +1,5 @@
 //import css for webpack
-require('../sass/base.sass');
+require('../sass/base.scss');
 
 import React from 'react';
 import ReactDOM from 'react-dom';

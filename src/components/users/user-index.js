@@ -19,9 +19,11 @@ class UserIndex extends React.Component {
         return (
             users.map((user) => {
                 return (
-                    <Link to={ `/users/${ user.id }` } className="panel-block" key={ user.id }>
-			            { user.name }
-			        </Link>
+                    <li>
+                        <Link to={ `/users/${ user.id }` } className="panel-block" key={ user.id }>
+    			            { user.name }
+    			        </Link>
+			        </li>
                 );
             })
         );
@@ -30,14 +32,14 @@ class UserIndex extends React.Component {
     render() {
         
         return (
-            <section className="section user-index">
-                <div className="container">
-                    <h1 className="title">Users</h1>
-                    <nav className="panel">
+            <main id="user-index" className="content">
+                <section className="index">
+                    <h1>Users</h1>
+                    <ul className="link-list">
                         { this.renderUsers() }
-                    </nav>
-                </div>
-            </section>
+                    </ul>
+                </section>
+            </main>
         );
     }
 }

@@ -36,43 +36,33 @@ class UserShow extends React.Component {
         if (!user) return;
         
         return (
-            <section className="section user-show">
-                <div className="container">
-                    <div className="card">
-                        <header className="card-header">
-                            <h1 className="card-header-title">
-                                { user.name }
-                            </h1>
-                        </header>
-                        <div className="card-content">
-                            <div class="content">
-                                <p>
-                                    <h6 classsName="title is-6">Username</h6>
-                                    <address>{ user.username }</address>
-                                </p>
-                                <p>
-                                    <h6 classsName="title is-6">Email</h6>
-                                    <address>{ user.email }</address>
-                                </p>
-                            </div>
-                            <p className="buttons">
-                                <Link to={ `/users/${ this.props.match.params.id }/edit` } className="button is-link">
-                                    <span>Edit User</span>
-                                    <span className="icon is-small">
-                                        <i className="far fa-edit"></i>
-                                    </span>
-                                </Link>
-                                <a onClick={ this.handleDelete } className="button is-danger">
-                                    <span>Delete User</span>
-                                    <span className="icon is-small">
-                                        <i className="fas fa-times"></i>
-                                    </span>
-                                </a>
-                            </p>
+            <main id="user-show" className="content">
+                <section class="card">
+                    <header>
+                        <h1>
+                            { user.name }
+                        </h1>
+                    </header>
+                    <section>
+                        <h4>Username</h4>
+                        <address>{ user.username }</address>
+
+                        <h4>Email</h4>
+                        <address>{ user.email }</address>
+                    </section>
+                    
+                    <footer>
+                        <div className="btn-group">
+                            <Link to={ `/users/${ this.props.match.params.id }/edit` } className="btn btn-primary">
+                                <i className="far fa-edit icon-front"></i> Edit User
+                            </Link>
+                            <button onClick={ this.handleDelete } className="btn btn-danger">
+                                <i className="fas fa-times icon-front"></i> Delete User
+                            </button>
                         </div>
-                    </div>
-                </div>
-            </section>
+                    </footer>
+                </section>
+            </main>
         );
     }
     
