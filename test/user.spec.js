@@ -169,7 +169,29 @@ describe('users', () => {
 				    
 					res.should.have.status(200);
 					res.body.should.be.a('object');
-					res.body.error.should.eql('Username or email already exists');
+					res.body.error.should.eql('Username already exists');
+					done();
+				});
+		});
+		
+		it('should throw email exists error', done => {
+			const user = {
+				name: 'Jill Doe',
+				username: 'jilldo',
+				email: 'janedoe@example.com',
+				password: 'Password8!1',
+				passwordConfirmation: 'Password8!2'
+			};
+			
+			chai.request(server)
+				.post('/users')
+				.send(user)
+				.end((err, res) => {
+				    if (err) return err;
+				    
+					res.should.have.status(200);
+					res.body.should.be.a('object');
+					res.body.error.should.eql('Email already exists');
 					done();
 				});
 		});

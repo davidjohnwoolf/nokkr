@@ -32,12 +32,16 @@ router.get('/', (req, res) => {
 
 // create
 router.post('/', (req, res) => {
-    User.findOne({ username: req.body.username }, (err, user) => {
+    User.findOne({ $or: [{username: req.body.username}, { email: req.body.email }] }, (err, user) => {
         if (err) return res.json(err);
         
-        if (user) return res.json({
-            error: 'Username or email already exists'
-        });
+        if (user && req.body.email === user.email) {
+            return res.json({ error: 'Email already exists' });
+        }
+        
+        if (user && req.body.username === user.username) {
+            return res.json({ error: 'Username already exists' });
+        }
         
         if (req.body.password === req.body.passwordConfirmation) {
             
