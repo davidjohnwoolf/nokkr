@@ -30,7 +30,9 @@ class Login extends React.Component {
         if (serverError !== this.state.serverError) this.setState({ serverError });
         
         if (token) {
-            console.log(token);
+            //secure this
+            sessionStorage.setItem('p2k_token', token);
+            history.push('/');
         }
     }
     
