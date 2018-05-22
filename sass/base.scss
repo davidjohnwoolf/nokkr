@@ -178,6 +178,15 @@ input, textarea {
             padding: $gutter-lg;
             color: $gray-dark;
             
+            &.icon-link {
+                display: flex;
+                justify-content: space-between;
+                
+                > svg {
+                    color: $white;
+                }
+            }
+            
             &:hover {
                 color: $white;
                 background: $primary;

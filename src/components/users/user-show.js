@@ -37,7 +37,7 @@ class UserShow extends React.Component {
         
         return (
             <main id="user-show" className="content">
-                <section class="card">
+                <section className="card">
                     <header>
                         <h1>
                             { user.name }
