@@ -218,8 +218,12 @@ input, textarea {
     border-radius: $radius;
     
     > .icon-front {
-        display: inline-block;
+        display: none;
         margin-right: $gutter-sm;
+        
+        @include media-xs-plus {
+            display: inline-block;
+        }
     }
     
     &:hover {
