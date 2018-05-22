@@ -14,6 +14,7 @@ import UserNew from './components/users/user-new';
 import UserEdit from './components/users/user-edit';
 import UserShow from './components/users/user-show';
 import UserIndex from './components/users/user-index';
+import Login from './components/authentication/login';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 
@@ -28,6 +29,7 @@ ReactDOM.render(
                         <Route path="/users/:id/edit" component={ UserEdit } />
                         <Route path="/users/:id" component={ UserShow } />
                 		<Route path="/users" component={ UserIndex } />
+                		<Route path="/login" component={ Login } />
             		</Switch>
                 </div>
             </Router>
