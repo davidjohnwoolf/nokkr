@@ -27,7 +27,7 @@ router.post('/login', (req, res) => {
                         expiresIn: 86400
                     });
                     
-                    res.json({ token: token });
+                    res.json({ message: 'Logged in', token: token });
                 }
                 
                 if (!isMatch) {
