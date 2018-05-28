@@ -3,14 +3,17 @@ require('../sass/base.scss');
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter as Router, Route, Switch } from 'react-router-dom';
+import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
 import authorization from './helpers/authorization';
 import reducers from './reducers';
+import PrivateRoute from './components/helpers/private-route';
 import FlashMessage from './components/helpers/flash-messages';
+import NotAuthorized from './components/errors/not-authorized';
+import PageNotFound from './components/errors/page-not-found';
 import UserNew from './components/users/user-new';
 import UserEdit from './components/users/user-edit';
 import UserShow from './components/users/user-show';
@@ -21,7 +24,7 @@ const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 
 const store = createStoreWithMiddleware(reducers);
 
-//make this middleware?
+//make this middleware? also, dont pass in store, map your props to state?
 authorization(sessionStorage.getItem('p2k_token'), store);
 
 ReactDOM.render(
@@ -31,11 +34,13 @@ ReactDOM.render(
             <Router>
                 <div>
                     <Switch>
+                        <Route path="/login" component={ Login } />
                         <Route path="/users/new" component={ UserNew } />
-                        <Route path="/users/:id/edit" component={ UserEdit } />
-                        <Route path="/users/:id" component={ UserShow } />
-                		<Route path="/users" component={ UserIndex } />
-                		<Route path="/login" component={ Login } />
+                        <Route path="/not-authorized" component={ NotAuthorized } />
+                        <PrivateRoute path="/users/:id/edit" component={ UserEdit } />
+                        <PrivateRoute path="/users/:id" component={ UserShow } />
+                		<PrivateRoute path="/users" component={ UserIndex } />
+                		<Route path="*" component={ PageNotFound } />
             		</Switch>
                 </div>
             </Router>
