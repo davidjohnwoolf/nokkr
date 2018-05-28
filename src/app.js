@@ -37,12 +37,12 @@ ReactDOM.render(
                 <div>
                     <Header />
                     <Switch>
-                        <Route path="/login" component={ Login } />
-                        <Route path="/users/new" component={ UserNew } />
-                        <Route path="/not-authorized" component={ NotAuthorized } />
-                        <PrivateRoute path="/users/:id/edit" component={ UserEdit } />
-                        <PrivateRoute path="/users/:id" component={ UserShow } />
-                		<PrivateRoute path="/users" component={ UserIndex } />
+                        <Route exact path="/login" component={ Login } />
+                        <Route exact path="/users/new" component={ UserNew } />
+                        <Route exact path="/not-authorized" component={ NotAuthorized } />
+                        <PrivateRoute exact path="/users/:id/edit" component={ UserEdit } />
+                        <PrivateRoute exact path="/users/:id" component={ UserShow } />
+                		<PrivateRoute exact path="/users" component={ UserIndex } />
                 		<PrivateRoute exact path="/" component={ Dashboard } />
                 		<Route path="*" component={ PageNotFound } />
             		</Switch>
