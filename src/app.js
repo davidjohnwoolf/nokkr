@@ -35,13 +35,13 @@ ReactDOM.render(
             <Router>
                 <div>
                     <Switch>
-                        <Route path="/login" component={ Login } />
-                        <Route path="/users/new" component={ UserNew } />
-                        <Route path="/not-authorized" component={ NotAuthorized } />
                         <PrivateRoute path="/users/:id/edit" component={ UserEdit } />
                         <PrivateRoute path="/users/:id" component={ UserShow } />
                 		<PrivateRoute path="/users" component={ UserIndex } />
                 		<PrivateRoute exact path="/" component={ Dashboard } />
+                		<Route path="/login" component={ Login } />
+                        <Route path="/users/new" component={ UserNew } />
+                        <Route path="/not-authorized" component={ NotAuthorized } />
                 		<Route path="*" component={ PageNotFound } />
             		</Switch>
                 </div>
