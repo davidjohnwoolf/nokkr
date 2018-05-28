@@ -13,14 +13,15 @@ export const login = (creds) => {
                 dispatch({
                     type: LOGIN_ERROR,
                     serverError: res.data.error
-                })
+                });
             }
             if (res.data.token) {
                 //return needed here?
                 dispatch({
                     type: LOGIN_SUCCESS,
-                    token: res.data.token
-                })
+                    token: res.data.token,
+                    userId: res.data.userId
+                });
             }
         });
     }

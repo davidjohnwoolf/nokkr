@@ -25,13 +25,14 @@ class Login extends React.Component {
     }
     
     componentDidUpdate() {
-        const { serverError, token, history } = this.props;
+        const { serverError, token, history, userId } = this.props;
         
         if (serverError !== this.state.serverError) this.setState({ serverError });
         
-        if (token) {
+        if (token && userId) {
             //secure this
             sessionStorage.setItem('p2k_token', token);
+            sessionStorage.setItem('p2k_user_id', userId);
             history.push('/');
         }
     }
@@ -125,7 +126,11 @@ class Login extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return { serverError: state.authentication.serverError, token: state.authentication.token };
+    return {
+        serverError: state.authentication.serverError,
+        token: state.authentication.token,
+        userId: state.authentication.userId
+    };
 };
 
 export default connect(mapStateToProps, { login })(Login);
