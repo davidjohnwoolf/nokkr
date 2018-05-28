@@ -15,6 +15,7 @@ import FlashMessage from './components/helpers/flash-messages';
 import NotAuthorized from './components/errors/not-authorized';
 import PageNotFound from './components/errors/page-not-found';
 import Dashboard from './components/dashboard';
+import Header from './components/layout/header';
 import UserNew from './components/users/user-new';
 import UserEdit from './components/users/user-edit';
 import UserShow from './components/users/user-show';
@@ -34,6 +35,7 @@ ReactDOM.render(
             <FlashMessage />
             <Router>
                 <div>
+                    <Header />
                     <Switch>
                         <PrivateRoute path="/users/:id/edit" component={ UserEdit } />
                         <PrivateRoute path="/users/:id" component={ UserShow } />

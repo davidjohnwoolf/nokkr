@@ -14,6 +14,10 @@ class Login extends React.Component {
     constructor(props) {
         super(props);
         
+        if (props.authenticated) {
+            props.history.push('/');
+        }
+        
         props.clearAuthMessages();
         
         this.state = {
@@ -135,6 +139,7 @@ const mapStateToProps = state => {
         serverError: state.authentication.serverError,
         token: state.authentication.token,
         id: state.authentication.id,
+        authenticated: state.authentication.authenticated,
         successMessage: state.authentication.successMessage
     };
 };
