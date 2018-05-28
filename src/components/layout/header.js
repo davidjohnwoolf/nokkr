@@ -12,8 +12,8 @@ class Header extends React.Component {
                 <header id="header">
                     <nav className="header-nav">
                         <ul>
-                            <li className="logo">
-                                <Link to="/">Platform 2K</Link>
+                            <li>
+                                <Link to="/"><i className="fas fa-home" aria-hidden="true"></i></Link>
                             </li>
                             <li>
                                 <Link to="/areas"><i className="fas fa-map" aria-hidden="true"></i></Link>
