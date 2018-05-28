@@ -12,7 +12,7 @@ class Header extends React.Component {
                 <header id="header">
                     <nav className="header-nav">
                         <ul>
-                            <li className="logo active">
+                            <li className="logo">
                                 <Link to="/">Platform 2K</Link>
                             </li>
                             <li>
