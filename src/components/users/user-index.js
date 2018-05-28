@@ -22,7 +22,7 @@ class UserIndex extends React.Component {
                     <li key={ user.id }>
                         <Link to={ `/users/${ user.id }` } className="icon-link">
     			            { user.name }
-    			            <i class="fas fa-chevron-right"></i>
+    			            <i className="fas fa-chevron-right"></i>
     			        </Link>
 			        </li>
                 );

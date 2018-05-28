@@ -21,18 +21,6 @@ const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 
 const store = createStoreWithMiddleware(reducers);
 
-const token = sessionStorage.getItem('p2k_token');
-
-if (token) {
-    //update state to authenticated
-    store.dispatch({ type: AUTHENTICATE });
-    console.log(token);
-} else {
-    //update state to not authenticated
-    store.dispatch({ type: UNAUTHENTICATE });
-    console.log('not authenticated');
-}
-
 ReactDOM.render(
     <Provider store={ store }>
         <div>

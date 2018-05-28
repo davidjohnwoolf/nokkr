@@ -2,8 +2,6 @@ import axios from 'axios';
 
 export const LOGIN_ERROR = 'LOGIN_ERROR';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-export const AUTHENTICATE = 'AUTHENTICATE';
-export const UNAUTHENTICATE = 'UNAUTHENTICATE';
 
 export const login = (creds) => {
     const request = axios.post('/login', creds);
