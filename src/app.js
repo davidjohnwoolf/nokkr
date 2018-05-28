@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import { AUTHENTICATE, UNAUTHENTICATE } from './actions/authentication';
+import authorization from './helpers/authorization';
 import reducers from './reducers';
 import FlashMessage from './components/helpers/flash-messages';
 import UserNew from './components/users/user-new';
@@ -20,6 +20,9 @@ import Login from './components/authentication/login';
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 
 const store = createStoreWithMiddleware(reducers);
+
+//make this middleware?
+authorization(sessionStorage.getItem('p2k_token'), store);
 
 ReactDOM.render(
     <Provider store={ store }>

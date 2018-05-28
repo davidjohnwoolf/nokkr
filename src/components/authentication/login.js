@@ -32,7 +32,6 @@ class Login extends React.Component {
         if (token && userId) {
             //secure this
             sessionStorage.setItem('p2k_token', token);
-            sessionStorage.setItem('p2k_user_id', userId);
             history.push('/');
         }
     }
