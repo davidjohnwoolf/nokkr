@@ -7,8 +7,8 @@ export const sendMessage = message => {
             type: SEND_MESSAGE,
             message: message
         });
-    }
-}
+    };
+};
 
 export const closeMessage = () => {
     return dispatch => {
@@ -16,5 +16,5 @@ export const closeMessage = () => {
             type: CLOSE_MESSAGE,
             message: ''
         });
-    }
-}
+    };
+};
