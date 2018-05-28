@@ -27,6 +27,12 @@ export const fetchUser = id => {
     };
 };
 
+export const clearUserMessages = user => {
+    return dispatch => {
+        dispatch({ type: CLEAR_USER_MESSAGES });
+    };
+};
+
 export const createUser = user => {
     //maybe use async await and fetch
     const request = axios.post('/users', user);
