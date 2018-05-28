@@ -41,7 +41,7 @@ ReactDOM.render(
                         <PrivateRoute path="/users/:id/edit" component={ UserEdit } />
                         <PrivateRoute path="/users/:id" component={ UserShow } />
                 		<PrivateRoute path="/users" component={ UserIndex } />
-                		<PrivateRoute path="/" component={ Dashboard } />
+                		<PrivateRoute exact path="/" component={ Dashboard } />
                 		<Route path="*" component={ PageNotFound } />
             		</Switch>
                 </div>
