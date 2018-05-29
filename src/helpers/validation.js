@@ -22,11 +22,7 @@ export const validate = (e, rules, fields) => {
     
     //handle all rules
     for (let key in fields ) {
-        console.log('all key', key);
         rules[key].forEach(rule => {
-            
-            console.log('rule', rule);
-            
             if (rule(fields[key].value)) formValid = false;
         });
     }
@@ -34,7 +30,6 @@ export const validate = (e, rules, fields) => {
     //handle target rules
     rules[e.target.name].forEach(rule => {
         
-        console.log('target rules', rule)
         let result = rule(e.target.value);
         
         if (result) error = result;
