@@ -6,7 +6,34 @@ class Header extends React.Component {
     
     //set menu actions with local component state
     
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+            menuShown: false
+        }
+        
+        this.handleDropdown = this.handleDropdown.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
+    }
+    
+    handleDropdown(e) {
+        e.preventDefault();
+        
+        !this.state.menuShown
+            ? this.setState({ menuShown: true })
+            : this.setState({ menuShown: false })
+    }
+    
+    handleLogout(e) {
+        e.preventDefault();
+        
+        console.log('logout');
+    }
+    
     render() {
+        const { handleDropdown, handleLogout, state } = this;
+        
         if (this.props.authenticated) {
             return (
                 <header id="header">
@@ -28,20 +55,18 @@ class Header extends React.Component {
                                 <Link to="/new"><i className="fas fa-plus" aria-hidden="true"></i></Link>
                             </li>
                             <li className="dropdown">
-                                <a>
-                                    <i className="fas fa-bars"></i>
-                                    <ul>
-                                        <li>
-                                            <Link to="/users">Users</Link>
-                                        </li>
-                                        <li>
-                                            <Link to={ `/users/${ this.props.id }` }>Account</Link>
-                                        </li>
-                                        <li>
-                                            <Link to="/logout">Logout</Link>
-                                        </li>
-                                    </ul>
-                                </a>
+                                <a onClick={ handleDropdown } className={ state.menuShown ? 'clicked' : '' } href="#"><i className="fas fa-bars"></i></a>
+                                <ul className={ `submenu ${ !state.menuShown ? 'invisible' : '' }` }>
+                                    <li>
+                                        <Link to="/users">Users</Link>
+                                    </li>
+                                    <li>
+                                        <Link to={ `/users/${ this.props.id }` }>Account</Link>
+                                    </li>
+                                    <li>
+                                        <a onClick={ handleLogout } href="#">Logout</a>
+                                    </li>
+                                </ul>
                             </li>
                         </ul>
                     </nav>

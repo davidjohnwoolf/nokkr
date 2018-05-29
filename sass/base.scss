@@ -67,14 +67,14 @@ input, textarea {
 
 #header {
 
-    .header-nav ul {
+    .header-nav > ul {
         display: flex;
         padding: 0;
         margin: 0;
         justify-content: space-between;
+        list-style-type: none;
         
         > li {
-            list-style-type: none;
             display: block;
             width: 100%;
             
@@ -82,7 +82,6 @@ input, textarea {
                 display: block;
                 padding: $gutter-lg 0;
                 color: $white;
-                transition: trannsition;
                 background: $black;
                 text-align: center;
                 
@@ -104,12 +103,32 @@ input, textarea {
             }
             
             &.dropdown {
+                position: relative;
                 
-                > a {
-                    cursor: pointer;
+                > a.clicked {
+                    background: $primary;
+                }
+                > ul {
+                    list-style-type: none;
+                    padding: 0;
+                    position: absolute;
+                    right: 0;
                     
-                    > ul {
-                        display: none;
+                    > li {
+                        display: inline-block;
+                        width: 10em;
+                        
+                        > a {
+                            color: $black;
+                            display: block;
+                            padding: $gutter;
+                            background: $gray-xlight;
+                            
+                            &:hover {
+                                background: $primary;
+                                color: $white;
+                            }
+                        }
                     }
                 }
             }
@@ -345,7 +364,7 @@ input, textarea {
 //General Classes
 
 .invisible {
-    display: none;
+    display: none !important;
 }
 
 //Other
