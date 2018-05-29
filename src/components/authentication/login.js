@@ -9,8 +9,6 @@ import { sendMessage } from '../../actions/flash-messages';
 
 class Login extends React.Component {
     
-    //add clear messages
-    
     constructor(props) {
         super(props);
         
@@ -105,9 +103,6 @@ class Login extends React.Component {
                                 type="submit">
                                 Submit
                             </button>
-                            <Link className="btn btn-cancel" to="/">
-                                Cancel
-                            </Link>
                         </div>
                     </form>
                 </section>
