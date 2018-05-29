@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { required, password, passwordMatch, validate } from '../../helpers/validation';
+import { required, password, passwordMatch, validate } from '../helpers/validation';
 import Field from '../forms/field';
 import { createUser, clearUserMessages } from '../../actions/users';
 import { sendMessage } from '../../actions/flash-messages';

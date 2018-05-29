@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import authorization from './helpers/authorization';
+import authorization from './middleware/authorization';
 import reducers from './reducers';
 import PrivateRoute from './components/helpers/private-route';
 import FlashMessage from './components/helpers/flash-messages';
