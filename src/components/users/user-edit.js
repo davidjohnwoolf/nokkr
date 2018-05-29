@@ -2,12 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { required, password, passwordMatch } from '../../helpers/validation-rules';
+import { required, password, passwordMatch, validate } from '../../helpers/validation';
 import Field from '../forms/field';
 import { fetchUser, updateUser, clearUserMessages } from '../../actions/users';
 import { sendMessage } from '../../actions/flash-messages';
-
-//regarding lifecycle method warnings https://github.com/reduxjs/react-redux/issues/890
 
 class UserEdit extends React.Component {
     
@@ -17,14 +15,21 @@ class UserEdit extends React.Component {
         props.clearUserMessages();
         props.fetchUser(this.props.match.params.id);
         
-        //move rules outside of the state since they are static?
+        this.validationRules = {
+            name: [required],
+            username: [required],
+            email: [required],
+            password: [password],
+            passwordConfirmation: [passwordMatch]
+        };
+
         this.state = {
             fields: {
-                name: { value: '', error: '', rules: [required] },
-                username: { value: '', error: '', rules: [required] },
-                email: { value: '', error: '', rules: [required] },
-                password: { value: '', error: '', rules: [password] },
-                passwordConfirmation: { value: '', error: '', rules: [passwordMatch] }
+                name: { value: '', error: '' },
+                username: { value: '', error: '' },
+                email: { value: '', error: '' },
+                password: { value: '', error: '' },
+                passwordConfirmation: { value: '', error: '' }
             },
             serverError: '',
             formValid: false,
@@ -61,34 +66,11 @@ class UserEdit extends React.Component {
         }
     }
     
-    handleUserInput(e, rules) {
+    handleUserInput(e) {
         
-        //export these functions to helper
-        const fields = { ...this.state.fields };
-        let formValid = true;
-        let error;
-        
-        //typing something in password field then stopping is not working
-        
-        //handle all rules
-        for (let key in fields ) {
-            fields[key].rules.forEach(rule => {
-                if (rule(fields[key].value)) formValid = false;
-            });
-        }
-        
-        //handle target rules
-        rules.forEach(rule => {
-            let result = rule(e.target.value);
-            
-            if (result) error = result;
-
-            fields[e.target.name].error = error;
-        });
-
-        fields[e.target.name].value = e.target.value;
-        
-        this.setState({ fields, formValid });
+        this.setState(
+            validate(e, this.validationRules, { ...this.state.fields })
+        );
     }
     
     handleSubmit(e) {
@@ -126,7 +108,6 @@ class UserEdit extends React.Component {
                             placeholder="name"
                             value={ name.value }
                             handleUserInput={ handleUserInput }
-                            rules={ name.rules }
                             error={ name.error }
                         />
                         <Field
@@ -135,7 +116,6 @@ class UserEdit extends React.Component {
                             placeholder="username"
                             value={ username.value }
                             handleUserInput={ handleUserInput }
-                            rules={ username.rules }
                             error={ username.error }
                         />
                         <Field
@@ -144,7 +124,6 @@ class UserEdit extends React.Component {
                             placeholder="email"
                             value={ email.value }
                             handleUserInput={ handleUserInput }
-                            rules={ email.rules }
                             error={ email.error }
                         />
                         <Field
@@ -153,7 +132,6 @@ class UserEdit extends React.Component {
                             placeholder="password"
                             value={ password.value }
                             handleUserInput={ handleUserInput }
-                            rules={ password.rules }
                             error={ password.error }
                             message="If staying the same, leave password fields blank"
                         />
@@ -163,7 +141,6 @@ class UserEdit extends React.Component {
                             placeholder="password confirmation"
                             value={ passwordConfirmation.value }
                             handleUserInput={ handleUserInput }
-                            rules={ passwordConfirmation.rules }
                             error={ passwordConfirmation.error }
                         />
                         <div className="btn-group">

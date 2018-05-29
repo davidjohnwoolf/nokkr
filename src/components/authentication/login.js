@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { required } from '../../helpers/validation-rules';
+import { required, validate } from '../../helpers/validation';
 import Field from '../forms/field';
 import { login, clearAuthMessages } from '../../actions/authentication';
 import { sendMessage } from '../../actions/flash-messages';
@@ -20,10 +20,15 @@ class Login extends React.Component {
         
         props.clearAuthMessages();
         
+        this.validationRules = {
+            username: [required],
+            password: [required]
+        };
+        
         this.state = {
             fields: {
-                username: { value: '', error: '', rules: [required] },
-                password: { value: '', error: '', rules: [required] }
+                username: { value: '', error: '' },
+                password: { value: '', error: '' }
             },
             serverError: '',
             formValid: false
@@ -48,30 +53,9 @@ class Login extends React.Component {
     
     handleUserInput(e, rules) {
         
-        //export these functions to helper
-        const fields = { ...this.state.fields };
-        let formValid = true;
-        let error;
-        
-        //handle all rules
-        for (let key in fields ) {
-            fields[key].rules.forEach(rule => {
-                if (rule(fields[key].value)) formValid = false;
-            });
-        }
-        
-        //handle target rules
-        rules.forEach(rule => {
-            let result = rule(e.target.value);
-            
-            if (result) error = result;
-
-            fields[e.target.name].error = error;
-        });
-
-        fields[e.target.name].value = e.target.value;
-        
-        this.setState({ fields, formValid });
+        this.setState(
+            validate(e, this.validationRules, { ...this.state.fields })
+        );
     }
     
     handleSubmit(e) {
@@ -103,7 +87,6 @@ class Login extends React.Component {
                             placeholder="username"
                             value={ username.value }
                             handleUserInput={ handleUserInput }
-                            rules={ username.rules }
                             error={ username.error }
                         />
                         <Field
@@ -112,7 +95,6 @@ class Login extends React.Component {
                             placeholder="password"
                             value={ password.value }
                             handleUserInput={ handleUserInput }
-                            rules={ password.rules }
                             error={ password.error }
                         />
                         

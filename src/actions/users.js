@@ -15,7 +15,7 @@ export const fetchUsers = () => {
     const request = axios.get('/users');
     
     return dispatch => {
-        request.then(res => dispatch({ type: FETCH_USERS, payload: res }));
+        request.then(res => dispatch({ type: FETCH_USERS, users: res.data }));
     };
 };
 
@@ -23,7 +23,7 @@ export const fetchUser = id => {
     const request = axios.get(`/users/${id}`);
     
     return dispatch => {
-        request.then(res => dispatch({ type: FETCH_USER, payload: res }));
+        request.then(res => dispatch({ type: FETCH_USER, user: res.data }));
     };
 };
 

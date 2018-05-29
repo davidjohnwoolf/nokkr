@@ -6,7 +6,7 @@ class Field extends React.Component {
     }
     
     render() {
-        const { name, type, placeholder, value, handleUserInput, rules, error, message } = this.props;
+        const { name, type, placeholder, value, handleUserInput, error, message } = this.props;
         return (
             <div className="field">
                 <small className={ message ? 'input-message' : 'invisible' }>{ message }</small>
@@ -17,7 +17,7 @@ class Field extends React.Component {
                         type={ type }
                         placeholder={ placeholder }
                         value={ value }
-                        onChange={ event => handleUserInput(event, rules) }
+                        onChange={ event => handleUserInput(event) }
                     />
                 </div>
                 <small className={ error ? 'input-error-message' : 'invisible' }>{ error }</small>

@@ -14,11 +14,11 @@ export default function(state = {}, action) {
     switch (action.type) {
         case FETCH_USER:
             //maybe rename payload to something like user
-            return { ...state, user: action.payload.data };
+            return { ...state, user: action.user };
         
         case FETCH_USERS:
             //maybe rename payload to something like user
-            return { ...state, users: action.payload.data };
+            return { ...state, users: action.users };
         
         case CREATE_USER_ERROR:
             return { ...state, serverError: action.serverError };

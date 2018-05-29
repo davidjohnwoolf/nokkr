@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { required, password, passwordMatch } from '../../helpers/validation-rules';
+import { required, password, passwordMatch, validate } from '../../helpers/validation';
 import Field from '../forms/field';
 import { createUser, clearUserMessages } from '../../actions/users';
 import { sendMessage } from '../../actions/flash-messages';
@@ -14,13 +14,21 @@ class UserNew extends React.Component {
         
         props.clearUserMessages();
         
+        this.validationRules = {
+            name: [required],
+            username: [required],
+            email: [required],
+            password: [required, password],
+            passwordConfirmation: [required, passwordMatch]
+        };
+        
         this.state = {
             fields: {
-                name: { value: '', error: '', rules: [required] },
-                username: { value: '', error: '', rules: [required] },
-                email: { value: '', error: '', rules: [required] },
-                password: { value: '', error: '', rules: [required, password] },
-                passwordConfirmation: { value: '', error: '', rules: [required, passwordMatch] }
+                name: { value: '', error: '' },
+                username: { value: '', error: '' },
+                email: { value: '', error: '' },
+                password: { value: '', error: '' },
+                passwordConfirmation: { value: '', error: '' }
             },
             serverError: '',
             formValid: false
@@ -42,31 +50,10 @@ class UserNew extends React.Component {
     }
     
     handleUserInput(e, rules) {
-        
-        //export these functions to helper
-        const fields = { ...this.state.fields };
-        let formValid = true;
-        let error;
-        
-        //handle all rules
-        for (let key in fields ) {
-            fields[key].rules.forEach(rule => {
-                if (rule(fields[key].value)) formValid = false;
-            });
-        }
-        
-        //handle target rules
-        rules.forEach(rule => {
-            let result = rule(e.target.value);
-            
-            if (result) error = result;
 
-            fields[e.target.name].error = error;
-        });
-
-        fields[e.target.name].value = e.target.value;
-        
-        this.setState({ fields, formValid });
+        this.setState(
+            validate(e, this.validationRules, { ...this.state.fields })
+        );
     }
     
     handleSubmit(e) {
@@ -98,7 +85,6 @@ class UserNew extends React.Component {
                             placeholder="name"
                             value={ name.value }
                             handleUserInput={ handleUserInput }
-                            rules={ name.rules }
                             error={ name.error }
                         />
                         <Field
@@ -107,7 +93,6 @@ class UserNew extends React.Component {
                             placeholder="username"
                             value={ username.value }
                             handleUserInput={ handleUserInput }
-                            rules={ username.rules }
                             error={ username.error }
                         />
                         <Field
@@ -116,7 +101,6 @@ class UserNew extends React.Component {
                             placeholder="email"
                             value={ email.value }
                             handleUserInput={ handleUserInput }
-                            rules={ email.rules }
                             error={ email.error }
                         />
                         <Field
@@ -125,7 +109,6 @@ class UserNew extends React.Component {
                             placeholder="password"
                             value={ password.value }
                             handleUserInput={ handleUserInput }
-                            rules={ password.rules }
                             error={ password.error }
                         />
                         <Field
@@ -134,7 +117,6 @@ class UserNew extends React.Component {
                             placeholder="password confirmation"
                             value={ passwordConfirmation.value }
                             handleUserInput={ handleUserInput }
-                            rules={ passwordConfirmation.rules }
                             error={ passwordConfirmation.error }
                         />
                         
