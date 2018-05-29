@@ -341,6 +341,7 @@ input, textarea {
     top: $gutter-lg;
     right: $gutter-lg;
     border-radius: $radius;
+    z-index: 100;
     
     > p {
         margin: $gutter-sm $gutter;
