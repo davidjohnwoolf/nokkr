@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Link, withRouter } from 'react-router-dom';
 
 import { logout } from '../../actions/authentication';
 
@@ -13,7 +13,7 @@ class Header extends React.Component {
         
         this.state = {
             menuShown: false
-        }
+        };
         
         this.handleDropdown = this.handleDropdown.bind(this);
         this.handleLogout = this.handleLogout.bind(this);
@@ -24,14 +24,17 @@ class Header extends React.Component {
         
         !this.state.menuShown
             ? this.setState({ menuShown: true })
-            : this.setState({ menuShown: false })
+            : this.setState({ menuShown: false });
     }
     
     handleLogout(e) {
         e.preventDefault();
         
+        const { logout, history } = this.props;
+        
         sessionStorage.removeItem('p2k_token');
-        this.props.logout();
+        logout();
+        history.push('/login');
     }
     
     render() {
@@ -64,6 +67,9 @@ class Header extends React.Component {
                                         <Link to="/users">Users</Link>
                                     </li>
                                     <li>
+                                        <Link to="/users/new">Create User</Link>
+                                    </li>
+                                    <li>
                                         <Link to={ `/users/${ this.props.id }` }>Account</Link>
                                     </li>
                                     <li>
@@ -76,20 +82,7 @@ class Header extends React.Component {
                 </header>
             );
         } else {
-            return (
-                <header id="header">
-                    <nav className="header-nav">
-                        <ul>
-                            <li>
-                                <Link to="/users/new">Create User</Link>
-                            </li>
-                            <li>
-                                <Link to="/login">Login</Link>
-                            </li>
-                        </ul>
-                    </nav>
-                </header>
-            );
+            return null;
         }
         
     }
@@ -100,4 +93,4 @@ const mapStateToProps = state => ({
     id: state.authentication.id
 });
 
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps, { logout })(withRouter(Header));

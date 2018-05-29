@@ -37,8 +37,8 @@ export const logout = () => {
     //eventually sent to server to revoke token and get back response
     return dispatch => {
         dispatch({ type: UNAUTHENTICATED });
-    }
-}
+    };
+};
 
 export const clearAuthMessages = () => {
     return dispatch => {
