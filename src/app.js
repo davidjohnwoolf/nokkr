@@ -16,6 +16,7 @@ import NotAuthorized from './components/errors/not-authorized';
 import PageNotFound from './components/errors/page-not-found';
 import Dashboard from './components/dashboard';
 import Header from './components/layout/header';
+import Menu from './components/layout/menu';
 import UserNew from './components/users/user-new';
 import UserEdit from './components/users/user-edit';
 import UserShow from './components/users/user-show';
@@ -36,6 +37,7 @@ ReactDOM.render(
                     <Switch>
                         <Route exact path="/login" component={ Login } />
                         <Route exact path="/not-authorized" component={ NotAuthorized } />
+                        <PrivateRoute exact path="/menu" component={ Menu } />
                         <PrivateRoute exact path="/users/new" component={ UserNew } />
                         <PrivateRoute exact path="/users/:id/edit" component={ UserEdit } />
                         <PrivateRoute exact path="/users/:id" component={ UserShow } />
