@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS, LOGIN_ERROR, AUTHENTICATED, UNAUTHENTICATED, CLEAR_AUTH_MESSAGES } from '../actions/authentication';
+import { LOGIN_SUCCESS, LOGIN_ERROR, AUTHENTICATED, UNAUTHENTICATED, CLEAR_AUTH_MESSAGES, LOGOUT } from '../actions/authentication';
 
 export default function(state = {}, action) {
     switch (action.type) {
@@ -8,14 +8,14 @@ export default function(state = {}, action) {
         case LOGIN_ERROR:
             return { ...state, serverError: action.serverError };
             
-        case CLEAR_AUTH_MESSAGES:
-            return { ...state, serverError: '', successMessage: '' };
-            
         case AUTHENTICATED:
             return { ...state, authenticated: true, id: action.id };
             
         case UNAUTHENTICATED:
             return { ...state, authenticated: false };
+            
+        case CLEAR_AUTH_MESSAGES:
+            return { ...state, serverError: '', successMessage: '' };
             
         default:
             return state;

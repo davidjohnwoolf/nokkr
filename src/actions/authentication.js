@@ -13,15 +13,15 @@ export const login = creds => {
     return dispatch => {
         request.then(res => {
             if (res.data.error) {
-                //return needed here?
+
                 dispatch({
                     type: LOGIN_ERROR,
                     serverError: res.data.error
                 });
             }
             if (res.data.token) {
-                //return needed here?
                 const decoded = jwtDecode(res.data.token);
+                
                 dispatch({
                     type: LOGIN_SUCCESS,
                     token: res.data.token,
@@ -32,6 +32,13 @@ export const login = creds => {
         });
     };
 };
+
+export const logout = () => {
+    //eventually sent to server to revoke token and get back response
+    return dispatch => {
+        dispatch({ type: UNAUTHENTICATED });
+    }
+}
 
 export const clearAuthMessages = () => {
     return dispatch => {

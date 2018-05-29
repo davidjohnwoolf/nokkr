@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+import { logout } from '../../actions/authentication';
+
 class Header extends React.Component {
     
     //set menu actions with local component state
@@ -28,7 +30,8 @@ class Header extends React.Component {
     handleLogout(e) {
         e.preventDefault();
         
-        console.log('logout');
+        sessionStorage.removeItem('p2k_token');
+        this.props.logout();
     }
     
     render() {
