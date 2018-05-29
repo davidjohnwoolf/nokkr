@@ -27,6 +27,17 @@ const createStoreWithMiddleware = applyMiddleware(thunk, authorization)(createSt
 
 const store = createStoreWithMiddleware(reducers);
 
+//auth routes
+/*<Route exact path="/login" component={ Login } />
+                        <Route exact path="/not-authorized" component={ NotAuthorized } />
+                        <PrivateRoute exact path="/menu" component={ Menu } />
+                        <PrivateRoute exact path="/users/new" component={ UserNew } />
+                        <PrivateRoute exact path="/users/:id/edit" component={ UserEdit } />
+                        <PrivateRoute exact path="/users/:id" component={ UserShow } />
+                		<PrivateRoute exact path="/users" component={ UserIndex } />
+                		<PrivateRoute exact path="/" component={ Dashboard } />
+                		<Route path="*" component={ PageNotFound } />*/
+
 ReactDOM.render(
     <Provider store={ store }>
         <div>
@@ -37,12 +48,12 @@ ReactDOM.render(
                     <Switch>
                         <Route exact path="/login" component={ Login } />
                         <Route exact path="/not-authorized" component={ NotAuthorized } />
-                        <PrivateRoute exact path="/menu" component={ Menu } />
-                        <PrivateRoute exact path="/users/new" component={ UserNew } />
-                        <PrivateRoute exact path="/users/:id/edit" component={ UserEdit } />
-                        <PrivateRoute exact path="/users/:id" component={ UserShow } />
-                		<PrivateRoute exact path="/users" component={ UserIndex } />
-                		<PrivateRoute exact path="/" component={ Dashboard } />
+                        <Route exact path="/menu" component={ Menu } />
+                        <Route exact path="/users/new" component={ UserNew } />
+                        <Route exact path="/users/:id/edit" component={ UserEdit } />
+                        <Route exact path="/users/:id" component={ UserShow } />
+                		<Route exact path="/users" component={ UserIndex } />
+                		<Route exact path="/" component={ Dashboard } />
                 		<Route path="*" component={ PageNotFound } />
             		</Switch>
                 </div>
