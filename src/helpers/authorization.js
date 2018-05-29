@@ -21,6 +21,7 @@ const authorization = store => next => action => {
 		}
         
 	} else {
+		
 	    delete axios.defaults.headers.common['Authorization'];
 	}
 	
