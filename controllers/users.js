@@ -3,6 +3,8 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const User = require('../models/user');
 
+const verifyToken = require('./helpers/authorization');
+
 //const isAuthorized = require('../helpers/auth.helper.js');
 
 // body parser middleware
@@ -10,7 +12,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 // index
-router.get('/', (req, res) => {
+router.get('/', verifyToken, (req, res) => {
     User.find({}, (err, users) => {
         if (err) return res.json(err);
         
@@ -31,7 +33,7 @@ router.get('/', (req, res) => {
 });
 
 // create
-router.post('/', (req, res) => {
+router.post('/', verifyToken, (req, res) => {
     User.findOne({ $or: [{username: req.body.username}, { email: req.body.email }] }, (err, user) => {
         if (err) return res.json(err);
         
@@ -81,7 +83,7 @@ router.post('/', (req, res) => {
 });
 
 // show
-router.get('/:id', (req, res) => {
+router.get('/:id', verifyToken, (req, res) => {
     User.findOne({ _id: req.params.id }, (err, user) => {
         if (err) return res.json(err);
         
@@ -97,7 +99,7 @@ router.get('/:id', (req, res) => {
 });
 
 // update
-router.put('/:id', (req, res) => {
+router.put('/:id', verifyToken, (req, res) => {
     User.findOne({ username: req.body.username }, (err, user) => {
         if (err) return res.json(err);
         
@@ -151,7 +153,7 @@ router.put('/:id', (req, res) => {
 });
 
 // destroy
-router.delete('/:id', (req, res) => {
+router.delete('/:id', verifyToken, (req, res) => {
     User.remove({ _id: req.params.id }, (err, user) => {
     	if (err) return res.json(err);
     
