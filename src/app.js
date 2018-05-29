@@ -3,7 +3,7 @@ require('../sass/base.scss');
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -22,12 +22,9 @@ import UserShow from './components/users/user-show';
 import UserIndex from './components/users/user-index';
 import Login from './components/authentication/login';
 
-const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
+const createStoreWithMiddleware = applyMiddleware(thunk, authorization)(createStore);
 
 const store = createStoreWithMiddleware(reducers);
-
-//make this middleware? also, dont pass in store, map your props to state?
-authorization(sessionStorage.getItem('p2k_token'), store);
 
 ReactDOM.render(
     <Provider store={ store }>
