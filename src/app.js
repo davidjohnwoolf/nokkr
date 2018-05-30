@@ -33,6 +33,7 @@ const store = createStoreWithMiddleware(reducers);
 const token = sessionStorage.getItem('token');
 const authenticated = store.getState().authentication.authenticated;
 
+//set authentication state on load, figure out a way to add this to middleware if possible
 if (token && !authenticated) {
 	
 	const decoded = jwtDecode(token);
@@ -43,7 +44,7 @@ if (token && !authenticated) {
 	    store.dispatch({ type: AUTHENTICATED, id: decoded.id });
 
 	} else {
-		//remove storage and delete auth header
+		//remove storage and update state
 	    sessionStorage.removeItem('token');
 	    store.dispatch({ type: UNAUTHENTICATED });
 	}
