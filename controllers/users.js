@@ -87,19 +87,26 @@ router.get('/:id', verifyToken, (req, res) => {
     User.findOne({ _id: req.params.id }, (err, user) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
         
-        res.json({
-            status: SUCCESS,
-            data: {
-                user: {
-                    name: user.name,
-                    username: user.username,
-                    email: user.email,
-                    isAdmin: user.isAdmin,
-                    createdAt: user.createdAt,
-                    id: user._id
+        if (user) {
+            return res.json({
+                status: SUCCESS,
+                data: {
+                    user: {
+                        name: user.name,
+                        username: user.username,
+                        email: user.email,
+                        isAdmin: user.isAdmin,
+                        createdAt: user.createdAt,
+                        id: user._id
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            return res.json({
+                status: FAIL,
+                data: { message: 'User does not exist' }
+            });
+        }
     });
 });
 
@@ -166,7 +173,7 @@ router.delete('/:id', verifyToken, (req, res) => {
     User.remove({ _id: req.params.id }, (err, user) => {
     	if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error deleting user' });
     
-    	res.json({ status: SUCCESS, data: { message: 'User deleted' } });
+    	return res.json({ status: SUCCESS, data: { message: 'User deleted' } });
     });
 });
 
