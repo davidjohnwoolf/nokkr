@@ -3,8 +3,8 @@ import jwtDecode from 'jwt-decode';
 import { AUTHENTICATED, UNAUTHENTICATED } from '../actions/authentication';
 
 const authorization = store => next => action => {
-	const token = sessionStorage.getItem('p2k_token');
-	
+	const token = sessionStorage.getItem('token');
+
 	if (token) {
 	    //decode token
 		const decoded = jwtDecode(token);
@@ -14,9 +14,10 @@ const authorization = store => next => action => {
 		if (currentTime < decoded.exp) {
 		    //set auth header
 		    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
 		} else {
 			//remove storage and delete auth header
-		    sessionStorage.removeItem('p2k_token');
+		    sessionStorage.removeItem('token');
 		    delete axios.defaults.headers.common['Authorization'];
 		}
         

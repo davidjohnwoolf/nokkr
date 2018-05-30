@@ -44,7 +44,7 @@ class Login extends React.Component {
         if (token && (successMessage === 'Logged in') && id) {
             //secure this
             sendMessage(successMessage);
-            sessionStorage.setItem('p2k_token', token);
+            sessionStorage.setItem('token', token);
             history.push(`/users/${id}`);
         }
     }

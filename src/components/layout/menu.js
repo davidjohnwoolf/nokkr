@@ -16,7 +16,7 @@ class Menu extends React.Component {
         
         const { logout, history } = this.props;
         
-        sessionStorage.removeItem('p2k_token');
+        sessionStorage.removeItem('token');
         logout();
         history.push('/login');
     }

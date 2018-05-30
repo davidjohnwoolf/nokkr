@@ -7,7 +7,9 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
+import jwtDecode from 'jwt-decode';
 
+import { AUTHENTICATED, UNAUTHENTICATED } from './actions/authentication';
 import authorization from './middleware/authorization';
 import reducers from './reducers';
 import PrivateRoute from './components/helpers/private-route';
@@ -23,9 +25,13 @@ import UserShow from './components/users/user-show';
 import UserIndex from './components/users/user-index';
 import Login from './components/authentication/login';
 
+
 const createStoreWithMiddleware = applyMiddleware(thunk, authorization)(createStore);
 
 const store = createStoreWithMiddleware(reducers);
+
+const token = sessionStorage.getItem('token');
+const authenticated = store.getState().authentication.authenticated;
 
 //auth routes
 /*<Route exact path="/login" component={ Login } />
@@ -37,6 +43,25 @@ const store = createStoreWithMiddleware(reducers);
                 		<PrivateRoute exact path="/users" component={ UserIndex } />
                 		<PrivateRoute exact path="/" component={ Dashboard } />
                 		<Route path="*" component={ PageNotFound } />*/
+
+if (token && !authenticated) {
+	
+	const decoded = jwtDecode(token);
+	const currentTime = Date.now() / 1000;
+	
+	//check exp
+	if (currentTime < decoded.exp) {
+	    store.dispatch({ type: AUTHENTICATED, id: decoded.id });
+
+	} else {
+		//remove storage and delete auth header
+	    sessionStorage.removeItem('token');
+	    store.dispatch({ type: UNAUTHENTICATED });
+	}
+	
+} else if (!token && authenticated) {
+    store.dispatch({ type: UNAUTHENTICATED });
+}
 
 ReactDOM.render(
     <Provider store={ store }>

@@ -1,6 +1,6 @@
 import { LOGIN_SUCCESS, LOGIN_ERROR, AUTHENTICATED, UNAUTHENTICATED, CLEAR_AUTH_MESSAGES, LOGOUT } from '../actions/authentication';
 
-export default function(state = {}, action) {
+export default function(state = { authenticated: false }, action) {
     switch (action.type) {
         case LOGIN_SUCCESS:
             return { ...state, token: action.token, successMessage: action.successMessage, id: action.id, authenticated: true };
