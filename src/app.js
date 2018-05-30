@@ -33,17 +33,6 @@ const store = createStoreWithMiddleware(reducers);
 const token = sessionStorage.getItem('token');
 const authenticated = store.getState().authentication.authenticated;
 
-//auth routes
-/*<Route exact path="/login" component={ Login } />
-                        <Route exact path="/not-authorized" component={ NotAuthorized } />
-                        <PrivateRoute exact path="/menu" component={ Menu } />
-                        <PrivateRoute exact path="/users/new" component={ UserNew } />
-                        <PrivateRoute exact path="/users/:id/edit" component={ UserEdit } />
-                        <PrivateRoute exact path="/users/:id" component={ UserShow } />
-                		<PrivateRoute exact path="/users" component={ UserIndex } />
-                		<PrivateRoute exact path="/" component={ Dashboard } />
-                		<Route path="*" component={ PageNotFound } />*/
-
 if (token && !authenticated) {
 	
 	const decoded = jwtDecode(token);
@@ -73,12 +62,12 @@ ReactDOM.render(
                     <Switch>
                         <Route exact path="/login" component={ Login } />
                         <Route exact path="/not-authorized" component={ NotAuthorized } />
-                        <Route exact path="/menu" component={ Menu } />
-                        <Route exact path="/users/new" component={ UserNew } />
-                        <Route exact path="/users/:id/edit" component={ UserEdit } />
-                        <Route exact path="/users/:id" component={ UserShow } />
-                		<Route exact path="/users" component={ UserIndex } />
-                		<Route exact path="/" component={ Dashboard } />
+                        <PrivateRoute exact path="/menu" component={ Menu } />
+                        <PrivateRoute exact path="/users/new" component={ UserNew } />
+                        <PrivateRoute exact path="/users/:id/edit" component={ UserEdit } />
+                        <PrivateRoute exact path="/users/:id" component={ UserShow } />
+                		<PrivateRoute exact path="/users" component={ UserIndex } />
+                		<PrivateRoute exact path="/" component={ Dashboard } />
                 		<Route path="*" component={ PageNotFound } />
             		</Switch>
                 </div>

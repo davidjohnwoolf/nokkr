@@ -20,7 +20,7 @@ class Header extends React.Component {
         
         const { authenticated } = this.props;
         
-        if (authenticated || true) {
+        if (authenticated) {
             return (
                 <header id="header">
                     <nav className="header-nav">
