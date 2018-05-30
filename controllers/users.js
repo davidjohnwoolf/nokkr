@@ -166,7 +166,7 @@ router.delete('/:id', verifyToken, (req, res) => {
     User.remove({ _id: req.params.id }, (err, user) => {
     	if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error deleting user' });
     
-    	res.json({ status: SUCCESS, data: null });
+    	res.json({ status: SUCCESS, data: { message: 'User deleted' } });
     });
 });
 
