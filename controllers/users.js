@@ -5,7 +5,10 @@ const User = require('../models/user');
 
 const verifyToken = require('./helpers/authorization');
 
-//const isAuthorized = require('../helpers/auth.helper.js');
+//status variables for Jsend API spec
+const SUCCESS = 'success';
+const FAIL = 'fail';
+const ERROR = 'error';
 
 // body parser middleware
 router.use(bodyParser.urlencoded({ extended: false }));
@@ -14,7 +17,7 @@ router.use(bodyParser.json());
 // index
 router.get('/', verifyToken, (req, res) => {
     User.find({}, (err, users) => {
-        if (err) return res.json(err);
+        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
         
         const safeUsers = [];
         
@@ -28,21 +31,21 @@ router.get('/', verifyToken, (req, res) => {
             });
         });
         
-        return res.json(safeUsers);
+        return res.json({ status: SUCCESS, data: { users: safeUsers } });
     });
 });
 
 // create
 router.post('/', verifyToken, (req, res) => {
     User.findOne({ $or: [{username: req.body.username}, { email: req.body.email }] }, (err, user) => {
-        if (err) return res.json(err);
+        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
         
         if (user && req.body.email === user.email) {
-            return res.json({ error: 'Email already exists' });
+            return res.json({ status: FAIL, data: { message: 'Email already exists' } });
         }
         
         if (user && req.body.username === user.username) {
-            return res.json({ error: 'Username already exists' });
+            return res.json({ status: FAIL, data: { message: 'Username already exists' } });
         }
         
         if (req.body.password === req.body.passwordConfirmation) {
@@ -51,17 +54,12 @@ router.post('/', verifyToken, (req, res) => {
                 const user = new User(req.body);
                 
                 user.save(err => {
-                    if (err) return res.json(err);
+                    if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error saving user' });
                     
                     return res.json({
-                        message: 'User created',
-                        user: {
-                            name: user.name,
-                            username: user.username,
-                            email: user.email,
-                            isAdmin: user.isAdmin,
-                            createdAt: user.createdAt,
-                            id: user._id
+                        status: SUCCESS,
+                        data: {
+                            message: 'User created'
                         }
                     });
                 });
@@ -69,14 +67,16 @@ router.post('/', verifyToken, (req, res) => {
             } else {
                 
                 return res.json({
-                    error: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character'
+                    status: FAIL,
+                    data: { message: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character' }
                 });
             }
             
         } else {
             
             return res.json({
-                error: 'Passwords do not match'
+                status: FAIL,
+                data: { message: 'Passwords do not match' }
             });
         }
     });
@@ -85,15 +85,20 @@ router.post('/', verifyToken, (req, res) => {
 // show
 router.get('/:id', verifyToken, (req, res) => {
     User.findOne({ _id: req.params.id }, (err, user) => {
-        if (err) return res.json(err);
+        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
         
         res.json({
-            name: user.name,
-            username: user.username,
-            email: user.email,
-            isAdmin: user.isAdmin,
-            createdAt: user.createdAt,
-            id: user._id
+            status: SUCCESS,
+            data: {
+                user: {
+                    name: user.name,
+                    username: user.username,
+                    email: user.email,
+                    isAdmin: user.isAdmin,
+                    createdAt: user.createdAt,
+                    id: user._id
+                }
+            }
         });
     });
 });
@@ -101,15 +106,15 @@ router.get('/:id', verifyToken, (req, res) => {
 // update
 router.put('/:id', verifyToken, (req, res) => {
     User.findOne({ username: req.body.username }, (err, user) => {
-        if (err) return res.json(err);
+        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
         
         if (user && (user.id !== req.params.id)) {
             
-            res.json({ error: 'Username already exists' });
+            res.json({ status: FAIL, data: { message: 'Username already exists' } });
         } else {
             
             User.findOne({ _id: req.params.id }, (err, user) => {
-                if (err) return res.json(err);
+                if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
                 
                 if (!req.body.password || (req.body.password === req.body.passwordConfirmation)) {
                     
@@ -120,17 +125,20 @@ router.put('/:id', verifyToken, (req, res) => {
                         }
                         
                         user.save(err => {
-                            if (err) return res.json(err);
+                            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error saving user' });
                             
                             return res.json({
-                                message: 'User updated',
-                                user: {
-                                    name: user.name,
-                                    username: user.username,
-                                    email: user.email,
-                                    isAdmin: user.isAdmin,
-                                    createdAt: user.createdAt,
-                                    id: user._id
+                                status: SUCCESS,
+                                data: {
+                                    message: 'User updated',
+                                    user: {
+                                        name: user.name,
+                                        username: user.username,
+                                        email: user.email,
+                                        isAdmin: user.isAdmin,
+                                        createdAt: user.createdAt,
+                                        id: user._id
+                                    }
                                 }
                             });
                         });
@@ -138,13 +146,14 @@ router.put('/:id', verifyToken, (req, res) => {
                     } else {
                         
                         return res.json({
-                            error: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character'
+                            status: FAIL,
+                            data: { message: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character' }
                         });
                     }
                     
                 } else {
                     
-                    return res.json({ error: 'Passwords do not match' });
+                    return res.json({ status: FAIL, data: { message: 'Passwords do not match' } });
                 }
                 
             });
@@ -155,9 +164,9 @@ router.put('/:id', verifyToken, (req, res) => {
 // destroy
 router.delete('/:id', verifyToken, (req, res) => {
     User.remove({ _id: req.params.id }, (err, user) => {
-    	if (err) return res.json(err);
+    	if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error deleting user' });
     
-    	res.json({ message: 'User deleted' });
+    	res.json({ status: SUCCESS, data: null });
     });
 });
 
