@@ -24,8 +24,7 @@ class Menu extends React.Component {
     render() {
             return (
                 <nav id="main-menu">
-                    <h4>User Options</h4>
-                    <hr />
+                    <h5>User Options</h5>
                     <ul>
                         <li>
                             <Link to={ `/users/${ this.props.id }` }>Account <i className="fas fa-user" ></i></Link>
@@ -44,8 +43,7 @@ class Menu extends React.Component {
                         </li>
                     </ul>
                     
-                    <h4>Admin Options</h4>
-                    <hr />
+                    <h5>Admin Options</h5>
                     <ul>
                         <li>
                             <Link to="/new">Company Settings <i className="fas fa-cog"></i></Link>

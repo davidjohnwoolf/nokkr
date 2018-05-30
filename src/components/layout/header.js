@@ -1,34 +1,49 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link, withRouter } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 
 class Header extends React.Component {
     
+    constructor(props) {
+        super(props);
+        
+        this.renderMenuLink = this.renderMenuLink.bind(this);
+    }
+    
+    renderMenuLink(path) {
+        return this.props.location.pathname === path
+            ? <a onClick={ this.props.history.goBack } href="#" className="active"><i className="fas fa-bars"></i></a>
+            : <NavLink to="/menu" activeClassName="active"><i className="fas fa-bars"></i></NavLink>
+    }
+
     render() {
-        //temp auth ignore
-        if (this.props.authenticated || true) {
+        
+        const { authenticated } = this.props;
+        
+        if (authenticated || true) {
             return (
                 <header id="header">
                     <nav className="header-nav">
                         <ul>
                             <li>
-                                <Link to="/"><i className="fas fa-home"></i></Link>
+                                <NavLink exact to="/" activeClassName="active"><i className="fas fa-home"></i></NavLink>
                             </li>
                             <li>
-                                <Link to="/user/id/areas"><i className="fas fa-map-marker-alt"></i></Link>
+                                <NavLink to="/user/id/areas" activeClassName="active"><i className="fas fa-map-marker-alt"></i></NavLink>
                             </li>
                             <li>
-                                <Link to="/user/id/leads"><i className="fas fa-users"></i></Link>
+                                <NavLink to="/user/id/leads" activeClassName="active"><i className="fas fa-users"></i></NavLink>
                             </li>
                             <li>
-                                <Link to="/user/id/appointments"><i className="fas fa-calendar"></i></Link>
+                                <NavLink to="/user/id/appointments" activeClassName="active"><i className="fas fa-calendar"></i></NavLink>
                             </li>
                             <li>
-                                <Link to="/new"><i className="fas fa-plus"></i></Link>
+                                <NavLink to="/new" activeClassName="active"><i className="fas fa-plus"></i></NavLink>
                             </li>
                             <li>
-                                <Link to="/menu"><i className="fas fa-bars"></i></Link>
+                                { this.renderMenuLink('/menu') }
                             </li>
+                            
                         </ul>
                     </nav>
                 </header>
@@ -37,10 +52,10 @@ class Header extends React.Component {
             return null;
         }
     }
-};
+}
 
 const mapStateToProps = state => ({
     authenticated: state.authentication.authenticated
 });
 
-export default connect(mapStateToProps)(withRouter(Header));
+export default withRouter(connect(mapStateToProps)(Header));
