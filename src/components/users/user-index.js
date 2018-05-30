@@ -37,7 +37,7 @@ class UserIndex extends React.Component {
                 <section className="index">
                     <header className="content-header">
                         <h1>Users</h1>
-                        <Link className="btn btn-primary" to="/users/new"><i className="fas fa-plus"></i></Link>
+                        <Link className="icon-button-success" to="/users/new"><i className="fas fa-plus"></i></Link>
                     </header>
                     <ul className="link-list">
                         { this.renderUsers() }

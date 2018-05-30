@@ -90,16 +90,8 @@ input, textarea {
                 }
             }
             
-            &.active {
-                
-                > a {
-                    background: $white;
-                    color: $primary;
-                    
-                    &:hover {
-                        background: $white;
-                    }
-                }
+            > a.active {
+                background: $primary;
             }
         }
     }
@@ -123,7 +115,7 @@ input, textarea {
         > li {
             display: block;
             width: 100%;
-            border-bottom: 1px #444 solid;
+            border-bottom: 1px $black solid;
             
             > a {
                 display: block;
@@ -144,18 +136,13 @@ input, textarea {
         }
     }
     
-    > h4 {
+    > h5 {
         color: $gray-dark;
         text-align: left;
         font-weight: normal;
         margin: 0;
-        padding: $gutter-lg $gutter $gutter $gutter-xl;
-    }
-    
-    > hr {
-        border: 0;
-        border-top: 2px #444 solid;
-        margin: 0;
+        padding: $gutter-lg $gutter-xl;
+        border-bottom: 1px $black solid;
     }
 }
 
@@ -349,6 +336,17 @@ input, textarea {
     
     &:hover {
         background: $error-light;
+    }
+}
+
+.icon-button-success {
+    color: $success;
+    font-size: 2.5rem;
+    padding: $gutter;
+    margin-top: $gutter;
+    
+    &:hover {
+        color: $success-light;
     }
 }
 
