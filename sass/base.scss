@@ -357,14 +357,14 @@ input, textarea {
 .flash-message {
     display: flex;
     justify-content: space-between;
-    padding: $gutter-sm $gutter;
+    padding: $gutter-lg;
     background: $success;
     color: $white;
     position: fixed;
-    top: $gutter-lg;
-    right: $gutter-lg;
-    border-radius: $radius;
+    top: 0;
+    left: 0;
     z-index: 100;
+    width: 100%;
     
     > p {
         margin: $gutter-sm $gutter;
@@ -389,7 +389,8 @@ input, textarea {
 
 .content-header {
     display: flex;
-    justift-content: space-between;
+    justify-content: space-between;
+    align-items: center;
 }
 
 //General Classes

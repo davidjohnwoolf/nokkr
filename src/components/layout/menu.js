@@ -7,6 +7,7 @@ class Menu extends React.Component {
     
     constructor(props) {
         super(props);
+        
         this.handleLogout = this.handleLogout.bind(this);
     }
     
@@ -27,7 +28,7 @@ class Menu extends React.Component {
                     <hr />
                     <ul>
                         <li>
-                            <Link to={ `/user/${ this.props.id }` }>Account <i className="fas fa-user" ></i></Link>
+                            <Link to={ `/users/${ this.props.id }` }>Account <i className="fas fa-user" ></i></Link>
                         </li>
                         <li>
                             <Link to="/reports">Reports <i className="fas fa-chart-bar"></i></Link>
