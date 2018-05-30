@@ -35,7 +35,7 @@ class Header extends React.Component {
                                 <NavLink to="/user/id/leads" activeClassName="active"><i className="fas fa-users"></i></NavLink>
                             </li>
                             <li>
-                                <NavLink to="/user/id/appointments" activeClassName="active"><i className="fas fa-calendar"></i></NavLink>
+                                <NavLink to="/user/id/appointments" activeClassName="active"><i className="fas fa-calendar-alt"></i></NavLink>
                             </li>
                             <li>
                                 <NavLink to="/new" activeClassName="active"><i className="fas fa-plus"></i></NavLink>

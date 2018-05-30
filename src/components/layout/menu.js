@@ -36,6 +36,9 @@ class Menu extends React.Component {
                             <Link to="/address-lookup">Address Lookup <i className="fas fa-address-card"></i></Link>
                         </li>
                         <li>
+                            <Link to="/support">Dealer Resources <i className="fas fa-info-circle"></i></Link>
+                        </li>
+                        <li>
                             <Link to="/support">Support <i className="fas fa-comments"></i></Link>
                         </li>
                         <li>
