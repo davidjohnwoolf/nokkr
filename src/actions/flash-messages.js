@@ -7,6 +7,8 @@ export const sendMessage = message => {
             type: SEND_MESSAGE,
             message: message
         });
+        
+        setTimeout(() => dispatch({ type: CLOSE_MESSAGE, message: '' }), 3000);
     };
 };
 
