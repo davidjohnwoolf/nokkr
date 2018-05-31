@@ -16,7 +16,6 @@ export const passwordMatch = () => {
 };
 
 export const validate = (e, rules, fields) => {
-    //export these functions to helper
     let formValid = true;
     let error;
     
