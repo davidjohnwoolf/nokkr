@@ -2,14 +2,17 @@
   "name": "platform2k",
   "version": "1.0.0",
   "description": "A platform for door to door sales",
+  "author": "David Woolf <davidjohnwoolf@gmail.com>",
+  "license": "ISC",
   "main": "server.js",
   "scripts": {
     "test": "mocha",
     "build": "rimraf dist && NODE_ENV=production webpack -p",
     "dev": "rimraf dist && NODE_ENV=development webpack --watch"
   },
-  "author": "David Woolf <davidjohnwoolf@gmail.com>",
-  "license": "ISC",
+  "jest": {
+    "testMatch": [ "**/src/**/*.test.js?(x)"]
+  },
   "dependencies": {
     "axios": "^0.17.1",
     "bcrypt": "^1.0.3",
