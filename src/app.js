@@ -25,10 +25,12 @@ import UserShow from './components/users/user-show';
 import UserIndex from './components/users/user-index';
 import Login from './components/authentication/login';
 
+//use react production build for production https://reactjs.org/docs/optimizing-performance.html#use-the-production-build
 
 const createStoreWithMiddleware = applyMiddleware(thunk, authorization)(createStore);
 
-const store = createStoreWithMiddleware(reducers);
+//remove the devtools extensiom for production
+const store = createStoreWithMiddleware(reducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 const token = sessionStorage.getItem('token');
 const authenticated = store.getState().authentication.authenticated;
