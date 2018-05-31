@@ -13,6 +13,10 @@
   "jest": {
     "testMatch": [
       "**/src/**/*.test.js?(x)"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/.c9"
     ]
   },
   "dependencies": {
