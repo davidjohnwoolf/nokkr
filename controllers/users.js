@@ -103,8 +103,9 @@ router.get('/:id', verifyToken, (req, res) => {
             });
         } else {
             return res.json({
-                status: FAIL,
-                data: { message: 'User does not exist' }
+                status: ERROR,
+                code: 404,
+                message: 'User does not exist'
             });
         }
     });
