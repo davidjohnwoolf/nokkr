@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { required, validate } from '../helpers/validation';
 import Field from '../forms/field';
-import { login, clearAuthMessages } from '../../actions/authentication';
-import { sendMessage } from '../../actions/flash-messages';
+import { login, clearAuth } from '../../actions/authentication';
 
 class Login extends React.Component {
     
@@ -16,7 +15,7 @@ class Login extends React.Component {
             props.history.push('/');
         }
         
-        props.clearAuthMessages();
+        props.clearAuth();
         
         this.validationRules = {
             username: [required],
@@ -37,13 +36,11 @@ class Login extends React.Component {
     }
     
     componentDidUpdate() {
-        const { serverError, token, history, successMessage, id, sendMessage } = this.props;
+        const { success, fail, message, token, history, id } = this.props;
         
-        if (serverError !== this.state.serverError) this.setState({ serverError });
+        if (fail && (message !== this.state.serverError)) this.setState({ serverError: message });
         
-        if (token && (successMessage === 'Logged in') && id) {
-            //secure this
-            sendMessage(successMessage);
+        if (success) {
             sessionStorage.setItem('token', token);
             history.push(`/users/${id}`);
         }
@@ -113,12 +110,12 @@ class Login extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        serverError: state.authentication.serverError,
         token: state.authentication.token,
         id: state.authentication.id,
         authenticated: state.authentication.authenticated,
-        successMessage: state.authentication.successMessage
+        success: state.authentication.success,
+        fail: state.authentication.fail
     };
 };
 
-export default connect(mapStateToProps, { login, clearAuthMessages, sendMessage })(Login);
+export default connect(mapStateToProps, { login, clearAuth })(Login);

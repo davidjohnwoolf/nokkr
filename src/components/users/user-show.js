@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchUser, deleteUser, clearUserMessages } from '../../actions/users';
+import { fetchUser, deleteUser, clearUser } from '../../actions/users';
 import { sendMessage } from '../../actions/flash-messages';
 
 class UserShow extends React.Component {
@@ -9,17 +9,17 @@ class UserShow extends React.Component {
 	constructor(props) {
         super(props);
         
-        props.clearUserMessages();
+        props.clearUser();
         props.fetchUser(this.props.match.params.id);
         
         this.handleDelete = this.handleDelete.bind(this);
     }
     
     componentDidUpdate() {
-        const { successMessage, history, sendMessage } = this.props;
+        const { message, history, sendMessage } = this.props;
         
-        if (successMessage === 'User deleted') {
-            sendMessage(successMessage);
+        if (message === 'User deleted') {
+            sendMessage(message);
             history.push('/users');
         }
     }
@@ -76,6 +76,6 @@ class UserShow extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({ user: state.users.user, successMessage: state.users.successMessage });
+const mapStateToProps = state => ({ user: state.users.user, message: state.users.message });
 
-export default connect(mapStateToProps, { fetchUser, deleteUser, sendMessage, clearUserMessages })(UserShow);
+export default connect(mapStateToProps, { fetchUser, deleteUser, sendMessage, clearUser })(UserShow);

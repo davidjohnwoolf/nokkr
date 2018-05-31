@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { required, password, passwordMatch, validate } from '../helpers/validation';
 import Field from '../forms/field';
-import { createUser, clearUserMessages } from '../../actions/users';
+import { createUser, clearUser } from '../../actions/users';
 import { sendMessage } from '../../actions/flash-messages';
 
 class UserNew extends React.Component {
@@ -12,7 +12,7 @@ class UserNew extends React.Component {
     constructor(props) {
         super(props);
         
-        props.clearUserMessages();
+        props.clearUser();
         
         this.validationRules = {
             name: [required],
@@ -39,12 +39,12 @@ class UserNew extends React.Component {
     }
     
     componentDidUpdate() {
-        const { serverError, successMessage, history, sendMessage } = this.props;
+        const { success, fail, message, history, sendMessage } = this.props;
         
-        if (serverError !== this.state.serverError) this.setState({ serverError });
+        if (fail && (message !== this.state.serverError)) this.setState({ serverError: message });
         
-        if (successMessage === 'User created') {
-            sendMessage(successMessage);
+        if (success) {
+            sendMessage(message);
             history.push('/users');
         }
     }
@@ -139,7 +139,7 @@ class UserNew extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return { serverError: state.users.serverError, successMessage: state.users.successMessage };
+    return { message: state.users.message, success: state.users.success, fail: state.users.fail };
 };
 
-export default connect(mapStateToProps, { clearUserMessages, createUser, sendMessage })(UserNew);
+export default connect(mapStateToProps, { clearUser, createUser, sendMessage })(UserNew);

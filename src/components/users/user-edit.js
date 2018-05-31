@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { required, password, passwordMatch, validate } from '../helpers/validation';
 import Field from '../forms/field';
-import { fetchUser, updateUser, clearUserMessages } from '../../actions/users';
+import { fetchUser, updateUser, clearUser } from '../../actions/users';
 import { sendMessage } from '../../actions/flash-messages';
 
 class UserEdit extends React.Component {
@@ -12,7 +12,7 @@ class UserEdit extends React.Component {
     constructor(props) {
         super(props);
         
-        props.clearUserMessages();
+        props.clearUser();
         props.fetchUser(this.props.match.params.id);
         
         this.validationRules = {
@@ -56,13 +56,13 @@ class UserEdit extends React.Component {
 
     
     componentDidUpdate() {
-        const { serverError, successMessage, history, sendMessage } = this.props;
+        const { success, fail, message, history, sendMessage } = this.props;
         
-        if (serverError !== this.state.serverError) this.setState({ serverError });
+        if (fail && (message !== this.state.serverError)) this.setState({ serverError: message });
         
-        if (successMessage === 'User updated') {
-            sendMessage(successMessage);
-            history.push(`/users/${ this.props.match.params.id }`);
+        if (success) {
+            sendMessage(message);
+            history.push('/users');
         }
     }
     
@@ -163,10 +163,11 @@ class UserEdit extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        serverError: state.users.serverError,
-        successMessage: state.users.successMessage,
+        message: state.users.message,
+        success: state.users.success,
+        fail: state.users.fail,
         user: state.users.user
     };
 };
 
-export default connect(mapStateToProps, { fetchUser, clearUserMessages, updateUser, sendMessage })(UserEdit);
+export default connect(mapStateToProps, { fetchUser, clearUser, updateUser, sendMessage })(UserEdit);

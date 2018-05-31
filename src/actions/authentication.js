@@ -1,35 +1,33 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
-export const LOGIN_ERROR = 'LOGIN_ERROR';
+export const LOGIN_FAIL = 'LOGIN_FAIL';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const AUTHENTICATED = 'AUTHENTICATED';
 export const UNAUTHENTICATED = 'UNAUTHENTICATED';
-export const CLEAR_AUTH_MESSAGES = 'CLEAR_AUTH_MESSAGES';
+export const CLEAR_AUTH = 'CLEAR_AUTH';
 
 export const login = creds => {
-    const request = axios.post('/login', creds);
     
-    return dispatch => {
-        request.then(res => {
-            if (res.data.error) {
-
-                dispatch({
-                    type: LOGIN_ERROR,
-                    serverError: res.data.error
-                });
-            }
-            if (res.data.token) {
-                const decoded = jwtDecode(res.data.token);
+    return async dispatch => {
+        const response = await axios.post('/login', creds);
+        
+        if (response.data.status === 'success') {
+            const decoded = jwtDecode(response.data.data.token);
                 
-                dispatch({
-                    type: LOGIN_SUCCESS,
-                    token: res.data.token,
-                    id: decoded.id,
-                    successMessage: res.data.message
-                });
-            }
-        });
+            dispatch({
+                type: LOGIN_SUCCESS,
+                token: response.data.data.token,
+                id: decoded.id
+            });
+        }
+        
+        if (response.data.status === 'fail') {
+            dispatch({
+                type: LOGIN_FAIL,
+                message: response.data.data.message
+            });
+        }
     };
 };
 
@@ -40,8 +38,8 @@ export const logout = () => {
     };
 };
 
-export const clearAuthMessages = () => {
+export const clearAuth = () => {
     return dispatch => {
-        dispatch({ type: CLEAR_AUTH_MESSAGES });
+        dispatch({ type: CLEAR_AUTH });
     };
 };

@@ -3,89 +3,81 @@ import axios from 'axios';
 export const FETCH_USERS = 'FETCH_USERS';
 export const FETCH_USER = 'FETCH_USER';
 export const CREATE_USER_SUCCESS = 'CREATE_USER_SUCCESS';
-export const CREATE_USER_ERROR = 'CREATE_USER_ERROR';
+export const CREATE_USER_FAIL = 'CREATE_USER_ERROR';
 export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
-export const UPDATE_USER_ERROR = 'UPDATE_USER_ERROR';
+export const UPDATE_USER_FAIL = 'UPDATE_USER_FAIL';
 export const DELETE_USER = 'DELETE_USER';
-export const CLEAR_USER_MESSAGES = 'CLEAR_USER_MESSAGES';
-
-//why are you getting the console error when not using those methods?
+export const CLEAR_USER = 'CLEAR_USER';
 
 export const fetchUsers = () => {
-    const request = axios.get('/users');
-    
-    return dispatch => {
-        request.then(res => dispatch({ type: FETCH_USERS, users: res.data }));
+    return async dispatch => {
+        const response = await axios.get('/users');
+        
+        dispatch({ type: FETCH_USERS, users: response.data.data.users });
     };
 };
 
 export const fetchUser = id => {
-    const request = axios.get(`/users/${id}`);
-    
-    return dispatch => {
-        request.then(res => dispatch({ type: FETCH_USER, user: res.data }));
-    };
-};
-
-export const clearUserMessages = user => {
-    return dispatch => {
-        dispatch({ type: CLEAR_USER_MESSAGES });
+    return async dispatch => {
+        const response = await axios.get(`/users/${id}`);
+        
+        dispatch({ type: FETCH_USER, user: response.data.data.user });
     };
 };
 
 export const createUser = user => {
-    //maybe use async await and fetch
-    const request = axios.post('/users', user);
     
-    return dispatch => {
-        request.then(res => {
-
-            if (res.data.error) {
-                dispatch({
-                    type: CREATE_USER_ERROR,
-                    serverError: res.data.error
-                });
-            }
-            
-            if (res.data.message) {
-                dispatch({
-                    type: CREATE_USER_SUCCESS,
-                    successMessage: res.data.message
-                });
-            }
-        });
+    return async dispatch => {
+        const response = await axios.post('/users', user);
+        
+        if (response.data.status === 'success') {
+            dispatch({
+                type: CREATE_USER_SUCCESS,
+                message: response.data.data.message
+            });
+        }
+        
+        if (response.data.status === 'fail') {
+            dispatch({
+                type: CREATE_USER_FAIL,
+                message: response.data.data.message
+            });
+        }
     };
 };
 
 export const updateUser = (id, user) => {
-    //maybe use async await and fetch
-    //is it bad you are using the same variables for user edit and user create?
-    const request = axios.put(`/users/${id}`, user);
     
-    return dispatch => {
-        request.then(res => {
-
-            if (res.data.error) {
-                dispatch({
-                    type: UPDATE_USER_ERROR,
-                    serverError: res.data.error
-                });
-            }
-            
-            if (res.data.message) {
-                dispatch({
-                    type: UPDATE_USER_SUCCESS,
-                    successMessage: res.data.message
-                });
-            }
-        });
+    return async dispatch => {
+        const response = await axios.put(`/users/${id}`, user);
+        
+        if (response.data.status === 'success') {
+            dispatch({
+                type: UPDATE_USER_SUCCESS,
+                message: response.data.data.message
+            });
+        }
+        
+        if (response.data.status === 'fail') {
+            dispatch({
+                type: UPDATE_USER_FAIL,
+                message: response.data.data.message
+            });
+        }
     };
 };
 
 export const deleteUser = id => {
-    const request = axios.delete(`/users/${id}`);
     
+    return async dispatch => {
+        const response = await axios.delete(`/users/${id}`);
+        
+        dispatch({ type: DELETE_USER, message: response.data.data.message });
+    };
+};
+
+export const clearUser = user => {
     return dispatch => {
-        request.then(res => dispatch({ type: DELETE_USER, successMessage: res.data.message }));
+        dispatch({ type: CLEAR_USER });
     };
 };
