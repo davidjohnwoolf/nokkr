@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 
 import { required, validate } from '../helpers/validation';
 import Field from '../forms/field';
@@ -114,7 +113,8 @@ const mapStateToProps = state => {
         id: state.authentication.id,
         authenticated: state.authentication.authenticated,
         success: state.authentication.success,
-        fail: state.authentication.fail
+        fail: state.authentication.fail,
+        message: state.authentication.message
     };
 };
 

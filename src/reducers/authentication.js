@@ -3,7 +3,7 @@ import { LOGIN_SUCCESS, LOGIN_FAIL, AUTHENTICATED, UNAUTHENTICATED, CLEAR_AUTH, 
 export default function(state = { authenticated: false }, action) {
     switch (action.type) {
         case LOGIN_SUCCESS:
-            return { ...state, success: true, token: action.token, id: action.id, authenticated: true };
+            return { ...state, success: true, token: action.token, id: action.id, authenticated: true, message: '' };
         
         case LOGIN_FAIL:
             return { ...state, fail: true, message: action.message };

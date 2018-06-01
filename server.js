@@ -9,7 +9,6 @@ const logger = require('morgan');
 const app = express();
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const expressJWT = require('express-jwt');
 
 // controllers
 const Authentication = require('./controllers/authentication');
