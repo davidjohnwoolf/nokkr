@@ -7,7 +7,7 @@ export default function(state = {}, action) {
             return { ...state, message: action.message };
             
         case CLOSE_MESSAGE:
-            return { ...state, message: action.message };
+            return {};
 
         default:
             return state;
