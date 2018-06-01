@@ -9,7 +9,7 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import jwtDecode from 'jwt-decode';
 
-import { AUTHENTICATED, UNAUTHENTICATED } from './actions/authentication';
+import { LOGIN_SUCCESS, CLEAR_AUTH } from './actions/authentication';
 import authorization from './middleware/authorization';
 import reducers from './reducers';
 import PrivateRoute from './components/helpers/private-route';
@@ -43,16 +43,16 @@ if (token && !authenticated) {
 	
 	//check exp
 	if (currentTime < decoded.exp) {
-	    store.dispatch({ type: AUTHENTICATED, id: decoded.id });
+	    store.dispatch({ type: LOGIN_SUCCESS, id: decoded.id });
 
 	} else {
 		//remove storage and update state
 	    sessionStorage.removeItem('token');
-	    store.dispatch({ type: UNAUTHENTICATED });
+	    store.dispatch({ type: CLEAR_AUTH });
 	}
 	
 } else if (!token && authenticated) {
-    store.dispatch({ type: UNAUTHENTICATED });
+    store.dispatch({ type: CLEAR_AUTH });
 }
 
 ReactDOM.render(

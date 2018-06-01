@@ -1,6 +1,5 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
-import { AUTHENTICATED, UNAUTHENTICATED } from '../actions/authentication';
 
 const authorization = store => next => action => {
 	const token = sessionStorage.getItem('token');

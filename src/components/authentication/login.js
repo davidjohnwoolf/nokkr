@@ -65,7 +65,7 @@ class Login extends React.Component {
     
     render() {
         const { handleSubmit, handleUserInput } = this;
-        const { username, password } = this.state.fields;
+        const { username, password } = { ...this.state.fields };
         
         return (
                 

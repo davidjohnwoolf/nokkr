@@ -1,10 +1,7 @@
 import React from 'react';
 
 class Field extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    
+
     render() {
         const { name, type, placeholder, value, handleUserInput, error, message } = this.props;
         return (

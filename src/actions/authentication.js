@@ -3,8 +3,6 @@ import jwtDecode from 'jwt-decode';
 
 export const LOGIN_FAIL = 'LOGIN_FAIL';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-export const AUTHENTICATED = 'AUTHENTICATED';
-export const UNAUTHENTICATED = 'UNAUTHENTICATED';
 export const CLEAR_AUTH = 'CLEAR_AUTH';
 
 export const login = creds => {
@@ -33,8 +31,9 @@ export const login = creds => {
 
 export const logout = () => {
     //eventually sent to server to revoke token and get back response
+    //for now just using clear auth
     return dispatch => {
-        dispatch({ type: UNAUTHENTICATED });
+        dispatch({ type: CLEAR_AUTH });
     };
 };
 
