@@ -6,11 +6,12 @@
   "license": "ISC",
   "main": "server.js",
   "scripts": {
-    "test": "mocha",
+    "test": "jest --watch",
     "build": "rimraf dist && NODE_ENV=production webpack -p",
     "dev": "rimraf dist && NODE_ENV=development webpack --watch"
   },
   "jest": {
+    "verbose": true,
     "testMatch": [
       "**/src/**/*.test.js?(x)"
     ],
@@ -50,6 +51,7 @@
     "chai-http": "^3.0.0",
     "css-loader": "^0.28.9",
     "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "extract-text-webpack-plugin": "^3.0.2",
     "html-webpack-plugin": "^2.30.1",
     "jest": "^23.1.0",
