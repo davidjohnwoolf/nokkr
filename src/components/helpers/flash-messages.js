@@ -1,8 +1,8 @@
 import React from 'react';
-import { sendMessage, closeMessage } from '../../actions/flash-messages';
+import { closeMessage } from '../../actions/flash-messages';
 import { connect } from 'react-redux';
 
-class FlashMessage extends React.Component {
+export class FlashMessage extends React.Component {
     constructor(props) {
         super(props);
     }

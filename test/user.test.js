@@ -1,4 +1,4 @@
-process.env.NODE_ENV = 'test';
+/*process.env.NODE_ENV = 'test';
 
 const mocha = require('mocha');
 const chai = require('chai');
@@ -297,4 +297,4 @@ describe('users', () => {
 				});
 		});
 	});
-});
+});*/

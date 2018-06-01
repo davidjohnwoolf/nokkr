@@ -8,15 +8,14 @@ export const sendMessage = message => {
             message: message
         });
         
-        setTimeout(() => dispatch({ type: CLOSE_MESSAGE, message: '' }), 3000);
+        setTimeout(() => dispatch({ type: CLOSE_MESSAGE }), 3000);
     };
 };
 
 export const closeMessage = () => {
     return dispatch => {
         dispatch({
-            type: CLOSE_MESSAGE,
-            message: ''
+            type: CLOSE_MESSAGE
         });
     };
 };
