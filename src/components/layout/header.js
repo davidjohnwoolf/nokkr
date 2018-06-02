@@ -55,7 +55,7 @@ class Header extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    authenticated: state.authentication.authenticated
+    authenticated: state.auth.authenticated
 });
 
 export default withRouter(connect(mapStateToProps)(Header));

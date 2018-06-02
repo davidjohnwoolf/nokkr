@@ -9,7 +9,7 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import jwtDecode from 'jwt-decode';
 
-import { LOGIN_SUCCESS, CLEAR_AUTH } from './actions/authentication';
+import { LOGIN_SUCCESS, CLEAR_AUTH } from './actions/auth';
 import authorization from './middleware/authorization';
 import reducers from './reducers';
 import PrivateRoute from './components/helpers/private-route';
@@ -23,7 +23,7 @@ import UserNew from './components/users/user-new';
 import UserEdit from './components/users/user-edit';
 import UserShow from './components/users/user-show';
 import UserIndex from './components/users/user-index';
-import Login from './components/authentication/login';
+import Login from './components/auth/login';
 
 //use react production build for production https://reactjs.org/docs/optimizing-performance.html#use-the-production-build
 
@@ -33,7 +33,7 @@ const createStoreWithMiddleware = applyMiddleware(thunk, authorization)(createSt
 const store = createStoreWithMiddleware(reducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 const token = sessionStorage.getItem('token');
-const authenticated = store.getState().authentication.authenticated;
+const authenticated = store.getState().auth.authenticated;
 
 //set authentication state on load, figure out a way to add this to middleware if possible
 if (token && !authenticated) {

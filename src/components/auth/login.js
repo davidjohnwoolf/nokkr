@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { required, validate } from '../helpers/validation';
 import Field from '../forms/field';
-import { login, clearAuth } from '../../actions/authentication';
+import { login, clearAuth } from '../../actions/auth';
 
 class Login extends React.Component {
     
@@ -109,12 +109,12 @@ class Login extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        token: state.authentication.token,
-        id: state.authentication.id,
-        authenticated: state.authentication.authenticated,
-        success: state.authentication.success,
-        fail: state.authentication.fail,
-        message: state.authentication.message
+        token: state.auth.token,
+        id: state.auth.id,
+        authenticated: state.auth.authenticated,
+        success: state.auth.success,
+        fail: state.auth.fail,
+        message: state.auth.message
     };
 };
 

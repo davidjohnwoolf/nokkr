@@ -25,7 +25,7 @@ class PrivateRoute extends React.Component {
 };
 
 const mapStateToProps = state => ({
-    authenticated: state.authentication.authenticated
+    authenticated: state.auth.authenticated
 });
 
 export default connect(mapStateToProps)(PrivateRoute);

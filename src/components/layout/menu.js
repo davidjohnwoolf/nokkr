@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
-import { logout } from '../../actions/authentication';
+import { logout } from '../../actions/auth';
 
 class Menu extends React.Component {
     
@@ -67,7 +67,7 @@ class Menu extends React.Component {
 };
 
 const mapStateToProps = state => ({
-    id: state.authentication.id
+    id: state.auth.id
 });
 
 export default connect(mapStateToProps, { logout })(withRouter(Menu));
