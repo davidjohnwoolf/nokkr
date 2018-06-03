@@ -13,7 +13,7 @@ import { LOGIN_SUCCESS, CLEAR_AUTH } from './actions/auth';
 import authorization from './middleware/authorization';
 import reducers from './reducers';
 import PrivateRoute from './components/helpers/private-route';
-import FlashMessage from './components/helpers/flash-messages';
+import Flash from './components/helpers/flash';
 import NotAuthorized from './components/errors/not-authorized';
 import PageNotFound from './components/errors/page-not-found';
 import Dashboard from './components/dashboard';
@@ -58,7 +58,7 @@ if (token && !authenticated) {
 ReactDOM.render(
     <Provider store={ store }>
         <div>
-            <FlashMessage />
+            <Flash />
             <Router>
                 <div>
                     <Header />

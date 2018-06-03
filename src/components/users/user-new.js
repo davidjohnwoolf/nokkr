@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { required, password, passwordMatch, validate } from '../helpers/validation';
-import Field from '../forms/field';
+import Field from '../helpers/field';
 import { createUser, clearUser } from '../../actions/users';
-import { sendMessage } from '../../actions/flash-messages';
+import { sendMessage } from '../../actions/flash';
 
 class UserNew extends React.Component {
     

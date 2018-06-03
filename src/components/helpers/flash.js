@@ -1,8 +1,8 @@
 import React from 'react';
-import { closeMessage } from '../../actions/flash-messages';
+import { closeMessage } from '../../actions/flash';
 import { connect } from 'react-redux';
 
-class FlashMessage extends React.Component {
+class Flash extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -20,7 +20,7 @@ class FlashMessage extends React.Component {
 }
 
 const mapStateToProps = state => {
-    return { message: state.flashMessages.message };
+    return { message: state.flash.message };
 };
 
-export default connect(mapStateToProps, { closeMessage })(FlashMessage);
+export default connect(mapStateToProps, { closeMessage })(Flash);

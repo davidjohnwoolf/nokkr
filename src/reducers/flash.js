@@ -1,4 +1,4 @@
-import { SEND_MESSAGE, CLOSE_MESSAGE } from '../actions/flash-messages';
+import { SEND_MESSAGE, CLOSE_MESSAGE } from '../actions/flash';
 
 export default function(state = {}, action) {
 
