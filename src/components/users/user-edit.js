@@ -41,17 +41,20 @@ class UserEdit extends React.Component {
     }
     
     static getDerivedStateFromProps(nextProps, prevState) {
-
-        const fields = { ...prevState.fields };
         const { user } = nextProps;
         
-        if (user) {
+        if (!prevState.hasInitialized && user) {
+            const fields = { ...prevState.fields };
+
             fields.name.value = user.name;
             fields.username.value = user.username;
             fields.email.value = user.email;
+            
+            return { fields, hasInitialized: true };
+            
+        } else {
+            return prevState;
         }
-        
-        return fields;
     }
 
     
@@ -67,6 +70,8 @@ class UserEdit extends React.Component {
     }
     
     handleUserInput(e) {
+        
+        console.log(this.state);
         
         this.setState(
             validate(e, this.validationRules, { ...this.state.fields })
