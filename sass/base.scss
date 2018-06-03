@@ -352,11 +352,11 @@ input, textarea {
 
 //Messages
 
-.flash-message {
+.flash {
     display: flex;
     justify-content: space-between;
     padding: $gutter-lg;
-    background: $success;
+    background: $gray;
     color: $white;
     position: fixed;
     top: 0;
@@ -381,6 +381,14 @@ input, textarea {
             cursor: pointer;
         }
     }
+}
+
+.flash-message {
+    background: $success;
+}
+
+.flash-error {
+    background: $error;
 }
 
 //Content

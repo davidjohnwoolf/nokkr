@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { fetchUser, deleteUser, clearUser } from '../../actions/users';
-import { sendMessage } from '../../actions/flash';
+import { sendMessage, sendError } from '../../actions/flash';
 
 class UserShow extends React.Component {
     
@@ -25,8 +25,14 @@ class UserShow extends React.Component {
     }
     
     handleDelete() {
-        if (confirm('Are you sure you want to delete this user?  This is not reversible.')) {
-            this.props.deleteUser(this.props.match.params.id);
+        const { match, id, sendError, deleteUser } = this.props;
+        
+        if (match.params.id !== id) {
+            if (confirm('Are you sure you want to delete this user?  This is not reversible.')) {
+                deleteUser(match.params.id);
+            }
+        } else {
+            sendError('You cannot delete a user you are logged in as');
         }
     }
     
@@ -76,6 +82,10 @@ class UserShow extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({ user: state.users.user, message: state.users.message });
+const mapStateToProps = state => ({
+    user: state.users.user,
+    message: state.users.message,
+    id: state.auth.id
+});
 
-export default connect(mapStateToProps, { fetchUser, deleteUser, sendMessage, clearUser })(UserShow);
+export default connect(mapStateToProps, { fetchUser, deleteUser, sendMessage, sendError, clearUser })(UserShow);
