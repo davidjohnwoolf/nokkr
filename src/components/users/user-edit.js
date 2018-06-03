@@ -13,7 +13,7 @@ class UserEdit extends React.Component {
         super(props);
         
         props.clearUser();
-        props.fetchUser(this.props.match.params.id);
+        props.fetchUser(props.match.params.id);
         
         this.validationRules = {
             name: [required],
@@ -56,13 +56,13 @@ class UserEdit extends React.Component {
 
     
     componentDidUpdate() {
-        const { success, fail, message, history, sendMessage } = this.props;
+        const { success, fail, message, history, sendMessage, match } = this.props;
         
         if (fail && (message !== this.state.serverError)) this.setState({ serverError: message });
         
         if (success) {
             sendMessage(message);
-            history.push('/users');
+            history.push(`/users/${ match.params.id }`);
         }
     }
     
