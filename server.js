@@ -8,7 +8,6 @@ const path = require('path');
 const logger = require('morgan');
 const app = express();
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
 
 // controllers
 const Authentication = require('./controllers/authentication');
