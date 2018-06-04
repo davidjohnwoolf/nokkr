@@ -1,5 +1,6 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
+import { CLEAR_AUTH } from '../actions/auth.action';
 
 const authorization = store => next => action => {
 	const token = sessionStorage.getItem('token');
@@ -15,9 +16,11 @@ const authorization = store => next => action => {
 		    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
 		} else {
-			//remove storage and delete auth header
+			//remove storage and delete auth header and clear auth
 		    sessionStorage.removeItem('token');
 		    delete axios.defaults.headers.common['Authorization'];
+		    
+		    store.dispatch({ type: CLEAR_AUTH });
 		}
         
 	} else {

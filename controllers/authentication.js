@@ -29,7 +29,7 @@ router.post('/login', (req, res) => {
                     
                     let token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
                         // expires in 24 hours
-                        expiresIn: 86400
+                        expiresIn: 30
                     });
                     
                     res.json({ status: SUCCESS, data: { token } });
