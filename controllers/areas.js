@@ -16,7 +16,11 @@ router.use(bodyParser.json());
 
 //index
 router.get('/', (req, res) => {
-    res.json({ message: 'working'})
+    Area.find({}, (err, areas) => {
+        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding areas' });
+        
+        return res.json({ status: SUCCESS, data: { areas } });
+    });
 });
 
 module.exports = router;
