@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 
 import { required, password, passwordMatch, validate } from '../helpers/validation';
 import Field from '../helpers/field';
-import { fetchUser, updateUser, clearUser } from '../../actions/users';
-import { sendMessage } from '../../actions/flash';
+import { fetchUser, updateUser, clearUser } from '../../actions/users.action';
+import { sendMessage } from '../../actions/flash.action';
 
 class UserEdit extends React.Component {
     

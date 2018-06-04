@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { fetchUsers } from '../../actions/users';
+import { fetchUsers } from '../../actions/users.action';
 
 class UserIndex extends React.Component {
     

@@ -1,5 +1,5 @@
 import React from 'react';
-import { closeMessage } from '../../actions/flash';
+import { closeMessage } from '../../actions/flash.action';
 import { connect } from 'react-redux';
 
 class Flash extends React.Component {

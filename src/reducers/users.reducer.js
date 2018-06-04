@@ -7,7 +7,7 @@ import {
     UPDATE_USER_SUCCESS,
     DELETE_USER,
     CLEAR_USER
-} from '../actions/users';
+} from '../actions/users.action';
 
 export default function(state = {}, action) {
 

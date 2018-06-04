@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS, LOGIN_FAIL, CLEAR_AUTH } from '../actions/auth';
+import { LOGIN_SUCCESS, LOGIN_FAIL, CLEAR_AUTH } from '../actions/auth.action';
 
 export default function(state = { authenticated: false }, action) {
     switch (action.type) {

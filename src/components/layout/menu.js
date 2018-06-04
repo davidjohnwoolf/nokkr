@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
-import { logout } from '../../actions/auth';
+import { logout } from '../../actions/auth.action';
 
 class Menu extends React.Component {
     

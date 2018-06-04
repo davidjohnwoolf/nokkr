@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchUser, deleteUser, clearUser } from '../../actions/users';
-import { sendMessage, sendError } from '../../actions/flash';
+import { fetchUser, deleteUser, clearUser } from '../../actions/users.action';
+import { sendMessage, sendError } from '../../actions/flash.action';
 
 class UserShow extends React.Component {
     
