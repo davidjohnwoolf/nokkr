@@ -2,10 +2,10 @@
 @import 'variables';
 @import 'mixins';
 
-// create gutters and use EMs and look out for opportunities for mixins
+// create gutters and use rems and look out for opportunities for mixins
 // ====================================================================
 
-//Elements
+//Elrements
 
 * {
     box-sizing: border-box;
@@ -121,7 +121,7 @@ input, textarea {
                 display: block;
                 padding: $gutter-lg $gutter-xl;
                 color: $gray-xlight;
-                font-size: 2rem;
+                font-size: 2rrem;
                 text-align: left;
                 
                 > i {
@@ -341,7 +341,7 @@ input, textarea {
 
 .icon-button-success {
     color: $success;
-    font-size: 2.5rem;
+    font-size: 2.5rrem;
     padding: $gutter;
     margin-top: $gutter;
     
@@ -396,7 +396,7 @@ input, textarea {
 .content-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-itrems: center;
 }
 
 //General Classes
@@ -405,9 +405,23 @@ input, textarea {
     display: none !important;
 }
 
+.warning {
+    color: $warning;
+}
+
+.text-center {
+    text-align: center
+}
+
+.huge-center-icon {
+    margin: 2rem auto;
+    text-align: center;
+    font-size: 5rem;
+}
+
 //Other
 
-//remove hover state as well?
+//rremove hover state as well?
 [disabled] {
     opacity: .5;
     cursor: not-allowed !important;

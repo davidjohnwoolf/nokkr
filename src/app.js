@@ -14,6 +14,7 @@ import authorization from './middleware/authorization';
 import reducers from './reducers';
 import PrivateRoute from './components/helpers/private-route';
 import Flash from './components/helpers/flash';
+import ErrorBoundary from './components/helpers/error-boundary';
 import NotAuthorized from './components/errors/not-authorized';
 import PageNotFound from './components/errors/page-not-found';
 import Dashboard from './components/dashboard';
@@ -63,15 +64,17 @@ ReactDOM.render(
                 <div>
                     <Header />
                     <Switch>
-                        <Route exact path="/login" component={ Login } />
-                        <Route exact path="/not-authorized" component={ NotAuthorized } />
+                        <Route exact path="/login" render={ () => (
+                            <ErrorBoundary><Login /></ErrorBoundary>
+                        )} />
                         <PrivateRoute exact path="/menu" component={ Menu } />
                         <PrivateRoute exact path="/users/new" component={ UserNew } />
                         <PrivateRoute exact path="/users/:id/edit" component={ UserEdit } />
                         <PrivateRoute exact path="/users/:id" component={ UserShow } />
                 		<PrivateRoute exact path="/users" component={ UserIndex } />
                 		<PrivateRoute exact path="/" component={ Dashboard } />
-                		<Route path="*" component={ PageNotFound } />
+                		<Route exact path="/not-authorized" component={ NotAuthorized } />
+                		<Route component={ PageNotFound } />
             		</Switch>
                 </div>
             </Router>
