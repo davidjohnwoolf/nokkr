@@ -42,8 +42,9 @@ class UserEdit extends React.Component {
     
     static getDerivedStateFromProps(nextProps, prevState) {
         const { user } = nextProps;
+        const { hasInitialized } = prevState;
         
-        if (!prevState.hasInitialized && user) {
+        if (!hasInitialized && user) {
             const fields = { ...prevState.fields };
 
             fields.name.value = user.name;
