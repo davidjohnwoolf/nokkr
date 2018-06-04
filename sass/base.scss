@@ -121,7 +121,7 @@ input, textarea {
                 display: block;
                 padding: $gutter-lg $gutter-xl;
                 color: $gray-xlight;
-                font-size: 2rrem;
+                font-size: 2rem;
                 text-align: left;
                 
                 > i {
@@ -341,7 +341,7 @@ input, textarea {
 
 .icon-button-success {
     color: $success;
-    font-size: 2.5rrem;
+    font-size: 2.5rem;
     padding: $gutter;
     margin-top: $gutter;
     
@@ -421,7 +421,7 @@ input, textarea {
 
 //Other
 
-//rremove hover state as well?
+//remove hover state as well?
 [disabled] {
     opacity: .5;
     cursor: not-allowed !important;
