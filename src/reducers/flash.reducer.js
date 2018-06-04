@@ -4,10 +4,10 @@ export default function(state = {}, action) {
 
     switch (action.type) {
         case SEND_MESSAGE:
-            return { ...state, message: action.message };
+            return { message: action.message };
             
         case SEND_ERROR:
-            return { ...state, error: true, message: action.message };
+            return { error: true, message: action.message };
             
         case CLOSE_MESSAGE:
             return {};

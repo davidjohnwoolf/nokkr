@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import { required, validate } from '../helpers/validation';
 import Field from '../helpers/field';
@@ -12,9 +13,9 @@ class Login extends React.Component {
         
         if (props.authenticated) {
             props.history.push('/');
+        } else {
+            props.clearAuth();
         }
-        
-        props.clearAuth();
         
         this.validationRules = {
             username: [required],
@@ -45,7 +46,7 @@ class Login extends React.Component {
         }
     }
     
-    handleUserInput(e, rules) {
+    handleUserInput(e) {
         
         this.setState(
             validate(e, this.validationRules, { ...this.state.fields })
@@ -107,15 +108,13 @@ class Login extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        token: state.auth.token,
-        id: state.auth.id,
-        authenticated: state.auth.authenticated,
-        success: state.auth.success,
-        fail: state.auth.fail,
-        message: state.auth.message
-    };
-};
+const mapStateToProps = state => ({
+    token: state.auth.token,
+    id: state.auth.id,
+    authenticated: state.auth.authenticated,
+    success: state.auth.success,
+    fail: state.auth.fail,
+    message: state.auth.message
+});
 
-export default connect(mapStateToProps, { login, clearAuth })(Login);
+export default withRouter(connect(mapStateToProps, { login, clearAuth })(Login));

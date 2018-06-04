@@ -49,7 +49,7 @@ class UserNew extends React.Component {
         }
     }
     
-    handleUserInput(e, rules) {
+    handleUserInput(e) {
 
         this.setState(
             validate(e, this.validationRules, { ...this.state.fields })
@@ -138,8 +138,10 @@ class UserNew extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return { message: state.users.message, success: state.users.success, fail: state.users.fail };
-};
+const mapStateToProps = state => ({
+    message: state.users.message,
+    success: state.users.success,
+    fail: state.users.fail
+});
 
 export default connect(mapStateToProps, { clearUser, createUser, sendMessage })(UserNew);

@@ -1,5 +1,6 @@
 import React from 'react';
-import ReactError from '../errors/react-error'
+
+import ReactError from '../errors/react-error';
 
 class ErrorBoundary extends React.Component {
     constructor(props) {
@@ -7,13 +8,7 @@ class ErrorBoundary extends React.Component {
         this.state = { hasError: false };
     }
     
-    componentDidCatch(error, info) {
-        console.log('error')
-        console.log(error)
-        console.log('=======')
-        console.log('info')
-        console.log(info)
-        
+    componentDidCatch() {
         //display error
         this.setState({ hasError: true });
     }

@@ -1,8 +1,6 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
 
-const ReactError = (props) => (
+const ReactError = () => (
     <main id="react-error" className="content">
         <section className="error-page">
             <div className="huge-center-icon warning">

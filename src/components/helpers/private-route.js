@@ -11,23 +11,25 @@ class PrivateRoute extends React.Component {
         
         return (
             <Route { ...rest } render={ props =>
-                    authenticated ? (
-                        <ErrorBoundary>
-                            <Component { ...props } />
-                        </ErrorBoundary>
-                    ) : (
-                        <Redirect
-                            to={{
-                                pathname: '/not-authorized',
-                                state: { from: props.location }
-                            }}
-                        />
-                    )
+                    authenticated
+                        ? (
+                            <ErrorBoundary>
+                                <Component { ...props } />
+                            </ErrorBoundary>
+                        )
+                        : (
+                            <Redirect
+                                to={{
+                                    pathname: '/not-authorized',
+                                    state: { from: props.location }
+                                }}
+                            />
+                        )
                 }
             />
         );
     }
-};
+}
 
 const mapStateToProps = state => ({
     authenticated: state.auth.authenticated

@@ -13,7 +13,7 @@ class Header extends React.Component {
     renderMenuLink(path) {
         return this.props.location.pathname === path
             ? <a onClick={ this.props.history.goBack } href="#" className="active"><i className="fas fa-bars"></i></a>
-            : <NavLink to="/menu" activeClassName="active"><i className="fas fa-bars"></i></NavLink>
+            : <NavLink to="/menu" activeClassName="active"><i className="fas fa-bars"></i></NavLink>;
     }
 
     render() {
@@ -43,7 +43,6 @@ class Header extends React.Component {
                             <li>
                                 { this.renderMenuLink('/menu') }
                             </li>
-                            
                         </ul>
                     </nav>
                 </header>
@@ -54,8 +53,6 @@ class Header extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({
-    authenticated: state.auth.authenticated
-});
+const mapStateToProps = state => ({ authenticated: state.auth.authenticated });
 
 export default withRouter(connect(mapStateToProps)(Header));

@@ -64,10 +64,8 @@ class Menu extends React.Component {
                 </nav>
             );
     }
-};
+}
 
-const mapStateToProps = state => ({
-    id: state.auth.id
-});
+const mapStateToProps = state => ({ id: state.auth.id });
 
 export default connect(mapStateToProps, { logout })(withRouter(Menu));

@@ -33,7 +33,7 @@ export const validate = (e, rules, fields) => {
     
     //handle all rules
     for (let key in fields ) {
-        //run function for the rule (ie required function) from validation rules on each field value
+        //run function for the rule (ie required) from validation rules on each field value
         rules[key].forEach(rule => {
             if (rule(fields[key].value)) formValid = false;
         });

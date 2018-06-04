@@ -8,6 +8,7 @@ class UserIndex extends React.Component {
     
     constructor(props) {
         super(props);
+        
         props.fetchUsers();
     }
 	

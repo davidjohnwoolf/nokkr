@@ -76,7 +76,7 @@ export const deleteUser = id => {
     };
 };
 
-export const clearUser = user => {
+export const clearUser = () => {
     return dispatch => {
         dispatch({ type: CLEAR_USER });
     };

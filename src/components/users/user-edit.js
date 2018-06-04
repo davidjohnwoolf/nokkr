@@ -72,8 +72,6 @@ class UserEdit extends React.Component {
     
     handleUserInput(e) {
         
-        console.log(this.state);
-        
         this.setState(
             validate(e, this.validationRules, { ...this.state.fields })
         );
@@ -167,13 +165,11 @@ class UserEdit extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        message: state.users.message,
-        success: state.users.success,
-        fail: state.users.fail,
-        user: state.users.user
-    };
-};
+const mapStateToProps = state => ({
+    message: state.users.message,
+    success: state.users.success,
+    fail: state.users.fail,
+    user: state.users.user
+});
 
 export default connect(mapStateToProps, { fetchUser, clearUser, updateUser, sendMessage })(UserEdit);

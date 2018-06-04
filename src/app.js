@@ -36,7 +36,7 @@ const store = createStoreWithMiddleware(reducers, window.__REDUX_DEVTOOLS_EXTENS
 const token = sessionStorage.getItem('token');
 const authenticated = store.getState().auth.authenticated;
 
-//set authentication state on load, figure out a way to add this to middleware if possible
+//set authentication state on load
 if (token && !authenticated) {
 	
 	const decoded = jwtDecode(token);
