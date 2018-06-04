@@ -17,7 +17,7 @@ router.use(bodyParser.json());
 // index
 router.get('/', verifyToken, (req, res) => {
     User.find({}, (err, users) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
+        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding users' });
         
         const safeUsers = [];
         
@@ -38,7 +38,7 @@ router.get('/', verifyToken, (req, res) => {
 // create
 router.post('/', verifyToken, (req, res) => {
     User.findOne({ $or: [{username: req.body.username}, { email: req.body.email }] }, (err, user) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
+        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error creating user' });
         
         if (user && req.body.email === user.email) {
             return res.json({ status: FAIL, data: { message: 'Email already exists' } });
