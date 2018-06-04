@@ -13,6 +13,7 @@ const jwt = require('jsonwebtoken');
 // controllers
 const Authentication = require('./controllers/authentication');
 const Users = require('./controllers/users');
+const Areas = require('./controllers/areas');
 
 // connect database
 if (process.env.NODE_ENV !== 'test') {
@@ -34,6 +35,7 @@ app.use(express.static(path.join(__dirname, 'dist')));
 // routes
 //app.use(expressJWT({ secret: process.env.JWT_SECRET }).unless({ path: ['/login'] }));
 
+app.use('/areas', Areas);
 app.use('/users', Users);
 app.use('/', Authentication);
 
