@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const areaSchema = new Schema({
-    tile: { type: String, required: true },
+    title: { type: String, required: true },
     areaCoords: { type: Array, required: true },
     city: { type: String, required: true },
     state: { type: String, required: true },
