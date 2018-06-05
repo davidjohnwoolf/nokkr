@@ -37,7 +37,7 @@ router.get('/', verifyToken, (req, res) => {
 
 // create
 router.post('/', verifyToken, (req, res) => {
-    User.findOne({ $or: [{username: req.body.username}, { email: req.body.email }] }, (err, user) => {
+    User.findOne({ $or: [{ username: req.body.username }, { email: req.body.email }] }, (err, user) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error creating user' });
         
         if (user && req.body.email === user.email) {
@@ -133,7 +133,7 @@ router.put('/:id', verifyToken, (req, res) => {
                         }
                         
                         user.save(err => {
-                            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error saving user' });
+                            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error updating user' });
                             
                             return res.json({
                                 status: SUCCESS,

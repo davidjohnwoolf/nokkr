@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 
+const Area = require('./area');
+
 const userSchema = new Schema({
     name: { type: String, required: true },
     username: { type: String, required: true, index: { unique: true } },
@@ -17,6 +19,7 @@ const userSchema = new Schema({
         match: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,24}/
     },
     isAdmin: { type: Boolean, default: false },
+    areas: [Area.schema],
     createdAt: { type: Date, default: Date.now }
 });
 

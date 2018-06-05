@@ -34,8 +34,8 @@ app.use(express.static(path.join(__dirname, 'dist')));
 // routes
 //app.use(expressJWT({ secret: process.env.JWT_SECRET }).unless({ path: ['/login'] }));
 
-app.use('/areas', Areas);
-app.use('/users', Users);
+app.use('/users/', Users);
+app.use('/', Areas);
 app.use('/', Authentication);
 
 // start server
