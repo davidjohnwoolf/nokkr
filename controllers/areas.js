@@ -97,4 +97,21 @@ router.put(`${ USER_PATH }/areas/:areaId`, (req, res) => {
     });
 });
 
+// destroy
+router.delete(`${ USER_PATH }/areas/:areaId`, verifyToken, (req, res) => {
+    User.findOne({ _id: req.params.id }, (err, user) => {
+    	if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
+    	
+    	const areaIndex = user.areas.findIndex(area => area.id === req.params.id);
+    	
+    	user.areas[areaIndex].remove();
+    	
+    	user.save(err => {
+            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error deleting area' });
+            
+            return res.json({ status: SUCCESS, data: { message: 'Area deleted' } });
+        });
+    });
+});
+
 module.exports = router;
