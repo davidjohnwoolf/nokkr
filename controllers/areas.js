@@ -29,7 +29,7 @@ router.get('/areas', (req, res) => {
             users[user].areas.forEach(c => {
                 let area = c;
                 
-                c.userData = { name: users[user].name, id: users[user].id }
+                c.userData = { name: users[user].name, id: users[user].id };
                 
                 allAreas.push(area);
             });
