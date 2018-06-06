@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import { required, validate } from '../helpers/validation';
-import Field from '../helpers/field';
+import FieldInput from '../helpers/field-input';
 import { login, clearAuth } from '../../actions/auth.action';
 
 class Login extends React.Component {
@@ -76,7 +76,7 @@ class Login extends React.Component {
                     <small className="server-error">{ this.state.serverError }</small>
                     <form onSubmit={ handleSubmit }>
                     
-                        <Field
+                        <FieldInput
                             name="username"
                             type="text"
                             placeholder="username"
@@ -84,7 +84,7 @@ class Login extends React.Component {
                             handleUserInput={ handleUserInput }
                             error={ username.error }
                         />
-                        <Field
+                        <FieldInput
                             name="password"
                             type="password"
                             placeholder="password"

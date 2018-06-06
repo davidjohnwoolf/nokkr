@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { required, password, passwordMatch, validate } from '../helpers/validation';
-import Field from '../helpers/field';
+import FieldInput from '../helpers/field-input';
 import { fetchUser, updateUser, clearUser } from '../../actions/users.action';
 import { sendMessage } from '../../actions/flash.action';
 
@@ -106,7 +106,7 @@ class UserEdit extends React.Component {
                     <small className="server-error">{ this.state.serverError }</small>
                     <form onSubmit={ handleSubmit }>
                     
-                        <Field
+                        <FieldInput
                             name="name"
                             type="text"
                             placeholder="name"
@@ -114,7 +114,7 @@ class UserEdit extends React.Component {
                             handleUserInput={ handleUserInput }
                             error={ name.error }
                         />
-                        <Field
+                        <FieldInput
                             name="username"
                             type="text"
                             placeholder="username"
@@ -122,7 +122,7 @@ class UserEdit extends React.Component {
                             handleUserInput={ handleUserInput }
                             error={ username.error }
                         />
-                        <Field
+                        <FieldInput
                             name="email"
                             type="email"
                             placeholder="email"
@@ -130,7 +130,7 @@ class UserEdit extends React.Component {
                             handleUserInput={ handleUserInput }
                             error={ email.error }
                         />
-                        <Field
+                        <FieldInput
                             name="password"
                             type="password"
                             placeholder="password"
@@ -139,7 +139,7 @@ class UserEdit extends React.Component {
                             error={ password.error }
                             message="If staying the same, leave password fields blank"
                         />
-                        <Field
+                        <FieldInput
                             name="passwordConfirmation"
                             type="password"
                             placeholder="password confirmation"
