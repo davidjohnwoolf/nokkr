@@ -64,7 +64,7 @@ class UserNew extends React.Component {
         
         for (let key in userData) { userData[key] = userData[key].value; }
         
-        this.props.createUser({ ...userData });
+        this.props.createUser(userData);
     }
     
     render() {

@@ -91,7 +91,7 @@ class UserEdit extends React.Component {
             }
         }
         
-        this.props.updateUser(this.props.match.params.id, { ...userData });
+        this.props.updateUser(this.props.match.params.id, userData);
     }
     
     render() {
