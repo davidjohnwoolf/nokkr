@@ -1,111 +1,137 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Field from '../helpers/field';
+import { Link } from 'react-router-dom';
+
+import AreaNewMap from './area-new-map';
+import { required, validate } from '../helpers/validation';
+import FieldInput from '../helpers/field-input';
+import FieldSelect from '../helpers/field-select';
+import { createArea } from '../../actions/areas.action';
+import { fetchUsers } from '../../actions/users.action';
+import { sendMessage } from '../../actions/flash.action';
 
 class AreaNew extends React.Component {
     
     constructor(props) {
         super(props);
         
-        this.tabStates = {};
+        props.fetchUsers();
         
-        Object.defineProperty(this.tabStates, 'START', {
-            value: 'START',
-            writable: false
-        });
-        
-        Object.defineProperty(this.tabStates, 'CREATE', {
-            value: 'CREATE',
-            writable: false
-        });
-        
-        Object.defineProperty(this.tabStates, 'SAVE', {
-            value: 'SAVE',
-            writable: false
-        });
-        
-        this.state = {
-            activeTab: this.tabStates.START,
-            fields: {},
-            startAddress: '',
-            startAddressValid: false,
-            areaValid: false,
-            formValid: false,
+        this.validationRules = {
+            title: [required],
+            city: [required],
+            userId: [required]
         };
         
-        this.handleTabClick = this.handleTabClick.bind(this);
-        this.handleAddressInput = this.handleAddressInput.bind(this);
+        this.state = {
+            fields: {
+                title: { value: '', error: '' },
+                userId: { value: '', error: '' },
+                city: { value: '', error: '' }
+            },
+            coords: null,
+            formValid: false,
+        };
+
+        this.handleOverlay = this.handleOverlay.bind(this);
+        this.handleUserInput = this.handleUserInput.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
     
-    handleTabChange(e) {
-        //send updateTab action
+    componentDidUpdate() {
+        const { success, fail, message, history, sendMessage } = this.props;
+        
+        if (fail && (message !== this.state.serverError)) this.setState({ serverError: message });
+        
+        if (success) {
+            sendMessage(message);
+            history.push('/');
+        }
     }
     
-    handleAddressInput(e) {
-        //load maps to try and get a match, once you do make next button active
+    handleOverlay(coords) {
+        this.setState({ coords });
     }
     
-    handleInputChange(e) {
-        //validate and update state
+    handleUserInput(e) {
+        this.setState(
+            validate(e, this.validationRules, { ...this.state.fields })
+        );
     }
     
     handleSubmit(e) {
-        //call areas create action
+        e.preventDefault();
+        
+        const areaData = { ...this.state.fields };
+        
+        for (let key in areaData) { areaData[key] = areaData[key].value; }
+        
+        areaData.coords = this.state.coords;
+        
+        this.props.createArea(areaData);
     }
-    
 
     render() {
         
-        const { tabStates,  handleTabChange, handleAddressInput, handleSubmit } = this;
+        const { handleSubmit, handleUserInput } = this;
+        const { formValid, serverError, coords } = this.state;
+        const { title, city, userId } = this.state.fields;
+        const { users } = this.props;
+        const userSelectOptions = [['Select User to Assign', '']];
         
-        const { activeTab, startAddress, startAddressValid, areaValid, formValid } = this.state;
+        if (!users) return null;
+        
+        this.props.users.forEach(user => {
+            let userOption = [user.name, user.id];
+            
+            userSelectOptions.push(userOption);
+        });
         
         return (
                 
             <main id="area-new" className="content">
-                <header className="tab-header">
-                    <button
-                        className={ `tab ${ activeTab === tabStates.START ? 'active' : '' }` }
-                        onClick={ () => handleTabChange(tabStates.START) }>
-                        Start
-                    </button>
-                    <button
-                        disabled={ !startAddressValid }
-                        className={ `tab ${ activeTab === tabStates.CREATE ? 'active' : '' }` }
-                        onClick={ () => handleTabChange(tabStates.CREATE) }>
-                        Create
-                    </button>
-                    <button
-                        disabled={ !areaValid }
-                        className={ `tab ${ activeTab === tabStates.SAVE ? 'active' : '' }` }
-                        onClick={ () => handleTabChange(tabStates.SAVE) }>
-                        Save
-                    </button>
-                </header>
-                <section className={ `tab-body ${ activeTab !== tabStates.START ? 'invisible' : '' }` }>
-                    <h1>Area Creation</h1>
-                    <input placeholder="enter an address to start" onClick={ handleAddressInput } value={ startAddress } />
-                    <button
-                        disabled={ !startAddressValid }
-                        onClick={ () => handleTabChange(tabStates.CREATE) }>
-                        Next
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </section>
-                <section className={ `tab-body ${ activeTab !== tabStates.CREATE ? 'invisible' : '' }` }>
-                    <p>Click to create area boundaries</p>
-                    { /*<Map />*/ }
-                    <button
-                        disabled={ !areaValid }
-                        onClick={ () => handleTabChange(tabStates.SAVE) }>
-                        Next <i class="fas fa-arrow-right"></i>
-                    </button>
-                </section>
-                <section className={ `tab-body ${ activeTab !== tabStates.SAVE ? 'invisible' : '' }` }>
-                    <h2>Save Area</h2>
+                <section className="form">
+                    <h1>Create Area</h1>
+                    <AreaNewMap handleOverlay={ this.handleOverlay } />
+                    <small className="server-error">{ serverError }</small>
                     <form onSubmit={ handleSubmit }>
-                        { /* title and hidden coords input fields */ }
-                        <button disabled={ !formValid } type="submit">Finish <i class="fas fa-arrow-right"></i></button>
+                        <FieldInput
+                            name="title"
+                            type="text"
+                            placeholder="area title"
+                            value={ title.value }
+                            handleUserInput={ handleUserInput }
+                            error={ title.error }
+                        />
+                        <FieldInput
+                            name="city"
+                            type="text"
+                            placeholder="enter city name"
+                            value={ city.value }
+                            handleUserInput={ handleUserInput }
+                            error={ city.error }
+                        />
+                        <FieldSelect
+                            name="userId"
+                            value={ userId.value }
+                            handleUserInput={ handleUserInput }
+                            error={ userId.error }
+                            options={ userSelectOptions }
+                        />
+                        
+                        <input type="hidden" name="coords" value={ this.state.coords || '' } />
+                        
+                        <div className="btn-group">
+                            <button
+                                disabled={ !formValid || !coords }
+                                className="btn btn-primary"
+                                type="submit">
+                                Save Area
+                            </button>
+                            <Link className="btn btn-cancel" to="/areas">
+                                Cancel
+                            </Link>
+                        </div>
                     </form>
                 </section>
             </main>
@@ -116,7 +142,8 @@ class AreaNew extends React.Component {
 const mapStateToProps = state => ({
     message: state.areas.message,
     success: state.areas.success,
-    fail: state.areas.fail
+    fail: state.areas.fail,
+    users: state.users.users
 });
 
-export default connect(mapStateToProps, {  })(AreaNew);
+export default connect(mapStateToProps, { createArea, fetchUsers, sendMessage })(AreaNew);

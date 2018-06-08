@@ -36,7 +36,7 @@ export const fetchArea = (userId, areaId) => {
 
 export const createArea = area => {
     return async dispatch => {
-        const response = await axios.get('/areas', area);
+        const response = await axios.post('/areas', area);
         
         if (response.data.status === 'success') {
             dispatch({

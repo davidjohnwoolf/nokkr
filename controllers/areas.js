@@ -53,6 +53,14 @@ router.post('/areas', (req, res) => {
     User.findOne({ _id: req.body.userId }, (err, user) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
         
+        if (!user) {
+            return res.json({ status: FAIL, data: { message: 'User either not selected or invalid' } });
+        }
+        
+        if (user.areas.find(area => area.title = req.body.title)) {
+            return res.json({ status: FAIL, data: { message: 'Area title already exists for this user' } });
+        }
+        
         delete req.body.userId;
         
         user.areas.push(req.body);

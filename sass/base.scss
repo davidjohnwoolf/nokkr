@@ -2,10 +2,7 @@
 @import 'variables';
 @import 'mixins';
 
-// create gutters and use rems and look out for opportunities for mixins
-// ====================================================================
-
-//Elrements
+//Elements
 
 * {
     box-sizing: border-box;
@@ -45,7 +42,7 @@ address {
 }
 
 input, textarea {
-    margin: ($gutter / 4) 0;
+    margin: $gutter-xs 0;
     padding: $gutter;
     width: 100%;
     color: $black;
@@ -61,6 +58,14 @@ input, textarea {
         box-shadow: 0 0 3px $primary;
         outline: none;
     }
+}
+
+select {
+    margin: $gutter-sm 0;
+    padding: $gutter;
+    width: 100%;
+    height: 2.5em;
+    font-family: $font-family;
 }
 
 //Header
@@ -339,6 +344,14 @@ input, textarea {
     }
 }
 
+.btn-warning {
+    background: $warning;
+    
+    &:hover {
+        background: $warning-light;
+    }
+}
+
 .icon-button-success {
     color: $success;
     font-size: 2.5rem;
@@ -396,8 +409,23 @@ input, textarea {
 .content-header {
     display: flex;
     justify-content: space-between;
-    align-itrems: center;
+    align-items: center;
 }
+
+//Maps
+#area-new-map {
+    width: 100%;
+    height: 30rem;
+    
+    @include media-xs {
+        height: 40rem;
+    }
+
+    @include media-sm-plus {
+        height: 50rem;
+    }
+}
+
 
 //General Classes
 
