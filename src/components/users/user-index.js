@@ -18,7 +18,7 @@ class UserIndex extends React.Component {
         if (!users) return;
         
         return (
-            users.map((user) => {
+            users.map(user => {
                 return (
                     <li key={ user.id }>
                         <Link to={ `/users/${ user.id }` } className="icon-link">
