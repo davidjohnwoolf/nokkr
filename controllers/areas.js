@@ -28,7 +28,7 @@ router.get('/areas', (req, res) => {
         for (let user in users) {
             users[user].areas.forEach(c => {
 
-                let area = Object.assign({}, c);
+                let area = Object.assign({}, c._doc);
                 
                 area.userData = { name: users[user].name, id: users[user].id };
                 
@@ -58,7 +58,7 @@ router.post('/areas', (req, res) => {
             return res.json({ status: FAIL, data: { message: 'User either not selected or invalid' } });
         }
         
-        if (user.areas.find(area => area.title = req.body.title)) {
+        if (user.areas.find(area => area.title === req.body.title)) {
             return res.json({ status: FAIL, data: { message: 'Area title already exists for this user' } });
         }
         

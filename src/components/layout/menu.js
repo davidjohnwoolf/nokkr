@@ -55,7 +55,7 @@ class Menu extends React.Component {
                             <Link to="/users">User Management <i className="fas fa-users"></i></Link>
                         </li>
                         <li>
-                            <Link to="/areas/new">Area Management <i className="fas fa-map"></i></Link>
+                            <Link to="/areas">Area Management <i className="fas fa-map"></i></Link>
                         </li>
                         <li>
                             <Link to="/leads">Lead Management <i className="fas fa-address-book"></i></Link>

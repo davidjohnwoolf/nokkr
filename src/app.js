@@ -25,6 +25,7 @@ import UserEdit from './components/users/user-edit';
 import UserShow from './components/users/user-show';
 import UserIndex from './components/users/user-index';
 import AreaNew from './components/areas/area-new';
+import AreasAll from './components/areas/areas-all';
 import Login from './components/auth/login';
 
 //use react production build for production https://reactjs.org/docs/optimizing-performance.html#use-the-production-build
@@ -74,6 +75,7 @@ ReactDOM.render(
                         <PrivateRoute exact path="/users/:id" component={ UserShow } />
                 		<PrivateRoute exact path="/users" component={ UserIndex } />
                 		<PrivateRoute exact path="/areas/new" component={ AreaNew } />
+                		<PrivateRoute exact path="/areas/" component={ AreasAll } />
                 		<PrivateRoute exact path="/" component={ Dashboard } />
                 		<Route exact path="/not-authorized" component={ NotAuthorized } />
                 		<Route component={ PageNotFound } />

@@ -14,7 +14,7 @@ export const fetchAreasAll = () => {
     return async dispatch => {
         const response = await axios.get('/areas');
         
-        dispatch({ type: FETCH_AREAS_ALL, areas: response.data.data.allAreas });
+        dispatch({ type: FETCH_AREAS_ALL, allAreas: response.data.data.allAreas });
     };
 };
 

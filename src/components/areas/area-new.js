@@ -6,7 +6,7 @@ import AreaNewMap from './area-new-map';
 import { required, validate } from '../helpers/validation';
 import FieldInput from '../helpers/field-input';
 import FieldSelect from '../helpers/field-select';
-import { createArea } from '../../actions/areas.action';
+import { createArea, clearArea } from '../../actions/areas.action';
 import { fetchUsers } from '../../actions/users.action';
 import { sendMessage } from '../../actions/flash.action';
 
@@ -14,6 +14,8 @@ class AreaNew extends React.Component {
     
     constructor(props) {
         super(props);
+        
+        props.clearArea();
         
         props.fetchUsers();
         
@@ -45,7 +47,7 @@ class AreaNew extends React.Component {
         
         if (success) {
             sendMessage(message);
-            history.push('/');
+            history.push('/areas');
         }
     }
     
@@ -146,4 +148,4 @@ const mapStateToProps = state => ({
     users: state.users.users
 });
 
-export default connect(mapStateToProps, { createArea, fetchUsers, sendMessage })(AreaNew);
+export default connect(mapStateToProps, { createArea, fetchUsers, clearArea, sendMessage })(AreaNew);
