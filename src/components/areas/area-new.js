@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import AreaNewMap from './area-new-map';
+import DrawMap from './draw-map';
 import { required, validate } from '../helpers/validation';
 import FieldInput from '../helpers/field-input';
 import FieldSelect from '../helpers/field-select';
@@ -94,7 +94,7 @@ class AreaNew extends React.Component {
             <main id="area-new" className="content">
                 <section className="form">
                     <h1>Create Area</h1>
-                    <AreaNewMap handleOverlay={ this.handleOverlay } />
+                    <DrawMap handleOverlay={ this.handleOverlay } />
                     <small className="server-error">{ serverError }</small>
                     <form onSubmit={ handleSubmit }>
                         <FieldInput

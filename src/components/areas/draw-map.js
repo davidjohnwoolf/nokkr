@@ -3,7 +3,7 @@ import mapStyles from '../helpers/map-styles';
 
 //can you write your own react style listeners?
 
-class AreaNewMap extends React.Component {
+class DrawMap extends React.Component {
     
 	constructor(props) {
         super(props);
@@ -97,4 +97,4 @@ class AreaNewMap extends React.Component {
     }
 }
 
-export default AreaNewMap;
+export default DrawMap;
