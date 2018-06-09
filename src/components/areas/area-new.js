@@ -75,26 +75,34 @@ class AreaNew extends React.Component {
 
     render() {
         
-        const { handleSubmit, handleUserInput } = this;
+        const { handleSubmit, handleUserInput, handleOverlay } = this;
         const { formValid, serverError, coords } = this.state;
         const { title, city, userId } = this.state.fields;
         const { users } = this.props;
-        const userSelectOptions = [['Select User to Assign', '']];
+        const userSelectOptions = [['Assign User', '']];
+        let areas = [];
         
         if (!users) return null;
         
-        this.props.users.forEach(user => {
+        users.forEach(user => {
             let userOption = [user.name, user.id];
             
             userSelectOptions.push(userOption);
+            
+            
+            areas = areas.concat(user.areas);
         });
+        
         
         return (
                 
             <main id="area-new" className="content">
                 <section className="form">
                     <h1>Create Area</h1>
-                    <DrawMap handleOverlay={ this.handleOverlay } />
+                    
+                    <DrawMap handleOverlay={ handleOverlay } areas={ areas } />
+                    
+                    <h2>Save Area</h2>
                     <small className="server-error">{ serverError }</small>
                     <form onSubmit={ handleSubmit }>
                         <FieldInput
@@ -121,7 +129,7 @@ class AreaNew extends React.Component {
                             options={ userSelectOptions }
                         />
                         
-                        <input type="hidden" name="coords" value={ this.state.coords || '' } />
+                        <input type="hidden" name="coords" value={ coords || '' } />
                         
                         <div className="btn-group">
                             <button

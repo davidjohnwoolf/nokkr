@@ -20,8 +20,8 @@ class AreasAll extends React.Component {
         return (
             areas.map(area => {
                 return (
-                    <li key={ area.id }>
-                        <Link to={ `/users/${ area.userData.id }/areas/${ area.id }` } className="icon-link">
+                    <li key={ area._id }>
+                        <Link to={ `/users/${ area.userData.id }/areas/${ area._id }` } className="icon-link">
     			            { area.title } - { area.userData.name }
     			            
     			            <i className="fas fa-chevron-right"></i>

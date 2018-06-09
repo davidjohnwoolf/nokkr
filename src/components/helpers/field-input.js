@@ -14,7 +14,7 @@ class Field extends React.Component {
                         type={ type }
                         placeholder={ placeholder }
                         value={ value }
-                        onChange={ event => handleUserInput(event) }
+                        onChange={ e => handleUserInput(e) }
                     />
                 </div>
                 <small className={ error ? 'input-error-message' : 'invisible' }>{ error }</small>

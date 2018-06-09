@@ -21,13 +21,14 @@ router.get('/', verifyToken, (req, res) => {
         
         const safeUsers = [];
         
-        users.forEach(function(c) {
+        users.forEach(c => {
             safeUsers.push({
                 isAdmin: c.isAdmin,
                 createdAt: c.createdAt,
                 id: c._id,
                 name: c.name,
                 username: c.username,
+                areas: c.areas
             });
         });
         
