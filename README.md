@@ -1,3 +1,3 @@
-# Platform2k
+# nokkr
 
 ### A door to door sales and dealer management platform

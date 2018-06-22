@@ -293,6 +293,10 @@ select {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    
+    > select {
+        width: auto;
+    }
 }
 
 .btn {
@@ -413,16 +417,16 @@ select {
 }
 
 //Maps
-#area-new-map {
+#map {
     width: 100%;
-    height: 30rem;
+    height: 40rem;
     
     @include media-xs {
-        height: 40rem;
+        height: 50rem;
     }
 
     @include media-sm-plus {
-        height: 50rem;
+        height: 60rem;
     }
 }
 

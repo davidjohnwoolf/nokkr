@@ -18,7 +18,7 @@ class Header extends React.Component {
 
     render() {
         
-        const { authenticated } = this.props;
+        const { authenticated, id } = this.props;
         
         if (authenticated) {
             return (
@@ -29,13 +29,13 @@ class Header extends React.Component {
                                 <NavLink exact to="/" activeClassName="active"><i className="fas fa-home"></i></NavLink>
                             </li>
                             <li>
-                                <NavLink to="/user/id/areas" activeClassName="active"><i className="fas fa-map-marker-alt"></i></NavLink>
+                                <NavLink to={ `/users/${ id }/areas` } activeClassName="active"><i className="fas fa-map-marker-alt"></i></NavLink>
                             </li>
                             <li>
-                                <NavLink to="/user/id/leads" activeClassName="active"><i className="fas fa-users"></i></NavLink>
+                                <NavLink to={ `/users/${ id }/leads` } activeClassName="active"><i className="fas fa-users"></i></NavLink>
                             </li>
                             <li>
-                                <NavLink to="/user/id/appointments" activeClassName="active"><i className="fas fa-calendar-alt"></i></NavLink>
+                                <NavLink to={ `/users/${ id }/appointments` } activeClassName="active"><i className="fas fa-calendar-alt"></i></NavLink>
                             </li>
                             <li>
                                 <NavLink to="/new" activeClassName="active"><i className="fas fa-plus"></i></NavLink>
@@ -53,6 +53,6 @@ class Header extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({ authenticated: state.auth.authenticated });
+const mapStateToProps = state => ({ authenticated: state.auth.authenticated, id: state.auth.id });
 
 export default withRouter(connect(mapStateToProps)(Header));

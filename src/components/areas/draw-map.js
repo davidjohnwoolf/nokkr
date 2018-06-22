@@ -41,13 +41,13 @@ class DrawMap extends React.Component {
             return bounds;
         }
         
-        this.map = new google.maps.Map(document.getElementById('area-new-map'), {
+        this.map = new google.maps.Map(document.getElementById('map'), {
             center: {lat: 40, lng: -100},
             zoom: 4,
             styles: mapStyles
         });
         
-        this.autocomplete = new google.maps.places.Autocomplete(document.getElementById('area-new-map-search'));
+        this.autocomplete = new google.maps.places.Autocomplete(document.getElementById('map-search'));
         
         this.drawingManager = new google.maps.drawing.DrawingManager({
             drawingMode: google.maps.drawing.OverlayType.POLYGON,
@@ -154,9 +154,9 @@ class DrawMap extends React.Component {
         const { resetMap, showAreas, goToArea, renderAreaOptions } = this;
         
         return (
-            <div className="area-new-map-constainer">
-                <input id="area-new-map-search" type="text" placeholder="enter location to go to" />
-                <div id="area-new-map"></div>
+            <div className="map-constainer">
+                <input id="map-search" type="text" placeholder="enter location to go to" />
+                <div id="map"></div>
                 <select onChange={ e => goToArea(e) }>
                     <option value="">Go to Area</option>
                     { renderAreaOptions() }
