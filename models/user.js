@@ -7,7 +7,7 @@ const Area = require('./area');
 const userSchema = new Schema({
     name: { type: String, required: true },
     username: { type: String, required: true, index: { unique: true } },
-    email: { 
+    email: {
         type: String,
         required: true,
         index: { unique: true },
