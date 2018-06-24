@@ -18,9 +18,15 @@ const userSchema = new Schema({
         required: true,
         match: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,24}/
     },
+    userImage: { type: String },
     isAdmin: { type: Boolean, default: false },
+    isManager: { type: Boolean, default: false },
+    isReadOnly: { type: Boolean, default: false },
     areas: [Area.schema],
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    createdBy: { type: String },
+    updatedAt: { type: Date },
+    updatedBy: { type: String }
 });
 
 userSchema.pre('save', function(next) {
