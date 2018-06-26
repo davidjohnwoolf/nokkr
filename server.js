@@ -10,9 +10,11 @@ const app = express();
 const mongoose = require('mongoose');
 
 // controllers
-const Authentication = require('./controllers/authentication');
+const Accounts = require('./controllers/accounts');
+const Teams = require('./controllers/teams');
+//const Authentication = require('./controllers/authentication');
 const Users = require('./controllers/users');
-const Areas = require('./controllers/areas');
+//const Areas = require('./controllers/areas');
 
 // connect database
 if (process.env.NODE_ENV !== 'test') {
@@ -34,9 +36,12 @@ app.use(express.static(path.join(__dirname, 'dist')));
 // routes
 //app.use(expressJWT({ secret: process.env.JWT_SECRET }).unless({ path: ['/login'] }));
 
-app.use('/users/', Users);
-app.use('/', Areas);
-app.use('/', Authentication);
+app.use('/accounts/', Accounts);
+app.use('/teams/', Teams);
+app.use('/teams/:id/users', Users);
+
+//app.use('/', Areas);
+//app.use('/', Authentication);
 
 // start server
 app.listen(process.env.PORT || 8080, () => console.log('server listening...'));
