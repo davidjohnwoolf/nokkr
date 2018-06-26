@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const fieldSchema = new Schema({
+const FieldSchema = new Schema({
     title: { type: String, required: true },
     type: { type: String, required: true },
     options: { type: Array },
@@ -14,4 +14,4 @@ const fieldSchema = new Schema({
     updatedBy: { type: String }
 });
 
-module.exports = mongoose.model('Field', fieldSchema);
+module.exports = mongoose.model('Field', FieldSchema);

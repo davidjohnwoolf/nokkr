@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const statusSchema = new Schema({
+const StatusSchema = new Schema({
     title: { type: String, required: true },
     type: { type: String, required: true },
     color: { type: String, required: true },
@@ -12,4 +12,4 @@ const statusSchema = new Schema({
     updatedBy: { type: String }
 });
 
-module.exports = mongoose.model('Status', statusSchema);
+module.exports = mongoose.model('Status', StatusSchema);

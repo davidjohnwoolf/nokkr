@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 const Area = require('./area');
 
-const userSchema = new Schema({
+const UserSchema = new Schema({
     name: { type: String, required: true },
     username: { type: String, required: true, index: { unique: true } },
     email: {
@@ -29,7 +29,7 @@ const userSchema = new Schema({
     updatedBy: { type: String }
 });
 
-userSchema.pre('save', function(next) {
+UserSchema.pre('save', function(next) {
     const user = this;
     
     // check if user password is new or modified
@@ -49,7 +49,7 @@ userSchema.pre('save', function(next) {
     });
 });
 
-userSchema.methods.comparePassword = function(candidatePassword, done) {
+UserSchema.methods.comparePassword = function(candidatePassword, done) {
     bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
         if (err) return done(err);
         
@@ -57,4 +57,4 @@ userSchema.methods.comparePassword = function(candidatePassword, done) {
     });
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', UserSchema);

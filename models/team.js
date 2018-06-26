@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const User = require('./user');
 
-const teamSchema = new Schema({
+const TeamSchema = new Schema({
     title: { type: String, required: true },
     teamLogo: { type: String },
     notifySales: { type: Boolean, default: false },
@@ -14,4 +14,4 @@ const teamSchema = new Schema({
     updatedBy: { type: String }
 });
 
-module.exports = mongoose.model('Team', teamSchema);
+module.exports = mongoose.model('Team', TeamSchema);
