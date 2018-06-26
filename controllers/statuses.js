@@ -29,7 +29,7 @@ router.post('/', (req, res) => {
     Account.findOne({}, (err, account) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         
-        if (!account) return res.json({ status: ERROR, data: err, code: 404, message: 'Account not found' });
+        if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
         if (account.statuses.find(status => status.title === req.body.title)) {
             return res.json({ status: FAIL, data: { message: 'Status already exists' } });
@@ -50,11 +50,11 @@ router.get('/:id', (req, res) => {
     Account.findOne({}, (err, account) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         
-        if (!account) return res.json({ status: ERROR, data: err, code: 404, message: 'Account not found' });
+        if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
         const status = account.statuses.find(status => status.id === req.params.id);
         
-        if (!status) return res.json({ status: ERROR, data: err, code: 404, message: 'Status not found' });
+        if (!status) return res.json({ status: ERROR, code: 404, message: 'Status not found' });
         
         return res.json({ status: SUCCESS, data: { status } });
     });
@@ -67,7 +67,7 @@ router.put('/:id', (req, res) => {
         
         const statusIndex = account.statuses.findIndex(status => status.id === req.params.id);
         
-        if (!statusIndex) return res.json({ status: ERROR, data: err, code: 404, message: 'Status not found' });
+        if (!statusIndex) return res.json({ status: ERROR, code: 404, message: 'Status not found' });
         
         for (let key in req.body) {
         	account.statuses[statusIndex][key] = req.body[key];
@@ -88,7 +88,7 @@ router.delete('/:id', (req, res) => {
     	
     	const statusIndex = account.statuses.findIndex(status => status.id === req.params.id);
     	
-    	if (!statusIndex) return res.json({ status: ERROR, data: err, code: 404, message: 'Status not found' });
+    	if (!statusIndex) return res.json({ status: ERROR, code: 404, message: 'Status not found' });
     	
     	account.statuses[statusIndex].remove();
     	

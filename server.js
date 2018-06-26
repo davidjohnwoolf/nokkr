@@ -43,8 +43,8 @@ app.use('/account/', Accounts);
 app.use('/account/statuses', Statuses);
 app.use('/account/fields', Fields);
 app.use('/account/area-groups', AreaGroups);
-app.use('/teams', Teams);
-app.use('/teams/:teamId/users/', Users);
+app.use('/account/teams', Teams);
+app.use('/users/', Users);
 
 //app.use('/', Areas);
 //app.use('/', Authentication);

@@ -29,7 +29,7 @@ router.post('/', (req, res) => {
     Account.findOne({}, (err, account) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         
-        if (!account) return res.json({ status: ERROR, data: err, code: 404, message: 'Account not found' });
+        if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
         if (account.areaGroups.find(areaGroup => areaGroup.title === req.body.title)) {
             return res.json({ status: FAIL, data: { message: 'Area group already exists' } });
@@ -38,7 +38,7 @@ router.post('/', (req, res) => {
         account.areaGroups.push(new AreaGroup(req.body));
         
         account.save(err => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error saving account' });
+            if (err) return res.json({ status: ERROR, code: 500, message: 'Error creating area group' });
             
             return res.json({ status: SUCCESS, data: { message: 'Area group created' } });
         });
@@ -50,11 +50,11 @@ router.get('/:id', (req, res) => {
     Account.findOne({}, (err, account) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         
-        if (!account) return res.json({ status: ERROR, data: err, code: 404, message: 'Account not found' });
+        if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
         const areaGroup = account.areaGroups.find(areaGroup => areaGroup.id === req.params.id);
         
-        if (!areaGroup) return res.json({ status: ERROR, data: err, code: 404, message: 'Area group not found' });
+        if (!areaGroup) return res.json({ status: ERROR, code: 404, message: 'Area group not found' });
         
         return res.json({ status: SUCCESS, data: { areaGroup } });
     });
@@ -67,7 +67,7 @@ router.put('/:id', (req, res) => {
         
         const areaGroupIndex = account.areaGroups.findIndex(areaGroup => areaGroup.id === req.params.id);
         
-        if (!areaGroupIndex) return res.json({ status: ERROR, data: err, code: 404, message: 'Area group not found' });
+        if (!areaGroupIndex) return res.json({ status: ERROR, code: 404, message: 'Area group not found' });
         
         for (let key in req.body) {
         	account.areaGroups[areaGroupIndex][key] = req.body[key];
@@ -88,7 +88,7 @@ router.delete('/:id', (req, res) => {
     	
     	const areaGroupIndex = account.areaGroups.findIndex(areaGroup => areaGroup.id === req.params.id);
     	
-    	if (!areaGroupIndex) return res.json({ status: ERROR, data: err, code: 404, message: 'AreaGroup not found' });
+    	if (!areaGroupIndex) return res.json({ status: ERROR, code: 404, message: 'Area group not found' });
     	
     	account.areaGroups[areaGroupIndex].remove();
     	

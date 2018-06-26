@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const Field = require('./field');
 const Status = require('./status');
 const AreaGroup = require('./area-group');
+const Team = require('./team');
 
 //make singleton
 const AccountSchema = new Schema({
@@ -15,6 +16,7 @@ const AccountSchema = new Schema({
     zipcode: { type: String, required: true },
     phone: { type: String, required: true, match: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/ },
     isActive: { type: Boolean, required: true, default: true },
+    teams: [Team.schema],
     areaGroups: [AreaGroup.schema],
     fields: [Field.schema],
     statuses: [Status.schema],

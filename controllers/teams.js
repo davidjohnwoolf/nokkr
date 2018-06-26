@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
+const Account = require('../models/account');
 const Team = require('../models/team');
-
-//const verifyToken = require('./helpers/authorization');
 
 //status variables for Jsend API spec
 const SUCCESS = 'success';
@@ -14,41 +13,47 @@ const ERROR = 'error';
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
-//list
+//index
 router.get('/', (req, res) => {
-    Team.find({}, (err, teams) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding teams' });
+    Account.findOne({}, (err, account) => {
+        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         
-        if (!teams) return res.json({ status: ERROR, data: err, code: 404, message: 'Teams not found' });
-        
-        return res.json({ status: SUCCESS, data: { teams } });
+        return res.json({ status: SUCCESS, data: { areas: account.teams } });
     });
 });
 
 //create
 router.post('/', (req, res) => {
-    Team.findOne({ title: req.body.title }, (err, team) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error creating team' });
+    Account.findOne({}, (err, account) => {
+        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         
-        if (team) return res.json({ status: FAIL, data: { message: 'Team already exists' } });
-
-        const newTeam = new Team(req.body);
-                
-        newTeam.save(err => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error saving team' });
+        if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
+        
+        //move to schema validator
+        if (account.teams.find(team => team.title === req.body.title)) {
+            return res.json({ status: FAIL, data: { message: 'Team already exists' } });
+        }
+        
+        account.teams.push(new Team(req.body));
+        
+        account.save(err => {
+            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error creating team' });
             
             return res.json({ status: SUCCESS, data: { message: 'Team created' } });
         });
-        
     });
 });
 
 //show
 router.get('/:id', (req, res) => {
-    Team.findOne({ _id: req.params.id }, (err, team) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding team' });
+    Account.findOne({}, (err, account) => {
+        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         
-        if (!team) return res.json({ status: ERROR, data: err, code: 404, message: 'Team not found' });
+        if (!account) return res.json({ status: ERROR, data: err, code: 404, message: 'Account not found' });
+        
+        const team = account.teams.find(team => team.id === req.params.id);
+        
+        if (!team) return res.json({ status: ERROR, code: 404, message: 'Team not found' });
         
         return res.json({ status: SUCCESS, data: { team } });
     });
@@ -56,14 +61,18 @@ router.get('/:id', (req, res) => {
 
 //update
 router.put('/:id', (req, res) => {
-    Team.findOne({ _id: req.params.id }, (err, team) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding team' });
+    Account.findOne({}, (err, account) => {
+        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
+        
+        const teamIndex = account.teams.findIndex(team => team.id === req.params.id);
+        
+        if (!teamIndex) return res.json({ status: ERROR, code: 404, message: 'Team not found' });
         
         for (let key in req.body) {
-        	team[key] = req.body[key];
+        	account.teams[teamIndex][key] = req.body[key];
         }
         
-        team.save(err => {
+        account.save(err => {
             if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error updating team' });
             
             return res.json({ status: SUCCESS, data: { message: 'Team updated' } });
@@ -71,12 +80,22 @@ router.put('/:id', (req, res) => {
     });
 });
 
-// destroy
+//destroy
 router.delete('/:id', (req, res) => {
-    Team.remove({ _id: req.params.id }, (err, team) => {
-    	if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error deleting team' });
-    
-    	return res.json({ status: SUCCESS, data: { message: 'Team deleted' } });
+    Account.findOne({}, (err, account) => {
+    	if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
+    	
+    	const teamIndex = account.teams.findIndex(team => team.id === req.params.id);
+    	
+    	if (!teamIndex) return res.json({ status: ERROR, code: 404, message: 'Team not found' });
+    	
+    	account.teams[teamIndex].remove();
+    	
+    	account.save(err => {
+            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error deleting team' });
+            
+            return res.json({ status: SUCCESS, data: { message: 'Team deleted' } });
+        });
     });
 });
 
