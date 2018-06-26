@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const Account = require('../models/account');
+const Field = require('../models/field');
 
 //const verifyToken = require('./helpers/authorization');
 
@@ -15,8 +16,8 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 //index
-router.get('/:id/fields/', (req, res) => {
-    Account.findOne({ _id: req.params.id }, (err, account) => {
+router.get('/', (req, res) => {
+    Account.findOne({}, (err, account) => {
         if (err) return res.json({ field: ERROR, data: err, code: 500, message: 'Error finding account' });
         
         return res.json({ field: SUCCESS, data: { areas: account.fields } });
@@ -24,48 +25,52 @@ router.get('/:id/fields/', (req, res) => {
 });
 
 //create
-router.post('/:id/fields/', (req, res) => {
-    Account.findOne({ _id: req.body.id }, (err, account) => {
+router.post('/', (req, res) => {
+    Account.findOne({}, (err, account) => {
         if (err) return res.json({ field: ERROR, data: err, code: 500, message: 'Error finding account' });
         
         if (!account) return res.json({ field: ERROR, data: err, code: 404, message: 'Account not found' });
         
         if (account.fields.find(field => field.title === req.body.title)) {
-            return res.json({ field: FAIL, data: { message: 'Status title already exists for this account' } });
+            return res.json({ field: FAIL, data: { message: 'Field already exists' } });
         }
         
-        account.fields.push(req.body);
+        account.fields.push(new Field(req.body));
         
         account.save(err => {
             if (err) return res.json({ field: ERROR, data: err, code: 500, message: 'Error saving account' });
             
-            return res.json({ field: SUCCESS, data: { message: 'Status created' } });
+            return res.json({ field: SUCCESS, data: { message: 'Field created' } });
         });
     });
 });
 
 //show
-router.get('/:id/fields/:fieldId', (req, res) => {
-    Account.findOne({ _id: req.params.id }, (err, account) => {
+router.get('/:id', (req, res) => {
+    Account.findOne({}, (err, account) => {
         if (err) return res.json({ field: ERROR, data: err, code: 500, message: 'Error finding account' });
         
         if (!account) return res.json({ field: ERROR, data: err, code: 404, message: 'Account not found' });
         
-        const field = account.fields.find(field => field.id === req.params.fieldId);
+        const field = account.fields.find(field => field.id === req.params.id);
         
-        if (!field) return res.json({ field: ERROR, data: err, code: 500, message: 'Error finding field' });
+        if (!field) return res.json({ field: ERROR, data: err, code: 404, message: 'Field not found' });
         
         return res.json({ field: SUCCESS, data: { field } });
     });
 });
 
 //update
-router.put('/:id/fields/:fieldId', (req, res) => {
-    Account.findOne({ _id: req.params.id }, (err, account) => {
+router.put('/:id', (req, res) => {
+    Account.findOne({}, (err, account) => {
         if (err) return res.json({ field: ERROR, data: err, code: 500, message: 'Error finding account' });
         
+        const fieldIndex = account.fields.findIndex(status => status.id === req.params.id);
+        
+        if (!fieldIndex) return res.json({ status: ERROR, data: err, code: 404, message: 'Field not found' });
+        
         for (let key in req.body) {
-        	account[key] = req.body[key];
+        	account.fields[fieldIndex][key] = req.body[key];
         }
         
         account.save(err => {
@@ -77,11 +82,13 @@ router.put('/:id/fields/:fieldId', (req, res) => {
 });
 
 //destroy
-router.delete('/:id/fields/:fieldId', (req, res) => {
-    Account.findOne({ _id: req.params.id }, (err, account) => {
+router.delete('/:id', (req, res) => {
+    Account.findOne({}, (err, account) => {
     	if (err) return res.json({ field: ERROR, data: err, code: 500, message: 'Error finding account' });
     	
     	const fieldIndex = account.fields.findIndex(field => field.id === req.params.id);
+    	
+    	if (!fieldIndex) return res.json({ status: ERROR, data: err, code: 404, message: 'Field not found' });
     	
     	account.fields[fieldIndex].remove();
     	

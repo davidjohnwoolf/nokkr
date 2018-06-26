@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const Account = require('../models/account');
+const Status = require('../models/status');
 
 //const verifyToken = require('./helpers/authorization');
 
@@ -15,8 +16,8 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 //index
-router.get('/:id/statuses/', (req, res) => {
-    Account.findOne({ _id: req.params.id }, (err, account) => {
+router.get('/', (req, res) => {
+    Account.findOne({}, (err, account) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         
         return res.json({ status: SUCCESS, data: { areas: account.statuses } });
@@ -24,17 +25,17 @@ router.get('/:id/statuses/', (req, res) => {
 });
 
 //create
-router.post('/:id/statuses/', (req, res) => {
-    Account.findOne({ _id: req.body.id }, (err, account) => {
+router.post('/', (req, res) => {
+    Account.findOne({}, (err, account) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         
         if (!account) return res.json({ status: ERROR, data: err, code: 404, message: 'Account not found' });
         
         if (account.statuses.find(status => status.title === req.body.title)) {
-            return res.json({ status: FAIL, data: { message: 'Status title already exists for this account' } });
+            return res.json({ status: FAIL, data: { message: 'Status already exists' } });
         }
         
-        account.statuses.push(req.body);
+        account.statuses.push(new Status(req.body));
         
         account.save(err => {
             if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error saving account' });
@@ -45,27 +46,31 @@ router.post('/:id/statuses/', (req, res) => {
 });
 
 //show
-router.get('/:id/statuses/:statusId', (req, res) => {
-    Account.findOne({ _id: req.params.id }, (err, account) => {
+router.get('/:id', (req, res) => {
+    Account.findOne({}, (err, account) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         
         if (!account) return res.json({ status: ERROR, data: err, code: 404, message: 'Account not found' });
         
-        const status = account.statuses.find(status => status.id === req.params.statusId);
+        const status = account.statuses.find(status => status.id === req.params.id);
         
-        if (!status) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding status' });
+        if (!status) return res.json({ status: ERROR, data: err, code: 404, message: 'Status not found' });
         
         return res.json({ status: SUCCESS, data: { status } });
     });
 });
 
 //update
-router.put('/:id/statuses/:statusId', (req, res) => {
-    Account.findOne({ _id: req.params.id }, (err, account) => {
+router.put('/:id', (req, res) => {
+    Account.findOne({}, (err, account) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         
+        const statusIndex = account.statuses.findIndex(status => status.id === req.params.id);
+        
+        if (!statusIndex) return res.json({ status: ERROR, data: err, code: 404, message: 'Status not found' });
+        
         for (let key in req.body) {
-        	account[key] = req.body[key];
+        	account.statuses[statusIndex][key] = req.body[key];
         }
         
         account.save(err => {
@@ -77,11 +82,13 @@ router.put('/:id/statuses/:statusId', (req, res) => {
 });
 
 //destroy
-router.delete('/:id/statuses/:statusId', (req, res) => {
-    Account.findOne({ _id: req.params.id }, (err, account) => {
+router.delete('/:id', (req, res) => {
+    Account.findOne({}, (err, account) => {
     	if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
     	
     	const statusIndex = account.statuses.findIndex(status => status.id === req.params.id);
+    	
+    	if (!statusIndex) return res.json({ status: ERROR, data: err, code: 404, message: 'Status not found' });
     	
     	account.statuses[statusIndex].remove();
     	

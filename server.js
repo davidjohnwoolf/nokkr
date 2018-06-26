@@ -10,9 +10,12 @@ const app = express();
 const mongoose = require('mongoose');
 
 // controllers
-const Accounts = require('./controllers/accounts');
-const Teams = require('./controllers/teams');
 //const Authentication = require('./controllers/authentication');
+const Accounts = require('./controllers/accounts');
+const Statuses = require('./controllers/statuses');
+const Fields = require('./controllers/fields');
+const AreaGroups = require('./controllers/area-groups');
+const Teams = require('./controllers/teams');
 const Users = require('./controllers/users');
 //const Areas = require('./controllers/areas');
 
@@ -36,9 +39,12 @@ app.use(express.static(path.join(__dirname, 'dist')));
 // routes
 //app.use(expressJWT({ secret: process.env.JWT_SECRET }).unless({ path: ['/login'] }));
 
-app.use('/accounts/', Accounts);
-app.use('/teams/', Teams);
-app.use('/teams/:id/users', Users);
+app.use('/account/', Accounts);
+app.use('/account/statuses', Statuses);
+app.use('/account/fields', Fields);
+app.use('/account/area-groups', AreaGroups);
+app.use('/teams', Teams);
+app.use('/teams/:teamId/users/', Users);
 
 //app.use('/', Areas);
 //app.use('/', Authentication);

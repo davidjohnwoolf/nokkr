@@ -15,8 +15,8 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 //show
-router.get('/:id', (req, res) => {
-    Account.findOne({ _id: req.params.id }, (err, account) => {
+router.get('/', (req, res) => {
+    Account.findOne({}, (err, account) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         
         if (!account) return res.json({ status: ERROR, data: err, code: 404, message: 'Account not found' });
@@ -26,8 +26,8 @@ router.get('/:id', (req, res) => {
 });
 
 //update
-router.put('/:id', (req, res) => {
-    Account.findOne({ _id: req.params.id }, (err, account) => {
+router.put('/', (req, res) => {
+    Account.findOne({}, (err, account) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         
         for (let key in req.body) {

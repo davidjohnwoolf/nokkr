@@ -93,6 +93,8 @@ router.put(`${ USER_PATH }/areas/:areaId`, (req, res) => {
         
         const areaIndex = user.areas.findIndex(area => area.id === req.params.id);
         
+        if (!areaIndex) return res.json({ status: ERROR, data: err, code: 404, message: 'Area not found' });
+        
         for (let key in req.body) {
         	user.areas[areaIndex][key] = req.body[key];
         }

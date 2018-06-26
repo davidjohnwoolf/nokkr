@@ -15,19 +15,19 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 //list
-router.get('/:id', (req, res) => {
-    Team.findOne({ _id: req.params.id }, (err, team) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding team' });
+router.get('/', (req, res) => {
+    Team.find({}, (err, teams) => {
+        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding teams' });
         
-        if (!team) return res.json({ status: ERROR, data: err, code: 404, message: 'Team not found' });
+        if (!teams) return res.json({ status: ERROR, data: err, code: 404, message: 'Teams not found' });
         
-        return res.json({ status: SUCCESS, data: { team } });
+        return res.json({ status: SUCCESS, data: { teams } });
     });
 });
 
 //create
 router.post('/', (req, res) => {
-    Team.findOne({ _id: req.params.id }, (err, team) => {
+    Team.findOne({ title: req.body.title }, (err, team) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error creating team' });
         
         if (team) return res.json({ status: FAIL, data: { message: 'Team already exists' } });
