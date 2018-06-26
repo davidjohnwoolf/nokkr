@@ -18,19 +18,20 @@ const UserSchema = new Schema({
         required: true,
         match: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,24}/
     },
-    userImage: { type: String },
+    userImagePath: { type: String },
+    isSuperUser: { type: Boolean, default: false },
     isAdmin: { type: Boolean, default: false },
     isManager: { type: Boolean, default: false },
     isReadOnly: { type: Boolean, default: false },
     areas: [Area.schema],
     createdAt: { type: Date, default: Date.now },
-    createdBy: { type: String },
-    updatedAt: { type: Date },
-    updatedBy: { type: String }
+    updatedAt: { type: Date }
 });
 
 UserSchema.pre('save', function(next) {
     const user = this;
+    
+    user.updatedAt = Date.now();
     
     // check if user password is new or modified
     if (!user.isModified('password')) return next();

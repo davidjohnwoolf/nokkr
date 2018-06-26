@@ -5,13 +5,15 @@ const User = require('./user');
 
 const TeamSchema = new Schema({
     title: { type: String, required: true },
-    teamLogo: { type: String },
     notifySales: { type: Boolean, default: false },
     users: [User.schema],
     createdAt: { type: Date, default: Date.now },
-    createdBy: { type: String },
-    updatedAt: { type: Date },
-    updatedBy: { type: String }
+    updatedAt: { type: Date }
+});
+
+TeamSchema.pre('save', function(next) {
+    this.updatedAt = Date.now();
+    next();
 });
 
 module.exports = mongoose.model('Team', TeamSchema);

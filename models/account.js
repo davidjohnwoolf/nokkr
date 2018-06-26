@@ -10,29 +10,21 @@ const AreaGroup = require('./area-group');
 const AccountSchema = new Schema({
     dealerName: { type: String, required: true },
     address: { type: String, required: true },
-    phone: { type: String, required: true },
-    dealerLogoPath: { type: String, required: true },
-    isActive: { type: Boolean, required: true, default: false },
+    city: { type: String, required: true },
+    state: { type: String, required: true },
+    zipcode: { type: String, required: true },
+    phone: { type: String, required: true, match: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/ },
+    isActive: { type: Boolean, required: true, default: true },
     areaGroups: [AreaGroup.schema],
     fields: [Field.schema],
     statuses: [Status.schema],
     createdAt: { type: Date, default: Date.now },
-    createdBy: { type: String, default: 'System' },
-    updatedAt: { type: Date },
-    updatedBy: { type: String }
+    updatedAt: { type: Date }
 });
 
 AccountSchema.pre('save', function(next) {
     this.updatedAt = Date.now();
-    
     next();
 });
-
-AccountSchema.setAuthor = function(userId, done) {
-    //if (!this.createdBy) this.createdBy = userId;
-    this.updatedBy = userId;
-    
-    done();
-};
 
 module.exports = mongoose.model('Account', AccountSchema);
