@@ -13,6 +13,9 @@ const requireSuperUser = (req, res, next) => {
         jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
             if (err) return res.json({ status: ERROR, data: err, code: 401, message: 'Token not valid' });
             
+            //set logged in user for the request
+            req.locals.loggedInUser = decoded;
+            
             if (!decoded.isSuperUser) {
                 return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
             }
@@ -33,6 +36,9 @@ const requireAdmin = (req, res, next) => {
         
         jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
             if (err) return res.json({ status: ERROR, data: err, code: 401, message: 'Token not valid' });
+            
+            //set logged in user for the request
+            req.locals.loggedInUser = decoded;
             
             if (!decoded.isAdmin && !decoded.isSuperUser) {
                 return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
@@ -55,8 +61,10 @@ const requireManager = (req, res, next) => {
         jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
             if (err) return res.json({ status: ERROR, data: err, code: 401, message: 'Token not valid' });
             
-            //make sure this works for all routes, maybe be more specific with IDs
-            if ((!decoded.isManager && (!req.params.teamId || (decoded.teamId === req.params.teamId))) && !decoded.isAdmin && !decoded.isSuperUser) {
+            //set logged in user for the request
+            req.locals.loggedInUser = decoded;
+            
+            if (!decoded.isManager && !decoded.isAdmin && !decoded.isSuperUser) {
                 return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
             }
 
@@ -69,13 +77,36 @@ const requireManager = (req, res, next) => {
     }
 };
 
-const requireNotReadOnly = (req, res, next) => {
+const requireUser = (req, res, next) => {
     if (req.get('Authorization')) {
         
         const token = req.get('Authorization').split(' ')[1];
         
         jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
             if (err) return res.json({ status: ERROR, data: err, code: 401, message: 'Token not valid' });
+            
+            //set logged in user for the request
+            req.locals.loggedInUser = decoded;
+
+            next();
+        });
+        
+    } else {
+        
+        res.json({ status: ERROR, code: 401, message: 'No authorization header' });
+    }
+};
+
+const excludeReadOnly = (req, res, next) => {
+    if (req.get('Authorization')) {
+        
+        const token = req.get('Authorization').split(' ')[1];
+        
+        jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
+            if (err) return res.json({ status: ERROR, data: err, code: 401, message: 'Token not valid' });
+            
+            //set logged in user for the request
+            req.locals.loggedInUser = decoded;
             
             if (decoded.isReadOnly) {
                 return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
@@ -94,5 +125,6 @@ module.exports = {
     requireSuperUser,
     requireAdmin,
     requireManager,
-    requireNotReadOnly
+    requireUser,
+    excludeReadOnly
 };
