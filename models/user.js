@@ -19,7 +19,7 @@ const UserSchema = new Schema({
         required: true,
         match: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,24}/
     },
-    team: { type: String },
+    team: { type: Schema.Types.ObjectId },
     userImagePath: { type: String },
     isSuperUser: { type: Boolean, default: false },
     isAdmin: { type: Boolean, default: false },
