@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 //const AreaGroup = require('./area-group');
-const Field = require('./field');
-const Status = require('./status');
+const LeadField = require('./lead-field');
+const LeadStatus = require('./lead-status');
 const AreaGroup = require('./area-group');
 const Team = require('./team');
 
@@ -18,8 +18,8 @@ const AccountSchema = new Schema({
     isActive: { type: Boolean, required: true, default: true },
     teams: [Team.schema],
     areaGroups: [AreaGroup.schema],
-    fields: [Field.schema],
-    statuses: [Status.schema],
+    leadFields: [LeadField.schema],
+    leadStatuses: [LeadStatus.schema],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date }
 });

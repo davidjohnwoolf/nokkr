@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const Account = require('../models/account');
-const Field = require('../models/field');
+const LeadField = require('../models/lead-field');
 
 //const verifyToken = require('./helpers/authorization');
 
@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
-        return res.json({ field: SUCCESS, data: { areas: account.fields } });
+        return res.json({ field: SUCCESS, data: { areas: account.leadFields } });
     });
 });
 
@@ -31,16 +31,16 @@ router.post('/', (req, res) => {
         
         if (!account) return res.json({ field: ERROR, code: 404, message: 'Account not found' });
         
-        if (account.fields.find(field => field.title === req.body.title)) {
-            return res.json({ field: FAIL, data: { message: 'Field already exists' } });
+        if (account.leadFields.find(leadField => leadField.title === req.body.title)) {
+            return res.json({ field: FAIL, data: { message: 'Lead field already exists' } });
         }
         
-        account.fields.push(new Field(req.body));
+        account.leadFields.push(new LeadField(req.body));
         
         account.save(err => {
             if (err) return res.json({ field: ERROR, code: 500, message: 'Error creating field' });
             
-            return res.json({ field: SUCCESS, data: { message: 'Field created' } });
+            return res.json({ field: SUCCESS, data: { message: 'Lead field created' } });
         });
     });
 });
@@ -52,11 +52,11 @@ router.get('/:id', (req, res) => {
         
         if (!account) return res.json({ field: ERROR, code: 404, message: 'Account not found' });
         
-        const field = account.fields.find(field => field.id === req.params.id);
+        const leadField = account.leadFields.find(leadField => leadField.id === req.params.id);
         
-        if (!field) return res.json({ field: ERROR, code: 404, message: 'Field not found' });
+        if (!leadField) return res.json({ field: ERROR, code: 404, message: 'Lead field not found' });
         
-        return res.json({ field: SUCCESS, data: { field } });
+        return res.json({ field: SUCCESS, data: { leadField } });
     });
 });
 
@@ -67,18 +67,18 @@ router.put('/:id', (req, res) => {
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
-        const fieldIndex = account.fields.findIndex(field => field.id === req.params.id);
+        const leadFieldIndex = account.leadFields.findIndex(leadField => leadField.id === req.params.id);
         
-        if (!fieldIndex) return res.json({ status: ERROR, code: 404, message: 'Field not found' });
+        if (!leadFieldIndex) return res.json({ status: ERROR, code: 404, message: 'Lead field not found' });
         
         for (let key in req.body) {
-        	account.fields[fieldIndex][key] = req.body[key];
+        	account.leadFields[leadFieldIndex][key] = req.body[key];
         }
         
         account.save(err => {
             if (err) return res.json({ field: ERROR, data: err, code: 500, message: 'Error updating field' });
             
-            return res.json({ field: SUCCESS, data: { message: 'Field updated' } });
+            return res.json({ field: SUCCESS, data: { message: 'Lead field updated' } });
         });
     });
 });
@@ -90,16 +90,16 @@ router.delete('/:id', (req, res) => {
     	
     	if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
     	
-    	const fieldIndex = account.fields.findIndex(field => field.id === req.params.id);
+    	const leadFieldIndex = account.leadFields.findIndex(leadField => leadField.id === req.params.id);
     	
-    	if (!fieldIndex) return res.json({ status: ERROR, code: 404, message: 'Field not found' });
+    	if (!leadFieldIndex) return res.json({ status: ERROR, code: 404, message: 'Lead field not found' });
     	
-    	account.fields[fieldIndex].remove();
+    	account.leadFields[leadFieldIndex].remove();
     	
     	account.save(err => {
             if (err) return res.json({ field: ERROR, data: err, code: 500, message: 'Error deleting field' });
             
-            return res.json({ field: SUCCESS, data: { message: 'Field deleted' } });
+            return res.json({ field: SUCCESS, data: { message: 'Lead field deleted' } });
         });
     });
 });

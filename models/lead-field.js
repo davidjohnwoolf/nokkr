@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const FieldSchema = new Schema({
+const LeadFieldSchema = new Schema({
     title: { type: String, required: true },
     type: { type: String, required: true, enum: ['Text', 'Select', 'Radio', 'Checkbox', 'Date', 'Email', 'Text Area'] },
     options: [String],
@@ -12,9 +12,9 @@ const FieldSchema = new Schema({
     updatedAt: { type: Date }
 });
 
-FieldSchema.pre('save', function(next) {
+LeadFieldSchema.pre('save', function(next) {
     this.updatedAt = Date.now();
     next();
 });
 
-module.exports = mongoose.model('Field', FieldSchema);
+module.exports = mongoose.model('LeadField', LeadFieldSchema);

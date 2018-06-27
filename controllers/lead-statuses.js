@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const Account = require('../models/account');
-const Status = require('../models/status');
+const LeadStatus = require('../models/lead-status');
 
 //const verifyToken = require('./helpers/authorization');
 
@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
-        return res.json({ status: SUCCESS, data: { areas: account.statuses } });
+        return res.json({ status: SUCCESS, data: { areas: account.leadStatuses } });
     });
 });
 
@@ -31,11 +31,11 @@ router.post('/', (req, res) => {
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
-        if (account.statuses.find(status => status.title === req.body.title)) {
+        if (account.leadStatuses.find(leadStatus => leadStatus.title === req.body.title)) {
             return res.json({ status: FAIL, data: { message: 'Status already exists' } });
         }
         
-        account.statuses.push(new Status(req.body));
+        account.leadStatuses.push(new LeadStatus(req.body));
         
         account.save(err => {
             if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error saving account' });
@@ -52,11 +52,11 @@ router.get('/:id', (req, res) => {
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
-        const status = account.statuses.find(status => status.id === req.params.id);
+        const leadStatus = account.leadStatuses.find(leadStatus => leadStatus.id === req.params.id);
         
-        if (!status) return res.json({ status: ERROR, code: 404, message: 'Status not found' });
+        if (!leadStatus) return res.json({ status: ERROR, code: 404, message: 'Status not found' });
         
-        return res.json({ status: SUCCESS, data: { status } });
+        return res.json({ status: SUCCESS, data: { leadStatus } });
     });
 });
 
@@ -67,12 +67,12 @@ router.put('/:id', (req, res) => {
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
-        const statusIndex = account.statuses.findIndex(status => status.id === req.params.id);
+        const leadStatusIndex = account.leadStatuses.findIndex(leadStatus => leadStatus.id === req.params.id);
         
-        if (!statusIndex) return res.json({ status: ERROR, code: 404, message: 'Status not found' });
+        if (!leadStatusIndex) return res.json({ status: ERROR, code: 404, message: 'Status not found' });
         
         for (let key in req.body) {
-        	account.statuses[statusIndex][key] = req.body[key];
+        	account.leadStatuses[leadStatusIndex][key] = req.body[key];
         }
         
         account.save(err => {
@@ -90,11 +90,11 @@ router.delete('/:id', (req, res) => {
     	
     	if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
     	
-    	const statusIndex = account.statuses.findIndex(status => status.id === req.params.id);
+    	const leadStatusIndex = account.leadStatuses.findIndex(leadStatus => leadStatus.id === req.params.id);
     	
-    	if (!statusIndex) return res.json({ status: ERROR, code: 404, message: 'Status not found' });
+    	if (!leadStatusIndex) return res.json({ status: ERROR, code: 404, message: 'Status not found' });
     	
-    	account.statuses[statusIndex].remove();
+    	account.leadStatuses[leadStatusIndex].remove();
     	
     	account.save(err => {
             if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error deleting status' });

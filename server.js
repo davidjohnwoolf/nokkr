@@ -12,8 +12,8 @@ const mongoose = require('mongoose');
 // controllers
 //const Authentication = require('./controllers/authentication');
 const Accounts = require('./controllers/accounts');
-const Statuses = require('./controllers/statuses');
-const Fields = require('./controllers/fields');
+const LeadStatuses = require('./controllers/lead-statuses');
+const LeadFields = require('./controllers/lead-fields');
 const AreaGroups = require('./controllers/area-groups');
 const Teams = require('./controllers/teams');
 const Users = require('./controllers/users');
@@ -40,8 +40,8 @@ app.use(express.static(path.join(__dirname, 'dist')));
 //app.use(expressJWT({ secret: process.env.JWT_SECRET }).unless({ path: ['/login'] }));
 
 app.use('/account/', Accounts);
-app.use('/account/statuses', Statuses);
-app.use('/account/fields', Fields);
+app.use('/account/statuses', LeadStatuses);
+app.use('/account/fields', LeadFields);
 app.use('/account/area-groups', AreaGroups);
 app.use('/account/teams', Teams);
 app.use('/users/', Users);
