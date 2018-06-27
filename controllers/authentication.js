@@ -10,10 +10,11 @@ const SUCCESS = 'success';
 const FAIL = 'fail';
 const ERROR = 'error';
 
-// body parser middleware
+//body parser middleware
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
+//login
 router.post('/login', (req, res) => {
     
     User.findOne({ username: req.body.username }, (err, user) => {
