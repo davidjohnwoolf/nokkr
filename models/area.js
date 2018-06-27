@@ -2,7 +2,7 @@
 const Schema = mongoose.Schema;
 
 const AreaSchema = new Schema({
-    title: { type: String, required: true },
+    title: { type: String, required: true, index: { unique: true } },
     coords: { type: Array, required: true }, //validation for the google maps coords?
     areaGroup: { type: String, required: true },
     city: { type: String, required: true },

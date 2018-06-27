@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const LeadStatusSchema = new Schema({
-    title: { type: String, required: true },
+    title: { type: String, required: true, index: { unique: true } },
     type: { type: String, required: true, enum: ['Uncontacted', 'In Progress', 'Sale', 'No Sale'] },
     color: { type: String, required: true, match: /^#(?:[0-9a-fA-F]{3}){1,2}$/ },
     order: { type: Number },

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const LeadFieldSchema = new Schema({
-    title: { type: String, required: true },
+    title: { type: String, required: true, index: { unique: true } },
     type: { type: String, required: true, enum: ['Text', 'Select', 'Radio', 'Checkbox', 'Date', 'Email', 'Text Area'] },
     options: [String],
     fieldGroup: { type: String },
