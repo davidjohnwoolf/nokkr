@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+/*const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const AreaSchema = new Schema({
@@ -18,4 +18,4 @@ AreaSchema.pre('save', function(next) {
     next();
 });
 
-module.exports = mongoose.model('Area', AreaSchema);
+module.exports = mongoose.model('Area', AreaSchema);*/
