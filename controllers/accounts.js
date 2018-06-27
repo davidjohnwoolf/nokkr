@@ -6,9 +6,7 @@ const Account = require('../models/account');
 //const verifyToken = require('./helpers/authorization');
 
 //status variables for Jsend API spec
-const SUCCESS = 'success';
-const FAIL = 'fail';
-const ERROR = 'error';
+const { SUCCESS, FAIL, ERROR } = './helpers/api-variables';
 
 // body parser middleware
 router.use(bodyParser.urlencoded({ extended: false }));
