@@ -43,7 +43,7 @@ router.post('/login', (req, res) => {
                 return res.json({ status: FAIL, data: { message: 'Username or password is incorrect' } });
             }
         });
-    })
+    });
 });
 
 module.exports = router;
