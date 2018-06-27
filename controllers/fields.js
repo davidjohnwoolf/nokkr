@@ -20,6 +20,8 @@ router.get('/', (req, res) => {
     Account.findOne({}, (err, account) => {
         if (err) return res.json({ field: ERROR, data: err, code: 500, message: 'Error finding account' });
         
+        if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
+        
         return res.json({ field: SUCCESS, data: { areas: account.fields } });
     });
 });
@@ -65,6 +67,8 @@ router.put('/:id', (req, res) => {
     Account.findOne({}, (err, account) => {
         if (err) return res.json({ field: ERROR, data: err, code: 500, message: 'Error finding account' });
         
+        if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
+        
         const fieldIndex = account.fields.findIndex(field => field.id === req.params.id);
         
         if (!fieldIndex) return res.json({ status: ERROR, code: 404, message: 'Field not found' });
@@ -85,6 +89,8 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
     Account.findOne({}, (err, account) => {
     	if (err) return res.json({ field: ERROR, data: err, code: 500, message: 'Error finding account' });
+    	
+    	if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
     	
     	const fieldIndex = account.fields.findIndex(field => field.id === req.params.id);
     	

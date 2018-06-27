@@ -86,6 +86,8 @@ router.put('/:id', (req, res) => {
     User.findOne({ _id: req.params.id }, (err, user) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
         
+        if (!user) return res.json({ status: ERROR, code: 404, message: 'User not found' });
+        
         //existing email or username handled in user schema
         
         if (req.body.password !== req.body.passwordConfirmation) {
@@ -124,6 +126,8 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
     User.remove({ _id: req.params.id }, (err, user) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error deleting user' });
+        
+        if (!user) return res.json({ status: ERROR, code: 404, message: 'User not found' });
         
         return res.json({ status: SUCCESS, data: { message: 'User deleted' } });
     });

@@ -30,6 +30,8 @@ router.put('/', (req, res) => {
     Account.findOne({}, (err, account) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         
+        if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
+        
         for (let key in req.body) {
         	account[key] = req.body[key];
         }

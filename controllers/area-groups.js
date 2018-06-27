@@ -20,6 +20,8 @@ router.get('/', (req, res) => {
     Account.findOne({}, (err, account) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         
+        if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
+        
         return res.json({ status: SUCCESS, data: { areas: account.areaGroups } });
     });
 });
@@ -65,6 +67,8 @@ router.put('/:id', (req, res) => {
     Account.findOne({}, (err, account) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         
+        if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
+        
         const areaGroupIndex = account.areaGroups.findIndex(areaGroup => areaGroup.id === req.params.id);
         
         if (!areaGroupIndex) return res.json({ status: ERROR, code: 404, message: 'Area group not found' });
@@ -85,6 +89,8 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
     Account.findOne({}, (err, account) => {
     	if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
+    	
+    	if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
     	
     	const areaGroupIndex = account.areaGroups.findIndex(areaGroup => areaGroup.id === req.params.id);
     	
