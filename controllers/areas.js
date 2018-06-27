@@ -1,4 +1,4 @@
-const express = require('express');
+/*const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const User = require('../models/user');
@@ -124,4 +124,4 @@ router.delete(`${ USER_PATH }/areas/:areaId`, verifyToken, (req, res) => {
     });
 });
 
-module.exports = router;
+module.exports = router;*/
