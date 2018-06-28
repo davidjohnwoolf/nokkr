@@ -15,7 +15,8 @@ class UserNew extends React.Component {
         props.clearUser();
         
         this.validationRules = {
-            name: [required],
+            firstName: [required],
+            lastName: [required],
             username: [required],
             email: [required],
             password: [required, password],
@@ -24,7 +25,8 @@ class UserNew extends React.Component {
         
         this.state = {
             fields: {
-                name: { value: '', error: '' },
+                firstName: { value: '', error: '' },
+                lastName: { value: '', error: '' },
                 username: { value: '', error: '' },
                 email: { value: '', error: '' },
                 password: { value: '', error: '' },
@@ -69,7 +71,7 @@ class UserNew extends React.Component {
     
     render() {
         const { handleSubmit, handleUserInput } = this;
-        const { name, username, email, password, passwordConfirmation } = this.state.fields;
+        const { firstName, lastName, username, email, password, passwordConfirmation } = this.state.fields;
         
         return (
                 
@@ -80,12 +82,20 @@ class UserNew extends React.Component {
                     <form onSubmit={ handleSubmit }>
                     
                         <FieldInput
-                            name="name"
+                            name="firstName"
                             type="text"
-                            placeholder="name"
-                            value={ name.value }
+                            placeholder="first name"
+                            value={ firstName.value }
                             handleUserInput={ handleUserInput }
-                            error={ name.error }
+                            error={ firstName.error }
+                        />
+                        <FieldInput
+                            name="lastName"
+                            type="text"
+                            placeholder="last name"
+                            value={ lastName.value }
+                            handleUserInput={ handleUserInput }
+                            error={ lastName.error }
                         />
                         <FieldInput
                             name="username"
