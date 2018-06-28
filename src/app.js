@@ -47,7 +47,14 @@ if (token && !authenticated) {
 	
 	//check exp
 	if (currentTime < decoded.exp) {
-	    store.dispatch({ type: LOGIN_SUCCESS, id: decoded.id });
+	    store.dispatch({
+            type: LOGIN_SUCCESS,
+            isSuperUser: decoded.isSuperUser,
+            isAdmin: decoded.isAdmin,
+            isManager: decoded.isManager,
+            team: decoded.team,
+            id: decoded.id
+        });
 
 	} else {
 		//remove storage and update state
@@ -70,15 +77,15 @@ ReactDOM.render(
                         <Route exact path="/login" render={ () => (
                             <ErrorBoundary><Login /></ErrorBoundary>
                         )} />
-                        <PrivateRoute exact path="/menu" component={ Menu } />
-                        <PrivateRoute exact path="/users/new" component={ UserNew } />
-                        <PrivateRoute exact path="/users/:id/edit" component={ UserEdit } />
-                        <PrivateRoute exact path="/users/:id/areas" component={ AreasUser } />
-                        <PrivateRoute exact path="/users/:id" component={ UserShow } />
-                		<PrivateRoute exact path="/users" component={ UserIndex } />
-                		<PrivateRoute exact path="/areas/new" component={ AreaNew } />
-                		<PrivateRoute exact path="/areas/" component={ AreasAll } />
-                		<PrivateRoute exact path="/" component={ Dashboard } />
+                        <PrivateRoute exact path="/menu" permissions="user" component={ Menu } />
+                        <PrivateRoute exact path="/users/new" permissions="manager" component={ UserNew } />
+                        <PrivateRoute exact path="/users/:id/edit" permissions="user" component={ UserEdit } />
+                        {/*<PrivateRoute exact path="/users/:id/areas" permissions="user" component={ AreasUser } />*/}
+                        <PrivateRoute exact path="/users/:id" permissions="user" component={ UserShow } />
+                		<PrivateRoute exact path="/users" permissions="manager" component={ UserIndex } />
+                		{/*<PrivateRoute exact path="/areas/new" component={ AreaNew } />*/}
+                		{/*<PrivateRoute exact path="/areas/" component={ AreasAll } />*/}
+                		<PrivateRoute exact path="/" permissions="user" component={ Dashboard } />
                 		<Route exact path="/not-authorized" component={ NotAuthorized } />
                 		<Route component={ PageNotFound } />
             		</Switch>

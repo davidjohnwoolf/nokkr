@@ -16,6 +16,10 @@ export const login = creds => {
             dispatch({
                 type: LOGIN_SUCCESS,
                 token: response.data.data.token,
+                isSuperUser: decoded.isSuperUser,
+                isAdmin: decoded.isAdmin,
+                isManager: decoded.isManager,
+                team: decoded.team,
                 id: decoded.id
             });
         }
