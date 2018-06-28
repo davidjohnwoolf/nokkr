@@ -10,7 +10,7 @@ const app = express();
 const mongoose = require('mongoose');
 
 // controllers
-//const Authentication = require('./controllers/authentication');
+const Authentication = require('./controllers/authentication');
 const Accounts = require('./controllers/accounts');
 const LeadStatuses = require('./controllers/lead-statuses');
 const LeadFields = require('./controllers/lead-fields');
@@ -39,6 +39,7 @@ app.use(express.static(path.join(__dirname, 'dist')));
 // routes
 //app.use(expressJWT({ secret: process.env.JWT_SECRET }).unless({ path: ['/login'] }));
 
+app.use('/', Authentication);
 app.use('/account/', Accounts);
 app.use('/account/statuses', LeadStatuses);
 app.use('/account/fields', LeadFields);
