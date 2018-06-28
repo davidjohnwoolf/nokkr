@@ -48,7 +48,7 @@ router.post('/', (req, res) => {
             });
         }
         
-        if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,24}/.test(req.body.password)) {
+        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,24}/.test(req.body.password)) {
             return res.json({
                 status: FAIL,
                 data: { message: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character' }
