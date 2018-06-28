@@ -7,7 +7,7 @@ const AreaGroup = require('../models/area-group');
 //const verifyToken = require('./helpers/authorization');
 
 //status variables for Jsend API spec
-const { SUCCESS, FAIL, ERROR } = './helpers/api-variables';
+const { SUCCESS, FAIL, ERROR } = require('./helpers/api-variables');
 
 // body parser middleware
 router.use(bodyParser.urlencoded({ extended: false }));

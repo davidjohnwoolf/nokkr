@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 //status variables for Jsend API spec
-const { SUCCESS, FAIL, ERROR } = './helpers/api-variables';
+const { SUCCESS, FAIL, ERROR } = require('./helpers/api-variables');
 
 //body parser middleware
 router.use(bodyParser.urlencoded({ extended: false }));
