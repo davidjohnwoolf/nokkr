@@ -46,7 +46,7 @@ class UserShow extends React.Component {
                 <section className="card">
                     <header>
                         <h1>
-                            { user.name }
+                            { `${user.firstName} ${user.lastName}` }
                         </h1>
                     </header>
                     <section>

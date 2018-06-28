@@ -16,7 +16,8 @@ class UserEdit extends React.Component {
         props.fetchUser(props.match.params.id);
         
         this.validationRules = {
-            name: [required],
+            firstName: [required],
+            lastName: [required],
             username: [required],
             email: [required],
             password: [password],
@@ -25,7 +26,8 @@ class UserEdit extends React.Component {
 
         this.state = {
             fields: {
-                name: { value: '', error: '' },
+                firstName: { value: '', error: '' },
+                lastName: { value: '', error: '' },
                 username: { value: '', error: '' },
                 email: { value: '', error: '' },
                 password: { value: '', error: '' },
@@ -47,7 +49,8 @@ class UserEdit extends React.Component {
         if (!hasInitialized && user) {
             const fields = { ...prevState.fields };
 
-            fields.name.value = user.name;
+            fields.firstName.value = user.firstName;
+            fields.lastName.value = user.lastName;
             fields.username.value = user.username;
             fields.email.value = user.email;
             
@@ -96,7 +99,7 @@ class UserEdit extends React.Component {
     
     render() {
         const { handleSubmit, handleUserInput } = this;
-        const { name, username, email, password, passwordConfirmation } = this.state.fields;
+        const { firstName, lastName, username, email, password, passwordConfirmation } = this.state.fields;
         
         return (
                 
@@ -107,12 +110,20 @@ class UserEdit extends React.Component {
                     <form onSubmit={ handleSubmit }>
                     
                         <FieldInput
-                            name="name"
+                            name="firstName"
                             type="text"
-                            placeholder="name"
-                            value={ name.value }
+                            placeholder="first name"
+                            value={ firstName.value }
                             handleUserInput={ handleUserInput }
-                            error={ name.error }
+                            error={ firstName.error }
+                        />
+                        <FieldInput
+                            name="lastName"
+                            type="text"
+                            placeholder="last name"
+                            value={ lastName.value }
+                            handleUserInput={ handleUserInput }
+                            error={ lastName.error }
                         />
                         <FieldInput
                             name="username"
