@@ -33,7 +33,13 @@ router.post('/', (req, res) => {
     User.findOne({ $or: [ { username: req.body.username }, { email: req.body.email } ] }, (err, user) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
         
-        //existing email or username handled in user schema
+        if (user && user.username === req.body.username) {
+            return res.json({ status: FAIL, data: { message: 'Username already exists' } });
+        }
+        
+        if (user && user.email === req.body.email) {
+            return res.json({ status: FAIL, data: { message: 'Email already exists' } });
+        }
         
         if (req.body.password !== req.body.passwordConfirmation) {
             return res.json({
@@ -85,8 +91,6 @@ router.put('/:id', (req, res) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
         
         if (!user) return res.json({ status: ERROR, code: 404, message: 'User not found' });
-        
-        //existing email or username handled in user schema
         
         if (req.body.password !== req.body.passwordConfirmation) {
             return res.json({

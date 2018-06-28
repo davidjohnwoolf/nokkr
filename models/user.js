@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 
-const Area = require('./area');
+//const Area = require('./area');
 
 const UserSchema = new Schema({
     firstName: { type: String, required: true },
@@ -25,7 +25,7 @@ const UserSchema = new Schema({
     isAdmin: { type: Boolean, default: false },
     isManager: { type: Boolean, default: false },
     isReadOnly: { type: Boolean, default: false },
-    areas: [Area.schema],
+    //areas: [Area.schema],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date }
 });
