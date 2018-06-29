@@ -41,11 +41,11 @@ class UserIndex extends React.Component {
             <main id="user-index" className="content">
                 <section className="index">
                     <header className="content-header">
-                        <h1>Users</h1>
+                        <h1>User Management</h1>
                         <Link className="icon-button-success" to="/users/new"><i className="fas fa-plus"></i></Link>
                     </header>
                     
-                    <table>
+                    <table className="table">
                         <thead>
                             <tr>
                                 <th>Name</th>

@@ -1,0 +1,38 @@
+//Tables
+
+.table {
+    border-collapse: collapse;
+    width: 100%;
+    
+    > thead {
+        
+        tr {
+            background: $primary;
+            color: $white;
+            
+            th {
+                padding: $gutter;
+                border: $border;
+                margin: 0;
+                font-weight: normal;
+            }
+        }
+    }
+    
+    > tbody {
+
+        tr {
+            background: #efefef;
+            
+            td {
+                padding: $gutter;
+                border: $border;
+                margin: 0;
+            }
+            
+            &:nth-child(odd) {
+                background: $white;
+            }
+        }
+    }
+}
