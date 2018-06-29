@@ -29,6 +29,8 @@ import AreasAll from './components/areas/areas-all';
 import AreasUser from './components/areas/areas-user';
 import Login from './components/auth/login';
 
+import { SUPER_USER, ADMIN, MANAGER } from './helpers/access-variables';
+
 //use react production build for production https://reactjs.org/docs/optimizing-performance.html#use-the-production-build
 
 const createStoreWithMiddleware = applyMiddleware(thunk, authorization)(createStore);
@@ -77,17 +79,23 @@ ReactDOM.render(
                         <Route exact path="/login" render={ () => (
                             <ErrorBoundary><Login /></ErrorBoundary>
                         )} />
-                        <PrivateRoute exact path="/menu" permissions="user" component={ Menu } />
-                        <PrivateRoute exact path="/users/new" permissions="manager" component={ UserNew } />
-                        <PrivateRoute exact path="/users/:id/edit" permissions="user" component={ UserEdit } />
+                        
+                        <PrivateRoute exact path="/menu" access={ SUPER_USER } component={ Menu } />
+                        <PrivateRoute exact path="/users/new" component={ UserNew } />
+                        <PrivateRoute exact path="/users/:id/edit" component={ UserEdit } />
                         {/*<PrivateRoute exact path="/users/:id/areas" permissions="user" component={ AreasUser } />*/}
-                        <PrivateRoute exact path="/users/:id" permissions="user" component={ UserShow } />
-                		<PrivateRoute exact path="/users" permissions="manager" component={ UserIndex } />
+                        <PrivateRoute exact path="/users/:id" component={ UserShow } />
+                		<PrivateRoute exact path="/users" component={ UserIndex } />
                 		{/*<PrivateRoute exact path="/areas/new" component={ AreaNew } />*/}
                 		{/*<PrivateRoute exact path="/areas/" component={ AreasAll } />*/}
-                		<PrivateRoute exact path="/" permissions="user" component={ Dashboard } />
-                		<Route exact path="/not-authorized" component={ NotAuthorized } />
-                		<Route component={ PageNotFound } />
+                		<PrivateRoute exact path="/" permission="user" component={ Dashboard } />
+                		
+                		<Route exact path="/not-authorized" render={ () => (
+                            <ErrorBoundary><NotAuthorized /></ErrorBoundary>
+                        )} />
+                        <Route render={ () => (
+                            <ErrorBoundary><PageNotFound /></ErrorBoundary>
+                        )} />
             		</Switch>
                 </div>
             </Router>

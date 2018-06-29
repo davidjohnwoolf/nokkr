@@ -1,9 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 //status variables for Jsend API spec
-const SUCCESS = 'success';
-const FAIL = 'fail';
-const ERROR = 'error';
+const { SUCCESS, FAIL, ERROR } = require('./api-variables');
 
 const requireSuperUser = (req, res, next) => {
     if (req.get('Authorization')) {
@@ -14,7 +12,7 @@ const requireSuperUser = (req, res, next) => {
             if (err) return res.json({ status: ERROR, data: err, code: 401, message: 'Token not valid' });
             
             //set logged in user for the request
-            req.locals.loggedInUser = decoded;
+            req.loggedInUser = decoded;
             
             if (!decoded.isSuperUser) {
                 return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
@@ -25,7 +23,7 @@ const requireSuperUser = (req, res, next) => {
         
     } else {
         
-        res.json({ status: ERROR, code: 401, message: 'No authorization header' });
+        return res.json({ status: ERROR, code: 401, message: 'No authorization header' });
     }
 };
 
@@ -38,7 +36,7 @@ const requireAdmin = (req, res, next) => {
             if (err) return res.json({ status: ERROR, data: err, code: 401, message: 'Token not valid' });
             
             //set logged in user for the request
-            req.locals.loggedInUser = decoded;
+            req.loggedInUser = decoded;
             
             if (!decoded.isAdmin && !decoded.isSuperUser) {
                 return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
@@ -49,7 +47,7 @@ const requireAdmin = (req, res, next) => {
         
     } else {
         
-        res.json({ status: ERROR, code: 401, message: 'No authorization header' });
+        return res.json({ status: ERROR, code: 401, message: 'No authorization header' });
     }
 };
 
@@ -62,7 +60,7 @@ const requireManager = (req, res, next) => {
             if (err) return res.json({ status: ERROR, data: err, code: 401, message: 'Token not valid' });
             
             //set logged in user for the request
-            req.locals.loggedInUser = decoded;
+            req.loggedInUser = decoded;
             
             if (!decoded.isManager && !decoded.isAdmin && !decoded.isSuperUser) {
                 return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
@@ -73,7 +71,7 @@ const requireManager = (req, res, next) => {
         
     } else {
         
-        res.json({ status: ERROR, code: 401, message: 'No authorization header' });
+        return res.json({ status: ERROR, code: 401, message: 'No authorization header' });
     }
 };
 
@@ -86,14 +84,14 @@ const requireUser = (req, res, next) => {
             if (err) return res.json({ status: ERROR, data: err, code: 401, message: 'Token not valid' });
             
             //set logged in user for the request
-            req.locals.loggedInUser = decoded;
+            req.loggedInUser = decoded;
 
             next();
         });
         
     } else {
         
-        res.json({ status: ERROR, code: 401, message: 'No authorization header' });
+        return res.json({ status: ERROR, code: 401, message: 'No authorization header' });
     }
 };
 
@@ -106,7 +104,7 @@ const excludeReadOnly = (req, res, next) => {
             if (err) return res.json({ status: ERROR, data: err, code: 401, message: 'Token not valid' });
             
             //set logged in user for the request
-            req.locals.loggedInUser = decoded;
+            req.loggedInUser = decoded;
             
             if (decoded.isReadOnly) {
                 return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
@@ -117,7 +115,7 @@ const excludeReadOnly = (req, res, next) => {
         
     } else {
         
-        res.json({ status: ERROR, code: 401, message: 'No authorization header' });
+        return res.json({ status: ERROR, code: 401, message: 'No authorization header' });
     }
 };
 

@@ -20,7 +20,7 @@ class UserIndex extends React.Component {
         return (
             users.map(user => {
                 return (
-                    <li key={ user.id }>
+                    <li key={ user._id }>
                         <Link to={ `/users/${ user._id }` } className="icon-link">
     			            { `${user.firstName} ${user.lastName}` }
     			            <i className="fas fa-chevron-right"></i>
