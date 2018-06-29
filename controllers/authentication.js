@@ -28,9 +28,7 @@ router.post('/login', (req, res) => {
                 let token = jwt.sign({
                     id: user.id,
                     teamId: user.team,
-                    isSuperUser: user.isSuperUser,
-                    isAdmin: user.isAdmin,
-                    isManager: user.isManager,
+                    role: user.role,
                     isReadOnly: user.isReadOnly
                 }, process.env.JWT_SECRET, { expiresIn: 86400});
                 
