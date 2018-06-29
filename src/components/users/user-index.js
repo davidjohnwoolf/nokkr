@@ -19,13 +19,17 @@ class UserIndex extends React.Component {
         
         return (
             users.map(user => {
+                
+                let userRole = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+                
+                if (user.isReadOnly) userRole += ' Read Only';
+                
                 return (
-                    <li key={ user._id }>
-                        <Link to={ `/users/${ user._id }` } className="icon-link">
-    			            { `${user.firstName} ${user.lastName}` }
-    			            <i className="fas fa-chevron-right"></i>
-    			        </Link>
-			        </li>
+                    <tr key={ user._id }>
+                        <td><Link to={ `/users/${ user._id }` }>{ `${ user.firstName } ${ user.lastName }` }</Link></td>
+                        <td>{ user.team || 'NA' }</td>
+                        <td>{ userRole }</td>
+                    </tr>
                 );
             })
         );
@@ -40,9 +44,20 @@ class UserIndex extends React.Component {
                         <h1>Users</h1>
                         <Link className="icon-button-success" to="/users/new"><i className="fas fa-plus"></i></Link>
                     </header>
-                    <ul className="link-list">
-                        { this.renderUsers() }
-                    </ul>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Team</th>
+                                <th>Permissions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            { this.renderUsers() }
+                        </tbody>
+                    </table>
                 </section>
             </main>
         );

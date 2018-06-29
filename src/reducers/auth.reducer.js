@@ -6,9 +6,8 @@ export default function(state = { authenticated: false }, action) {
             return {
                 success: true,
                 token: action.token,
-                isSuperUser: action.isSuperUser,
-                isAdmin: action.isAdmin,
-                isManager: action.isManager,
+                role: action.role,
+                isReadOnly: action.isReadOnly,
                 team: action.team,
                 id: action.id,
                 authenticated: true

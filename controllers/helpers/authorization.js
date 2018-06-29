@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
-//status variables for Jsend API spec
-const { SUCCESS, FAIL, ERROR } = require('./api-variables');
+//status variables for Jsend API spec and role constants
+const { SUCCESS, FAIL, ERROR, USER, MANAGER, ADMIN, SU } = require('./api-variables');
 
 const requireSuperUser = (req, res, next) => {
     if (req.get('Authorization')) {
@@ -14,7 +14,7 @@ const requireSuperUser = (req, res, next) => {
             //set logged in user for the request
             req.loggedInUser = decoded;
             
-            if (!decoded.isSuperUser) {
+            if (decoded.role !== SU) {
                 return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
             }
 
@@ -38,7 +38,7 @@ const requireAdmin = (req, res, next) => {
             //set logged in user for the request
             req.loggedInUser = decoded;
             
-            if (!decoded.isAdmin && !decoded.isSuperUser) {
+            if ((decoded.role !== SU) || (decoded.role !== ADMIN)) {
                 return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
             }
 
@@ -62,7 +62,7 @@ const requireManager = (req, res, next) => {
             //set logged in user for the request
             req.loggedInUser = decoded;
             
-            if (!decoded.isManager && !decoded.isAdmin && !decoded.isSuperUser) {
+            if (decoded.role === USER) {
                 return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
             }
 

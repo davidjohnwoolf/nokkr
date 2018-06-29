@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import ErrorBoundary from '../helpers/error-boundary';
 
-import { SUPER_USER, ADMIN, MANAGER } from '../../helpers/access-variables';
+import { SU, ADMIN, MANAGER, USER } from '../../../controllers/helpers/api-variables';
 
 class PrivateRoute extends React.Component {
     
@@ -14,11 +14,11 @@ class PrivateRoute extends React.Component {
         const permitted = (function(a) {
             if (isSuperUser) return true;
             
-            if (isAdmin && (a !== SUPER_USER)) return true;
+            if (isAdmin && (a !== SU)) return true;
             
-            if (isManager && (a !== SUPER_USER) && (a !== ADMIN)) return true;
+            if (isManager && (a !== SU) && (a !== ADMIN)) return true;
             
-            if (!isManager && (a !== SUPER_USER) && (a !== ADMIN) && (a !== MANAGER)) return true;
+            if (!isManager && (a !== SU) && (a !== ADMIN) && (a !== MANAGER)) return true;
             
             return false;
         })(access);
@@ -48,10 +48,9 @@ class PrivateRoute extends React.Component {
 const mapStateToProps = state => ({
     authenticated: state.auth.authenticated,
     id: state.auth.id,
-    isSuperUser: state.auth.isSuperUser,
-    idAdmin: state.auth.idAdmin,
-    isManager: state.auth.isManager,
-    team: state.auth.team,
+    role: state.auth.role,
+    isReadOnly: state.auth.isReadOnly,
+    team: state.auth.team
 });
 
 export default connect(mapStateToProps)(PrivateRoute);

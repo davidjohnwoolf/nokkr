@@ -16,9 +16,8 @@ export const login = creds => {
             dispatch({
                 type: LOGIN_SUCCESS,
                 token: response.data.data.token,
-                isSuperUser: decoded.isSuperUser,
-                isAdmin: decoded.isAdmin,
-                isManager: decoded.isManager,
+                role: decoded.role,
+                isReadOnly: decoded.isReadOnly,
                 team: decoded.team,
                 id: decoded.id
             });

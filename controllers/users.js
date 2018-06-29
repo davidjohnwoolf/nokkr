@@ -3,8 +3,8 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const User = require('../models/user');
 
-//status variables for Jsend API spec and password regex
-const { SUCCESS, FAIL, ERROR, PW_REGEX } = require('./helpers/api-variables');
+//status variables for Jsend API spec, password regex and role constants
+const { SUCCESS, FAIL, ERROR, PW_REGEX, USER, MANAGER, ADMIN, SU } = require('./helpers/api-variables');
 
 const { requireAdmin, requireManager, requireUser, excludeReadOnly } = require('./helpers/authorization');
 
@@ -17,7 +17,7 @@ router.get('/', requireManager, (req, res) => {
     const loggedInUser = req.loggedInUser;
     
     //if manager only show own team
-    if (loggedInUser.isManager) {
+    if (loggedInUser.role === MANAGER) {
         User.find({ team: loggedInUser.team }, (err, users) => {
             if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding users' });
             
@@ -103,7 +103,7 @@ router.get('/:id', requireUser, (req, res) => {
     const loggedInUser = req.loggedInUser;
     
     //if admin or su show any user
-    if (loggedInUser.isAdmin || loggedInUser.isSuperUser) {
+    if (loggedInUser.role === ADMIN || loggedInUser.role === SU) {
         
         User.findOne({ _id: req.params.id }, (err, user) => {
             if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
@@ -122,7 +122,7 @@ router.get('/:id', requireUser, (req, res) => {
         });
     
     //if manager only show user from own team
-    } else if (loggedInUser.isManager) {
+    } else if (loggedInUser.role === MANAGER) {
         
         User.findOne({ _id: req.params.id }, (err, user) => {
             if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
@@ -171,7 +171,7 @@ router.put('/:id', requireUser, excludeReadOnly, (req, res) => {
     const loggedInUser = req.loggedInUser;
     
     //if admin or su show any user
-    if (loggedInUser.isAdmin || loggedInUser.isSuperUser) {
+    if (loggedInUser.role === ADMIN || loggedInUser.role === SU) {
         
         User.findOne({ _id: req.params.id }, (err, user) => {
             if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });

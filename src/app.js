@@ -24,12 +24,12 @@ import UserNew from './components/users/user-new';
 import UserEdit from './components/users/user-edit';
 import UserShow from './components/users/user-show';
 import UserIndex from './components/users/user-index';
-import AreaNew from './components/areas/area-new';
-import AreasAll from './components/areas/areas-all';
-import AreasUser from './components/areas/areas-user';
+//import AreaNew from './components/areas/area-new';
+//import AreasAll from './components/areas/areas-all';
+//import AreasUser from './components/areas/areas-user';
 import Login from './components/auth/login';
 
-import { SUPER_USER, ADMIN, MANAGER } from './helpers/access-variables';
+import { SU, ADMIN, MANAGER, user } from '../controllers/helpers/api-variables';
 
 //use react production build for production https://reactjs.org/docs/optimizing-performance.html#use-the-production-build
 
@@ -51,9 +51,8 @@ if (token && !authenticated) {
 	if (currentTime < decoded.exp) {
 	    store.dispatch({
             type: LOGIN_SUCCESS,
-            isSuperUser: decoded.isSuperUser,
-            isAdmin: decoded.isAdmin,
-            isManager: decoded.isManager,
+            role: decoded.role,
+            isReadOnly: decoded.isReadOnly,
             team: decoded.team,
             id: decoded.id
         });
@@ -80,7 +79,7 @@ ReactDOM.render(
                             <ErrorBoundary><Login /></ErrorBoundary>
                         )} />
                         
-                        <PrivateRoute exact path="/menu" access={ SUPER_USER } component={ Menu } />
+                        <PrivateRoute exact path="/menu" access={ SU } component={ Menu } />
                         <PrivateRoute exact path="/users/new" component={ UserNew } />
                         <PrivateRoute exact path="/users/:id/edit" component={ UserEdit } />
                         {/*<PrivateRoute exact path="/users/:id/areas" permissions="user" component={ AreasUser } />*/}
