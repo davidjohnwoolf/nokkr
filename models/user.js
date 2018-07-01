@@ -23,6 +23,7 @@ const UserSchema = new Schema({
     userImagePath: { type: String },
     role: { type: String, required: true, enum: ['user', 'manager', 'admin', 'su'], default: 'user'},
     isReadOnly: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
     //areas: [Area.schema],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date }
