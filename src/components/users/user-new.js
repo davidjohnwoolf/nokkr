@@ -4,8 +4,12 @@ import { Link } from 'react-router-dom';
 
 import { required, password, passwordMatch, validate } from '../helpers/validation';
 import FieldInput from '../helpers/field-input';
+import FieldSelect from '../helpers/field-select';
+import FieldCheckbox from '../helpers/field-checkbox';
 import { createUser, clearUser } from '../../actions/users.action';
 import { sendMessage } from '../../actions/flash.action';
+
+import { ADMIN, MANAGER, USER } from '../../../controllers/helpers/api-variables';
 
 class UserNew extends React.Component {
     
@@ -19,6 +23,8 @@ class UserNew extends React.Component {
             lastName: [required],
             username: [required],
             email: [required],
+            role: [required],
+            isReadOnly: [],
             password: [required, password],
             passwordConfirmation: [required, passwordMatch]
         };
@@ -29,6 +35,8 @@ class UserNew extends React.Component {
                 lastName: { value: '', error: '' },
                 username: { value: '', error: '' },
                 email: { value: '', error: '' },
+                role: { value: '', error: '' },
+                isReadOnly: { value: '', error: '' },
                 password: { value: '', error: '' },
                 passwordConfirmation: { value: '', error: '' }
             },
@@ -71,7 +79,18 @@ class UserNew extends React.Component {
     
     render() {
         const { handleSubmit, handleUserInput } = this;
-        const { firstName, lastName, username, email, password, passwordConfirmation } = this.state.fields;
+        const { firstName, lastName, username, email, password, passwordConfirmation, role, isReadOnly } = this.state.fields;
+        
+        function capitalize(s) {
+            return s.charAt(0).toUpperCase() + s.slice(1)
+        }
+        
+        const roleOptions = [
+            ['Select Role', ''],
+            [capitalize(ADMIN), ADMIN],
+            [capitalize(MANAGER), MANAGER],
+            [capitalize(USER), USER]
+        ];
         
         return (
                 
@@ -112,6 +131,20 @@ class UserNew extends React.Component {
                             value={ email.value }
                             handleUserInput={ handleUserInput }
                             error={ email.error }
+                        />
+                        <FieldSelect
+                            name="role"
+                            value={ role.value }
+                            handleUserInput={ handleUserInput }
+                            error={ firstName.error }
+                            options={ roleOptions }
+                        />
+                        <FieldCheckbox
+                            name="isReadOnly"
+                            label="Read Only"
+                            value={ isReadOnly.value }
+                            handleUserInput={ handleUserInput }
+                            error={ isReadOnly.error }
                         />
                         <FieldInput
                             name="password"

@@ -233,6 +233,16 @@ select {
                 }
             }
             
+            > .checkbox {
+                display: flex;
+                
+                > input {
+                    box-shadow: none;
+                    width: auto;
+                    margin-right: $gutter;
+                }
+            }
+            
             > .input-error-message {
                 display: inline-block;
                 color: $error;

@@ -50,7 +50,7 @@ class UserIndex extends React.Component {
                             <tr>
                                 <th>Name</th>
                                 <th>Team</th>
-                                <th>Permissions</th>
+                                <th>Role</th>
                             </tr>
                         </thead>
                         <tbody>

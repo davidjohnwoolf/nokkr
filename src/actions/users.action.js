@@ -30,7 +30,11 @@ export const createUser = user => {
     return async dispatch => {
         const response = await axios.post('/users', user);
         
+        console.log(response.data)
+        
         if (response.data.status === 'success') {
+            
+            console.log('success')
             dispatch({
                 type: CREATE_USER_SUCCESS,
                 message: response.data.data.message
