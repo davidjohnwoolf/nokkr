@@ -10,7 +10,7 @@ import FieldCheckbox from '../helpers/field-checkbox';
 import { createUser, clearUser } from '../../actions/users.action';
 import { sendMessage, sendError } from '../../actions/flash.action';
 
-import { ADMIN, MANAGER, USER } from '../../../controllers/helpers/api-variables';
+import { ADMIN, MANAGER, USER } from '../../../lib/constants';
 
 class UserNew extends React.Component {
     

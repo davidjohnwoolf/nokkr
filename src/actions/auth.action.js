@@ -7,14 +7,17 @@ export const LOGIN_FAIL = 'LOGIN_FAIL';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const CLEAR_AUTH = 'CLEAR_AUTH';
 
+//status variables for Jsend API spec
+import { SUCCESS, FAIL, ERROR } from '../../lib/constants';
+
 export const login = creds => {
     
     return async dispatch => {
         const response = await axios.post('/login', creds);
         
-        if (response.data.status === 'error') dispatch(sendError(response.data.message));
+        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
         
-        if (response.data.status === 'success') {
+        if (response.data.status === SUCCESS) {
             const decoded = jwtDecode(response.data.data.token);
                 
             dispatch({
@@ -27,7 +30,7 @@ export const login = creds => {
             });
         }
         
-        if (response.data.status === 'fail') {
+        if (response.data.status === FAIL) {
             dispatch({
                 type: LOGIN_FAIL,
                 message: response.data.data.message

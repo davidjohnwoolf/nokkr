@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const User = require('../models/user');
 
 //status variables for Jsend API spec, password regex and role constants
-const { SUCCESS, FAIL, ERROR, PW_REGEX, USER, MANAGER, ADMIN, SU } = require('./helpers/api-variables');
+const { SUCCESS, FAIL, ERROR, PW_REGEX, USER, MANAGER, ADMIN, SU } = require('../lib/constants');
 
 const { requireAdmin, requireManager, requireUser, excludeReadOnly } = require('./helpers/authorization');
 

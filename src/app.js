@@ -29,7 +29,7 @@ import UserIndex from './components/users/user-index';
 //import AreasUser from './components/areas/areas-user';
 import Login from './components/auth/login';
 
-import { SU, ADMIN, MANAGER, USER } from '../controllers/helpers/api-variables';
+import { SU, ADMIN, MANAGER, USER } from '../lib/constants';
 
 //use react production build for production https://reactjs.org/docs/optimizing-performance.html#use-the-production-build
 

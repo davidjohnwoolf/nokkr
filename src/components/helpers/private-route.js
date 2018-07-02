@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import ErrorBoundary from '../helpers/error-boundary';
 
-import { SU, ADMIN, MANAGER, USER } from '../../../controllers/helpers/api-variables';
+import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
 
 class PrivateRoute extends React.Component {
     

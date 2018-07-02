@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 //status variables for Jsend API spec and role constants
-const { SUCCESS, FAIL, ERROR, USER, MANAGER, ADMIN, SU } = require('./api-variables');
+const { SUCCESS, FAIL, ERROR, USER, MANAGER, ADMIN, SU } = require('../../lib/constants');
 
 const requireSuperUser = (req, res, next) => {
     if (req.get('Authorization')) {

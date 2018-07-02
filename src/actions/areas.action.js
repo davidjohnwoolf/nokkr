@@ -12,11 +12,14 @@ export const UPDATE_AREA_FAIL = 'UPDATE_AREA_FAIL';
 export const DELETE_AREA = 'DELETE_AREA';
 export const CLEAR_AREA = 'CLEAR_AREA';
 
+//status variables for Jsend API spec
+import { SUCCESS, FAIL, ERROR } from '../../lib/constants';
+
 export const fetchAreasAll = () => {
     return async dispatch => {
         const response = await axios.get('/areas');
         
-        if (response.data.status === 'error') dispatch(sendError(response.data.message));
+        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
         
         dispatch({ type: FETCH_AREAS_ALL, allAreas: response.data.data.allAreas });
     };
@@ -26,7 +29,7 @@ export const fetchAreasUser = id => {
     return async dispatch => {
         const response = await axios.get(`/users/${ id }/areas`);
         
-        if (response.data.status === 'error') dispatch(sendError(response.data.message));
+        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
         
         dispatch({ type: FETCH_AREAS_USER, areas: response.data.data.areas });
     };
@@ -36,7 +39,7 @@ export const fetchArea = (userId, areaId) => {
     return async dispatch => {
         const response = await axios.get(`/users/${ userId }/areas/${ areaId }`);
         
-        if (response.data.status === 'error') dispatch(sendError(response.data.message));
+        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
         
         dispatch({ type: FETCH_AREA, area: response.data.data.area });
     };
@@ -46,16 +49,16 @@ export const createArea = area => {
     return async dispatch => {
         const response = await axios.post('/areas', area);
         
-        if (response.data.status === 'error') dispatch(sendError(response.data.message));
+        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
         
-        if (response.data.status === 'success') {
+        if (response.data.status === SUCCESS) {
             dispatch({
                 type: CREATE_AREA_SUCCESS,
                 message: response.data.data.message
             });
         }
         
-        if (response.data.status === 'fail') {
+        if (response.data.status === FAIL) {
             dispatch({
                 type: CREATE_AREA_FAIL,
                 message: response.data.data.message
@@ -68,16 +71,16 @@ export const updateArea = (userId, areaId, area) => {
     return async dispatch => {
         const response = await axios.put(`/users/${ userId }/areas/${ areaId }`, area);
         
-        if (response.data.status === 'error') dispatch(sendError(response.data.message));
+        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
         
-        if (response.data.status === 'success') {
+        if (response.data.status === SUCCESS) {
             dispatch({
                 type: UPDATE_AREA_SUCCESS,
                 message: response.data.data.message
             });
         }
         
-        if (response.data.status === 'fail') {
+        if (response.data.status === FAIL) {
             dispatch({
                 type: UPDATE_AREA_FAIL,
                 message: response.data.data.message
@@ -90,7 +93,7 @@ export const deleteArea = (userId, areaId) => {
     return async dispatch => {
         const response = await axios.delete(`/users/${ userId }/areas/${ areaId }`);
         
-        if (response.data.status === 'error') dispatch(sendError(response.data.message));
+        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
         
         dispatch({ type: DELETE_AREA, message: response.data.data.message });
     };
