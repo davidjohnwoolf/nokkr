@@ -6,6 +6,7 @@ import { required, password, passwordMatch, validate } from '../helpers/validati
 import FieldInput from '../helpers/field-input';
 import FieldSelect from '../helpers/field-select';
 import FieldCheckbox from '../helpers/field-checkbox';
+//import FieldFile from '../helpers/field-file';
 import { createUser, clearUser } from '../../actions/users.action';
 import { sendMessage } from '../../actions/flash.action';
 
@@ -26,6 +27,7 @@ class UserNew extends React.Component {
             role: [required],
             isReadOnly: [],
             isActive: [],
+            userImage: [],
             password: [required, password],
             passwordConfirmation: [required, passwordMatch]
         };
@@ -39,6 +41,7 @@ class UserNew extends React.Component {
                 role: { value: '', error: '' },
                 isReadOnly: { checked: null, error: '' },
                 isActive: { checked: 'true', error: '' },
+                userImage: { value: '', error: '' },
                 password: { value: '', error: '' },
                 passwordConfirmation: { value: '', error: '' }
             },
@@ -81,7 +84,18 @@ class UserNew extends React.Component {
     
     render() {
         const { handleSubmit, handleUserInput } = this;
-        const { firstName, lastName, username, email, password, passwordConfirmation, role, isReadOnly, isActive } = this.state.fields;
+        const {
+            firstName,
+            lastName,
+            username,
+            email,
+            password,
+            passwordConfirmation,
+            role,
+            isReadOnly,
+            isActive,
+            userImage
+        } = this.state.fields;
         
         function capitalize(s) {
             return s.charAt(0).toUpperCase() + s.slice(1)
@@ -172,6 +186,13 @@ class UserNew extends React.Component {
                             value={ passwordConfirmation.value }
                             handleUserInput={ handleUserInput }
                             error={ passwordConfirmation.error }
+                        />
+                        { /*<FieldFile
+                            name="userImage"
+                            label="Upload User Image"
+                            value={ userImage.value }
+                            handleUserInput={ handleUserInput }
+                            error={ userImage.error } */ }
                         />
                         
                         <div className="btn-group">
