@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Field extends React.Component {
+class FieldInput extends React.Component {
 
     render() {
         const { name, type, placeholder, value, handleUserInput, error, message } = this.props;
@@ -12,7 +12,7 @@ class Field extends React.Component {
                         className={ error ? 'input-error' : '' }
                         name={ name }
                         type={ type }
-                        placeholder={ placeholder }
+                        placeholder={ placeholder || '' }
                         value={ value }
                         onChange={ e => handleUserInput(e) }
                     />
@@ -23,4 +23,4 @@ class Field extends React.Component {
     }
 }
 
-export default Field;
+export default FieldInput;

@@ -1,22 +1,21 @@
 import React from 'react';
 
-class FieldCheckbox extends React.Component {
+class FieldFile extends React.Component {
 
     render() {
-        const { name, label, checked, value, handleUserInput, error, message } = this.props;
+        const { name, label, value, handleUserInput, error, message } = this.props;
         return (
             <div className="field">
                 <small className={ message ? 'input-message' : 'invisible' }>{ message }</small>
-                <div className="checkbox">
+                <div className="input">
+                    <label>{ label }</label>
                     <input
+                        className={ error ? 'input-error' : '' }
                         name={ name }
-                        id={ name }
-                        type="checkbox"
-                        checked={ checked ? 'checked' : '' }
+                        type="file"
                         value={ value }
                         onChange={ e => handleUserInput(e) }
                     />
-                    <label htmlFor={ name }>{ label }</label>
                 </div>
                 <small className={ error ? 'input-error-message' : 'invisible' }>{ error }</small>
             </div>
@@ -24,4 +23,4 @@ class FieldCheckbox extends React.Component {
     }
 }
 
-export default FieldCheckbox;
+export default FieldFile;

@@ -1,6 +1,6 @@
 import React from 'react';
 
-class FormSelect extends React.Component {
+class FieldSelect extends React.Component {
     
     renderOptions(options) {
         return (
@@ -30,4 +30,4 @@ class FormSelect extends React.Component {
     }
 }
 
-export default FormSelect;
+export default FieldSelect;
