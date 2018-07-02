@@ -1,6 +1,8 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
+import { sendError } from './flash.action';
+
 export const LOGIN_FAIL = 'LOGIN_FAIL';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const CLEAR_AUTH = 'CLEAR_AUTH';
@@ -9,6 +11,8 @@ export const login = creds => {
     
     return async dispatch => {
         const response = await axios.post('/login', creds);
+        
+        if (response.data.status === 'error') dispatch(sendError(response.data.message));
         
         if (response.data.status === 'success') {
             const decoded = jwtDecode(response.data.data.token);

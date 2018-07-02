@@ -20,7 +20,7 @@ export const sendError = message => {
             message: message
         });
         
-        setTimeout(() => dispatch({ type: CLOSE_MESSAGE }), 3000);
+        setTimeout(() => dispatch({ type: CLOSE_MESSAGE }), 6000);
     };
 };
 

@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { sendError } from './flash.action';
+
 export const FETCH_AREAS_ALL = 'FETCH_AREAS_ALL';
 export const FETCH_AREAS_USER = 'FETCH_AREAS_USER';
 export const FETCH_AREA = 'FETCH_AREA';
@@ -14,6 +16,8 @@ export const fetchAreasAll = () => {
     return async dispatch => {
         const response = await axios.get('/areas');
         
+        if (response.data.status === 'error') dispatch(sendError(response.data.message));
+        
         dispatch({ type: FETCH_AREAS_ALL, allAreas: response.data.data.allAreas });
     };
 };
@@ -21,6 +25,8 @@ export const fetchAreasAll = () => {
 export const fetchAreasUser = id => {
     return async dispatch => {
         const response = await axios.get(`/users/${ id }/areas`);
+        
+        if (response.data.status === 'error') dispatch(sendError(response.data.message));
         
         dispatch({ type: FETCH_AREAS_USER, areas: response.data.data.areas });
     };
@@ -30,6 +36,8 @@ export const fetchArea = (userId, areaId) => {
     return async dispatch => {
         const response = await axios.get(`/users/${ userId }/areas/${ areaId }`);
         
+        if (response.data.status === 'error') dispatch(sendError(response.data.message));
+        
         dispatch({ type: FETCH_AREA, area: response.data.data.area });
     };
 };
@@ -37,6 +45,8 @@ export const fetchArea = (userId, areaId) => {
 export const createArea = area => {
     return async dispatch => {
         const response = await axios.post('/areas', area);
+        
+        if (response.data.status === 'error') dispatch(sendError(response.data.message));
         
         if (response.data.status === 'success') {
             dispatch({
@@ -58,6 +68,8 @@ export const updateArea = (userId, areaId, area) => {
     return async dispatch => {
         const response = await axios.put(`/users/${ userId }/areas/${ areaId }`, area);
         
+        if (response.data.status === 'error') dispatch(sendError(response.data.message));
+        
         if (response.data.status === 'success') {
             dispatch({
                 type: UPDATE_AREA_SUCCESS,
@@ -77,6 +89,8 @@ export const updateArea = (userId, areaId, area) => {
 export const deleteArea = (userId, areaId) => {
     return async dispatch => {
         const response = await axios.delete(`/users/${ userId }/areas/${ areaId }`);
+        
+        if (response.data.status === 'error') dispatch(sendError(response.data.message));
         
         dispatch({ type: DELETE_AREA, message: response.data.data.message });
     };
