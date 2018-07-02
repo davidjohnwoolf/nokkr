@@ -19,23 +19,48 @@ export const validate = (e, rules, fields) => {
     let formValid = true;
     let error;
     
-    fields[e.target.name].value = e.target.value;
+    //for checkboxes
+    if ('checked' in fields[e.target.name]) {
+        fields[e.target.name].checked = e.target.checked;
+        
+        //handle target rules
+        rules[e.target.name].forEach(rule => {
+            
+            let result = rule(e.target.checked);
+            
+            if (result) error = result;
     
-    //handle target rules
-    rules[e.target.name].forEach(rule => {
+            fields[e.target.name].error = error;
+        });
+    }
+    
+    //for other inputs
+    if ('value' in fields[e.target.name]) {
+        fields[e.target.name].value = e.target.value;
         
-        let result = rule(e.target.value);
-        
-        if (result) error = result;
-
-        fields[e.target.name].error = error;
-    });
+        //handle target rules
+        rules[e.target.name].forEach(rule => {
+            
+            let result = rule(e.target.value);
+            
+            if (result) error = result;
+    
+            fields[e.target.name].error = error;
+        });
+    }
     
     //handle all rules
     for (let key in fields ) {
         //run function for the rule (ie required) from validation rules on each field value
         rules[key].forEach(rule => {
-            if (rule(fields[key].value)) formValid = false;
+            if ('checked' in fields[e.target.name]) {
+                if (rule(fields[key].checked)) formValid = false;
+            }
+            
+            if ('value' in fields[e.target.name]) {
+                if (rule(fields[key].value)) formValid = false;
+            }
+            
         });
     }
     

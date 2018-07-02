@@ -3,7 +3,7 @@ import React from 'react';
 class Field extends React.Component {
 
     render() {
-        const { name, label, value, handleUserInput, error, message } = this.props;
+        const { name, label, checked, value, handleUserInput, error, message } = this.props;
         return (
             <div className="field">
                 <small className={ message ? 'input-message' : 'invisible' }>{ message }</small>
@@ -12,6 +12,7 @@ class Field extends React.Component {
                         name={ name }
                         id={ name }
                         type="checkbox"
+                        checked={ checked ? 'checked' : '' }
                         value={ value }
                         onChange={ e => handleUserInput(e) }
                     />

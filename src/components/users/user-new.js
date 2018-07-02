@@ -25,6 +25,7 @@ class UserNew extends React.Component {
             email: [required],
             role: [required],
             isReadOnly: [],
+            isActive: [],
             password: [required, password],
             passwordConfirmation: [required, passwordMatch]
         };
@@ -36,7 +37,8 @@ class UserNew extends React.Component {
                 username: { value: '', error: '' },
                 email: { value: '', error: '' },
                 role: { value: '', error: '' },
-                isReadOnly: { value: '', error: '' },
+                isReadOnly: { checked: null, error: '' },
+                isActive: { checked: 'true', error: '' },
                 password: { value: '', error: '' },
                 passwordConfirmation: { value: '', error: '' }
             },
@@ -79,7 +81,7 @@ class UserNew extends React.Component {
     
     render() {
         const { handleSubmit, handleUserInput } = this;
-        const { firstName, lastName, username, email, password, passwordConfirmation, role, isReadOnly } = this.state.fields;
+        const { firstName, lastName, username, email, password, passwordConfirmation, role, isReadOnly, isActive } = this.state.fields;
         
         function capitalize(s) {
             return s.charAt(0).toUpperCase() + s.slice(1)
@@ -136,15 +138,24 @@ class UserNew extends React.Component {
                             name="role"
                             value={ role.value }
                             handleUserInput={ handleUserInput }
-                            error={ firstName.error }
+                            error={ role.error }
                             options={ roleOptions }
                         />
                         <FieldCheckbox
                             name="isReadOnly"
                             label="Read Only"
-                            value={ isReadOnly.value }
+                            checked={ isReadOnly.checked }
+                            value="true"
                             handleUserInput={ handleUserInput }
                             error={ isReadOnly.error }
+                        />
+                        <FieldCheckbox
+                            name="isActive"
+                            label="Active"
+                            value="true"
+                            checked={ isActive.checked }
+                            handleUserInput={ handleUserInput }
+                            error={ isActive.error }
                         />
                         <FieldInput
                             name="password"
