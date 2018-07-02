@@ -38,8 +38,6 @@ const requireAdmin = (req, res, next) => {
             //set logged in user for the request
             req.loggedInUser = decoded;
             
-            console.log(decoded);
-            
             if ((decoded.role !== SU) && (decoded.role !== ADMIN)) {
                 return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
             }
