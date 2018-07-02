@@ -102,34 +102,14 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
 router.get('/:id', requireUser, (req, res) => {
     const loggedInUser = req.loggedInUser;
     
-    //if admin or su show any user
-    if (loggedInUser.role === ADMIN || loggedInUser.role === SU) {
+    if (loggedInUser.role === MANAGER) {
         
         User.findOne({ _id: req.params.id }, (err, user) => {
             if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
             
             if (!user) return res.json({ status: ERROR, data: err, code: 404, message: 'User not found' });
             
-            if (user.team !== loggedInUser.team) {
-                return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
-            }
-            
-            const safeUser = Object.assign({}, user._doc);
-            
-            delete safeUser.password;
-            
-            return res.json({ status: SUCCESS, data: { user: safeUser } });
-        });
-    
-    //if manager only show user from own team
-    } else if (loggedInUser.role === MANAGER) {
-        
-        User.findOne({ _id: req.params.id }, (err, user) => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
-            
-            if (!user) return res.json({ status: ERROR, data: err, code: 404, message: 'User not found' });
-            
-            //must request user first to find out the users team
+            //must request user first to find out the users team to match it to the manager
             if (user.team !== loggedInUser.team) {
                 return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
             }
@@ -141,28 +121,23 @@ router.get('/:id', requireUser, (req, res) => {
             return res.json({ status: SUCCESS, data: { user: safeUser } });
         });
         
-    //if not manager, admin or su only show own user page
+    //if admin or su or own user
+    } else if ((loggedInUser.role === ADMIN || loggedInUser.role === SU) || (req.params.id !== loggedInUser.id)) {
+        
+        
+        User.findOne({ _id: req.params.id }, (err, user) => {
+            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
+            
+            if (!user) return res.json({ status: ERROR, data: err, code: 404, message: 'User not found' });
+            
+            const safeUser = Object.assign({}, user._doc);
+            
+            delete safeUser.password;
+            
+            return res.json({ status: SUCCESS, data: { user: safeUser } });
+        });
     } else {
-        
-        if (req.params.id !== loggedInUser.id) {
-            return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
-        }
-            
-        User.findOne({ _id: req.params.id }, (err, user) => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
-            
-            if (!user) return res.json({ status: ERROR, data: err, code: 404, message: 'User not found' });
-            
-            if (user.team !== loggedInUser.team) {
-                return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
-            }
-            
-            const safeUser = Object.assign({}, user._doc);
-            
-            delete safeUser.password;
-            
-            return res.json({ status: SUCCESS, data: { user: safeUser } });
-        });
+        return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
     }
 });
 
@@ -170,8 +145,8 @@ router.get('/:id', requireUser, (req, res) => {
 router.put('/:id', requireUser, excludeReadOnly, (req, res) => {
     const loggedInUser = req.loggedInUser;
     
-    //if admin or su show any user
-    if (loggedInUser.role === ADMIN || loggedInUser.role === SU) {
+    //if admin or su or own user
+    if ((loggedInUser.role === ADMIN || loggedInUser.role === SU) || (req.params.id !== loggedInUser.id)) {
         
         User.findOne({ _id: req.params.id }, (err, user) => {
             if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
@@ -207,47 +182,8 @@ router.put('/:id', requireUser, excludeReadOnly, (req, res) => {
                 });
             });
         });
-        
     } else {
-        //if manager or regular user, only show if own user
-        if (req.params.id !== loggedInUser.id) {
-            return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
-        }
-        
-        User.findOne({ _id: req.params.id }, (err, user) => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
-            
-            if (!user) return res.json({ status: ERROR, code: 404, message: 'User not found' });
-            
-            if (req.body.password !== req.body.passwordConfirmation) {
-                return res.json({
-                    status: FAIL,
-                    data: { message: 'Passwords do not match' }
-                });
-            }
-            
-            if (/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,24}/.test(req.body.password)) {
-                return res.json({
-                    status: FAIL,
-                    data: { message: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character' }
-                });
-            }
-            
-            for (let key in req.body) {
-            	user[key] = req.body[key];
-            }
-            
-            user.save(err => {
-                if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error updating user' });
-                
-                return res.json({
-                    status: SUCCESS,
-                    data: {
-                        message: 'User created'
-                    }
-                });
-            });
-        });
+        return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
     }
 });
 
