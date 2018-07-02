@@ -8,7 +8,7 @@ import FieldSelect from '../helpers/field-select';
 import FieldCheckbox from '../helpers/field-checkbox';
 //import FieldFile from '../helpers/field-file';
 import { createUser, clearUser } from '../../actions/users.action';
-import { sendMessage } from '../../actions/flash.action';
+import { sendMessage, sendError } from '../../actions/flash.action';
 
 import { ADMIN, MANAGER, USER } from '../../../controllers/helpers/api-variables';
 
@@ -45,7 +45,7 @@ class UserNew extends React.Component {
                 password: { value: '', error: '' },
                 passwordConfirmation: { value: '', error: '' }
             },
-            serverError: '',
+            serverMessage: '',
             formValid: false
         };
 
@@ -54,9 +54,10 @@ class UserNew extends React.Component {
     }
     
     componentDidUpdate() {
-        const { success, fail, message, history, sendMessage } = this.props;
+        const { success, fail, message, history, sendMessage, error, errorCode, errorMessage } = this.props;
         
-        if (fail && (message !== this.state.serverError)) this.setState({ serverError: message });
+        //why are you using serverMessage as state when you have message?
+        if (fail && (message !== this.state.serverMessage)) this.setState({ serverMessage: message });
         
         if (success) {
             sendMessage(message);
@@ -83,7 +84,7 @@ class UserNew extends React.Component {
     }
     
     render() {
-        const { handleSubmit, handleUserInput } = this;
+        const { handleSubmit, handleUserInput, state } = this;
         const {
             firstName,
             lastName,
@@ -94,8 +95,8 @@ class UserNew extends React.Component {
             role,
             isReadOnly,
             isActive,
-            userImage
-        } = this.state.fields;
+            //userImage
+        } = state.fields;
         
         function capitalize(s) {
             return s.charAt(0).toUpperCase() + s.slice(1)
@@ -113,7 +114,7 @@ class UserNew extends React.Component {
             <main id="user-new" className="content">
                 <section className="form">
                     <h1>Create User</h1>
-                    <small className="server-error">{ this.state.serverError }</small>
+                    <small className="server-error">{ this.state.serverMessage }</small>
                     <form onSubmit={ handleSubmit }>
                     
                         <FieldInput
@@ -192,8 +193,8 @@ class UserNew extends React.Component {
                             label="Upload User Image"
                             value={ userImage.value }
                             handleUserInput={ handleUserInput }
-                            error={ userImage.error } */ }
-                        />
+                            error={ userImage.error } 
+                        />*/ }
                         
                         <div className="btn-group">
                             <button
@@ -215,8 +216,11 @@ class UserNew extends React.Component {
 
 const mapStateToProps = state => ({
     message: state.users.message,
+    errorMessage: state.users.errorMessage,
     success: state.users.success,
-    fail: state.users.fail
+    fail: state.users.fail,
+    errorCode: state.users.errorCode,
+    error: state.users.error
 });
 
 export default connect(mapStateToProps, { clearUser, createUser, sendMessage })(UserNew);
