@@ -8,9 +8,10 @@ import FieldSelect from '../helpers/field-select';
 import FieldCheckbox from '../helpers/field-checkbox';
 //import FieldFile from '../helpers/field-file';
 import { createUser, clearUser } from '../../actions/users.action';
-import { sendMessage, sendError } from '../../actions/flash.action';
+import { sendMessage } from '../../actions/flash.action';
 
 import { ADMIN, MANAGER, USER } from '../../../lib/constants';
+import { capitalize } from '../../../lib/functions';
 
 class UserNew extends React.Component {
     
@@ -54,7 +55,7 @@ class UserNew extends React.Component {
     }
     
     componentDidUpdate() {
-        const { success, fail, message, history, sendMessage, error, errorCode, errorMessage } = this.props;
+        const { success, fail, message, history, sendMessage } = this.props;
         
         //why are you using serverMessage as state when you have message?
         if (fail && (message !== this.state.serverMessage)) this.setState({ serverMessage: message });
@@ -97,10 +98,6 @@ class UserNew extends React.Component {
             isActive,
             //userImage
         } = state.fields;
-        
-        function capitalize(s) {
-            return s.charAt(0).toUpperCase() + s.slice(1)
-        }
         
         const roleOptions = [
             ['Select Role', ''],
