@@ -11,13 +11,6 @@ class UserShow extends React.Component {
 	constructor(props) {
         super(props);
         
-        const { user, role, id } = this.props;
-        
-        //authorization
-        if ((role !== SU) && (role !== ADMIN) && (id !== user._id)) {
-            props.history.push('/not-authorized');
-        }
-        
         props.clearUser();
         props.fetchUser(props.match.params.id);
         
@@ -46,39 +39,38 @@ class UserShow extends React.Component {
     }
     
     renderUser() {
-        const { user } = this.props;
+        const { user, role, id, history } = this.props;
         
         if (!user) return;
         
+        //authorization
+        if ((role !== SU) && (role !== ADMIN) && (id !== user._id)) {
+            history.push('/not-authorized');
+        }
+        
         return (
             <main id="user-show" className="content">
-                <section className="card">
-                    <header>
-                        <h1>
-                            { `${user.firstName} ${user.lastName}` }
-                        </h1>
-                    </header>
-                    <section>
-                        <h4>Username</h4>
-                        <address>{ user.username }</address>
-
-                        <h4>Email</h4>
-                        <address>{ user.email }</address>
-                    </section>
-                    
-                    <footer>
-                        <div className="btn-group">
-                            <Link to={ `/users/${ this.props.match.params.id }/edit` } className="btn btn-primary">
-                                <i className="far fa-edit icon-front"></i> Edit User
-                            </Link>
-                            <button onClick={ this.handleDelete } className="btn btn-danger">
-                                <i className="fas fa-times icon-front"></i> Delete User
-                            </button>
-                        </div>
-                    </footer>
-                </section>
                 <section className="index">
-                    <h2>Upcoming Apts, Recent Leads etc.</h2>
+                    <header className="content-header">
+                        <a onClick={ this.props.history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
+                        <h1>{ `${user.firstName} ${user.lastName}` }</h1>
+                        <Link to={ `/users/${ this.props.match.params.id }/edit` } className="icon-button-primary"><i className="fas fa-edit"></i></Link>
+                    </header>
+                    <section className="card">
+                        <section>
+                            <h4>Username</h4>
+                            <address>{ user.username }</address>
+    
+                            <h4>Email</h4>
+                            <address>{ user.email }</address>
+                        </section>
+                    </section>
+                    <section className="index">
+                        <h2>Upcoming Apts, Recent Leads etc.</h2>
+                        <button onClick={ this.handleDelete } className="btn btn-danger">
+                            <i className="fas fa-times icon-front"></i> Delete User
+                        </button>
+                    </section>
                 </section>
             </main>
         );

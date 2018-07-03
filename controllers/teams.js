@@ -4,10 +4,10 @@ const bodyParser = require('body-parser');
 const Account = require('../models/account');
 const Team = require('../models/team');
 
-//status variables for Jsend API spec
-const { SUCCESS, FAIL, ERROR } = require('../lib/constants');
+//status variables for Jsend API spec and su role
+const { SUCCESS, FAIL, ERROR, MANAGER } = require('../lib/constants');
 
-const { requireAdmin, excludeReadOnly } = require('./helpers/authorization');
+const { requireAdmin, requireManager, excludeReadOnly } = require('./helpers/authorization');
 
 // body parser middleware
 router.use(bodyParser.urlencoded({ extended: false }));
@@ -63,7 +63,13 @@ router.get('/:id', requireAdmin, (req, res) => {
 });
 
 //update
-router.put('/:id', requireAdmin, excludeReadOnly, (req, res) => {
+router.put('/:id', requireManager, excludeReadOnly, (req, res) => {
+    const loggedInUser = req.loggedInUser;
+    
+    if ((loggedInUser.role === MANAGER) && (loggedInUser.team !== req.params.id)) {
+        return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
+    }
+    
     Account.findOne({}, (err, account) => {
         if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
         
