@@ -35,7 +35,7 @@ class UserIndex extends React.Component {
                         <td>
                             <div className="cell-container">
                                 <Link to={ `/users/${ user._id }` }>{ `${ user.firstName } ${ user.lastName }` }</Link>
-                                <Link to={ `/users/${ user._id }/edit` }><i className="fa fa-edit"></i></Link>
+                                { this.props.isReadOnly ? <Link to={ `/users/${ user._id }/edit` }><i className="fa fa-edit"></i></Link> : '' }
                             </div>
                         </td>
                         <td>{ user.team || '' }</td>
@@ -54,7 +54,7 @@ class UserIndex extends React.Component {
                     <header className="content-header">
                         <a onClick={ this.props.history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
                         <h1>User Management</h1>
-                        <Link className="icon-button-success" to="/users/new"><i className="fas fa-plus"></i></Link>
+                        { this.props.isReadOnly ? <Link className="icon-button-success" to="/users/new"><i className="fas fa-plus"></i></Link> : '' }
                     </header>
                     
                     <table className="table">
