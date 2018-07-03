@@ -122,7 +122,7 @@ router.get('/:id', requireUser, (req, res) => {
         });
         
     //if admin or su or own user
-    } else if ((loggedInUser.role === ADMIN || loggedInUser.role === SU) || (req.params.id !== loggedInUser.id)) {
+    } else if ((loggedInUser.role === ADMIN) || (loggedInUser.role === SU) || (req.params.id === loggedInUser.id)) {
         
         
         User.findOne({ _id: req.params.id }, (err, user) => {
@@ -146,7 +146,7 @@ router.put('/:id', requireUser, excludeReadOnly, (req, res) => {
     const loggedInUser = req.loggedInUser;
     
     //if admin or su or own user
-    if ((loggedInUser.role === ADMIN || loggedInUser.role === SU) || (req.params.id !== loggedInUser.id)) {
+    if ((loggedInUser.role === ADMIN) || (loggedInUser.role === SU) || (req.params.id === loggedInUser.id)) {
         
         User.findOne({ _id: req.params.id }, (err, user) => {
             if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
