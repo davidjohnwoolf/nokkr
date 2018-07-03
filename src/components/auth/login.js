@@ -17,10 +17,10 @@ class Login extends React.Component {
             props.clearAuth();
         }
         
-        this.validationRules = {
+        this.validationRules = Object.freeze({
             username: [required],
             password: [required]
-        };
+        });
         
         this.state = {
             fields: {

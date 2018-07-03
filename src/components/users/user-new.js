@@ -20,7 +20,7 @@ class UserNew extends React.Component {
         
         props.clearUser();
         
-        this.validationRules = {
+        this.validationRules = Object.freeze({
             firstName: [required],
             lastName: [required],
             username: [required],
@@ -31,7 +31,7 @@ class UserNew extends React.Component {
             userImage: [],
             password: [required, password],
             passwordConfirmation: [required, passwordMatch]
-        };
+        });
         
         this.state = {
             fields: {

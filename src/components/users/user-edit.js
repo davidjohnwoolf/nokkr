@@ -15,14 +15,14 @@ class UserEdit extends React.Component {
         props.clearUser();
         props.fetchUser(props.match.params.id);
         
-        this.validationRules = {
+        this.validationRules = Object.freeze({
             firstName: [required],
             lastName: [required],
             username: [required],
             email: [required],
             password: [password],
             passwordConfirmation: [passwordMatch]
-        };
+        });
 
         this.state = {
             fields: {
