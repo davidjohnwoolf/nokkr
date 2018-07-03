@@ -87,7 +87,7 @@ class UserShow extends React.Component {
     render() {
         
         return (
-            <div className="component-page user-show">
+            <div className="component-page">
                 { this.renderUser() }
             </div>
         );
