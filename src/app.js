@@ -12,9 +12,11 @@ import jwtDecode from 'jwt-decode';
 import { LOGIN_SUCCESS, CLEAR_AUTH } from './actions/auth.action';
 import authorization from './middleware/authorization';
 import reducers from './reducers';
-import PrivateRoute from './components/helpers/private-route';
-import Flash from './components/helpers/flash';
-import ErrorBoundary from './components/helpers/error-boundary';
+
+import PrivateRoute from './components/app/private-route';
+import Flash from './components/app/flash';
+import ErrorBoundary from './components/app/error-boundary';
+
 import NotAuthorized from './components/errors/not-authorized';
 import PageNotFound from './components/errors/page-not-found';
 import Dashboard from './components/dashboard';

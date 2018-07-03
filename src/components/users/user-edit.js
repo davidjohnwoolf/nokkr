@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { required, password, passwordMatch, validate } from '../helpers/validation';
-import FieldInput from '../helpers/field-input';
+import FieldInput from '../forms/field-input';
 import { fetchUser, updateUser, clearUser } from '../../actions/users.action';
 import { sendMessage } from '../../actions/flash.action';
 

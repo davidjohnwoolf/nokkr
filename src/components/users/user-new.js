@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { required, password, passwordMatch, validate } from '../helpers/validation';
-import FieldInput from '../helpers/field-input';
-import FieldSelect from '../helpers/field-select';
-import FieldCheckbox from '../helpers/field-checkbox';
+import FieldInput from '../forms/field-input';
+import FieldSelect from '../forms/field-select';
+import FieldCheckbox from '../forms/field-checkbox';
 //import FieldFile from '../helpers/field-file';
 import { createUser, clearUser } from '../../actions/users.action';
 import { sendMessage } from '../../actions/flash.action';

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import { required, validate } from '../helpers/validation';
-import FieldInput from '../helpers/field-input';
+import FieldInput from '../forms/field-input';
 import { login, clearAuth } from '../../actions/auth.action';
 
 class Login extends React.Component {

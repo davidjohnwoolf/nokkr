@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import ErrorBoundary from '../helpers/error-boundary';
+import ErrorBoundary from '../app/error-boundary';
 
 import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
 
