@@ -41,7 +41,6 @@ export const createUser = user => {
         
         if (response.data.status === ERROR) dispatch(sendError(response.data.message));
 
-        //add the constants for these
         if (response.data.status === SUCCESS) {
             dispatch({
                 type: CREATE_USER_SUCCESS,
