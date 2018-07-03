@@ -3,17 +3,17 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const Account = require('../models/account');
 
-//const verifyToken = require('./helpers/authorization');
-
 //status variables for Jsend API spec
 const { SUCCESS, FAIL, ERROR } = require('../lib/constants');
+
+const { requireAdmin, excludeReadOnly } = require('./helpers/authorization');
 
 // body parser middleware
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 //show
-router.get('/', (req, res) => {
+router.get('/', requireAdmin, (req, res) => {
     Account.findOne({}, (err, account) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         
@@ -24,7 +24,7 @@ router.get('/', (req, res) => {
 });
 
 //update
-router.put('/', (req, res) => {
+router.put('/', requireAdmin, excludeReadOnly, (req, res) => {
     Account.findOne({}, (err, account) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
         

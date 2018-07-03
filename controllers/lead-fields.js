@@ -9,12 +9,14 @@ const LeadField = require('../models/lead-field');
 //status variables for Jsend API spec
 const { SUCCESS, FAIL, ERROR } = require('../lib/constants');
 
+const { requireAdmin, excludeReadOnly } = require('./helpers/authorization');
+
 // body parser middleware
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 //index
-router.get('/', (req, res) => {
+router.get('/', requireAdmin, (req, res) => {
     Account.findOne({}, (err, account) => {
         if (err) return res.json({ field: ERROR, data: err, code: 500, message: 'Error finding account' });
         
@@ -25,7 +27,7 @@ router.get('/', (req, res) => {
 });
 
 //create
-router.post('/', (req, res) => {
+router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
     Account.findOne({}, (err, account) => {
         if (err) return res.json({ field: ERROR, data: err, code: 500, message: 'Error finding account' });
         
@@ -46,7 +48,7 @@ router.post('/', (req, res) => {
 });
 
 //show
-router.get('/:id', (req, res) => {
+router.get('/:id', requireAdmin, (req, res) => {
     Account.findOne({}, (err, account) => {
         if (err) return res.json({ field: ERROR, data: err, code: 500, message: 'Error finding account' });
         
@@ -61,7 +63,7 @@ router.get('/:id', (req, res) => {
 });
 
 //update
-router.put('/:id', (req, res) => {
+router.put('/:id', requireAdmin, excludeReadOnly, (req, res) => {
     Account.findOne({}, (err, account) => {
         if (err) return res.json({ field: ERROR, data: err, code: 500, message: 'Error finding account' });
         
@@ -84,7 +86,7 @@ router.put('/:id', (req, res) => {
 });
 
 //destroy
-router.delete('/:id', (req, res) => {
+router.delete('/:id', requireAdmin, excludeReadOnly, (req, res) => {
     Account.findOne({}, (err, account) => {
     	if (err) return res.json({ field: ERROR, data: err, code: 500, message: 'Error finding account' });
     	
