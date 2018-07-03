@@ -48,7 +48,13 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
 });
 
 //show
-router.get('/:id', requireAdmin, (req, res) => {
+router.get('/:id', requireManager, (req, res) => {
+    const loggedInUser = req.loggedInUser;
+    
+    if ((loggedInUser.role === MANAGER) && (loggedInUser.team !== req.params.id)) {
+        return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
+    }
+    
     Account.findOne({}, (err, account) => {
         if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
         
