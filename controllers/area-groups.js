@@ -33,14 +33,17 @@ router.post('/', requireManager, excludeReadOnly, (req, res) => {
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
-        if (account.areaGroups.find(areaGroup => areaGroup.title === req.body.title)) {
-            return res.json({ status: FAIL, data: { message: 'Area group already exists' } });
-        }
-        
         account.areaGroups.push(new AreaGroup(req.body));
         
         account.save(err => {
-            if (err) return res.json({ status: ERROR, code: 500, message: 'Error creating area group' });
+            if (err) {
+                return res.json({
+                    status: ERROR,
+                    data: err,
+                    code: 500,
+                    message: err.errors[Object.keys(err.errors)[0]].message || 'Error creating area group'
+                });
+            }
             
             return res.json({ status: SUCCESS, data: { message: 'Area group created' } });
         });
@@ -78,7 +81,14 @@ router.put('/:id', requireManager, excludeReadOnly, (req, res) => {
         }
         
         account.save(err => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error updating area group' });
+            if (err) {
+                return res.json({
+                    status: ERROR,
+                    data: err,
+                    code: 500,
+                    message: err.errors[Object.keys(err.errors)[0]].message || 'Error updating area group'
+                });
+            }
             
             return res.json({ status: SUCCESS, data: { message: 'Area group updated' } });
         });

@@ -1,17 +1,20 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
+const uniqueValidator = require('mongoose-unique-validator');
 
 //const Area = require('./area');
 
 const UserSchema = new Schema({
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    username: { type: String, required: true, index: { unique: true } },
+    username: { type: String, required: true, index: true, unique: true, uniqueCaseInsensitive: true },
     email: {
         type: String,
         required: true,
-        index: { unique: true },
+        index: true,
+        unique: true,
+        uniqueCaseInsensitive: true,
         match: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
     },
     password: {
@@ -58,5 +61,7 @@ UserSchema.methods.comparePassword = function(candidatePassword, done) {
         done(null, isMatch);
     });
 };
+
+UserSchema.plugin(uniqueValidator, { message: 'The {PATH} {VALUE} already exists' });
 
 module.exports = mongoose.model('User', UserSchema);

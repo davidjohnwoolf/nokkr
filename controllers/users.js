@@ -60,33 +60,18 @@ router.get('/', requireManager, (req, res) => {
 router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
     User.findOne({ $or: [ { username: req.body.username }, { email: req.body.email } ] }, (err, user) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
-        
-        if (user && user.username === req.body.username) {
-            return res.json({ status: FAIL, data: { message: 'Username already exists' } });
-        }
-        
-        if (user && user.email === req.body.email) {
-            return res.json({ status: FAIL, data: { message: 'Email already exists' } });
-        }
-        
-        if (req.body.password !== req.body.passwordConfirmation) {
-            return res.json({
-                status: FAIL,
-                data: { message: 'Passwords do not match' }
-            });
-        }
-        
-        if (!PW_REGEX.test(req.body.password)) {
-            return res.json({
-                status: FAIL,
-                data: { message: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character' }
-            });
-        }
 
         const newUser = new User(req.body);
         
         newUser.save(err => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error creating user' });
+            if (err) {
+                return res.json({
+                    status: ERROR,
+                    data: err,
+                    code: 500,
+                    message: err.errors[Object.keys(err.errors)[0]].message || 'Error creating user'
+                });
+            }
             
             return res.json({
                 status: SUCCESS,
@@ -153,26 +138,19 @@ router.put('/:id', requireUser, excludeReadOnly, (req, res) => {
             
             if (!user) return res.json({ status: ERROR, code: 404, message: 'User not found' });
             
-            if (req.body.password !== req.body.passwordConfirmation) {
-                return res.json({
-                    status: FAIL,
-                    data: { message: 'Passwords do not match' }
-                });
-            }
-            
-            if (PW_REGEX.test(req.body.password)) {
-                return res.json({
-                    status: FAIL,
-                    data: { message: 'Password must contain 8-24 characters including a number, an uppercase and lowercase letter, and a special character' }
-                });
-            }
-            
             for (let key in req.body) {
             	user[key] = req.body[key];
             }
             
             user.save(err => {
-                if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error updating user' });
+                if (err) {
+                    return res.json({
+                        status: ERROR,
+                        data: err,
+                        code: 500,
+                        message: err.errors[Object.keys(err.errors)[0]].message || 'Error updating user'
+                    });
+                }
                 
                 return res.json({
                     status: SUCCESS,

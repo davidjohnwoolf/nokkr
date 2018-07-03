@@ -33,14 +33,17 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
         
         if (!account) return res.json({ field: ERROR, code: 404, message: 'Account not found' });
         
-        if (account.leadFields.find(leadField => leadField.title === req.body.title)) {
-            return res.json({ field: FAIL, data: { message: 'Lead field already exists' } });
-        }
-        
         account.leadFields.push(new LeadField(req.body));
         
         account.save(err => {
-            if (err) return res.json({ field: ERROR, code: 500, message: 'Error creating field' });
+            if (err) {
+                return res.json({
+                    status: ERROR,
+                    data: err,
+                    code: 500,
+                    message: err.errors[Object.keys(err.errors)[0]].message || 'Error creating field'
+                });
+            }
             
             return res.json({ field: SUCCESS, data: { message: 'Lead field created' } });
         });
@@ -78,7 +81,14 @@ router.put('/:id', requireAdmin, excludeReadOnly, (req, res) => {
         }
         
         account.save(err => {
-            if (err) return res.json({ field: ERROR, data: err, code: 500, message: 'Error updating field' });
+            if (err) {
+                return res.json({
+                    status: ERROR,
+                    data: err,
+                    code: 500,
+                    message: err.errors[Object.keys(err.errors)[0]].message || 'Error updating field'
+                });
+            }
             
             return res.json({ field: SUCCESS, data: { message: 'Lead field updated' } });
         });

@@ -31,15 +31,17 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
-        //move to schema validator
-        if (account.teams.find(team => team.title === req.body.title)) {
-            return res.json({ status: FAIL, data: { message: 'Team already exists' } });
-        }
-        
         account.teams.push(new Team(req.body));
         
         account.save(err => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error creating team' });
+            if (err) {
+                return res.json({
+                    status: ERROR,
+                    data: err,
+                    code: 500,
+                    message: err.errors[Object.keys(err.errors)[0]].message || 'Error creating team'
+                });
+            }
             
             return res.json({ status: SUCCESS, data: { message: 'Team created' } });
         });
@@ -77,7 +79,14 @@ router.put('/:id', requireAdmin, excludeReadOnly, (req, res) => {
         }
         
         account.save(err => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error updating team' });
+            if (err) {
+                return res.json({
+                    status: ERROR,
+                    data: err,
+                    code: 500,
+                    message: err.errors[Object.keys(err.errors)[0]].message || 'Error updating team'
+                });
+            }
             
             return res.json({ status: SUCCESS, data: { message: 'Team updated' } });
         });

@@ -33,14 +33,17 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
-        if (account.leadStatuses.find(leadStatus => leadStatus.title === req.body.title)) {
-            return res.json({ status: FAIL, data: { message: 'Status already exists' } });
-        }
-        
         account.leadStatuses.push(new LeadStatus(req.body));
         
         account.save(err => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error saving account' });
+            if (err) {
+                return res.json({
+                    status: ERROR,
+                    data: err,
+                    code: 500,
+                    message: err.errors[Object.keys(err.errors)[0]].message || 'Error creating status'
+                });
+            }
             
             return res.json({ status: SUCCESS, data: { message: 'Status created' } });
         });
@@ -78,7 +81,14 @@ router.put('/:id', requireAdmin, excludeReadOnly, (req, res) => {
         }
         
         account.save(err => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error updating status' });
+            if (err) {
+                return res.json({
+                    status: ERROR,
+                    data: err,
+                    code: 500,
+                    message: err.errors[Object.keys(err.errors)[0]].message || 'Error updating status'
+                });
+            }
             
             return res.json({ status: SUCCESS, data: { message: 'Status updated' } });
         });
