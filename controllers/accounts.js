@@ -15,7 +15,7 @@ router.use(bodyParser.json());
 //show
 router.get('/', requireAdmin, (req, res) => {
     Account.findOne({}, (err, account) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
+        if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
         
         if (!account) return res.json({ status: ERROR, data: err, code: 404, message: 'Account not found' });
         
@@ -26,7 +26,7 @@ router.get('/', requireAdmin, (req, res) => {
 //update
 router.put('/', requireAdmin, excludeReadOnly, (req, res) => {
     Account.findOne({}, (err, account) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
+        if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
@@ -35,7 +35,7 @@ router.put('/', requireAdmin, excludeReadOnly, (req, res) => {
         }
         
         account.save(err => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error updating account' });
+            if (err) return res.json({ status: ERROR, data: err, message: 'Error updating account' });
             
             return res.json({ status: SUCCESS, data: { message: 'Account updated' } });
         });

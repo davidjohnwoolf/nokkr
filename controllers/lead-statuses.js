@@ -18,7 +18,7 @@ router.use(bodyParser.json());
 //index
 router.get('/', requireAdmin, (req, res) => {
     Account.findOne({}, (err, account) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
+        if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
@@ -29,7 +29,7 @@ router.get('/', requireAdmin, (req, res) => {
 //create
 router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
     Account.findOne({}, (err, account) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
+        if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
@@ -40,7 +40,6 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
                 return res.json({
                     status: ERROR,
                     data: err,
-                    code: 500,
                     message: err.errors[Object.keys(err.errors)[0]].message || 'Error creating status'
                 });
             }
@@ -53,7 +52,7 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
 //show
 router.get('/:id', requireAdmin, (req, res) => {
     Account.findOne({}, (err, account) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
+        if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
@@ -68,7 +67,7 @@ router.get('/:id', requireAdmin, (req, res) => {
 //update
 router.put('/:id', requireAdmin, excludeReadOnly, (req, res) => {
     Account.findOne({}, (err, account) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
+        if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
@@ -85,7 +84,6 @@ router.put('/:id', requireAdmin, excludeReadOnly, (req, res) => {
                 return res.json({
                     status: ERROR,
                     data: err,
-                    code: 500,
                     message: err.errors[Object.keys(err.errors)[0]].message || 'Error updating status'
                 });
             }
@@ -98,7 +96,7 @@ router.put('/:id', requireAdmin, excludeReadOnly, (req, res) => {
 //destroy
 router.delete('/:id', requireAdmin, excludeReadOnly, (req, res) => {
     Account.findOne({}, (err, account) => {
-    	if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
+    	if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
     	
     	if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
     	
@@ -109,7 +107,7 @@ router.delete('/:id', requireAdmin, excludeReadOnly, (req, res) => {
     	account.leadStatuses[leadStatusIndex].remove();
     	
     	account.save(err => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error deleting status' });
+            if (err) return res.json({ status: ERROR, data: err, message: 'Error deleting status' });
             
             return res.json({ status: SUCCESS, data: { message: 'Status deleted' } });
         });

@@ -16,12 +16,12 @@ router.use(bodyParser.json());
 router.post('/login', (req, res) => {
     
     User.findOne({ username: req.body.username }, (err, user) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
+        if (err) return res.json({ status: ERROR, data: err, message: 'Error finding user' });
         
         if (!user) return res.json({ status: FAIL, data: { message: 'Username or password is incorrect' } });
         
         user.comparePassword(req.body.password, function(err, isMatch) {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error authenticating credentials' });
+            if (err) return res.json({ status: ERROR, data: err, message: 'Error authenticating credentials' });
             
             if (isMatch) {
                 

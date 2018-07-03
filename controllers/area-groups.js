@@ -18,7 +18,7 @@ router.use(bodyParser.json());
 //index
 router.get('/', requireManager, (req, res) => {
     Account.findOne({}, (err, account) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
+        if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
@@ -29,7 +29,7 @@ router.get('/', requireManager, (req, res) => {
 //create
 router.post('/', requireManager, excludeReadOnly, (req, res) => {
     Account.findOne({}, (err, account) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
+        if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
@@ -40,7 +40,6 @@ router.post('/', requireManager, excludeReadOnly, (req, res) => {
                 return res.json({
                     status: ERROR,
                     data: err,
-                    code: 500,
                     message: err.errors[Object.keys(err.errors)[0]].message || 'Error creating area group'
                 });
             }
@@ -53,7 +52,7 @@ router.post('/', requireManager, excludeReadOnly, (req, res) => {
 //show
 router.get('/:id', requireManager, (req, res) => {
     Account.findOne({}, (err, account) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
+        if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
@@ -68,7 +67,7 @@ router.get('/:id', requireManager, (req, res) => {
 //update
 router.put('/:id', requireManager, excludeReadOnly, (req, res) => {
     Account.findOne({}, (err, account) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
+        if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
@@ -85,7 +84,6 @@ router.put('/:id', requireManager, excludeReadOnly, (req, res) => {
                 return res.json({
                     status: ERROR,
                     data: err,
-                    code: 500,
                     message: err.errors[Object.keys(err.errors)[0]].message || 'Error updating area group'
                 });
             }
@@ -98,7 +96,7 @@ router.put('/:id', requireManager, excludeReadOnly, (req, res) => {
 //destroy
 router.delete('/:id', requireManager, excludeReadOnly, (req, res) => {
     Account.findOne({}, (err, account) => {
-    	if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding account' });
+    	if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
     	
     	if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
     	
@@ -109,7 +107,7 @@ router.delete('/:id', requireManager, excludeReadOnly, (req, res) => {
     	account.areaGroups[areaGroupIndex].remove();
     	
     	account.save(err => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error deleting area group' });
+            if (err) return res.json({ status: ERROR, data: err, message: 'Error deleting area group' });
             
             return res.json({ status: SUCCESS, data: { message: 'Area group deleted' } });
         });

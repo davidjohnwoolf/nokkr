@@ -19,7 +19,7 @@ router.get('/', requireManager, (req, res) => {
     //if manager only show own team
     if (loggedInUser.role === MANAGER) {
         User.find({ team: loggedInUser.team }, (err, users) => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding users' });
+            if (err) return res.json({ status: ERROR, data: err, message: 'Error finding users' });
             
             //to store users after removing the password hash
             const safeUsers = [];
@@ -38,7 +38,7 @@ router.get('/', requireManager, (req, res) => {
     //if above manager show all
     } else {
         User.find({}, (err, users) => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding users' });
+            if (err) return res.json({ status: ERROR, data: err, message: 'Error finding users' });
             
             //to store users after removing the password hash
             const safeUsers = [];
@@ -59,7 +59,7 @@ router.get('/', requireManager, (req, res) => {
 //create
 router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
     User.findOne({ $or: [ { username: req.body.username }, { email: req.body.email } ] }, (err, user) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
+        if (err) return res.json({ status: ERROR, data: err, message: 'Error finding user' });
 
         const newUser = new User(req.body);
         
@@ -68,7 +68,6 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
                 return res.json({
                     status: ERROR,
                     data: err,
-                    code: 500,
                     message: err.errors[Object.keys(err.errors)[0]].message || 'Error creating user'
                 });
             }
@@ -90,7 +89,7 @@ router.get('/:id', requireUser, (req, res) => {
     if (loggedInUser.role === MANAGER) {
         
         User.findOne({ _id: req.params.id }, (err, user) => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
+            if (err) return res.json({ status: ERROR, data: err, message: 'Error finding user' });
             
             if (!user) return res.json({ status: ERROR, data: err, code: 404, message: 'User not found' });
             
@@ -111,7 +110,7 @@ router.get('/:id', requireUser, (req, res) => {
         
         
         User.findOne({ _id: req.params.id }, (err, user) => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
+            if (err) return res.json({ status: ERROR, data: err, message: 'Error finding user' });
             
             if (!user) return res.json({ status: ERROR, data: err, code: 404, message: 'User not found' });
             
@@ -134,7 +133,7 @@ router.put('/:id', requireUser, excludeReadOnly, (req, res) => {
     if ((loggedInUser.role === ADMIN) || (loggedInUser.role === SU) || (req.params.id === loggedInUser.id)) {
         
         User.findOne({ _id: req.params.id }, (err, user) => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
+            if (err) return res.json({ status: ERROR, data: err, message: 'Error finding user' });
             
             if (!user) return res.json({ status: ERROR, code: 404, message: 'User not found' });
             
@@ -147,7 +146,6 @@ router.put('/:id', requireUser, excludeReadOnly, (req, res) => {
                     return res.json({
                         status: ERROR,
                         data: err,
-                        code: 500,
                         message: err.errors[Object.keys(err.errors)[0]].message || 'Error updating user'
                     });
                 }
@@ -169,7 +167,7 @@ router.put('/:id', requireUser, excludeReadOnly, (req, res) => {
 //destroy
 router.delete('/:id', requireAdmin, excludeReadOnly, (req, res) => {
     User.remove({ _id: req.params.id }, (err, user) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error deleting user' });
+        if (err) return res.json({ status: ERROR, data: err, message: 'Error deleting user' });
         
         if (!user) return res.json({ status: ERROR, code: 404, message: 'User not found' });
         
