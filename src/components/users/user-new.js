@@ -203,9 +203,7 @@ class UserNew extends React.Component {
                                 type="submit">
                                 Submit
                             </button>
-                            <Link className="btn btn-cancel" to="/users">
-                                Cancel
-                            </Link>
+                            <a onClick={ this.props.history.goBack } href="#" className="btn btn-cancel">Cancel</a>
                         </div>
                     </form>
                 </section>
