@@ -1,16 +1,31 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 import { required, password, passwordMatch, validate } from '../helpers/validation';
+
 import FieldInput from '../forms/field-input';
+import FieldSelect from '../forms/field-select';
+import FieldCheckbox from '../forms/field-checkbox';
+
 import { fetchUser, updateUser, clearUser } from '../../actions/users.action';
 import { sendMessage } from '../../actions/flash.action';
+
+import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
+import { capitalize } from '../../../lib/functions';
 
 class UserEdit extends React.Component {
     
     constructor(props) {
         super(props);
+        
+        const { user, role, id } = this.props;
+        
+        //authorization
+        if ((role !== SU) && (role !== ADMIN) && (id !== user._id)) {
+            props.history.push('/not-authorized');
+        }
         
         props.clearUser();
         props.fetchUser(props.match.params.id);
@@ -20,8 +35,12 @@ class UserEdit extends React.Component {
             lastName: [required],
             username: [required],
             email: [required],
-            password: [password],
-            passwordConfirmation: [passwordMatch]
+            role: [required],
+            isReadOnly: [],
+            isActive: [],
+            userImage: [],
+            password: [required, password],
+            passwordConfirmation: [required, passwordMatch]
         });
 
         this.state = {
@@ -30,6 +49,10 @@ class UserEdit extends React.Component {
                 lastName: { value: '', error: '' },
                 username: { value: '', error: '' },
                 email: { value: '', error: '' },
+                role: { value: '', error: '' },
+                isReadOnly: { checked: null, error: '' },
+                isActive: { checked: 'true', error: '' },
+                userImage: { value: '', error: '' },
                 password: { value: '', error: '' },
                 passwordConfirmation: { value: '', error: '' }
             },
@@ -53,6 +76,9 @@ class UserEdit extends React.Component {
             fields.lastName.value = user.lastName;
             fields.username.value = user.username;
             fields.email.value = user.email;
+            fields.role.value = user.role;
+            fields.isActive.checked = user.isActive || null;
+            fields.isReadOnly.checked = user.isReadOnly || null;
             
             return { fields, hasInitialized: true };
             
@@ -98,14 +124,35 @@ class UserEdit extends React.Component {
     }
     
     render() {
-        const { handleSubmit, handleUserInput } = this;
-        const { firstName, lastName, username, email, password, passwordConfirmation } = this.state.fields;
+        const { handleSubmit, handleUserInput, state } = this;
+        const {
+            firstName,
+            lastName,
+            username,
+            email,
+            password,
+            passwordConfirmation,
+            role,
+            isReadOnly,
+            isActive,
+            //userImage
+        } = state.fields;
+        
+        const roleOptions = [
+            ['Select Role', ''],
+            [capitalize(ADMIN), ADMIN],
+            [capitalize(MANAGER), MANAGER],
+            [capitalize(USER), USER]
+        ];
         
         return (
                 
             <main id="user-edit" className="content">
                 <section className="form">
-                    <h1>Edit User</h1>
+                    <header className="content-header">
+                        <a onClick={ this.props.history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
+                        <h1>Edit User</h1>
+                    </header>
                     <small className="server-error">{ this.state.serverError }</small>
                     <form onSubmit={ handleSubmit }>
                     
@@ -140,6 +187,29 @@ class UserEdit extends React.Component {
                             value={ email.value }
                             handleUserInput={ handleUserInput }
                             error={ email.error }
+                        />
+                        <FieldSelect
+                            name="role"
+                            value={ role.value }
+                            handleUserInput={ handleUserInput }
+                            error={ role.error }
+                            options={ roleOptions }
+                        />
+                        <FieldCheckbox
+                            name="isReadOnly"
+                            label="Read Only"
+                            checked={ isReadOnly.checked }
+                            value="true"
+                            handleUserInput={ handleUserInput }
+                            error={ isReadOnly.error }
+                        />
+                        <FieldCheckbox
+                            name="isActive"
+                            label="Active"
+                            value="true"
+                            checked={ isActive.checked }
+                            handleUserInput={ handleUserInput }
+                            error={ isActive.error }
                         />
                         <FieldInput
                             name="password"
@@ -180,7 +250,9 @@ const mapStateToProps = state => ({
     message: state.users.message,
     success: state.users.success,
     fail: state.users.fail,
-    user: state.users.user
+    user: state.users.user,
+    role: state.auth.role,
+    id: state.auth.id
 });
 
 export default connect(mapStateToProps, { fetchUser, clearUser, updateUser, sendMessage })(UserEdit);

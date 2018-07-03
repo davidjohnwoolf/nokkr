@@ -4,10 +4,19 @@ import { Link } from 'react-router-dom';
 import { fetchUser, deleteUser, clearUser } from '../../actions/users.action';
 import { sendMessage, sendError } from '../../actions/flash.action';
 
+import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
+
 class UserShow extends React.Component {
     
 	constructor(props) {
         super(props);
+        
+        const { user, role, id } = this.props;
+        
+        //authorization
+        if ((role !== SU) && (role !== ADMIN) && (id !== user._id)) {
+            props.history.push('/not-authorized');
+        }
         
         props.clearUser();
         props.fetchUser(props.match.params.id);
@@ -68,6 +77,9 @@ class UserShow extends React.Component {
                         </div>
                     </footer>
                 </section>
+                <section className="index">
+                    <h2>Upcoming Apts, Recent Leads etc.</h2>
+                </section>
             </main>
         );
     }
@@ -85,7 +97,8 @@ class UserShow extends React.Component {
 const mapStateToProps = state => ({
     user: state.users.user,
     message: state.users.message,
-    id: state.auth.id
+    id: state.auth.id,
+    role: state.auth.id
 });
 
 export default connect(mapStateToProps, { fetchUser, deleteUser, sendMessage, sendError, clearUser })(UserShow);

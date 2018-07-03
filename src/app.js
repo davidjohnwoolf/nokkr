@@ -81,12 +81,12 @@ ReactDOM.render(
                             <ErrorBoundary><Login /></ErrorBoundary>
                         )} />
                         
-                        <PrivateRoute exact path="/menu" access={ SU } component={ Menu } />
-                        <PrivateRoute exact path="/users/new" component={ UserNew } />
+                        <PrivateRoute exact path="/menu" component={ Menu } />
+                        <PrivateRoute exact path="/users/new" access={ ADMIN } component={ UserNew } />
                         <PrivateRoute exact path="/users/:id/edit" component={ UserEdit } />
                         {/*<PrivateRoute exact path="/users/:id/areas" permissions="user" component={ AreasUser } />*/}
                         <PrivateRoute exact path="/users/:id" component={ UserShow } />
-                		<PrivateRoute exact path="/users" component={ UserIndex } />
+                		<PrivateRoute exact path="/users" access={ ADMIN } component={ UserIndex } />
                 		{/*<PrivateRoute exact path="/areas/new" component={ AreaNew } />*/}
                 		{/*<PrivateRoute exact path="/areas/" component={ AreasAll } />*/}
                 		<PrivateRoute exact path="/" permission="user" component={ Dashboard } />

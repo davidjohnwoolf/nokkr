@@ -110,7 +110,10 @@ class UserNew extends React.Component {
                 
             <main id="user-new" className="content">
                 <section className="form">
-                    <h1>Create User</h1>
+                    <header className="content-header">
+                        <a onClick={ this.props.history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
+                        <h1>Create User</h1>
+                    </header>
                     <small className="server-error">{ this.state.serverMessage }</small>
                     <form onSubmit={ handleSubmit }>
                     
@@ -213,11 +216,8 @@ class UserNew extends React.Component {
 
 const mapStateToProps = state => ({
     message: state.users.message,
-    errorMessage: state.users.errorMessage,
     success: state.users.success,
-    fail: state.users.fail,
-    errorCode: state.users.errorCode,
-    error: state.users.error
+    fail: state.users.fail
 });
 
 export default connect(mapStateToProps, { clearUser, createUser, sendMessage })(UserNew);

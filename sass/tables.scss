@@ -28,6 +28,11 @@
                 padding: $gutter;
                 border: $border;
                 margin: 0;
+                
+                > .cell-container {
+                    display: flex;
+                    justify-content: space-between;
+                }
             }
             
             &:nth-child(odd) {

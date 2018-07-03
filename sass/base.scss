@@ -378,6 +378,17 @@ select {
     }
 }
 
+.icon-button-primary {
+    color: primary;
+    font-size: 2.5rem;
+    padding: $gutter;
+    margin-top: $gutter;
+    
+    &:hover {
+        color: $primary-light;
+    }
+}
+
 //Messages
 
 .flash {
