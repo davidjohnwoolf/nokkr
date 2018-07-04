@@ -22,6 +22,13 @@ import PageNotFound from './components/errors/page-not-found';
 import Dashboard from './components/dashboard';
 import Header from './components/layout/header';
 import Menu from './components/layout/menu';
+import Login from './components/auth/login';
+
+import TeamNew from './components/teams/team-new';
+import TeamEdit from './components/teams/team-edit';
+import TeamShow from './components/teams/team-show';
+import TeamIndex from './components/teams/team-index';
+
 import UserNew from './components/users/user-new';
 import UserEdit from './components/users/user-edit';
 import UserShow from './components/users/user-show';
@@ -29,7 +36,6 @@ import UserIndex from './components/users/user-index';
 //import AreaNew from './components/areas/area-new';
 //import AreasAll from './components/areas/areas-all';
 //import AreasUser from './components/areas/areas-user';
-import Login from './components/auth/login';
 
 import { SU, ADMIN, MANAGER, USER } from '../lib/constants';
 
@@ -82,13 +88,17 @@ ReactDOM.render(
                         )} />
                         
                         <PrivateRoute exact path="/menu" component={ Menu } />
+                        
+                        <PrivateRoute exact path="/teams/new" access={ ADMIN } component={ TeamNew } />
+                        <PrivateRoute exact path="/teams/:id/edit" access={ MANAGER } component={ TeamEdit } />
+                        <PrivateRoute exact path="/teams/:id" access={ MANAGER } component={ TeamShow } />
+                		<PrivateRoute exact path="/teams" access={ ADMIN } component={ TeamIndex } />
+                		
                         <PrivateRoute exact path="/users/new" access={ ADMIN } component={ UserNew } />
                         <PrivateRoute exact path="/users/:id/edit" component={ UserEdit } />
-                        {/*<PrivateRoute exact path="/users/:id/areas" permissions="user" component={ AreasUser } />*/}
                         <PrivateRoute exact path="/users/:id" component={ UserShow } />
                 		<PrivateRoute exact path="/users" access={ ADMIN } component={ UserIndex } />
-                		{/*<PrivateRoute exact path="/areas/new" component={ AreaNew } />*/}
-                		{/*<PrivateRoute exact path="/areas/" component={ AreasAll } />*/}
+                		
                 		<PrivateRoute exact path="/" permission="user" component={ Dashboard } />
                 		
                 		<Route exact path="/not-authorized" render={ () => (

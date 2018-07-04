@@ -16,28 +16,28 @@ import { SUCCESS, FAIL, ERROR } from '../../lib/constants';
 
 export const fetchTeams = () => {
     return async dispatch => {
-        const response = await axios.get('/users');
+        const response = await axios.get('/account/teams');
         
         if (response.data.status === ERROR) dispatch(sendError(response.data.message));
         
-        dispatch({ type: FETCH_TEAMS, users: response.data.data.users });
+        dispatch({ type: FETCH_TEAMS, teams: response.data.data.teams });
     };
 };
 
 export const fetchTeam = id => {
     return async dispatch => {
-        const response = await axios.get(`/teams/${id}`);
+        const response = await axios.get(`/account/teams/${id}`);
         
         if (response.data.status === ERROR) dispatch(sendError(response.data.message));
         
-        dispatch({ type: FETCH_TEAM, user: response.data.data.team });
+        dispatch({ type: FETCH_TEAM, team: response.data.data.team });
     };
 };
 
 export const createTeam = team => {
     
     return async dispatch => {
-        const response = await axios.post('/users', team);
+        const response = await axios.post('/account/teams', team);
         
         if (response.data.status === ERROR) dispatch(sendError(response.data.message));
 
@@ -80,7 +80,7 @@ export const updateTeam = (id, team) => {
     };
 };
 
-export const deleteUser = id => {
+export const deleteTeam = id => {
     
     return async dispatch => {
         const response = await axios.delete(`/teams/${id}`);
@@ -91,7 +91,7 @@ export const deleteUser = id => {
     };
 };
 
-export const clearUser = () => {
+export const clearTeam = () => {
     return dispatch => {
         dispatch({ type: CLEAR_TEAM });
     };

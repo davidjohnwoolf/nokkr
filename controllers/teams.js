@@ -20,7 +20,14 @@ router.get('/', requireAdmin, (req, res) => {
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
-        return res.json({ status: SUCCESS, data: { areas: account.teams } });
+        let teams = [];
+
+        account.teams.forEach(c => {
+            let team = Object.assign({}, c._doc);
+            teams.push(team);
+        });
+        
+        return res.json({ status: SUCCESS, data: { teams } });
     });
 });
 

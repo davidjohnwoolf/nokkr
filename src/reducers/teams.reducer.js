@@ -7,7 +7,7 @@ import {
     UPDATE_TEAM_SUCCESS,
     DELETE_TEAM,
     CLEAR_TEAM
-} from '../actions/users.action';
+} from '../actions/teams.action';
 
 export default function(state = {}, action) {
 
