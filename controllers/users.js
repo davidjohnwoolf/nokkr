@@ -153,7 +153,7 @@ router.put('/:id', requireUser, excludeReadOnly, (req, res) => {
                 return res.json({
                     status: SUCCESS,
                     data: {
-                        message: 'User created'
+                        message: 'User updated'
                     }
                 });
             });
