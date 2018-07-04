@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { fetchUsers } from '../../actions/users.action';
+import { fetchTeams } from '../../actions/teams.action';
 
 import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
 
@@ -12,12 +13,13 @@ class UserIndex extends React.Component {
         super(props);
         
         props.fetchUsers();
+        props.fetchTeams();
     }
 	
     renderUsers() {
-        const { users, role, id, team } = this.props;
+        const { users, role, teams } = this.props;
         
-        if (!users) return;
+        if (!users || !teams) return;
         
         return (
             users.map(user => {
@@ -30,6 +32,8 @@ class UserIndex extends React.Component {
                     return false;
                 }
                 
+                let team = teams.find(team => user.team === team._id);
+                
                 return (
                     <tr key={ user._id }>
                         <td>
@@ -38,7 +42,7 @@ class UserIndex extends React.Component {
                                 { !this.props.isReadOnly ? <Link to={ `/users/${ user._id }/edit` }><i className="fa fa-edit"></i></Link> : '' }
                             </div>
                         </td>
-                        <td>{ user.team || '' }</td>
+                        <td>{ team ? team.title : '- - -' }</td>
                         <td>{ userRole }</td>
                     </tr>
                 );
@@ -78,11 +82,10 @@ class UserIndex extends React.Component {
 
 const mapStateToProps = state => ({
     users: state.users.users,
-    id: state.auth.id,
     role: state.auth.role,
     isReadOnly: state.auth.isReadOnly,
-    team: state.auth.team
+    teams: state.teams.teams
 });
 
 
-export default connect(mapStateToProps, { fetchUsers })(UserIndex);
+export default connect(mapStateToProps, { fetchUsers, fetchTeams })(UserIndex);
