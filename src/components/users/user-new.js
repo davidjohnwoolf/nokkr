@@ -2,12 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { required, password, passwordMatch, validate } from '../helpers/validation';
+import { required, requiredExceptAdmin, password, passwordMatch, validate } from '../helpers/validation';
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 import FieldCheckbox from '../forms/field-checkbox';
 //import FieldFile from '../helpers/field-file';
 import { createUser, clearUser } from '../../actions/users.action';
+import { fetchTeams } from '../../actions/teams.action';
 import { sendMessage } from '../../actions/flash.action';
 
 import { ADMIN, MANAGER, USER } from '../../../lib/constants';
@@ -20,12 +21,15 @@ class UserNew extends React.Component {
         
         props.clearUser();
         
+        props.fetchTeams();
+        
         this.validationRules = Object.freeze({
             firstName: [required],
             lastName: [required],
             username: [required],
             email: [required],
             role: [required],
+            team: [requiredExceptAdmin],
             isReadOnly: [],
             isActive: [],
             userImage: [],
@@ -40,6 +44,7 @@ class UserNew extends React.Component {
                 username: { value: '', error: '' },
                 email: { value: '', error: '' },
                 role: { value: '', error: '' },
+                team: { value: '', error: '' },
                 isReadOnly: { checked: null, error: '' },
                 isActive: { checked: 'true', error: '' },
                 userImage: { value: '', error: '' },
@@ -93,7 +98,10 @@ class UserNew extends React.Component {
     }
     
     render() {
+        if (!this.props.teams) return null;
+        
         const { handleSubmit, handleUserInput, state } = this;
+        
         const {
             firstName,
             lastName,
@@ -102,6 +110,7 @@ class UserNew extends React.Component {
             password,
             passwordConfirmation,
             role,
+            team,
             isReadOnly,
             isActive,
             //userImage
@@ -113,6 +122,12 @@ class UserNew extends React.Component {
             [capitalize(MANAGER), MANAGER],
             [capitalize(USER), USER]
         ];
+        
+        const teamOptions = [['Select Team', '']];
+        
+        this.props.teams.forEach(team => {
+           teamOptions.push([team.title, team._id]); 
+        });
         
         return (
                 
@@ -163,6 +178,14 @@ class UserNew extends React.Component {
                             handleUserInput={ handleUserInput }
                             error={ role.error }
                             options={ roleOptions }
+                        />
+                        <FieldSelect
+                            message="Optional for admin users"
+                            name="team"
+                            value={ team.value }
+                            handleUserInput={ handleUserInput }
+                            error={ team.error }
+                            options={ teamOptions }
                         />
                         <FieldCheckbox
                             name="isReadOnly"
@@ -223,7 +246,8 @@ class UserNew extends React.Component {
 const mapStateToProps = state => ({
     message: state.users.message,
     success: state.users.success,
-    fail: state.users.fail
+    fail: state.users.fail,
+    teams: state.teams.teams
 });
 
-export default connect(mapStateToProps, { clearUser, createUser, sendMessage })(UserNew);
+export default connect(mapStateToProps, { fetchTeams, clearUser, createUser, sendMessage })(UserNew);

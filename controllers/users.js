@@ -63,7 +63,7 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
 
         const newUser = new User(req.body);
         
-        newUser.save(err => {
+        newUser.save((err, user) => {
             if (err) {
                 return res.json({
                     status: ERROR,
@@ -71,11 +71,12 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
                     message: err.errors[Object.keys(err.errors)[0]].message || 'Error creating user'
                 });
             }
-            
+            console.log(user);
             return res.json({
                 status: SUCCESS,
                 data: {
-                    message: 'User created'
+                    message: 'User created',
+                    id: user.id
                 }
             });
         });

@@ -3,13 +3,14 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router-dom';
 
-import { required, password, passwordMatch, validate } from '../helpers/validation';
+import { required, requiredExceptAdmin, password, passwordMatch, validate } from '../helpers/validation';
 
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 import FieldCheckbox from '../forms/field-checkbox';
 
 import { fetchUser, updateUser, clearUser } from '../../actions/users.action';
+import { fetchTeams } from '../../actions/teams.action';
 import { sendMessage } from '../../actions/flash.action';
 
 import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
@@ -29,6 +30,7 @@ class UserEdit extends React.Component {
         
         props.clearUser();
         props.fetchUser(props.match.params.id);
+        props.fetchTeams();
         
         this.validationRules = Object.freeze({
             firstName: [required],
@@ -36,6 +38,7 @@ class UserEdit extends React.Component {
             username: [required],
             email: [required],
             role: [required],
+            team: [requiredExceptAdmin],
             isReadOnly: [],
             isActive: [],
             userImage: [],
@@ -50,6 +53,7 @@ class UserEdit extends React.Component {
                 username: { value: '', error: '' },
                 email: { value: '', error: '' },
                 role: { value: '', error: '' },
+                team: { value: '', error: '' },
                 isReadOnly: { checked: false, error: '' },
                 isActive: { checked: true, error: '' },
                 userImage: { value: '', error: '' },
@@ -77,6 +81,7 @@ class UserEdit extends React.Component {
             fields.username.value = user.username;
             fields.email.value = user.email;
             fields.role.value = user.role;
+            fields.team.value = user.team;
             fields.isActive.checked = user.isActive;
             fields.isReadOnly.checked = user.isReadOnly;
             
@@ -129,6 +134,8 @@ class UserEdit extends React.Component {
     }
     
     render() {
+        if (!this.props.teams) return null;
+        
         const { handleSubmit, handleUserInput, state } = this;
         const {
             firstName,
@@ -138,6 +145,7 @@ class UserEdit extends React.Component {
             password,
             passwordConfirmation,
             role,
+            team,
             isReadOnly,
             isActive,
             //userImage
@@ -149,6 +157,12 @@ class UserEdit extends React.Component {
             [capitalize(MANAGER), MANAGER],
             [capitalize(USER), USER]
         ];
+        
+        const teamOptions = [['Select Team', '']];
+        
+        this.props.teams.forEach(team => {
+           teamOptions.push([team.title, team._id]); 
+        });
         
         return (
                 
@@ -199,6 +213,14 @@ class UserEdit extends React.Component {
                             handleUserInput={ handleUserInput }
                             error={ role.error }
                             options={ roleOptions }
+                        />
+                        <FieldSelect
+                            message="Optional for admin users"
+                            name="team"
+                            value={ team.value }
+                            handleUserInput={ handleUserInput }
+                            error={ team.error }
+                            options={ teamOptions }
                         />
                         <FieldCheckbox
                             name="isReadOnly"
@@ -255,7 +277,8 @@ const mapStateToProps = state => ({
     fail: state.users.fail,
     user: state.users.user,
     role: state.auth.role,
-    id: state.auth.id
+    id: state.auth.id,
+    teams: state.teams.teams
 });
 
-export default connect(mapStateToProps, { fetchUser, clearUser, updateUser, sendMessage })(UserEdit);
+export default connect(mapStateToProps, { fetchUser, clearUser, updateUser, sendMessage, fetchTeams })(UserEdit);

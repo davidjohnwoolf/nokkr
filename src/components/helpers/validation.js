@@ -1,4 +1,16 @@
+import { USER, MANAGER } from '../../../lib/constants.js';
+
 export const required = value => value ? undefined : 'Required';
+
+export const requiredExceptAdmin = value => {
+    const role = document.querySelector('[name=role]').value;
+    
+    if ((role === USER) || (role === MANAGER)) {
+        return (value ? undefined : 'Required');
+    }
+    
+    return undefined;
+};
 
 export const password = value => {
     return (
