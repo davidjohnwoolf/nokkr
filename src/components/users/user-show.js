@@ -90,7 +90,7 @@ const mapStateToProps = state => ({
     user: state.users.user,
     message: state.users.message,
     id: state.auth.id,
-    role: state.auth.id
+    role: state.auth.role
 });
 
 export default connect(mapStateToProps, { fetchUser, deleteUser, sendMessage, sendError, clearUser })(UserShow);
