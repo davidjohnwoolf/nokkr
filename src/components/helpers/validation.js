@@ -51,15 +51,24 @@ export const validate = (e, rules, fields) => {
     
     //handle all rules
     for (let key in fields ) {
-        //run function for the rule (ie required) from validation rules on each field value
+        //console.log('key', key)
+        //console.log('rules', rules[key])
+        //run function for the rule (e.g. required) from validation rules on each field value
         rules[key].forEach(rule => {
-            if ('checked' in fields[e.target.name]) {
+            if ('checked' in fields[key]) {
+                console.log('checked rule')
+                console.log(rule(fields[key].checked))
+                //console.log(rule(fields[key].checked))
                 if (rule(fields[key].checked)) formValid = false;
             }
             
-            if ('value' in fields[e.target.name]) {
+            if ('value' in fields[key]) {
+                console.log('value rule')
+                //console.log(rule(fields[key].value))
                 if (rule(fields[key].value)) formValid = false;
             }
+            
+            console.log(formValid)
             
         });
     }
