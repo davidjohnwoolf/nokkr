@@ -39,8 +39,8 @@ class UserEdit extends React.Component {
             isReadOnly: [],
             isActive: [],
             userImage: [],
-            password: [required, password],
-            passwordConfirmation: [required, passwordMatch]
+            password: [password],
+            passwordConfirmation: [passwordMatch]
         });
 
         this.state = {
@@ -50,8 +50,8 @@ class UserEdit extends React.Component {
                 username: { value: '', error: '' },
                 email: { value: '', error: '' },
                 role: { value: '', error: '' },
-                isReadOnly: { checked: null, error: '' },
-                isActive: { checked: 'true', error: '' },
+                isReadOnly: { checked: false, error: '' },
+                isActive: { checked: true, error: '' },
                 userImage: { value: '', error: '' },
                 password: { value: '', error: '' },
                 passwordConfirmation: { value: '', error: '' }
@@ -77,8 +77,8 @@ class UserEdit extends React.Component {
             fields.username.value = user.username;
             fields.email.value = user.email;
             fields.role.value = user.role;
-            fields.isActive.checked = user.isActive || null;
-            fields.isReadOnly.checked = user.isReadOnly || null;
+            fields.isActive.checked = user.isActive;
+            fields.isReadOnly.checked = user.isReadOnly;
             
             return { fields, hasInitialized: true };
             
@@ -112,11 +112,16 @@ class UserEdit extends React.Component {
         
         const userData = { ...this.state.fields };
         
+        //convert fields obj into user obj
         for (let key in userData) {
-            if (userData[key].value) {
+            
+            if (key === 'password' || key === 'passwordConfirmation') {
+                //remove password if empty
+                if (!userData[key].value) delete userData[key];
+            } else if ('value' in userData[key]) {
                 userData[key] = userData[key].value;
-            } else {
-                delete userData[key];
+            } else if ('checked' in userData[key]) {
+                userData[key] = userData[key].checked;
             }
         }
         

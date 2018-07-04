@@ -58,7 +58,15 @@ class TeamNew extends React.Component {
         
         const teamData = { ...this.state.fields };
         
-        for (let key in teamData) { teamData[key] = teamData[key].value; }
+        //convert fields obj into team obj
+        for (let key in teamData) {
+
+            if ('value' in teamData[key]) {
+                teamData[key] = teamData[key].value;
+            } else if ('checked' in teamData[key]) {
+                teamData[key] = teamData[key].checked;
+            }
+        }
         
         this.props.createTeam(teamData);
     }

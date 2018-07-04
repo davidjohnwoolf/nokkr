@@ -23,7 +23,7 @@ class TeamEdit extends React.Component {
         this.state = {
             fields: {
                 title: { value: '', error: '' },
-                notifySales: { checked: null, error: '' }
+                notifySales: { checked: false, error: '' }
             },
             serverMessage: '',
             formValid: false,
@@ -54,7 +54,7 @@ class TeamEdit extends React.Component {
             const fields = { ...prevState.fields };
 
             fields.title.value = team.title;
-            fields.notifySales.checked = team.notifySales || null;
+            fields.notifySales.checked = team.notifySales;
             
             return { fields, hasInitialized: true };
             
@@ -76,7 +76,15 @@ class TeamEdit extends React.Component {
         
         const teamData = { ...this.state.fields };
         
-        for (let key in teamData) { teamData[key] = teamData[key].value; }
+        //convert fields obj into team obj
+        for (let key in teamData) {
+
+            if ('value' in teamData[key]) {
+                teamData[key] = teamData[key].value;
+            } else if ('checked' in teamData[key]) {
+                teamData[key] = teamData[key].checked;
+            }
+        }
         
         this.props.updateTeam(teamData);
     }
