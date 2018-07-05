@@ -5,7 +5,7 @@ import { required, validate } from '../helpers/validation';
 import FieldInput from '../forms/field-input';
 import FieldCheckbox from '../forms/field-checkbox';
 
-import { updateTeam, clearTeam } from '../../actions/teams.action';
+import { fetchTeam, updateTeam, clearTeam } from '../../actions/teams.action';
 import { sendMessage } from '../../actions/flash.action';
 
 class TeamEdit extends React.Component {
@@ -14,6 +14,7 @@ class TeamEdit extends React.Component {
         super(props);
         
         props.clearTeam();
+        props.fetchTeam(props.match.params.id);
         
         this.validationRules = Object.freeze({
             title: [required],
@@ -86,7 +87,7 @@ class TeamEdit extends React.Component {
             }
         }
         
-        this.props.updateTeam(teamData);
+        this.props.updateTeam(this.props.match.params.id, teamData);
     }
     
     render() {
@@ -144,4 +145,4 @@ const mapStateToProps = state => ({
     fail: state.teams.fail
 });
 
-export default connect(mapStateToProps, { clearTeam, updateTeam, sendMessage })(TeamEdit);
+export default connect(mapStateToProps, { clearTeam, fetchTeam, updateTeam, sendMessage })(TeamEdit);

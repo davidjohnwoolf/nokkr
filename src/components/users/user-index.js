@@ -42,7 +42,7 @@ class UserIndex extends React.Component {
                                 { !this.props.isReadOnly ? <Link to={ `/users/${ user._id }/edit` }><i className="fa fa-edit"></i></Link> : '' }
                             </div>
                         </td>
-                        <td>{ team ? team.title : '- - -' }</td>
+                        <td>{ team ? team.title : 'NA' }</td>
                         <td>{ userRole }</td>
                     </tr>
                 );

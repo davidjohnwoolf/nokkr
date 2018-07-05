@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { fetchTeam, deleteTeam, clearTeam } from '../../actions/teams.action';
+import { fetchUsers } from '../../actions/users.action';
 import { sendMessage, sendError } from '../../actions/flash.action';
 
 import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
@@ -13,6 +14,7 @@ class TeamShow extends React.Component {
         
         props.clearTeam();
         props.fetchTeam(props.match.params.id);
+        props.fetchUsers();
         
         this.handleDelete = this.handleDelete.bind(this);
     }
@@ -38,8 +40,8 @@ class TeamShow extends React.Component {
         }
     }
     
-    renderUser() {
-        const {role, history, userTeam, team, match, isReadOnly } = this.props;
+    renderTeam() {
+        const { role, history, userTeam, team, match } = this.props;
         
         if (!team) return;
         
@@ -49,30 +51,63 @@ class TeamShow extends React.Component {
         }
         
         return (
-            <main id="team-show" className="content">
-                <section className="index">
-                    <header className="content-header">
-                        <a onClick={ history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
-                        <h1>{ team.title }</h1>
-                        <Link to={ `/teams/${ match.params.id }/edit` } className="icon-button-primary"><i className="fas fa-edit"></i></Link>
-                    </header>
-                    <section className="card">
-                        <section>
-                            <h4>Title</h4>
-                            <address>{ team.title }</address>
-    
-                            <h4>Notify Sales</h4>
-                            <address>{ team.notifySales ? 'On' : 'Off' }</address>
-                        </section>
-                    </section>
-                    <section className="index">
-                        <h2>Team managers and users</h2>
-                        { !isReadOnly
-                            ? <button onClick={ this.handleDelete } className="btn btn-danger"><i className="fas fa-times icon-front"></i> Delete Team</button>
-                            : '' }
+            
+            <div className="users-list">
+                <header className="content-header">
+                    <a onClick={ history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
+                    <h1>{ team.title }</h1>
+                    <Link to={ `/teams/${ match.params.id }/edit` } className="icon-button-primary"><i className="fas fa-edit"></i></Link>
+                </header>
+                <section className="card">
+                    <section>
+                        <h4>Title</h4>
+                        <address>{ team.title }</address>
+
+                        <h4>Notify Sales</h4>
+                        <address>{ team.notifySales ? 'On' : 'Off' }</address>
                     </section>
                 </section>
-            </main>
+            </div>
+        );
+    }
+    
+    renderUsers() {
+        const { users, team } = this.props;
+        
+        if (!users || !team) return;
+        
+        console.log('users', users);
+        
+        const teamManagers = [];
+        const teamUsers = [];
+        
+        users.forEach(user => {
+            if (user.role === MANAGER && user.team === team._id) {
+                teamManagers.push(user);
+            } else if (user.team === team._id) {
+                teamUsers.push(user);
+            }
+        });
+
+        return (
+            <div className="users-list">
+                <h2>Managers</h2>
+                <ul className="link-list">
+                    { teamManagers.map(user => {
+                        return (
+                            <li key={ user._id }><Link to={ `/users/${ user._id }` }>{ `${ user.firstName } ${ user.lastName }` }</Link></li>
+                        );
+                    }) }
+                </ul>
+                <h2>Users</h2>
+                <ul className="link-list">
+                    { teamUsers.map(user => {
+                        return (
+                            <li key={ user._id }><Link to={ `/users/${ user._id }` }>{ `${ user.firstName } ${ user.lastName }` }</Link></li>
+                        );
+                    }) }
+                </ul>
+            </div>
         );
     }
     
@@ -80,7 +115,18 @@ class TeamShow extends React.Component {
         
         return (
             <div className="component-page">
-                { this.renderUser() }
+                <main id="team-show" className="content">
+                    <section className="index">
+                        { this.renderTeam() }
+                        { this.renderUsers() }
+                    
+                    
+                        <h2>Upcoming Appointments, Recent Leads</h2>
+                        { !this.props.isReadOnly
+                            ? <button onClick={ this.handleDelete } className="btn btn-danger"><i className="fas fa-times icon-front"></i> Delete Team</button>
+                            : '' }
+                    </section>
+                </main>
             </div>
         );
     }
@@ -91,6 +137,7 @@ const mapStateToProps = state => ({
     message: state.teams.message,
     role: state.auth.role,
     userTeam: state.auth.team,
+    users: state.users.users,
 });
 
-export default connect(mapStateToProps, { fetchTeam, deleteTeam, sendMessage, sendError, clearTeam })(TeamShow);
+export default connect(mapStateToProps, { fetchUsers, fetchTeam, deleteTeam, sendMessage, sendError, clearTeam })(TeamShow);

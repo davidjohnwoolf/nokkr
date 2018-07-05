@@ -19,8 +19,6 @@ class TeamIndex extends React.Component {
         
         if (!teams) return;
         
-        console.log(teams);
-        
         return (
             teams.map(team => {
                 

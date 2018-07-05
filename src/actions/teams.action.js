@@ -60,7 +60,7 @@ export const createTeam = team => {
 export const updateTeam = (id, team) => {
     
     return async dispatch => {
-        const response = await axios.put(`/teams/${id}`, team);
+        const response = await axios.put(`/account/teams/${id}`, team);
         
         if (response.data.status === ERROR) dispatch(sendError(response.data.message));
         
@@ -83,7 +83,7 @@ export const updateTeam = (id, team) => {
 export const deleteTeam = id => {
     
     return async dispatch => {
-        const response = await axios.delete(`/teams/${id}`);
+        const response = await axios.delete(`/account/teams/${id}`);
         
         if (response.data.status === ERROR) dispatch(sendError(response.data.message));
         
