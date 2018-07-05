@@ -1,24 +1,33 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { NavLink, withRouter } from 'react-router-dom';
+import { logout } from '../../actions/auth.action';
+
+import Menu from './menu';
 
 class Header extends React.Component {
     
     constructor(props) {
         super(props);
         
-        this.renderMenuLink = this.renderMenuLink.bind(this);
+        this.state = {
+            menuActive: false
+        }
+        
+        this.showMenu = this.showMenu.bind(this);
     }
     
-    renderMenuLink(path) {
-        return this.props.location.pathname === path
-            ? <a onClick={ this.props.history.goBack } href="#" className="active"><i className="fas fa-bars"></i></a>
-            : <NavLink to="/menu" activeClassName="active"><i className="fas fa-bars"></i></NavLink>;
+    showMenu(e) {
+        e.preventDefault();
+        
+        let menuActive = (this.state.menuActive ? false : true);
+        this.setState({ menuActive })
     }
 
     render() {
+        const { authenticated, id, role, team, logout } = this.props;
         
-        const { authenticated, id } = this.props;
+        console.log('props', this.props);
         
         if (authenticated) {
             return (
@@ -41,10 +50,17 @@ class Header extends React.Component {
                                 <NavLink to="/new" activeClassName="active"><i className="fas fa-plus"></i></NavLink>
                             </li>
                             <li>
-                                { this.renderMenuLink('/menu') }
+                                <a
+                                    onClick={ (e) => this.showMenu(e) }
+                                    className={ this.state.menuActive ? 'active' : '' }
+                                    href="#">
+                                    
+                                    <i className="fas fa-bars"></i>
+                                </a>
                             </li>
                         </ul>
                     </nav>
+                    <Menu shown={ this.state.menuActive } id={ id } role={ role } team={ team } logout={ logout } showMenu={ this.showMenu } />
                 </header>
             );
         } else {
@@ -53,6 +69,11 @@ class Header extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({ authenticated: state.auth.authenticated, id: state.auth.id });
+const mapStateToProps = state => ({
+    authenticated: state.auth.authenticated,
+    id: state.auth.id,
+    role: state.auth.role,
+    team: state.auth.team
+});
 
-export default withRouter(connect(mapStateToProps)(Header));
+export default withRouter(connect(mapStateToProps, { logout })(Header));

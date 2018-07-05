@@ -21,7 +21,6 @@ import NotAuthorized from './components/errors/not-authorized';
 import PageNotFound from './components/errors/page-not-found';
 import Dashboard from './components/dashboard';
 import Header from './components/layout/header';
-import Menu from './components/layout/menu';
 import Login from './components/auth/login';
 
 import TeamNew from './components/teams/team-new';
@@ -57,6 +56,7 @@ if (token && !authenticated) {
 	
 	//check exp
 	if (currentTime < decoded.exp) {
+	    console.log(decoded)
 	    store.dispatch({
             type: LOGIN_SUCCESS,
             role: decoded.role,
@@ -82,12 +82,11 @@ ReactDOM.render(
             <Router>
                 <div>
                     <Header />
+                    { /* add state for menu, on/off, and move menu to header */ }
                     <Switch>
                         <Route exact path="/login" render={ () => (
                             <ErrorBoundary><Login /></ErrorBoundary>
                         )} />
-                        
-                        <PrivateRoute exact path="/menu" component={ Menu } />
                         
                         <PrivateRoute exact path="/teams/new" access={ ADMIN } component={ TeamNew } />
                         <PrivateRoute exact path="/teams/:id/edit" access={ MANAGER } component={ TeamEdit } />
