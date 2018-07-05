@@ -33,7 +33,7 @@ class TeamShow extends React.Component {
         
         if (users) sendError('You cannot delete a team that has members, first update member teams');
 
-        if (confirm('Are you sure you want to delete this Team?  This is not reversible.')) {
+        if (confirm('Are you sure you want to delete this Team? This is not reversible.')) {
             deleteTeam(match.params.id);
         }
     }
