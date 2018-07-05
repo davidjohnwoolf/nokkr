@@ -42,7 +42,7 @@ class Login extends React.Component {
         
         if (success) {
             sessionStorage.setItem('token', token);
-            history.push(`/users/${id}`);
+            history.push('/');
         }
     }
     
