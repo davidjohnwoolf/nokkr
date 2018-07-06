@@ -102,8 +102,8 @@ class TeamShow extends React.Component {
                                 <a onClick={ history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
                                 <h1>{ team.title }</h1>
                                 { role !== MANAGER
-                                ? <Link to={ `/teams/${ match.params.id }/edit` } className="icon-button-primary"><i className="fas fa-edit"></i></Link>
-                                : '' }
+                                    ? <Link to={ `/teams/${ match.params.id }/edit` } className="icon-button-primary"><i className="fas fa-edit"></i></Link>
+                                    : '' }
                             </header>
                             <section className="card">
                                 <section>
