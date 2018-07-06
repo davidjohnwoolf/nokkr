@@ -13,7 +13,6 @@ import { fetchUser, updateUser, clearUser } from '../../actions/users.action';
 import { fetchTeams } from '../../actions/teams.action';
 import { sendMessage } from '../../actions/flash.action';
 
-import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
 import { capitalize } from '../../../lib/functions';
 
 class UserEdit extends React.Component {
@@ -127,14 +126,9 @@ class UserEdit extends React.Component {
     }
     
     render() {
-        const { user, role: authRole, id, teams, history } = this.props;
+        const { user, teams, history } = this.props;
         
         if (!teams || !user) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
-        
-        //authorization
-        if ((authRole !== SU) && (authRole !== ADMIN) && (id !== user._id)) {
-            history.push('/not-authorized');
-        }
         
         const { handleSubmit, handleUserInput, state } = this;
         const {
@@ -276,8 +270,6 @@ const mapStateToProps = state => ({
     success: state.users.success,
     fail: state.users.fail,
     user: state.users.user,
-    role: state.auth.role,
-    id: state.auth.id,
     teams: state.teams.teams
 });
 
