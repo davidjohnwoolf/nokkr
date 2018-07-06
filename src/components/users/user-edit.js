@@ -13,6 +13,7 @@ import { fetchUser, updateUser, clearUser } from '../../actions/users.action';
 import { fetchTeams } from '../../actions/teams.action';
 import { sendMessage } from '../../actions/flash.action';
 
+import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
 import { capitalize } from '../../../lib/functions';
 
 class UserEdit extends React.Component {
