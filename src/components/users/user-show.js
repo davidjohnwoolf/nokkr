@@ -53,7 +53,7 @@ class UserShow extends React.Component {
             <main id="user-show" className="content">
                 <section className="index">
                     <header className="content-header">
-                        <a onClick={ history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
+                        <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
                         <h1>{ `${user.firstName} ${user.lastName}` }</h1>
                         { (role === ADMIN || (role === SU))
                             ? <Link to={ `/users/${ this.props.match.params.id }/edit` } className="icon-button-primary"><i className="fas fa-edit"></i></Link>
