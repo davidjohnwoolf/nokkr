@@ -93,7 +93,7 @@ ReactDOM.render(
                 		<PrivateRoute exact path="/teams" access={ ADMIN } component={ TeamIndex } />
                 		
                         <PrivateRoute exact path="/users/new" access={ ADMIN } component={ UserNew } />
-                        <PrivateRoute exact path="/users/:id/edit" component={ UserEdit } />
+                        <PrivateRoute exact path="/users/:id/edit" access={ ADMIN } component={ UserEdit } />
                         <PrivateRoute exact path="/users/:id" component={ UserShow } />
                 		<PrivateRoute exact path="/users" access={ ADMIN } component={ UserIndex } />
                 		

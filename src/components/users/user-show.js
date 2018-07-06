@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { fetchUser, deleteUser, clearUser } from '../../actions/users.action';
 import { sendMessage, sendError } from '../../actions/flash.action';
 
-import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
+import { SU, ADMIN } from '../../../lib/constants';
 
 class UserShow extends React.Component {
     
@@ -39,22 +39,20 @@ class UserShow extends React.Component {
     }
     
     renderUser() {
-        if (!this.props.user) return;
         
-        const { user, role, id, history } = this.props;
+        const { user, history, role } = this.props;
         
-        //authorization
-        if ((role !== SU) && (role !== ADMIN) && (id !== user._id)) {
-            history.push('/not-authorized');
-        }
+        if (!user) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
         return (
             <main id="user-show" className="content">
                 <section className="index">
                     <header className="content-header">
-                        <a onClick={ this.props.history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
+                        <a onClick={ history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
                         <h1>{ `${user.firstName} ${user.lastName}` }</h1>
-                        <Link to={ `/users/${ this.props.match.params.id }/edit` } className="icon-button-primary"><i className="fas fa-edit"></i></Link>
+                        { (role === ADMIN || (role === SU))
+                            ? <Link to={ `/users/${ this.props.match.params.id }/edit` } className="icon-button-primary"><i className="fas fa-edit"></i></Link>
+                            : '' }
                     </header>
                     <section className="card">
                         <section>
@@ -87,9 +85,9 @@ class UserShow extends React.Component {
 }
 
 const mapStateToProps = state => ({
+    fetching: state.users.fetching,
     user: state.users.user,
     message: state.users.message,
-    id: state.auth.id,
     role: state.auth.role
 });
 

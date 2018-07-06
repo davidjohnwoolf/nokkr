@@ -13,10 +13,10 @@ export default function(state = {}, action) {
 
     switch (action.type) {
         case FETCH_USER:
-            return { ...state, user: action.user };
+            return { ...state, user: action.user, isFetching: false };
         
         case FETCH_USERS:
-            return { ...state, users: action.users };
+            return { ...state, users: action.users, isFetching: false };
         
         case CREATE_USER_FAIL:
             return { ...state, fail: true, message: action.message };

@@ -13,10 +13,10 @@ export default function(state = {}, action) {
 
     switch (action.type) {
         case FETCH_TEAM:
-            return { ...state, team: action.team };
+            return { ...state, team: action.team, isFetching: true };
         
         case FETCH_TEAMS:
-            return { ...state, teams: action.teams };
+            return { ...state, teams: action.teams, isFetching: true };
         
         case CREATE_TEAM_FAIL:
             return { ...state, fail: true, message: action.message };

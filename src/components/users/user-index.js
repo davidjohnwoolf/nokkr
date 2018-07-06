@@ -19,8 +19,6 @@ class UserIndex extends React.Component {
     renderUsers() {
         const { users, role, teams } = this.props;
         
-        if (!users || !teams) return;
-        
         return (
             users.map(user => {
                 
@@ -51,6 +49,8 @@ class UserIndex extends React.Component {
     }
     
     render() {
+
+        if (!this.props.users || !this.props.teams) return <i className="fas fa-spinner fa-spin"></i>;
         
         return (
             <main id="user-index" className="content">

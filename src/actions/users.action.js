@@ -18,9 +18,9 @@ export const fetchUsers = () => {
     return async dispatch => {
         const response = await axios.get('/users');
         
-        if (response.data.status === ERROR) return dispatch(sendError(response.data.message));
+        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
         
-        return dispatch({ type: FETCH_USERS, users: response.data.data.users });
+        dispatch({ type: FETCH_USERS, users: response.data.data.users });
     };
 };
 
@@ -28,9 +28,10 @@ export const fetchUser = id => {
     return async dispatch => {
         const response = await axios.get(`/users/${id}`);
         
-        if (response.data.status === ERROR) return dispatch(sendError(response.data.message));
+        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
         
-        return dispatch({ type: FETCH_USER, user: response.data.data.user });
+        
+        dispatch({ type: FETCH_USER, user: response.data.data.user });
     };
 };
 
@@ -39,17 +40,17 @@ export const createUser = user => {
     return async dispatch => {
         const response = await axios.post('/users', user);
         
-        if (response.data.status === ERROR) return dispatch(sendError(response.data.message));
+        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
 
         if (response.data.status === SUCCESS) {
-            return dispatch({
+            dispatch({
                 type: CREATE_USER_SUCCESS,
                 message: response.data.data.message
             });
         }
         
         if (response.data.status === FAIL) {
-            return dispatch({
+            dispatch({
                 type: CREATE_USER_FAIL,
                 message: response.data.data.message
             });
@@ -62,17 +63,17 @@ export const updateUser = (id, user) => {
     return async dispatch => {
         const response = await axios.put(`/users/${id}`, user);
         
-        if (response.data.status === ERROR) return dispatch(sendError(response.data.message));
+        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
         
         if (response.data.status === SUCCESS) {
-            return dispatch({
+            dispatch({
                 type: UPDATE_USER_SUCCESS,
                 message: response.data.data.message
             });
         }
         
         if (response.data.status === FAIL) {
-            return dispatch({
+            dispatch({
                 type: UPDATE_USER_FAIL,
                 message: response.data.data.message
             });
@@ -85,14 +86,14 @@ export const deleteUser = id => {
     return async dispatch => {
         const response = await axios.delete(`/users/${id}`);
         
-        if (response.data.status === ERROR) return dispatch(sendError(response.data.message));
+        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
         
-        return dispatch({ type: DELETE_USER, message: response.data.data.message });
+        dispatch({ type: DELETE_USER, message: response.data.data.message });
     };
 };
 
 export const clearUser = () => {
     return dispatch => {
-        return dispatch({ type: CLEAR_USER });
+        dispatch({ type: CLEAR_USER });
     };
 };

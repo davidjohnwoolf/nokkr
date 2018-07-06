@@ -21,13 +21,6 @@ class UserEdit extends React.Component {
     constructor(props) {
         super(props);
         
-        const { user, role, id } = this.props;
-        
-        //authorization
-        if ((role !== SU) && (role !== ADMIN) && (id !== user._id)) {
-            props.history.push('/not-authorized');
-        }
-        
         props.clearUser();
         props.fetchUser(props.match.params.id);
         props.fetchTeams();
@@ -134,7 +127,14 @@ class UserEdit extends React.Component {
     }
     
     render() {
-        if (!this.props.teams) return null;
+        const { user, role: authRole, id, teams, history } = this.props;
+        
+        if (!teams || !user) return null;
+        
+        //authorization
+        if ((authRole !== SU) && (authRole !== ADMIN) && (id !== user._id)) {
+            history.push('/not-authorized');
+        }
         
         const { handleSubmit, handleUserInput, state } = this;
         const {
@@ -160,7 +160,7 @@ class UserEdit extends React.Component {
         
         const teamOptions = [['Select Team', '']];
         
-        this.props.teams.forEach(team => {
+        teams.forEach(team => {
            teamOptions.push([team.title, team._id]); 
         });
         
@@ -169,10 +169,10 @@ class UserEdit extends React.Component {
             <main id="user-edit" className="content">
                 <section className="form">
                     <header className="content-header">
-                        <a onClick={ this.props.history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
+                        <a onClick={ history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
                         <h1>Edit User</h1>
                     </header>
-                    <small className="server-error">{ this.state.serverError }</small>
+                    <small className="server-error">{ state.serverError }</small>
                     <form onSubmit={ handleSubmit }>
                     
                         <FieldInput
@@ -257,12 +257,12 @@ class UserEdit extends React.Component {
                         />
                         <div className="btn-group">
                             <button
-                                disabled={ !this.state.formValid }
+                                disabled={ !state.formValid }
                                 className="btn btn-primary"
                                 type="submit">
                                 Submit
                             </button>
-                            <a onClick={ this.props.history.goBack } href="#" className="btn btn-cancel">Cancel</a>
+                            <a onClick={ history.goBack } href="#" className="btn btn-cancel">Cancel</a>
                         </div>
                     </form>
                 </section>
