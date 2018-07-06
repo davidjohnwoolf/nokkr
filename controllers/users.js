@@ -87,29 +87,10 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
 router.get('/:id', requireUser, (req, res) => {
     const loggedInUser = req.loggedInUser;
     
-    if (loggedInUser.role === MANAGER) {
-        
-        User.findOne({ _id: req.params.id }, (err, user) => {
-            if (err) return res.json({ status: ERROR, data: err, message: 'Error finding user' });
-            
-            if (!user) return res.json({ status: ERROR, data: err, code: 404, message: 'User not found' });
-            
-            //must request user first to find out the users team to match it to the manager
-            if (user.team !== loggedInUser.team) {
-                return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
-            }
-            
-            const safeUser = Object.assign({}, user._doc);
-            
-            delete safeUser.password;
-            
-            return res.json({ status: SUCCESS, data: { user: safeUser } });
-        });
-        
+
     //if admin or su or own user
-    } else if ((loggedInUser.role === ADMIN) || (loggedInUser.role === SU) || (req.params.id === loggedInUser.id)) {
-        
-        
+    if ((loggedInUser.role === ADMIN) || (loggedInUser.role === SU) || (req.params.id === loggedInUser.id)) {
+
         User.findOne({ _id: req.params.id }, (err, user) => {
             if (err) return res.json({ status: ERROR, data: err, message: 'Error finding user' });
             
