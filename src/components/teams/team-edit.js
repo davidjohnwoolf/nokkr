@@ -91,6 +91,8 @@ class TeamEdit extends React.Component {
     }
     
     render() {
+        if (!this.props.team) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
+        
         const { handleSubmit, handleUserInput, state } = this;
         const { title, notifySales } = state.fields;
         

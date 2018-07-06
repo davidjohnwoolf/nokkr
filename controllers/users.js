@@ -71,7 +71,7 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
                     message: err.errors[Object.keys(err.errors)[0]].message || 'Error creating user'
                 });
             }
-            
+            console.log(user);
             return res.json({
                 status: SUCCESS,
                 data: {

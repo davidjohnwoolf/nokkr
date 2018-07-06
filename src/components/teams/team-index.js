@@ -17,8 +17,6 @@ class TeamIndex extends React.Component {
     renderTeams() {
         const { teams } = this.props;
         
-        if (!teams) return;
-        
         return (
             teams.map(team => {
                 
@@ -35,6 +33,7 @@ class TeamIndex extends React.Component {
     }
     
     render() {
+        if (!this.props.teams) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
         return (
             <main id="user-index" className="content">

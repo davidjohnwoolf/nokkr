@@ -98,7 +98,7 @@ class UserNew extends React.Component {
     }
     
     render() {
-        if (!this.props.teams) return null;
+        if (!this.props.teams) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
         const { handleSubmit, handleUserInput, state } = this;
         

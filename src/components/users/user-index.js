@@ -50,7 +50,7 @@ class UserIndex extends React.Component {
     
     render() {
 
-        if (!this.props.users || !this.props.teams) return <i className="fas fa-spinner fa-spin"></i>;
+        if (!this.props.users || !this.props.teams) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
         return (
             <main id="user-index" className="content">

@@ -129,7 +129,7 @@ class UserEdit extends React.Component {
     render() {
         const { user, role: authRole, id, teams, history } = this.props;
         
-        if (!teams || !user) return null;
+        if (!teams || !user) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
         //authorization
         if ((authRole !== SU) && (authRole !== ADMIN) && (id !== user._id)) {

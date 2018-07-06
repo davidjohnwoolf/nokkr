@@ -41,7 +41,7 @@ class TeamShow extends React.Component {
     renderTeam() {
         const { role, history, userTeam, team, match } = this.props;
         
-        if (!team) return;
+        if (!team) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
         //authorization
         if ((role !== SU) && (role !== ADMIN) && (userTeam !== team._id)) {
