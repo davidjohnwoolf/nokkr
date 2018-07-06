@@ -29,12 +29,20 @@ class TeamShow extends React.Component {
     }
     
     handleDelete() {
-        const { match, sendError, deleteTeam, users } = this.props;
+        const { match, sendError, deleteTeam, users, team } = this.props;
         
-        if (users) sendError('You cannot delete a team that has members, first update member teams');
-
-        if (confirm('Are you sure you want to delete this Team? This is not reversible.')) {
-            deleteTeam(match.params.id);
+        let teamHasUsers = false;
+        
+        users.forEach(user => {
+            if (user.team === team._id) teamHasUsers = true;
+        });
+        
+        if (!teamHasUsers) {
+            if (confirm('Are you sure you want to delete this Team? This is not reversible.')) {
+                deleteTeam(match.params.id);
+            }
+        } else {
+            sendError('You cannot delete a team that has members, first update member teams');
         }
     }
     
