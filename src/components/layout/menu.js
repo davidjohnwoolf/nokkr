@@ -11,9 +11,7 @@ class Menu extends React.Component {
         this.handleLogout = this.handleLogout.bind(this);
     }
     
-    handleLogout(e) {
-        e.preventDefault();
-        
+    handleLogout() {
         const { logout, history } = this.props;
         
         sessionStorage.removeItem('token');
@@ -49,7 +47,7 @@ class Menu extends React.Component {
                                         showMenu();
                                         this.handleLogout();
                                     }
-                                } href="/logout">Logout <i className="fas fa-sign-out-alt"></i></a>
+                                } style={{ cursor: 'pointer' }}>Logout <i className="fas fa-sign-out-alt"></i></a>
                             </li>
                         </ul>
                     </div>

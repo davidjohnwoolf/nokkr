@@ -46,7 +46,9 @@ class Header extends React.Component {
                                 <NavLink to="/new" activeClassName="active"><i className="fas fa-plus"></i></NavLink>
                             </li>
                             <li>
-                                <a onClick={ this.showMenu }
+                                <a
+                                    onClick={ this.showMenu }
+                                    style={{ cursor: 'pointer' }}
                                     className={ this.state.menuActive ? 'active' : '' }>
                                     
                                     <i className="fas fa-bars"></i>

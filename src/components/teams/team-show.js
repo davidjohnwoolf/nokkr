@@ -74,8 +74,6 @@ class TeamShow extends React.Component {
         
         if (!users || !team) return;
         
-        console.log('users', users);
-        
         const teamManagers = [];
         const teamUsers = [];
         
@@ -135,6 +133,7 @@ const mapStateToProps = state => ({
     message: state.teams.message,
     role: state.auth.role,
     users: state.users.users,
+    userTeam: state.auth.team
 });
 
 export default connect(mapStateToProps, { fetchUsers, fetchTeam, deleteTeam, sendMessage, sendError, clearTeam })(TeamShow);
