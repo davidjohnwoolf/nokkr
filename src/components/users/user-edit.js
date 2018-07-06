@@ -9,11 +9,11 @@ import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 import FieldCheckbox from '../forms/field-checkbox';
 
-import { fetchUser, updateUser, clearUser } from '../../actions/users.action';
+import { fetchUsers, fetchUser, updateUser, clearUser } from '../../actions/users.action';
 import { fetchTeams } from '../../actions/teams.action';
 import { sendMessage } from '../../actions/flash.action';
 
-import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
+import { SU, ADMIN, MANAGER, USER, UNIQUE } from '../../../lib/constants';
 import { capitalize } from '../../../lib/functions';
 
 class UserEdit extends React.Component {
@@ -23,13 +23,14 @@ class UserEdit extends React.Component {
         
         props.clearUser();
         props.fetchUser(props.match.params.id);
+        props.fetchUsers();
         props.fetchTeams();
         
         this.validationRules = Object.freeze({
             firstName: [required],
             lastName: [required],
-            username: [required],
-            email: [required],
+            username: [required, UNIQUE],
+            email: [required, UNIQUE],
             role: [required],
             team: [requiredExceptAdmin],
             isReadOnly: [],
@@ -53,7 +54,7 @@ class UserEdit extends React.Component {
                 password: { value: '', error: '' },
                 passwordConfirmation: { value: '', error: '' }
             },
-            serverError: '',
+            objects: [],
             formValid: false,
             hasInitialized: false
         };
@@ -63,22 +64,17 @@ class UserEdit extends React.Component {
     }
     
     static getDerivedStateFromProps(nextProps, prevState) {
-        const { user } = nextProps;
+        const { user, users } = nextProps;
         const { hasInitialized } = prevState;
         
-        if (!hasInitialized && user) {
+        if (!hasInitialized && user && users) {
             const fields = { ...prevState.fields };
-
-            fields.firstName.value = user.firstName;
-            fields.lastName.value = user.lastName;
-            fields.username.value = user.username;
-            fields.email.value = user.email;
-            fields.role.value = user.role;
-            fields.team.value = user.team;
-            fields.isActive.checked = user.isActive;
-            fields.isReadOnly.checked = user.isReadOnly;
             
-            return { fields, hasInitialized: true };
+            for (let field in fields) {
+                if (!field.includes('password')) fields[field].value = user[field];
+            }
+            
+            return { objects: users, fields, hasInitialized: true };
             
         } else {
             return prevState;
@@ -89,8 +85,6 @@ class UserEdit extends React.Component {
     componentDidUpdate() {
         const { success, fail, message, history, sendMessage, match } = this.props;
         
-        if (fail && (message !== this.state.serverError)) this.setState({ serverError: message });
-        
         if (success) {
             sendMessage(message);
             history.push(`/users/${ match.params.id }`);
@@ -100,7 +94,7 @@ class UserEdit extends React.Component {
     handleUserInput(e) {
         
         this.setState(
-            validate(e, this.validationRules, { ...this.state.fields })
+            validate(e, this.validationRules, { ...this.state.fields }, this.state.objects)
         );
     }
     
@@ -164,10 +158,9 @@ class UserEdit extends React.Component {
             <main id="user-edit" className="content">
                 <section className="form">
                     <header className="content-header">
-                        <a onClick={ history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
+                        <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
                         <h1>Edit User</h1>
                     </header>
-                    <small className="server-error">{ state.serverError }</small>
                     <form onSubmit={ handleSubmit }>
                     
                         <FieldInput
@@ -257,7 +250,7 @@ class UserEdit extends React.Component {
                                 type="submit">
                                 Submit
                             </button>
-                            <a onClick={ history.goBack } href="#" className="btn btn-cancel">Cancel</a>
+                            <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="btn btn-cancel">Cancel</a>
                         </div>
                     </form>
                 </section>
@@ -271,7 +264,8 @@ const mapStateToProps = state => ({
     success: state.users.success,
     fail: state.users.fail,
     user: state.users.user,
+    users: state.users.users,
     teams: state.teams.teams
 });
 
-export default connect(mapStateToProps, { fetchUser, clearUser, updateUser, sendMessage, fetchTeams })(UserEdit);
+export default connect(mapStateToProps, { fetchUser, clearUser, updateUser, sendMessage, fetchTeams, fetchUsers })(UserEdit);

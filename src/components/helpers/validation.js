@@ -1,4 +1,4 @@
-import { USER, MANAGER } from '../../../lib/constants.js';
+import { USER, MANAGER, UNIQUE } from '../../../lib/constants.js';
 
 export const required = value => value ? undefined : 'Required';
 
@@ -56,7 +56,7 @@ export const validate = (e, rules, fields, objects) => {
         rules[e.target.name].forEach(rule => {
             let result;
             
-            if (rule === 'unique') {
+            if (rule === UNIQUE) {
                 result = unique(e.target.value, e.target.name, objects);
             } else {
                 result = rule(e.target.value);
@@ -79,7 +79,7 @@ export const validate = (e, rules, fields, objects) => {
             }
             
             if ('value' in fields[key]) {
-                if (rule === 'unique') {
+                if (rule === UNIQUE) {
                     if (unique(fields[key].value, key, objects)) formValid = false;
                 } else {
                     if (rule(fields[key].value)) formValid = false;

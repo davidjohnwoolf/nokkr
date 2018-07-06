@@ -11,7 +11,7 @@ import { createUser, clearUser, fetchUsers } from '../../actions/users.action';
 import { fetchTeams } from '../../actions/teams.action';
 import { sendMessage } from '../../actions/flash.action';
 
-import { ADMIN, MANAGER, USER } from '../../../lib/constants';
+import { ADMIN, MANAGER, USER, UNIQUE } from '../../../lib/constants';
 import { capitalize } from '../../../lib/functions';
 
 class UserNew extends React.Component {
@@ -27,8 +27,8 @@ class UserNew extends React.Component {
         this.validationRules = Object.freeze({
             firstName: [required],
             lastName: [required],
-            username: [required, 'unique'],
-            email: [required, 'unique'],
+            username: [required, UNIQUE],
+            email: [required, UNIQUE],
             role: [required],
             team: [requiredExceptAdmin],
             isReadOnly: [],
@@ -66,8 +66,6 @@ class UserNew extends React.Component {
         const { hasInitialized } = prevState;
         
         if (!hasInitialized && users) {
-            
-            console.log(Array.isArray(users));
             
             return { objects: users, hasInitialized: true };
             
@@ -113,7 +111,8 @@ class UserNew extends React.Component {
     }
     
     render() {
-        if (!this.props.teams || !this.props.users) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
+        const { teams, users, history } = this.props;
+        if (!teams || !users) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
         const { handleSubmit, handleUserInput, state } = this;
         
@@ -140,7 +139,7 @@ class UserNew extends React.Component {
         
         const teamOptions = [['Select Team', '']];
         
-        this.props.teams.forEach(team => {
+        teams.forEach(team => {
            teamOptions.push([team.title, team._id]); 
         });
         
@@ -149,10 +148,9 @@ class UserNew extends React.Component {
             <main id="user-new" className="content">
                 <section className="form">
                     <header className="content-header">
-                        <a onClick={ this.props.history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
+                        <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
                         <h1>Create User</h1>
                     </header>
-                    <small className="server-error">{ this.state.serverMessage }</small>
                     <form onSubmit={ handleSubmit }>
                     
                         <FieldInput
@@ -249,7 +247,7 @@ class UserNew extends React.Component {
                                 type="submit">
                                 Submit
                             </button>
-                            <a onClick={ this.props.history.goBack } href="#" className="btn btn-cancel">Cancel</a>
+                            <a onClick={ this.props.history.goBack } style={{ cursor: 'pointer' }} className="btn btn-cancel">Cancel</a>
                         </div>
                     </form>
                 </section>
