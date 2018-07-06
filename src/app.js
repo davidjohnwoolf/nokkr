@@ -87,13 +87,13 @@ ReactDOM.render(
                             <ErrorBoundary><Login /></ErrorBoundary>
                         )} />
                         
-                        <PrivateRoute exact path="/teams/new" access={ ADMIN } component={ TeamNew } />
-                        <PrivateRoute exact path="/teams/:id/edit" access={ ADMIN } component={ TeamEdit } />
+                        <PrivateRoute exact path="/teams/new" access={ ADMIN } writeAccess="true" component={ TeamNew } />
+                        <PrivateRoute exact path="/teams/:id/edit" access={ ADMIN } writeAccess="true" component={ TeamEdit } />
                         <PrivateRoute exact path="/teams/:id" access={ MANAGER } component={ TeamShow } />
                 		<PrivateRoute exact path="/teams" access={ ADMIN } component={ TeamIndex } />
                 		
-                        <PrivateRoute exact path="/users/new" access={ ADMIN } component={ UserNew } />
-                        <PrivateRoute exact path="/users/:id/edit" access={ ADMIN } component={ UserEdit } />
+                        <PrivateRoute exact path="/users/new" access={ ADMIN } writeAccess="true" component={ UserNew } />
+                        <PrivateRoute exact path="/users/:id/edit" access={ ADMIN } writeAccess="true" component={ UserEdit } />
                         <PrivateRoute exact path="/users/:id" component={ UserShow } />
                 		<PrivateRoute exact path="/users" access={ ADMIN } component={ UserIndex } />
                 		

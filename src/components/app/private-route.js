@@ -9,10 +9,12 @@ import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
 class PrivateRoute extends React.Component {
     
     render() {
-        const { component: Component, authenticated, access, role, ...rest } = this.props;
+        const { component: Component, authenticated, access, role, writeAccess, isReadOnly, ...rest } = this.props;
         
         const permitted = (function(a) {
             if (role === SU) return true;
+            
+            if (writeAccess && isReadOnly) return false;
             
             if (role === ADMIN && (a !== SU)) return true;
             
