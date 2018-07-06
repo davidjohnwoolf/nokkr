@@ -22,7 +22,7 @@ export default function(state = {}, action) {
             return { ...state, fail: true, message: action.message };
         
         case CREATE_USER_SUCCESS:
-            return { ...state, success: true, message: action.message };
+            return { ...state, success: true, message: action.message, userId: action.userId };
             
         case UPDATE_USER_FAIL:
             return { ...state, fail: true, message: action.message };

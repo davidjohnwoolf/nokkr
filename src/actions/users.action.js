@@ -45,7 +45,8 @@ export const createUser = user => {
         if (response.data.status === SUCCESS) {
             dispatch({
                 type: CREATE_USER_SUCCESS,
-                message: response.data.data.message
+                message: response.data.data.message,
+                userId: response.data.data.id
             });
         }
         

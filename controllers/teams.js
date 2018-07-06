@@ -40,7 +40,7 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
         
         account.teams.push(new Team(req.body));
         
-        account.save(err => {
+        account.save((err, account) => {
             if (err) {
                 return res.json({
                     status: ERROR,
@@ -49,7 +49,7 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
                 });
             }
             
-            return res.json({ status: SUCCESS, data: { message: 'Team created' } });
+            return res.json({ status: SUCCESS, data: { message: 'Team created', id: account.teams.find(team => team.title === req.body.title).id } });
         });
     });
 });

@@ -22,7 +22,7 @@ export default function(state = {}, action) {
             return { ...state, fail: true, message: action.message };
         
         case CREATE_TEAM_SUCCESS:
-            return { ...state, success: true, message: action.message };
+            return { ...state, success: true, message: action.message, teamId: action.teamId };
             
         case UPDATE_TEAM_FAIL:
             return { ...state, fail: true, message: action.message };

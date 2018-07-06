@@ -44,7 +44,8 @@ export const createTeam = team => {
         if (response.data.status === SUCCESS) {
             dispatch({
                 type: CREATE_TEAM_SUCCESS,
-                message: response.data.data.message
+                message: response.data.data.message,
+                teamId: response.data.data.id
             });
         }
         

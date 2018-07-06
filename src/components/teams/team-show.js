@@ -39,14 +39,7 @@ class TeamShow extends React.Component {
     }
     
     renderTeam() {
-        const { role, history, userTeam, team, match } = this.props;
-        
-        if (!team) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
-        
-        //authorization
-        if ((role !== SU) && (role !== ADMIN) && (userTeam !== team._id)) {
-            history.push('/not-authorized');
-        }
+        const { history, team, match } = this.props;
         
         return (
             
@@ -71,8 +64,6 @@ class TeamShow extends React.Component {
     
     renderUsers() {
         const { users, team } = this.props;
-        
-        if (!users || !team) return;
         
         const teamManagers = [];
         const teamUsers = [];
@@ -108,6 +99,13 @@ class TeamShow extends React.Component {
     }
     
     render() {
+        
+        if (!this.props.team || !this.props.users) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
+        
+        //authorization
+        if ((this.props.role !== SU) && (this.props.role !== ADMIN) && (this.props.userTeam !== this.props.team._id)) {
+            this.props.history.push('/not-authorized');
+        }
         
         return (
             <div className="component-page">

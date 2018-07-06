@@ -34,14 +34,14 @@ class TeamNew extends React.Component {
     }
     
     componentDidUpdate() {
-        const { success, fail, message, history, sendMessage } = this.props;
+        const { success, fail, message, history, sendMessage, teamId } = this.props;
         
         //why are you using serverMessage as state when you have message?
         if (fail && (message !== this.state.serverMessage)) this.setState({ serverMessage: message });
         
         if (success) {
             sendMessage(message);
-            history.push('/teams');
+            history.push(`/teams/${ teamId }`);
         }
     }
     
@@ -120,6 +120,7 @@ class TeamNew extends React.Component {
 }
 
 const mapStateToProps = state => ({
+    teamId: state.teams.teamId,
     message: state.teams.message,
     success: state.teams.success,
     fail: state.teams.fail
