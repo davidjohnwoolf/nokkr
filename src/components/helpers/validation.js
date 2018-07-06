@@ -27,7 +27,9 @@ export const passwordMatch = () => {
     );
 };
 
-export const validate = (e, rules, fields) => {
+const unique = (value, field, candidates) => candidates.find(c => value === c[field]) ? `${ value } already exists` : undefined;
+
+export const validate = (e, rules, fields, objects) => {
     let formValid = true;
     let error;
     
@@ -52,8 +54,13 @@ export const validate = (e, rules, fields) => {
         
         //handle target rules
         rules[e.target.name].forEach(rule => {
+            let result;
             
-            let result = rule(e.target.value);
+            if (rule === 'unique') {
+                result = unique(e.target.value, e.target.name, objects);
+            } else {
+                result = rule(e.target.value);
+            }
             
             if (result) error = result;
     
@@ -72,7 +79,11 @@ export const validate = (e, rules, fields) => {
             }
             
             if ('value' in fields[key]) {
-                if (rule(fields[key].value)) formValid = false;
+                if (rule === 'unique') {
+                    if (unique(fields[key].value, key, objects)) formValid = false;
+                } else {
+                    if (rule(fields[key].value)) formValid = false;
+                }
             }
             
         });

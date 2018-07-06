@@ -7,7 +7,7 @@ import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 import FieldCheckbox from '../forms/field-checkbox';
 //import FieldFile from '../helpers/field-file';
-import { createUser, clearUser } from '../../actions/users.action';
+import { createUser, clearUser, fetchUsers } from '../../actions/users.action';
 import { fetchTeams } from '../../actions/teams.action';
 import { sendMessage } from '../../actions/flash.action';
 
@@ -22,12 +22,13 @@ class UserNew extends React.Component {
         props.clearUser();
         
         props.fetchTeams();
+        props.fetchUsers();
         
         this.validationRules = Object.freeze({
             firstName: [required],
             lastName: [required],
-            username: [required],
-            email: [required],
+            username: [required, 'unique'],
+            email: [required, 'unique'],
             role: [required],
             team: [requiredExceptAdmin],
             isReadOnly: [],
@@ -51,7 +52,8 @@ class UserNew extends React.Component {
                 password: { value: '', error: '' },
                 passwordConfirmation: { value: '', error: '' }
             },
-            serverMessage: '',
+            hasInitialized: false,
+            objects: [],
             formValid: false
         };
 
@@ -59,11 +61,23 @@ class UserNew extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     
-    componentDidUpdate() {
-        const { success, fail, message, history, sendMessage, userId } = this.props;
+    static getDerivedStateFromProps(nextProps, prevState) {
+        const { users } = nextProps;
+        const { hasInitialized } = prevState;
         
-        //why are you using serverMessage as state when you have message?
-        if (fail && (message !== this.state.serverMessage)) this.setState({ serverMessage: message });
+        if (!hasInitialized && users) {
+            
+            console.log(Array.isArray(users));
+            
+            return { objects: users, hasInitialized: true };
+            
+        } else {
+            return prevState;
+        }
+    }
+    
+    componentDidUpdate() {
+        const { success, message, history, sendMessage, userId } = this.props;
         
         if (success) {
             sendMessage(message);
@@ -72,9 +86,10 @@ class UserNew extends React.Component {
     }
     
     handleUserInput(e) {
-
+        const fields = { ...this.state.fields };
+        
         this.setState(
-            validate(e, this.validationRules, { ...this.state.fields })
+            validate(e, this.validationRules, { ...fields }, this.state.objects)
         );
     }
     
@@ -98,7 +113,7 @@ class UserNew extends React.Component {
     }
     
     render() {
-        if (!this.props.teams) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
+        if (!this.props.teams || !this.props.users) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
         const { handleSubmit, handleUserInput, state } = this;
         
@@ -248,7 +263,8 @@ const mapStateToProps = state => ({
     userId: state.users.userId,
     success: state.users.success,
     fail: state.users.fail,
+    users: state.users.users,
     teams: state.teams.teams
 });
 
-export default connect(mapStateToProps, { fetchTeams, clearUser, createUser, sendMessage })(UserNew);
+export default connect(mapStateToProps, { fetchTeams, fetchUsers, clearUser, createUser, sendMessage })(UserNew);

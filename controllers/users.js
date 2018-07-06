@@ -68,7 +68,7 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
                 return res.json({
                     status: ERROR,
                     data: err,
-                    message: err.errors[Object.keys(err.errors)[0]].message || 'Error creating user'
+                    message: err.message || 'Error creating user'
                 });
             }
             
