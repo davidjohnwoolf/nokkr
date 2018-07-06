@@ -46,30 +46,6 @@ class TeamShow extends React.Component {
         }
     }
     
-    renderTeam() {
-        const { history, team, match } = this.props;
-        
-        return (
-            
-            <div className="users-list">
-                <header className="content-header">
-                    <a onClick={ history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
-                    <h1>{ team.title }</h1>
-                    <Link to={ `/teams/${ match.params.id }/edit` } className="icon-button-primary"><i className="fas fa-edit"></i></Link>
-                </header>
-                <section className="card">
-                    <section>
-                        <h4>Title</h4>
-                        <address>{ team.title }</address>
-
-                        <h4>Notify Sales</h4>
-                        <address>{ team.notifySales ? 'On' : 'Off' }</address>
-                    </section>
-                </section>
-            </div>
-        );
-    }
-    
     renderUsers() {
         const { users, team } = this.props;
         
@@ -108,21 +84,40 @@ class TeamShow extends React.Component {
     
     render() {
         
-        if (!this.props.team || !this.props.users) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
+        const { history, team, match, users, role, userTeam } = this.props;
+        
+        if (!team || !users) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
         //authorization
-        if ((this.props.role !== SU) && (this.props.role !== ADMIN) && (this.props.userTeam !== this.props.team._id)) {
-            this.props.history.push('/not-authorized');
+        if ((role !== SU) && (role !== ADMIN) && (userTeam !== team._id)) {
+            history.push('/not-authorized');
         }
         
         return (
             <div className="component-page">
                 <main id="team-show" className="content">
                     <section className="index">
-                        { this.renderTeam() }
+                        <div className="teams-list">
+                            <header className="content-header">
+                                <a onClick={ history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
+                                <h1>{ team.title }</h1>
+                                { role !== MANAGER
+                                ? <Link to={ `/teams/${ match.params.id }/edit` } className="icon-button-primary"><i className="fas fa-edit"></i></Link>
+                                : '' }
+                            </header>
+                            <section className="card">
+                                <section>
+                                    <h4>Title</h4>
+                                    <address>{ team.title }</address>
+            
+                                    <h4>Notify Sales</h4>
+                                    <address>{ team.notifySales ? 'On' : 'Off' }</address>
+                                </section>
+                            </section>
+                        </div>
+                        
                         { this.renderUsers() }
-                    
-                    
+                        
                         <h2>Upcoming Appointments, Recent Leads</h2>
                         { !this.props.isReadOnly
                             ? <button onClick={ this.handleDelete } className="btn btn-danger"><i className="fas fa-times icon-front"></i> Delete Team</button>

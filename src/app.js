@@ -88,7 +88,7 @@ ReactDOM.render(
                         )} />
                         
                         <PrivateRoute exact path="/teams/new" access={ ADMIN } component={ TeamNew } />
-                        <PrivateRoute exact path="/teams/:id/edit" access={ MANAGER } component={ TeamEdit } />
+                        <PrivateRoute exact path="/teams/:id/edit" access={ ADMIN } component={ TeamEdit } />
                         <PrivateRoute exact path="/teams/:id" access={ MANAGER } component={ TeamShow } />
                 		<PrivateRoute exact path="/teams" access={ ADMIN } component={ TeamIndex } />
                 		
