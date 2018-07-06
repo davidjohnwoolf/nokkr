@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { fetchUser, deleteUser, clearUser } from '../../actions/users.action';
 import { sendMessage, sendError } from '../../actions/flash.action';
 
-import { SU, ADMIN } from '../../../lib/constants';
+import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
 
 class UserShow extends React.Component {
     
@@ -40,9 +40,14 @@ class UserShow extends React.Component {
     
     renderUser() {
         
-        const { user, history, role } = this.props;
+        const { user, history, role, id, team } = this.props;
         
         if (!user) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
+        
+        //authorization
+        if ((role !== SU) && (role !== ADMIN) && ((role === MANAGER && user.team !== team) || (role === USER && id !== user._id))) {
+            history.push('/not-authorized');
+        }
         
         return (
             <main id="user-show" className="content">
@@ -88,7 +93,9 @@ const mapStateToProps = state => ({
     fetching: state.users.fetching,
     user: state.users.user,
     message: state.users.message,
-    role: state.auth.role
+    role: state.auth.role,
+    team: state.auth.team,
+    id: state.auth.role
 });
 
 export default connect(mapStateToProps, { fetchUser, deleteUser, sendMessage, sendError, clearUser })(UserShow);
