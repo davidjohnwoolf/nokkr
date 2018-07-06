@@ -39,9 +39,9 @@ class UserShow extends React.Component {
     }
     
     renderUser() {
-        const { user, role, id, history } = this.props;
+        if (!this.props.user) return;
         
-        if (!user) return;
+        const { user, role, id, history } = this.props;
         
         //authorization
         if ((role !== SU) && (role !== ADMIN) && (id !== user._id)) {

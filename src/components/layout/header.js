@@ -17,17 +17,13 @@ class Header extends React.Component {
         this.showMenu = this.showMenu.bind(this);
     }
     
-    showMenu(e) {
-        e.preventDefault();
-        
+    showMenu() {
         let menuActive = (this.state.menuActive ? false : true);
         this.setState({ menuActive })
     }
 
     render() {
         const { authenticated, id, role, team, logout } = this.props;
-        
-        console.log('props', this.props);
         
         if (authenticated) {
             return (
@@ -41,7 +37,7 @@ class Header extends React.Component {
                                 <NavLink to={ `/users/${ id }/areas` } activeClassName="active"><i className="fas fa-map-marker-alt"></i></NavLink>
                             </li>
                             <li>
-                                <NavLink to={ `/users/${ id }/leads` } activeClassName="active"><i className="fas fa-users"></i></NavLink>
+                                <NavLink to={ `/users/${ id }/leads` } activeClassName="active"><i className="fas fa-address-card"></i></NavLink>
                             </li>
                             <li>
                                 <NavLink to={ `/users/${ id }/appointments` } activeClassName="active"><i className="fas fa-calendar-alt"></i></NavLink>
@@ -50,10 +46,8 @@ class Header extends React.Component {
                                 <NavLink to="/new" activeClassName="active"><i className="fas fa-plus"></i></NavLink>
                             </li>
                             <li>
-                                <a
-                                    onClick={ (e) => this.showMenu(e) }
-                                    className={ this.state.menuActive ? 'active' : '' }
-                                    href="#">
+                                <a onClick={ this.showMenu }
+                                    className={ this.state.menuActive ? 'active' : '' }>
                                     
                                     <i className="fas fa-bars"></i>
                                 </a>

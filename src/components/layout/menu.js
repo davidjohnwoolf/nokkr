@@ -22,7 +22,7 @@ class Menu extends React.Component {
     }
     
     render() {
-            const { shown, id, role, team } = this.props;
+            const { shown, id, role, team, showMenu } = this.props;
         
             return (
                 <nav id="main-menu" className={ shown ? '' : 'invisible' }>
@@ -30,22 +30,26 @@ class Menu extends React.Component {
                         <h5>User Options</h5>
                         <ul>
                             <li>
-                                <Link to={ `/users/${ id }` }>Account <i className="fas fa-user-circle-o" ></i></Link>
+                                <Link onClick={ showMenu } to={ `/users/${ id }` }>Account <i className="fas fa-user-circle" aria-hidden="true"></i></Link>
                             </li>
                             <li>
-                                <Link to="/reports">Reports <i className="fas fa-chart-bar"></i></Link>
+                                <Link onClick={ showMenu } to="/reports">Reports <i className="fas fa-chart-bar"></i></Link>
                             </li>
                             <li>
-                                <Link to="/address-lookup">Address Lookup <i className="fas fa-address-card"></i></Link>
+                                <Link onClick={ showMenu } to="/address-lookup">Address Lookup <i className="fas fa-address-card"></i></Link>
                             </li>
                             <li>
-                                <Link to="/support">Dealer Resources <i className="fas fa-info-circle"></i></Link>
+                                <Link onClick={ showMenu } to="/support">Dealer Resources <i className="fas fa-info-circle"></i></Link>
                             </li>
                             <li>
-                                <Link to="/support">Support <i className="fas fa-comments"></i></Link>
+                                <Link onClick={ showMenu } to="/support">Support <i className="fas fa-comments"></i></Link>
                             </li>
                             <li>
-                                <a onClick={ this.handleLogout } href="/logout">Logout <i className="fas fa-sign-out-alt"></i></a>
+                                <a onClick={ () => {
+                                        showMenu();
+                                        this.handleLogout();
+                                    }
+                                } href="/logout">Logout <i className="fas fa-sign-out-alt"></i></a>
                             </li>
                         </ul>
                     </div>
@@ -55,14 +59,14 @@ class Menu extends React.Component {
                                 <h5>Manager Options</h5>
                                 <ul>
                                     <li>
-                                        <Link to={ `/teams/${ team }` }>Team Management <i className="fas fa-users"></i></Link>
+                                        <Link onClick={ showMenu } to={ `/teams/${ team }` }>Team Management <i className="fas fa-users"></i></Link>
                                     </li>
                                     <li>
-                                        <Link to="/areas">Area Management <i className="fas fa-map"></i></Link>
+                                        <Link onClick={ showMenu } to="/areas">Area Management <i className="fas fa-map"></i></Link>
                                     </li>
                                     { /* automatically goes to team leads */ }
                                     <li>
-                                        <Link to="/leads">Lead Management <i className="fas fa-address-card"></i></Link>
+                                        <Link onClick={ showMenu } to="/leads">Lead Management <i className="fas fa-address-card"></i></Link>
                                     </li>
                                 </ul>
                             </div>
@@ -73,20 +77,20 @@ class Menu extends React.Component {
                                 <h5>Admin Options</h5>
                                 <ul>
                                     <li>
-                                        <Link to="/new">Dealer Account <i className="fas fa-cog"></i></Link>
+                                        <Link onClick={ showMenu } to="/new">Dealer Account <i className="fas fa-cog"></i></Link>
                                     </li>
                                     <li>
-                                        <Link to="/teams">Team Management <i className="fas fa-users"></i></Link>
+                                        <Link onClick={ showMenu } to="/teams">Team Management <i className="fas fa-users"></i></Link>
                                     </li>
                                     <li>
-                                        <Link to="/users">User Management <i className="fas fa-user"></i></Link>
+                                        <Link onClick={ showMenu } to="/users">User Management <i className="fas fa-user"></i></Link>
                                     </li>
                                     <li>
-                                        <Link to="/areas">Area Management <i className="fas fa-map"></i></Link>
+                                        <Link onClick={ showMenu } to="/areas">Area Management <i className="fas fa-map"></i></Link>
                                     </li>
                                     { /* automatically goes to company leads */ }
                                     <li>
-                                        <Link to="/leads">Lead Management <i className="fas fa-address-card"></i></Link>
+                                        <Link onClick={ showMenu } to="/leads">Lead Management <i className="fas fa-address-card"></i></Link>
                                     </li>
                                 </ul>
                             </div>

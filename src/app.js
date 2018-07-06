@@ -56,7 +56,6 @@ if (token && !authenticated) {
 	
 	//check exp
 	if (currentTime < decoded.exp) {
-	    console.log(decoded)
 	    store.dispatch({
             type: LOGIN_SUCCESS,
             role: decoded.role,
