@@ -84,7 +84,7 @@ class TeamShow extends React.Component {
     
     render() {
         
-        const { history, team, match, users, role, userTeam } = this.props;
+        const { history, team, match, users, role, userTeam, isReadOnly } = this.props;
         
         if (!team || !users) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
@@ -101,7 +101,7 @@ class TeamShow extends React.Component {
                             <header className="content-header">
                                 <a onClick={ history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
                                 <h1>{ team.title }</h1>
-                                { role !== MANAGER
+                                { role !== MANAGER && !isReadOnly
                                     ? <Link to={ `/teams/${ match.params.id }/edit` } className="icon-button-primary"><i className="fas fa-edit"></i></Link>
                                     : '' }
                             </header>
@@ -133,6 +133,7 @@ const mapStateToProps = state => ({
     team: state.teams.team,
     message: state.teams.message,
     role: state.auth.role,
+    isReadOnly: state.auth.isReadOnly,
     users: state.users.users,
     userTeam: state.auth.team
 });
