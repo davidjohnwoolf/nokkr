@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router-dom';
 
-import { required, requiredExceptAdmin, password, passwordMatch, validate } from '../helpers/forms';
-import { initializeForm } from '../helpers/forms';
+import { required, requiredExceptAdmin, password, passwordMatch, validate, initializeForm } from '../helpers/forms';
 
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
@@ -72,7 +71,8 @@ class UserEdit extends React.Component {
         if (!isInitialized && user && users) {
             const fields = { ...prevState.fields };
             
-            
+            return { uniqueCandidateList: users, fields: initializeForm(fields, user), isInitialized: true };
+
         } else {
             return prevState;
         }
