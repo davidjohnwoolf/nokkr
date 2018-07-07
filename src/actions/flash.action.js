@@ -19,8 +19,6 @@ export const sendError = message => {
             type: SEND_ERROR,
             message: message
         });
-        
-        setTimeout(() => dispatch({ type: CLOSE_MESSAGE }), 6000);
     };
 };
 
