@@ -52,7 +52,7 @@ class UserNew extends React.Component {
                 password: { value: '', error: '' },
                 passwordConfirmation: { value: '', error: '' }
             },
-            hasInitialized: false,
+            isInitialized: false,
             uniqueCandidateList: [],
             formValid: false
         };
@@ -63,11 +63,11 @@ class UserNew extends React.Component {
     
     static getDerivedStateFromProps(nextProps, prevState) {
         const { users } = nextProps;
-        const { hasInitialized } = prevState;
+        const { isInitialized } = prevState;
         
-        if (!hasInitialized && users) {
+        if (!isInitialized && users) {
             
-            return { uniqueCandidateList: users, hasInitialized: true };
+            return { uniqueCandidateList: users, isInitialized: true };
             
         } else {
             return prevState;
