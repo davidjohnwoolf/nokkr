@@ -87,7 +87,7 @@ class UserNew extends React.Component {
         const fields = { ...this.state.fields };
         
         this.setState(
-            validate(e, this.validationRules, { ...fields }, this.state.objects)
+            validate(e, this.validationRules, { ...fields }, this.state.uniqueCandidateList)
         );
     }
     

@@ -72,7 +72,6 @@ class UserEdit extends React.Component {
         if (!isInitialized && user && users) {
             const fields = { ...prevState.fields };
             
-            return { uniqueCandidateList: users, fields: initializeForm(fields, user), hasInitialized: true };
             
         } else {
             return prevState;
@@ -111,7 +110,7 @@ class UserEdit extends React.Component {
     handleUserInput(e) {
         
         this.setState(
-            validate(e, this.validationRules, { ...this.state.fields }, this.state.objects)
+            validate(e, this.validationRules, { ...this.state.fields }, this.state.uniqueCandidateList)
         );
     }
     
