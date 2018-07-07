@@ -14,6 +14,16 @@ class UserIndex extends React.Component {
         
         props.fetchUsers();
         props.fetchTeams();
+        
+        this.state = {
+            activeUsers: true
+        }
+        
+        this.toggleActiveUsers = this.toggleActiveUsers.bind(this);
+    }
+    
+    toggleActiveUsers() {
+        this.setState({ activeUsers: !this.state.activeUsers});
     }
 	
     renderUsers() {
@@ -25,6 +35,13 @@ class UserIndex extends React.Component {
                 let userRole = user.role.charAt(0).toUpperCase() + user.role.slice(1);
                 
                 if (user.isReadOnly) userRole += ' Read Only';
+                
+                //active user check
+                if (this.state.activeUsers) {
+                    if (!user.isActive) return null;
+                } else {
+                    if (user.isActive) return null;
+                }
                 
                 if (user.role === SU && (role !== SU)) {
                     return false;
@@ -74,6 +91,9 @@ class UserIndex extends React.Component {
                             { this.renderUsers() }
                         </tbody>
                     </table>
+                    <button className="btn btn-primary" onClick={ this.toggleActiveUsers }>
+                        { this.state.activeUsers ? 'Show Inactive Users' : 'Show Active Users' }
+                    </button>
                 </section>
             </main>
         );

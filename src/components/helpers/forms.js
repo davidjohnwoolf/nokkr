@@ -6,7 +6,11 @@ import { USER, MANAGER, UNIQUE } from '../../../lib/constants.js';
 
 export const initializeForm = (fields, data) => {
     for (let field in fields) {
-        if (!field.includes('password')) fields[field].value = data[field];
+        if (!field.includes('password')) {
+            ('checked' in fields[field])
+                ? fields[field].checked = data[field]
+                : fields[field].value = data[field]
+        }
     }
     
     return { ...fields };
@@ -43,13 +47,15 @@ export const passwordMatch = () => {
     );
 };
 
-const unique = (value, field, candidates) => candidates.find(c => value === c[field]) ? `${ value } already exists` : undefined;
+const unique = (value, field, candidates, data) => {
+    return (candidates.find(c => (value === c[field]) && (!data || (c._id !== data._id)))) ? `${ value } already exists` : undefined;
+}
 
 //===============
 // validation helper
 //===============
 
-export const validate = (e, rules, fields, objects) => {
+export const validate = (e, rules, fields, candidates, data) => {
     let formValid = true;
     let error;
     
@@ -77,7 +83,7 @@ export const validate = (e, rules, fields, objects) => {
             let result;
             
             if (rule === UNIQUE) {
-                result = unique(e.target.value, e.target.name, objects);
+                result = unique(e.target.value, e.target.name, candidates, data);
             } else {
                 result = rule(e.target.value);
             }
@@ -93,14 +99,14 @@ export const validate = (e, rules, fields, objects) => {
 
         //run function for the rule (e.g. required) from validation rules on each field value
         rules[key].forEach(rule => {
-            
+
             if ('checked' in fields[key]) {
                 if (rule(fields[key].checked)) formValid = false;
             }
             
             if ('value' in fields[key]) {
                 if (rule === UNIQUE) {
-                    if (unique(fields[key].value, key, objects)) formValid = false;
+                    if (unique(fields[key].value, key, candidates, data)) formValid = false;
                 } else {
                     if (rule(fields[key].value)) formValid = false;
                 }

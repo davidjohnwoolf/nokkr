@@ -110,7 +110,7 @@ class UserEdit extends React.Component {
     handleUserInput(e) {
         
         this.setState(
-            validate(e, this.validationRules, { ...this.state.fields }, this.state.uniqueCandidateList)
+            validate(e, this.validationRules, { ...this.state.fields }, this.state.uniqueCandidateList, this.props.user)
         );
     }
     
@@ -130,6 +130,7 @@ class UserEdit extends React.Component {
                 userData[key] = userData[key].value;
             } else if ('checked' in userData[key]) {
                 userData[key] = userData[key].checked;
+                console.log(userData[key])
             }
         }
         
