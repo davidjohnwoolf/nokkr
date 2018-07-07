@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { required, validate } from '../helpers/validation';
+import { required, validate } from '../helpers/forms';
 import FieldInput from '../forms/field-input';
 import FieldCheckbox from '../forms/field-checkbox';
 

@@ -1,5 +1,21 @@
 import { USER, MANAGER, UNIQUE } from '../../../lib/constants.js';
 
+//===============
+// helpers
+//===============
+
+export const initializeForm = (fields, data) => {
+    for (let field in fields) {
+        if (!field.includes('password')) fields[field].value = data[field];
+    }
+    
+    return { ...fields };
+};
+
+//===============
+// validation rules
+//===============
+
 export const required = value => value ? undefined : 'Required';
 
 export const requiredExceptAdmin = value => {
@@ -29,11 +45,15 @@ export const passwordMatch = () => {
 
 const unique = (value, field, candidates) => candidates.find(c => value === c[field]) ? `${ value } already exists` : undefined;
 
+//===============
+// validation helper
+//===============
+
 export const validate = (e, rules, fields, objects) => {
     let formValid = true;
     let error;
     
-    //for checkboxes
+    //for checkboxes and radios
     if ('checked' in fields[e.target.name]) {
         fields[e.target.name].checked = e.target.checked;
         

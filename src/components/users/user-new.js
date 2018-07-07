@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { required, requiredExceptAdmin, password, passwordMatch, validate } from '../helpers/validation';
+import { required, requiredExceptAdmin, password, passwordMatch, validate } from '../helpers/forms';
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 import FieldCheckbox from '../forms/field-checkbox';
@@ -46,14 +46,14 @@ class UserNew extends React.Component {
                 email: { value: '', error: '' },
                 role: { value: '', error: '' },
                 team: { value: '', error: '' },
-                isReadOnly: { checked: null, error: '' },
-                isActive: { checked: 'true', error: '' },
+                isReadOnly: { checked: false, error: '' },
+                isActive: { checked: true, error: '' },
                 userImage: { value: '', error: '' },
                 password: { value: '', error: '' },
                 passwordConfirmation: { value: '', error: '' }
             },
             hasInitialized: false,
-            objects: [],
+            uniqueCandidateList: [],
             formValid: false
         };
 
@@ -67,7 +67,7 @@ class UserNew extends React.Component {
         
         if (!hasInitialized && users) {
             
-            return { objects: users, hasInitialized: true };
+            return { uniqueCandidateList: users, hasInitialized: true };
             
         } else {
             return prevState;

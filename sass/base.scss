@@ -380,6 +380,17 @@ select {
     }
 }
 
+.icon-button-danger {
+    color: $error;
+    font-size: 2.5rem;
+    padding: $gutter;
+    margin-top: $gutter;
+    
+    &:hover {
+        color: $error-light;
+    }
+}
+
 .icon-button-primary {
     color: primary;
     font-size: 2.5rem;

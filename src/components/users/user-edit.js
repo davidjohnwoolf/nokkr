@@ -3,15 +3,16 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router-dom';
 
-import { required, requiredExceptAdmin, password, passwordMatch, validate } from '../helpers/validation';
+import { required, requiredExceptAdmin, password, passwordMatch, validate } from '../helpers/forms';
+import { initializeForm } from '../helpers/forms';
 
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 import FieldCheckbox from '../forms/field-checkbox';
 
-import { fetchUsers, fetchUser, updateUser, clearUser } from '../../actions/users.action';
+import { fetchUsers, fetchUser, updateUser, clearUser, deleteUser } from '../../actions/users.action';
 import { fetchTeams } from '../../actions/teams.action';
-import { sendMessage } from '../../actions/flash.action';
+import { sendMessage, sendError } from '../../actions/flash.action';
 
 import { SU, ADMIN, MANAGER, USER, UNIQUE } from '../../../lib/constants';
 import { capitalize } from '../../../lib/functions';
@@ -54,27 +55,24 @@ class UserEdit extends React.Component {
                 password: { value: '', error: '' },
                 passwordConfirmation: { value: '', error: '' }
             },
-            objects: [],
+            uniqueCandidateList: [],
             formValid: false,
-            hasInitialized: false
+            isInitialized: false
         };
 
         this.handleUserInput = this.handleUserInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     }
     
     static getDerivedStateFromProps(nextProps, prevState) {
         const { user, users } = nextProps;
-        const { hasInitialized } = prevState;
+        const { isInitialized } = prevState;
         
-        if (!hasInitialized && user && users) {
+        if (!isInitialized && user && users) {
             const fields = { ...prevState.fields };
             
-            for (let field in fields) {
-                if (!field.includes('password')) fields[field].value = user[field];
-            }
-            
-            return { objects: users, fields, hasInitialized: true };
+            return { uniqueCandidateList: users, fields: initializeForm(fields, user), hasInitialized: true };
             
         } else {
             return prevState;
@@ -83,11 +81,30 @@ class UserEdit extends React.Component {
 
     
     componentDidUpdate() {
-        const { success, fail, message, history, sendMessage, match } = this.props;
+        const { success, message, history, sendMessage, match, user } = this.props;
         
         if (success) {
             sendMessage(message);
-            history.push(`/users/${ match.params.id }`);
+            
+            if (!user) {
+                //user deleted
+                history.push('/users');
+            } else {
+                //user updated
+                history.push(`/users/${ match.params.id }`);
+            }
+        }
+    }
+    
+    handleDelete() {
+        const { match, id, sendError, deleteUser } = this.props;
+        
+        if (match.params.id !== id) {
+            if (confirm('Are you sure you want to delete this user?  This is not reversible.')) {
+                deleteUser(match.params.id);
+            }
+        } else {
+            sendError('You cannot delete a user you are logged in as');
         }
     }
     
@@ -160,6 +177,9 @@ class UserEdit extends React.Component {
                     <header className="content-header">
                         <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
                         <h1>Edit User</h1>
+                        { !this.isReadOnly
+                            ? <a onClick={ this.handleDelete } style={{ cursor: 'pointer' }} className="icon-button-danger"><i className="fas fa-trash-alt"></i></a>
+                            : '' }
                     </header>
                     <form onSubmit={ handleSubmit }>
                     
@@ -265,7 +285,9 @@ const mapStateToProps = state => ({
     fail: state.users.fail,
     user: state.users.user,
     users: state.users.users,
+    id: state.auth.id,
+    isReadOnly: state.auth.isReadOnly,
     teams: state.teams.teams
 });
 
-export default connect(mapStateToProps, { fetchUser, clearUser, updateUser, sendMessage, fetchTeams, fetchUsers })(UserEdit);
+export default connect(mapStateToProps, { fetchUser, clearUser, updateUser, sendMessage, fetchTeams, fetchUsers, deleteUser, sendError })(UserEdit);

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import { required, validate } from '../helpers/validation';
+import { required, validate } from '../helpers/forms';
 import FieldInput from '../forms/field-input';
 import { login, clearAuth } from '../../actions/auth.action';
 
