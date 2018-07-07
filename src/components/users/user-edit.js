@@ -221,14 +221,6 @@ class UserEdit extends React.Component {
                             error={ role.error }
                             options={ roleOptions }
                         />
-                        <FieldSelect
-                            message="Optional for admin users"
-                            name="team"
-                            value={ team.value }
-                            handleUserInput={ handleUserInput }
-                            error={ team.error }
-                            options={ teamOptions }
-                        />
                         <FieldCheckbox
                             name="isReadOnly"
                             label="Read Only"
@@ -237,13 +229,13 @@ class UserEdit extends React.Component {
                             handleUserInput={ handleUserInput }
                             error={ isReadOnly.error }
                         />
-                        <FieldCheckbox
-                            name="isActive"
-                            label="Active"
-                            value="true"
-                            checked={ isActive.checked }
+                        <FieldSelect
+                            message="Optional for admin users"
+                            name="team"
+                            value={ team.value }
                             handleUserInput={ handleUserInput }
-                            error={ isActive.error }
+                            error={ team.error }
+                            options={ teamOptions }
                         />
                         <FieldInput
                             name="password"
@@ -261,6 +253,14 @@ class UserEdit extends React.Component {
                             value={ passwordConfirmation.value }
                             handleUserInput={ handleUserInput }
                             error={ passwordConfirmation.error }
+                        />
+                        <FieldCheckbox
+                            name="isActive"
+                            label="Active"
+                            value="true"
+                            checked={ isActive.checked }
+                            handleUserInput={ handleUserInput }
+                            error={ isActive.error }
                         />
                         <div className="btn-group">
                             <button
