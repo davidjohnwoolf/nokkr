@@ -6,10 +6,10 @@ import { USER, MANAGER, PW_REGEX } from '../../../lib/constants.js';
 
 export const initializeForm = (fields, data) => {
     for (let field in fields) {
+        let fieldType = ('checked' in fields[field]) ? 'checked' : 'value';
+        
         if (!field.includes('password')) {
-            ('checked' in fields[field])
-                ? fields[field].checked = data[field]
-                : fields[field].value = data[field];
+            fields[field][fieldType] = data[field]
         }
     }
     
