@@ -1,10 +1,8 @@
 import {
     FETCH_USER,
     FETCH_USERS,
-    CREATE_USER_FAIL,
-    CREATE_USER_SUCCESS,
-    UPDATE_USER_FAIL,
-    UPDATE_USER_SUCCESS,
+    CREATE_USER,
+    UPDATE_USER,
     DELETE_USER,
     CLEAR_USER
 } from '../actions/users.action';
@@ -18,16 +16,10 @@ export default function(state = {}, action) {
         case FETCH_USERS:
             return { ...state, users: action.users, isFetching: false };
         
-        case CREATE_USER_FAIL:
-            return { ...state, fail: true, message: action.message };
-        
-        case CREATE_USER_SUCCESS:
+        case CREATE_USER:
             return { ...state, success: true, message: action.message, userId: action.userId };
-            
-        case UPDATE_USER_FAIL:
-            return { ...state, fail: true, message: action.message };
         
-        case UPDATE_USER_SUCCESS:
+        case UPDATE_USER:
             return { ...state, success: true, message: action.message };
             
         case DELETE_USER:

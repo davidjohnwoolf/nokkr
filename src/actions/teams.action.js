@@ -4,10 +4,8 @@ import { sendError } from './flash.action';
 
 export const FETCH_TEAMS = 'FETCH_TEAMS';
 export const FETCH_TEAM = 'FETCH_TEAM';
-export const CREATE_TEAM_SUCCESS = 'CREATE_TEAM_SUCCESS';
-export const CREATE_TEAM_FAIL = 'CREATE_TEAM_FAIL';
-export const UPDATE_TEAM_SUCCESS = 'UPDATE_TEAM_SUCCESS';
-export const UPDATE_TEAM_FAIL = 'UPDATE_TEAM_FAIL';
+export const CREATE_TEAM = 'CREATE_TEAML';
+export const UPDATE_TEAM = 'UPDATE_TEAM';
 export const DELETE_TEAM = 'DELETE_TEAM';
 export const CLEAR_TEAM = 'CLEAR_TEAM';
 
@@ -43,7 +41,7 @@ export const createTeam = team => {
 
         if (response.data.status === SUCCESS) {
             dispatch({
-                type: CREATE_TEAM_SUCCESS,
+                type: CREATE_TEAM,
                 message: response.data.data.message,
                 teamId: response.data.data.id
             });
@@ -60,7 +58,7 @@ export const updateTeam = (id, team) => {
         
         if (response.data.status === SUCCESS) {
             dispatch({
-                type: UPDATE_TEAM_SUCCESS,
+                type: UPDATE_TEAM,
                 message: response.data.data.message
             });
         }

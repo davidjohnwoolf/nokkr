@@ -4,7 +4,7 @@ import jwtDecode from 'jwt-decode';
 import { sendError } from './flash.action';
 
 export const LOGIN_FAIL = 'LOGIN_FAIL';
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const LOGIN = 'LOGIN';
 export const CLEAR_AUTH = 'CLEAR_AUTH';
 
 //status variables for Jsend API spec
@@ -21,7 +21,7 @@ export const login = creds => {
             const decoded = jwtDecode(response.data.data.token);
                 
             dispatch({
-                type: LOGIN_SUCCESS,
+                type: LOGIN,
                 token: response.data.data.token,
                 role: decoded.role,
                 isReadOnly: decoded.isReadOnly,

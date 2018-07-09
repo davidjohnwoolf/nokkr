@@ -4,10 +4,8 @@ import { sendError } from './flash.action';
 
 export const FETCH_USERS = 'FETCH_USERS';
 export const FETCH_USER = 'FETCH_USER';
-export const CREATE_USER_SUCCESS = 'CREATE_USER_SUCCESS';
-export const CREATE_USER_FAIL = 'CREATE_USER_FAIL';
-export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
-export const UPDATE_USER_FAIL = 'UPDATE_USER_FAIL';
+export const CREATE_USER = 'CREATE_USER';
+export const UPDATE_USER = 'UPDATE_USER';
 export const DELETE_USER = 'DELETE_USER';
 export const CLEAR_USER = 'CLEAR_USER';
 
@@ -43,7 +41,7 @@ export const createUser = user => {
 
         if (response.data.status === SUCCESS) {
             dispatch({
-                type: CREATE_USER_SUCCESS,
+                type: CREATE_USER,
                 message: response.data.data.message,
                 userId: response.data.data.id
             });
@@ -60,7 +58,7 @@ export const updateUser = (id, user) => {
         
         if (response.data.status === SUCCESS) {
             dispatch({
-                type: UPDATE_USER_SUCCESS,
+                type: UPDATE_USER,
                 message: response.data.data.message
             });
         }
