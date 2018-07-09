@@ -73,7 +73,7 @@ router.put('/:id', requireAdmin, excludeReadOnly, (req, res) => {
         
         const leadStatusIndex = account.leadStatuses.findIndex(leadStatus => leadStatus.id === req.params.id);
         
-        if (!leadStatusIndex) return res.json({ status: ERROR, code: 404, message: 'Status not found' });
+        if (leadStatusIndex < 0) return res.json({ status: ERROR, code: 404, message: 'Status not found' });
         
         for (let key in req.body) {
         	account.leadStatuses[leadStatusIndex][key] = req.body[key];
@@ -102,7 +102,7 @@ router.delete('/:id', requireAdmin, excludeReadOnly, (req, res) => {
     	
     	const leadStatusIndex = account.leadStatuses.findIndex(leadStatus => leadStatus.id === req.params.id);
     	
-    	if (!leadStatusIndex) return res.json({ status: ERROR, code: 404, message: 'Status not found' });
+    	if (leadStatusIndex < 0) return res.json({ status: ERROR, code: 404, message: 'Status not found' });
     	
     	account.leadStatuses[leadStatusIndex].remove();
     	

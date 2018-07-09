@@ -73,7 +73,7 @@ router.put('/:id', requireAdmin, excludeReadOnly, (req, res) => {
         
         const leadFieldIndex = account.leadFields.findIndex(leadField => leadField.id === req.params.id);
         
-        if (!leadFieldIndex) return res.json({ status: ERROR, code: 404, message: 'Lead field not found' });
+        if (leadFieldIndex < 0) return res.json({ status: ERROR, code: 404, message: 'Lead field not found' });
         
         for (let key in req.body) {
         	account.leadFields[leadFieldIndex][key] = req.body[key];
@@ -102,7 +102,7 @@ router.delete('/:id', requireAdmin, excludeReadOnly, (req, res) => {
     	
     	const leadFieldIndex = account.leadFields.findIndex(leadField => leadField.id === req.params.id);
     	
-    	if (!leadFieldIndex) return res.json({ status: ERROR, code: 404, message: 'Lead field not found' });
+    	if (leadFieldIndex < 0) return res.json({ status: ERROR, code: 404, message: 'Lead field not found' });
     	
     	account.leadFields[leadFieldIndex].remove();
     	

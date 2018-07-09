@@ -73,7 +73,7 @@ router.put('/:id', requireManager, excludeReadOnly, (req, res) => {
         
         const areaGroupIndex = account.areaGroups.findIndex(areaGroup => areaGroup.id === req.params.id);
         
-        if (!areaGroupIndex) return res.json({ status: ERROR, code: 404, message: 'Area group not found' });
+        if (areaGroupIndex < 0) return res.json({ status: ERROR, code: 404, message: 'Area group not found' });
         
         for (let key in req.body) {
         	account.areaGroups[areaGroupIndex][key] = req.body[key];
@@ -102,7 +102,7 @@ router.delete('/:id', requireManager, excludeReadOnly, (req, res) => {
     	
     	const areaGroupIndex = account.areaGroups.findIndex(areaGroup => areaGroup.id === req.params.id);
     	
-    	if (!areaGroupIndex) return res.json({ status: ERROR, code: 404, message: 'Area group not found' });
+    	if (areaGroupIndex < 0) return res.json({ status: ERROR, code: 404, message: 'Area group not found' });
     	
     	account.areaGroups[areaGroupIndex].remove();
     	
