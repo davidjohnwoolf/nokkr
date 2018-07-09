@@ -49,13 +49,6 @@ export const createUser = user => {
                 userId: response.data.data.id
             });
         }
-        
-        if (response.data.status === FAIL) {
-            dispatch({
-                type: CREATE_USER_FAIL,
-                message: response.data.data.message
-            });
-        }
     };
 };
 
@@ -69,13 +62,6 @@ export const updateUser = (id, user) => {
         if (response.data.status === SUCCESS) {
             dispatch({
                 type: UPDATE_USER_SUCCESS,
-                message: response.data.data.message
-            });
-        }
-        
-        if (response.data.status === FAIL) {
-            dispatch({
-                type: UPDATE_USER_FAIL,
                 message: response.data.data.message
             });
         }

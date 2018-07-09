@@ -282,7 +282,6 @@ class UserEdit extends React.Component {
 const mapStateToProps = state => ({
     message: state.users.message,
     success: state.users.success,
-    fail: state.users.fail,
     user: state.users.user,
     users: state.users.users,
     id: state.auth.id,

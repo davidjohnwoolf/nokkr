@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchTeam, deleteTeam, clearTeam } from '../../actions/teams.action';
+
+import { fetchTeam, clearTeam } from '../../actions/teams.action';
 import { fetchUsers } from '../../actions/users.action';
 import { sendMessage, sendError } from '../../actions/flash.action';
 
@@ -15,35 +16,6 @@ class TeamShow extends React.Component {
         props.clearTeam();
         props.fetchTeam(props.match.params.id);
         props.fetchUsers();
-        
-        this.handleDelete = this.handleDelete.bind(this);
-    }
-    
-    componentDidUpdate() {
-        const { message, history, sendMessage } = this.props;
-        
-        if (message === 'Team deleted') {
-            sendMessage(message);
-            history.push('/teams');
-        }
-    }
-    
-    handleDelete() {
-        const { match, sendError, deleteTeam, users, team } = this.props;
-        
-        let teamHasUsers = false;
-        
-        users.forEach(user => {
-            if (user.team === team._id) teamHasUsers = true;
-        });
-        
-        if (!teamHasUsers) {
-            if (confirm('Are you sure you want to delete this Team? This is not reversible.')) {
-                deleteTeam(match.params.id);
-            }
-        } else {
-            sendError('You cannot delete a team that has members, first update member teams');
-        }
     }
     
     renderUsers() {
@@ -84,7 +56,7 @@ class TeamShow extends React.Component {
     
     render() {
         
-        const { history, team, match, users, role, userTeam, isReadOnly } = this.props;
+        const { history, team, match, role, userTeam, isReadOnly, users } = this.props;
         
         if (!team || !users) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
@@ -119,9 +91,7 @@ class TeamShow extends React.Component {
                         { this.renderUsers() }
                         
                         <h2>Upcoming Appointments, Recent Leads</h2>
-                        { !this.props.isReadOnly
-                            ? <button onClick={ this.handleDelete } className="btn btn-danger"><i className="fas fa-times icon-front"></i> Delete Team</button>
-                            : '' }
+                        
                     </section>
                 </main>
             </div>
@@ -131,11 +101,10 @@ class TeamShow extends React.Component {
 
 const mapStateToProps = state => ({
     team: state.teams.team,
-    message: state.teams.message,
     role: state.auth.role,
     isReadOnly: state.auth.isReadOnly,
     users: state.users.users,
     userTeam: state.auth.team
 });
 
-export default connect(mapStateToProps, { fetchUsers, fetchTeam, deleteTeam, sendMessage, sendError, clearTeam })(TeamShow);
+export default connect(mapStateToProps, { fetchTeam, sendMessage, sendError, clearTeam, fetchUsers })(TeamShow);

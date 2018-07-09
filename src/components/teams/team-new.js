@@ -5,8 +5,10 @@ import { required, validate } from '../helpers/forms';
 import FieldInput from '../forms/field-input';
 import FieldCheckbox from '../forms/field-checkbox';
 
-import { createTeam, clearTeam } from '../../actions/teams.action';
+import { createTeam, clearTeam, fetchTeams } from '../../actions/teams.action';
 import { sendMessage } from '../../actions/flash.action';
+
+import { UNIQUE } from '../../../lib/constants';
 
 class TeamNew extends React.Component {
     
@@ -14,9 +16,10 @@ class TeamNew extends React.Component {
         super(props);
         
         props.clearTeam();
+        props.fetchTeams();
         
         this.validationRules = Object.freeze({
-            title: [required],
+            title: [required, UNIQUE],
             notifySales: []
         });
         
@@ -25,7 +28,8 @@ class TeamNew extends React.Component {
                 title: { value: '', error: '' },
                 notifySales: { checked: null, error: '' }
             },
-            serverMessage: '',
+            isInitialized: false,
+            uniqueCandidateList: [],
             formValid: false
         };
 
@@ -33,11 +37,21 @@ class TeamNew extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     
-    componentDidUpdate() {
-        const { success, fail, message, history, sendMessage, teamId } = this.props;
+    static getDerivedStateFromProps(nextProps, prevState) {
+        const { teams } = nextProps;
+        const { isInitialized } = prevState;
         
-        //why are you using serverMessage as state when you have message?
-        if (fail && (message !== this.state.serverMessage)) this.setState({ serverMessage: message });
+        if (!isInitialized && teams) {
+            
+            return { uniqueCandidateList: teams, isInitialized: true };
+            
+        } else {
+            return prevState;
+        }
+    }
+    
+    componentDidUpdate() {
+        const { success, message, history, sendMessage, teamId } = this.props;
         
         if (success) {
             sendMessage(message);
@@ -48,7 +62,7 @@ class TeamNew extends React.Component {
     handleUserInput(e) {
 
         this.setState(
-            validate(e, this.validationRules, { ...this.state.fields })
+            validate(e, this.validationRules, { ...this.state.fields }, this.state.uniqueCandidateList, null)
         );
     }
     
@@ -72,6 +86,10 @@ class TeamNew extends React.Component {
     }
     
     render() {
+        const { teams, history } = this.props;
+        
+        if (!teams) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
+        
         const { handleSubmit, handleUserInput, state } = this;
         const { title, notifySales } = state.fields;
         
@@ -80,10 +98,9 @@ class TeamNew extends React.Component {
             <main id="team-new" className="content">
                 <section className="form">
                     <header className="content-header">
-                        <a onClick={ this.props.history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
+                        <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
                         <h1>Create Team</h1>
                     </header>
-                    <small className="server-error">{ this.state.serverMessage }</small>
                     <form onSubmit={ handleSubmit }>
                     
                         <FieldInput
@@ -110,7 +127,7 @@ class TeamNew extends React.Component {
                                 type="submit">
                                 Submit
                             </button>
-                            <a onClick={ this.props.history.goBack } href="#" className="btn btn-cancel">Cancel</a>
+                            <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="btn btn-cancel">Cancel</a>
                         </div>
                     </form>
                 </section>
@@ -121,9 +138,9 @@ class TeamNew extends React.Component {
 
 const mapStateToProps = state => ({
     teamId: state.teams.teamId,
+    teams: state.teams.teams,
     message: state.teams.message,
-    success: state.teams.success,
-    fail: state.teams.fail
+    success: state.teams.success
 });
 
-export default connect(mapStateToProps, { clearTeam, createTeam, sendMessage })(TeamNew);
+export default connect(mapStateToProps, { clearTeam, createTeam, sendMessage, fetchTeams })(TeamNew);

@@ -82,10 +82,8 @@ class UserNew extends React.Component {
     }
     
     handleUserInput(e) {
-        const fields = { ...this.state.fields };
-        
         this.setState(
-            validate(e, this.validationRules, { ...fields }, this.state.uniqueCandidateList, null)
+            validate(e, this.validationRules, { ...this.state.fields }, this.state.uniqueCandidateList, null)
         );
     }
     
@@ -110,6 +108,7 @@ class UserNew extends React.Component {
     
     render() {
         const { teams, users, history } = this.props;
+        
         if (!teams || !users) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
         const { handleSubmit, handleUserInput, state } = this;
@@ -250,7 +249,6 @@ const mapStateToProps = state => ({
     message: state.users.message,
     userId: state.users.userId,
     success: state.users.success,
-    fail: state.users.fail,
     users: state.users.users,
     teams: state.teams.teams
 });

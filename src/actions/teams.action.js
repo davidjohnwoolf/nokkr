@@ -48,13 +48,6 @@ export const createTeam = team => {
                 teamId: response.data.data.id
             });
         }
-        
-        if (response.data.status === FAIL) {
-            dispatch({
-                type: CREATE_TEAM_FAIL,
-                message: response.data.data.message
-            });
-        }
     };
 };
 
@@ -68,13 +61,6 @@ export const updateTeam = (id, team) => {
         if (response.data.status === SUCCESS) {
             dispatch({
                 type: UPDATE_TEAM_SUCCESS,
-                message: response.data.data.message
-            });
-        }
-        
-        if (response.data.status === FAIL) {
-            dispatch({
-                type: UPDATE_TEAM_FAIL,
                 message: response.data.data.message
             });
         }

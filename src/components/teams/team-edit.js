@@ -1,12 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { required, validate } from '../helpers/forms';
+import { required, validate, initializeForm } from '../helpers/forms';
 import FieldInput from '../forms/field-input';
 import FieldCheckbox from '../forms/field-checkbox';
 
-import { fetchTeam, updateTeam, clearTeam } from '../../actions/teams.action';
-import { sendMessage } from '../../actions/flash.action';
+import { fetchTeam, fetchTeams, updateTeam, clearTeam, deleteTeam } from '../../actions/teams.action';
+import { fetchUsers } from '../../actions/users.action';
+import { sendMessage, sendError } from '../../actions/flash.action';
+
+import { UNIQUE } from '../../../lib/constants';
 
 class TeamEdit extends React.Component {
     
@@ -15,9 +18,11 @@ class TeamEdit extends React.Component {
         
         props.clearTeam();
         props.fetchTeam(props.match.params.id);
+        props.fetchTeams();
+        props.fetchUsers();
         
         this.validationRules = Object.freeze({
-            title: [required],
+            title: [required, UNIQUE],
             notifySales: []
         });
         
@@ -28,37 +33,40 @@ class TeamEdit extends React.Component {
             },
             serverMessage: '',
             formValid: false,
-            hasInitialized: false
+            uniqueCandidateList: [],
+            isInitialized: false
         };
 
         this.handleUserInput = this.handleUserInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     }
     
     componentDidUpdate() {
-        const { success, fail, message, history, sendMessage } = this.props;
-        
-        //why are you using serverMessage as state when you have message?
-        if (fail && (message !== this.state.serverMessage)) this.setState({ serverMessage: message });
+        const { success, message, history, sendMessage, match, team } = this.props;
         
         if (success) {
             sendMessage(message);
-            history.push('/teams');
+            
+            if (!team) {
+                //team deleted
+                history.push('/teams');
+            } else {
+                //team updated
+                history.push(`/teams/${ match.params.id }`);
+            }
         }
     }
     
     static getDerivedStateFromProps(nextProps, prevState) {
-        const { team } = nextProps;
-        const { hasInitialized } = prevState;
+        const { team, teams } = nextProps;
+        const { isInitialized } = prevState;
         
-        if (!hasInitialized && team) {
+        if (!isInitialized && team && teams) {
             const fields = { ...prevState.fields };
+            
+            return { uniqueCandidateList: teams, fields: initializeForm(fields, team), isInitialized: true };
 
-            fields.title.value = team.title;
-            fields.notifySales.checked = team.notifySales;
-            
-            return { fields, hasInitialized: true };
-            
         } else {
             return prevState;
         }
@@ -67,7 +75,7 @@ class TeamEdit extends React.Component {
     handleUserInput(e) {
 
         this.setState(
-            validate(e, this.validationRules, { ...this.state.fields })
+            validate(e, this.validationRules, { ...this.state.fields }, this.state.uniqueCandidateList, this.props.team)
         );
     }
     
@@ -90,10 +98,30 @@ class TeamEdit extends React.Component {
         this.props.updateTeam(this.props.match.params.id, teamData);
     }
     
-    render() {
-        if (!this.props.team) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
+    handleDelete() {
+        const { match, sendError, deleteTeam, users, team } = this.props;
         
-        const { handleSubmit, handleUserInput, state } = this;
+        let teamHasUsers = false;
+        
+        users.forEach(user => {
+            if (user.team === team._id) teamHasUsers = true;
+        });
+        
+        if (!teamHasUsers) {
+            if (confirm('Are you sure you want to delete this Team? This is not reversible.')) {
+                deleteTeam(match.params.id);
+            }
+        } else {
+            sendError('You cannot delete a team that has members, first update member teams');
+        }
+    }
+    
+    render() {
+        const { team, teams, users, isReadOnly, history } = this.props;
+        
+        if (!team || !teams || !users) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
+        
+        const { handleSubmit, handleUserInput, state, handleDelete } = this;
         const { title, notifySales } = state.fields;
         
         return (
@@ -101,10 +129,12 @@ class TeamEdit extends React.Component {
             <main id="team-new" className="content">
                 <section className="form">
                     <header className="content-header">
-                        <a onClick={ this.props.history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
+                        <a onClick={ history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
                         <h1>Edit Team</h1>
+                        { !isReadOnly
+                            ? <a onClick={ handleDelete } style={{ cursor: 'pointer' }} className="icon-button-danger"><i className="fas fa-trash-alt"></i></a>
+                            : '' }
                     </header>
-                    <small className="server-error">{ this.state.serverMessage }</small>
                     <form onSubmit={ handleSubmit }>
                     
                         <FieldInput
@@ -131,7 +161,7 @@ class TeamEdit extends React.Component {
                                 type="submit">
                                 Submit
                             </button>
-                            <a onClick={ this.props.history.goBack } href="#" className="btn btn-cancel">Cancel</a>
+                            <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="btn btn-cancel">Cancel</a>
                         </div>
                     </form>
                 </section>
@@ -142,9 +172,11 @@ class TeamEdit extends React.Component {
 
 const mapStateToProps = state => ({
     team: state.teams.team,
+    teams: state.teams.teams,
+    users: state.users.users,
     message: state.teams.message,
-    success: state.teams.success,
-    fail: state.teams.fail
+    isReadOnly: state.auth.isReadOnly,
+    success: state.teams.success
 });
 
-export default connect(mapStateToProps, { clearTeam, fetchTeam, updateTeam, sendMessage })(TeamEdit);
+export default connect(mapStateToProps, { clearTeam, fetchTeam, fetchTeams, updateTeam, sendMessage, deleteTeam, fetchUsers, sendError })(TeamEdit);

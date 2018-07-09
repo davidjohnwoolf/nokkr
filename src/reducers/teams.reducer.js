@@ -31,7 +31,7 @@ export default function(state = {}, action) {
             return { ...state, success: true, message: action.message };
             
         case DELETE_TEAM:
-            return { ...state, message: action.message };
+            return { ...state, success: true, message: action.message, team: null };
             
         case CLEAR_TEAM:
             return {};
