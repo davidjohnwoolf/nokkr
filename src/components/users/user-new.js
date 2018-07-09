@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 
-import { required, requiredExceptAdmin, password, passwordMatch, validate } from '../helpers/forms';
+import { required, requiredExceptAdmin, password, passwordMatch, unique, validate } from '../helpers/forms';
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 import FieldCheckbox from '../forms/field-checkbox';
@@ -11,7 +10,7 @@ import { createUser, clearUser, fetchUsers } from '../../actions/users.action';
 import { fetchTeams } from '../../actions/teams.action';
 import { sendMessage } from '../../actions/flash.action';
 
-import { ADMIN, MANAGER, USER, UNIQUE } from '../../../lib/constants';
+import { ADMIN, MANAGER, USER } from '../../../lib/constants';
 import { capitalize } from '../../../lib/functions';
 
 class UserNew extends React.Component {
@@ -27,8 +26,8 @@ class UserNew extends React.Component {
         this.validationRules = Object.freeze({
             firstName: [required],
             lastName: [required],
-            username: [required, UNIQUE],
-            email: [required, UNIQUE],
+            username: [required, unique],
+            email: [required, unique],
             role: [required],
             team: [requiredExceptAdmin],
             isReadOnly: [],
@@ -123,7 +122,6 @@ class UserNew extends React.Component {
             role,
             team,
             isReadOnly,
-            isActive,
             //userImage
         } = state.fields;
         

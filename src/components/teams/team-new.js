@@ -1,14 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { required, validate } from '../helpers/forms';
+import { required, unique, validate } from '../helpers/forms';
 import FieldInput from '../forms/field-input';
 import FieldCheckbox from '../forms/field-checkbox';
 
 import { createTeam, clearTeam, fetchTeams } from '../../actions/teams.action';
 import { sendMessage } from '../../actions/flash.action';
-
-import { UNIQUE } from '../../../lib/constants';
 
 class TeamNew extends React.Component {
     
@@ -19,7 +17,7 @@ class TeamNew extends React.Component {
         props.fetchTeams();
         
         this.validationRules = Object.freeze({
-            title: [required, UNIQUE],
+            title: [required, unique],
             notifySales: []
         });
         

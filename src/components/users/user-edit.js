@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router-dom';
 
-import { required, requiredExceptAdmin, password, passwordMatch, validate, initializeForm } from '../helpers/forms';
+import { required, requiredExceptAdmin, password, passwordMatch, validate, unique, initializeForm } from '../helpers/forms';
 
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
@@ -13,7 +13,7 @@ import { fetchUsers, fetchUser, updateUser, clearUser, deleteUser } from '../../
 import { fetchTeams } from '../../actions/teams.action';
 import { sendMessage, sendError } from '../../actions/flash.action';
 
-import { SU, ADMIN, MANAGER, USER, UNIQUE } from '../../../lib/constants';
+import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
 import { capitalize } from '../../../lib/functions';
 
 class UserEdit extends React.Component {
@@ -29,8 +29,8 @@ class UserEdit extends React.Component {
         this.validationRules = Object.freeze({
             firstName: [required],
             lastName: [required],
-            username: [required, UNIQUE],
-            email: [required, UNIQUE],
+            username: [required, unique],
+            email: [required, unique],
             role: [required],
             team: [requiredExceptAdmin],
             isReadOnly: [],

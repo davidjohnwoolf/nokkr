@@ -1,15 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { required, validate, initializeForm } from '../helpers/forms';
+import { required, unique, validate, initializeForm } from '../helpers/forms';
 import FieldInput from '../forms/field-input';
 import FieldCheckbox from '../forms/field-checkbox';
 
 import { fetchTeam, fetchTeams, updateTeam, clearTeam, deleteTeam } from '../../actions/teams.action';
 import { fetchUsers } from '../../actions/users.action';
 import { sendMessage, sendError } from '../../actions/flash.action';
-
-import { UNIQUE } from '../../../lib/constants';
 
 class TeamEdit extends React.Component {
     
@@ -22,7 +20,7 @@ class TeamEdit extends React.Component {
         props.fetchUsers();
         
         this.validationRules = Object.freeze({
-            title: [required, UNIQUE],
+            title: [required, unique],
             notifySales: []
         });
         
