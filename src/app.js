@@ -9,7 +9,7 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import jwtDecode from 'jwt-decode';
 
-import { LOGIN_SUCCESS, CLEAR_AUTH } from './actions/auth.action';
+import { LOGIN, CLEAR_AUTH } from './actions/auth.action';
 import authorization from './middleware/authorization';
 import reducers from './reducers';
 
@@ -57,11 +57,11 @@ if (token && !authenticated) {
 	//check exp
 	if (currentTime < decoded.exp) {
 	    store.dispatch({
-            type: LOGIN_SUCCESS,
+            type: LOGIN,
             role: decoded.role,
             isReadOnly: decoded.isReadOnly,
-            team: decoded.team,
-            id: decoded.id
+            sessionTeam: decoded.team,
+            sessionId: decoded.id
         });
 
 	} else {

@@ -56,12 +56,12 @@ class TeamShow extends React.Component {
     
     render() {
         
-        const { history, team, match, role, userTeam, isReadOnly, users } = this.props;
+        const { history, team, match, role, sessionTeam, isReadOnly, users } = this.props;
         
         if (!team || !users) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
         //authorization
-        if ((role !== SU) && (role !== ADMIN) && (userTeam !== team._id)) {
+        if ((role !== SU) && (role !== ADMIN) && (sessionTeam !== team._id)) {
             history.push('/not-authorized');
         }
         
@@ -104,7 +104,7 @@ const mapStateToProps = state => ({
     role: state.auth.role,
     isReadOnly: state.auth.isReadOnly,
     users: state.users.users,
-    userTeam: state.auth.team
+    sessionTeam: state.auth.sessionTeam
 });
 
 export default connect(mapStateToProps, { fetchTeam, sendMessage, sendError, clearTeam, fetchUsers })(TeamShow);

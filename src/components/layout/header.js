@@ -23,7 +23,7 @@ class Header extends React.Component {
     }
 
     render() {
-        const { authenticated, id, role, team, logout } = this.props;
+        const { authenticated, sessionId, role, sessionTeam, logout } = this.props;
         
         if (authenticated) {
             return (
@@ -34,13 +34,13 @@ class Header extends React.Component {
                                 <NavLink exact to="/" activeClassName="active"><i className="fas fa-home"></i></NavLink>
                             </li>
                             <li>
-                                <NavLink to={ `/users/${ id }/areas` } activeClassName="active"><i className="fas fa-map-marker-alt"></i></NavLink>
+                                <NavLink to={ `/users/${ sessionId }/areas` } activeClassName="active"><i className="fas fa-map-marker-alt"></i></NavLink>
                             </li>
                             <li>
-                                <NavLink to={ `/users/${ id }/leads` } activeClassName="active"><i className="fas fa-address-card"></i></NavLink>
+                                <NavLink to={ `/users/${ sessionId }/leads` } activeClassName="active"><i className="fas fa-address-card"></i></NavLink>
                             </li>
                             <li>
-                                <NavLink to={ `/users/${ id }/appointments` } activeClassName="active"><i className="fas fa-calendar-alt"></i></NavLink>
+                                <NavLink to={ `/users/${ sessionId }/appointments` } activeClassName="active"><i className="fas fa-calendar-alt"></i></NavLink>
                             </li>
                             <li>
                                 <NavLink to="/new" activeClassName="active"><i className="fas fa-plus"></i></NavLink>
@@ -56,7 +56,7 @@ class Header extends React.Component {
                             </li>
                         </ul>
                     </nav>
-                    <Menu shown={ this.state.menuActive } id={ id } role={ role } team={ team } logout={ logout } showMenu={ this.showMenu } />
+                    <Menu shown={ this.state.menuActive } id={ sessionId } role={ role } team={ sessionTeam } logout={ logout } showMenu={ this.showMenu } />
                 </header>
             );
         } else {
@@ -67,9 +67,9 @@ class Header extends React.Component {
 
 const mapStateToProps = state => ({
     authenticated: state.auth.authenticated,
-    id: state.auth.id,
+    sessionId: state.auth.sessionId,
     role: state.auth.role,
-    team: state.auth.team
+    sessionTeam: state.auth.sessionTeam
 });
 
 export default withRouter(connect(mapStateToProps, { logout })(Header));

@@ -49,10 +49,8 @@ class PrivateRoute extends React.Component {
 
 const mapStateToProps = state => ({
     authenticated: state.auth.authenticated,
-    id: state.auth.id,
     role: state.auth.role,
-    isReadOnly: state.auth.isReadOnly,
-    team: state.auth.team
+    isReadOnly: state.auth.isReadOnly
 });
 
 export default connect(mapStateToProps)(PrivateRoute);

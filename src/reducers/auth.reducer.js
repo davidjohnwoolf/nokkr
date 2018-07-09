@@ -8,8 +8,8 @@ export default function(state = { authenticated: false }, action) {
                 token: action.token,
                 role: action.role,
                 isReadOnly: action.isReadOnly,
-                team: action.team,
-                id: action.id,
+                sessionTeam: action.sessionTeam,
+                sessionId: action.sessionId,
                 authenticated: true
             };
         

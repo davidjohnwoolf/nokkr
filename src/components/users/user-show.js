@@ -17,12 +17,12 @@ class UserShow extends React.Component {
 
     renderUser() {
         
-        const { user, history, role, id, team } = this.props;
+        const { user, history, role, sessionId, sessionTeam } = this.props;
         
         if (!user) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
         //authorization
-        if ((role !== SU) && (role !== ADMIN) && ((role === MANAGER && user.team !== team) || (role === USER && id !== user._id))) {
+        if ((role !== SU) && (role !== ADMIN) && ((role === MANAGER && user.team !== sessionTeam) || (role === USER && sessionId !== user._id))) {
             history.push('/not-authorized');
         }
         
@@ -68,8 +68,8 @@ const mapStateToProps = state => ({
     user: state.users.user,
     message: state.users.message,
     role: state.auth.role,
-    team: state.auth.team,
-    id: state.auth.role
+    sessionTeam: state.auth.sessionTeam,
+    sessionId: state.auth.sessionId
 });
 
 export default connect(mapStateToProps, { fetchUser, deleteUser, sendMessage, clearUser })(UserShow);

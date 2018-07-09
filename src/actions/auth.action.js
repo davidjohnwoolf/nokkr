@@ -25,8 +25,8 @@ export const login = creds => {
                 token: response.data.data.token,
                 role: decoded.role,
                 isReadOnly: decoded.isReadOnly,
-                team: decoded.team,
-                id: decoded.id
+                sessionTeam: decoded.team,
+                sessionId: decoded.id
             });
         }
         

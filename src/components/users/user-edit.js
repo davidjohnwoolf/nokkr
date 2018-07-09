@@ -96,9 +96,9 @@ class UserEdit extends React.Component {
     }
     
     handleDelete() {
-        const { match, id, sendError, deleteUser } = this.props;
+        const { match, sessionId, sendError, deleteUser } = this.props;
         
-        if (match.params.id !== id) {
+        if (match.params.id !== sessionId) {
             if (confirm('Are you sure you want to delete this user?  This is not reversible.')) {
                 deleteUser(match.params.id);
             }
@@ -136,7 +136,7 @@ class UserEdit extends React.Component {
     }
     
     render() {
-        const { user, teams, history, id, match } = this.props;
+        const { user, teams, history, sessionId, match } = this.props;
         
         if (!teams || !user) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
@@ -260,7 +260,7 @@ class UserEdit extends React.Component {
                             checked={ isActive.checked }
                             handleUserInput={ handleUserInput }
                             error={ isActive.error }
-                            disabled={ id === match.params.id }
+                            disabled={ sessionId === match.params.id }
                         />
                         <div className="btn-group">
                             <button
@@ -283,7 +283,7 @@ const mapStateToProps = state => ({
     success: state.users.success,
     user: state.users.user,
     users: state.users.users,
-    id: state.auth.id,
+    sessionId: state.auth.sessionId,
     isReadOnly: state.auth.isReadOnly,
     teams: state.teams.teams
 });

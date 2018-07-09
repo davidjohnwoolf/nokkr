@@ -36,7 +36,7 @@ class Login extends React.Component {
     }
     
     componentDidUpdate() {
-        const { success, fail, message, token, history, id } = this.props;
+        const { success, fail, message, token, history } = this.props;
         
         if (fail && (message !== this.state.serverError)) this.setState({ serverError: message });
         
@@ -110,7 +110,6 @@ class Login extends React.Component {
 
 const mapStateToProps = state => ({
     token: state.auth.token,
-    id: state.auth.id,
     authenticated: state.auth.authenticated,
     success: state.auth.success,
     fail: state.auth.fail,
