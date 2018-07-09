@@ -17,7 +17,7 @@ class UserIndex extends React.Component {
         
         this.state = {
             activeUsers: true
-        }
+        };
         
         this.toggleActiveUsers = this.toggleActiveUsers.bind(this);
     }
