@@ -9,7 +9,7 @@ export const initializeForm = (fields, data) => {
         let fieldType = ('checked' in fields[field]) ? 'checked' : 'value';
         
         if (!field.includes('password')) {
-            fields[field][fieldType] = data[field]
+            fields[field][fieldType] = data[field];
         }
     }
     
@@ -51,6 +51,7 @@ export const passwordMatch = args => {
 export const unique = args => {
     const { value, field, candidates, data } = args;
     
+    //check if field exists and that field is not the one being edited
     return (candidates.find(c => (value === c[field]) && (!data || (c._id !== data._id)))) ? `${ value } already exists` : undefined;
 };
 
