@@ -138,7 +138,7 @@ class UserEdit extends React.Component {
     }
     
     render() {
-        const { user, teams, history } = this.props;
+        const { user, teams, history, id, match } = this.props;
         
         if (!teams || !user) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
@@ -262,6 +262,7 @@ class UserEdit extends React.Component {
                             checked={ isActive.checked }
                             handleUserInput={ handleUserInput }
                             error={ isActive.error }
+                            disabled={ id === match.params.id }
                         />
                         <div className="btn-group">
                             <button

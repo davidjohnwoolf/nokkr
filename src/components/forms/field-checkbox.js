@@ -3,7 +3,7 @@ import React from 'react';
 class FieldCheckbox extends React.Component {
 
     render() {
-        const { name, label, checked, value, handleUserInput, error, message } = this.props;
+        const { name, label, checked, value, handleUserInput, error, message, disabled } = this.props;
         return (
             <div className="field">
                 <small className={ message ? 'input-message' : 'invisible' }>{ message }</small>
@@ -15,6 +15,7 @@ class FieldCheckbox extends React.Component {
                         checked={ checked ? 'checked' : '' }
                         value={ value }
                         onChange={ e => handleUserInput(e) }
+                        disabled={ disabled }
                     />
                     <label htmlFor={ name }>{ label }</label>
                 </div>
