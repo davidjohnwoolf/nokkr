@@ -13,7 +13,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 //index
-router.get('/', requireManager, (req, res) => {
+router.get('/', requireAdmin, (req, res) => {
     const loggedInUser = req.loggedInUser;
     
     //if manager only show own team
