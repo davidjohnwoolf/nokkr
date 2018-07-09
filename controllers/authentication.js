@@ -20,6 +20,8 @@ router.post('/login', (req, res) => {
         
         if (!user) return res.json({ status: FAIL, data: { message: 'Username or password is incorrect' } });
         
+        if (!user.isActive) return res.json({ status: FAIL, data: { message: 'User is inactive' } });
+        
         user.comparePassword(req.body.password, function(err, isMatch) {
             if (err) return res.json({ status: ERROR, data: err, message: 'Error authenticating credentials' });
             
