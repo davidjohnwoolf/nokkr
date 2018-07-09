@@ -122,15 +122,13 @@ class UserEdit extends React.Component {
         
         //convert fields obj into user obj
         for (let key in userData) {
+            let fieldType = ('checked' in userData[key]) ? 'checked' : 'value';
             
-            if (key === 'password' || key === 'passwordConfirmation') {
+            if ((key === 'password' || key === 'passwordConfirmation') && !userData[key].value) {
                 //remove password if empty
-                if (!userData[key].value) delete userData[key];
-            } else if ('value' in userData[key]) {
-                userData[key] = userData[key].value;
-            } else if ('checked' in userData[key]) {
-                userData[key] = userData[key].checked;
-                console.log(userData[key])
+                delete userData[key];
+            } else {
+                userData[key] = userData[key][fieldType];
             }
         }
         

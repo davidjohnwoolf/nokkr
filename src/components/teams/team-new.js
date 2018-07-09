@@ -72,12 +72,9 @@ class TeamNew extends React.Component {
         
         //convert fields obj into team obj
         for (let key in teamData) {
+            let fieldType = ('checked' in teamData[key]) ? 'checked' : 'value';
 
-            if ('value' in teamData[key]) {
-                teamData[key] = teamData[key].value;
-            } else if ('checked' in teamData[key]) {
-                teamData[key] = teamData[key].checked;
-            }
+            teamData[key] = teamData[key][fieldType];
         }
         
         this.props.createTeam(teamData);

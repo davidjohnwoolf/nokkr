@@ -94,12 +94,9 @@ class UserNew extends React.Component {
         
         //convert fields obj into user obj
         for (let key in userData) {
+            let fieldType = ('checked' in userData[key]) ? 'checked' : 'value';
 
-            if ('value' in userData[key]) {
-                userData[key] = userData[key].value;
-            } else if ('checked' in userData[key]) {
-                userData[key] = userData[key].checked;
-            }
+            userData[key] = userData[key][fieldType];
         }
         
         this.props.createUser(userData);
