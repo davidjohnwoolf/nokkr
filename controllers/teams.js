@@ -3,6 +3,7 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const Account = require('../models/account');
 const Team = require('../models/team');
+const User = require('../models/user');
 
 //status variables for Jsend API spec and su role
 const { SUCCESS, FAIL, ERROR, MANAGER } = require('../lib/constants');
@@ -123,13 +124,22 @@ router.delete('/:id', requireAdmin, excludeReadOnly, (req, res) => {
     	
     	if (teamIndex < 0) return res.json({ status: ERROR, code: 404, message: 'Team not found' });
     	
-    	account.teams[teamIndex].remove();
+    	User.find({ team: req.params.id }, (err, users) => {
+    	    if (err) return res.json({ status: ERROR, data: err, message: 'Error finding users' });
+    	    
+    	    if (users.length) {
+    	        return res.json({ status: ERROR, data: err, message: 'Cannot delete team with users' });
+    	    }
+    	    
+    	    account.teams[teamIndex].remove();
     	
-    	account.save(err => {
-            if (err) return res.json({ status: ERROR, data: err, message: 'Error deleting team' });
-            
-            return res.json({ status: SUCCESS, data: { message: 'Team deleted' } });
-        });
+        	account.save(err => {
+                if (err) return res.json({ status: ERROR, data: err, message: 'Error deleting team' });
+                
+                return res.json({ status: SUCCESS, data: { message: 'Team deleted' } });
+            });
+        
+    	});
     });
 });
 
