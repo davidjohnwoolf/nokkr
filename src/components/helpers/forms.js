@@ -26,8 +26,7 @@ export const requiredExceptAdmin = args => {
     const { value, fields } = args;
     
     const role = fields.role.value;
-    
-    console.log('role', role)
+
     if ((role === USER) || (role === MANAGER)) {
         return (value ? undefined : 'Required');
     }
