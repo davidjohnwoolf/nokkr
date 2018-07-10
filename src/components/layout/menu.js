@@ -28,7 +28,7 @@ class Menu extends React.Component {
                         <h5>User Options</h5>
                         <ul>
                             <li>
-                                <Link onClick={ showMenu } to={ `/users/${ id }` }>Account <i className="fas fa-user-circle" aria-hidden="true"></i></Link>
+                                <Link onClick={ showMenu } to={ `/users/${ id }` }>Account <i className="fas fa-user-circle"></i></Link>
                             </li>
                             <li>
                                 <Link onClick={ showMenu } to="/reports">Reports <i className="fas fa-chart-bar"></i></Link>
