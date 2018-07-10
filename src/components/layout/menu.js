@@ -34,9 +34,6 @@ class Menu extends React.Component {
                                 <Link onClick={ showMenu } to="/reports">Reports <i className="fas fa-chart-bar"></i></Link>
                             </li>
                             <li>
-                                <Link onClick={ showMenu } to="/address-lookup">Address Lookup <i className="fas fa-address-card"></i></Link>
-                            </li>
-                            <li>
                                 <Link onClick={ showMenu } to="/support">Dealer Resources <i className="fas fa-info-circle"></i></Link>
                             </li>
                             <li>
