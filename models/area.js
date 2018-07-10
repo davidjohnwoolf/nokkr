@@ -1,14 +1,14 @@
-/*const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const uniqueValidator = require('mongoose-unique-validator');
 
 const AreaSchema = new Schema({
-    title: { type: String, required: true, index: { unique: true } },
+    title: { type: String, required: true, index: true, unique: true, uniqueCaseInsensitive: true, sparse: true },
     coords: { type: Array, required: true }, //validation for the google maps coords?
-    areaGroup: { type: String, required: true },
-    city: { type: String, required: true },
+    areaGroup: { type: Schema.Types.ObjectId, required: true },
     isActive: { type: Boolean, default: true },
-    timesKnocked: { type: Number, default: 1 },
-    lastKnocked: { type: Date },
+    timesKnocked: { type: Number, default: 0 },
+    lastKnocked: { type: Date }, //is updated when lead is created in it
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date }
 });
@@ -18,4 +18,6 @@ AreaSchema.pre('save', function(next) {
     next();
 });
 
-module.exports = mongoose.model('Area', AreaSchema);*/
+AreaSchema.plugin(uniqueValidator, { message: 'The {PATH} {VALUE} already exists' });
+
+module.exports = mongoose.model('Area', AreaSchema);

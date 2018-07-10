@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 const uniqueValidator = require('mongoose-unique-validator');
 
-//const Area = require('./area');
+const Area = require('./area');
 
 const UserSchema = new Schema({
     firstName: { type: String, required: true },
@@ -27,7 +27,7 @@ const UserSchema = new Schema({
     role: { type: String, required: true, enum: ['user', 'manager', 'admin', 'su'], default: 'user'},
     isReadOnly: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
-    //areas: [Area.schema],
+    areas: [Area.schema],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date }
 });
