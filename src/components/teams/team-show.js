@@ -25,9 +25,9 @@ class TeamShow extends React.Component {
         const teamUsers = [];
         
         users.forEach(user => {
-            if (user.role === MANAGER && user.team === team._id) {
+            if (user.role === MANAGER || user.role === ADMIN) {
                 teamManagers.push(user);
-            } else if (user.team === team._id) {
+            } else {
                 teamUsers.push(user);
             }
         });

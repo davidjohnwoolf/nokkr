@@ -13,7 +13,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 //index
-router.get('/', requireAdmin, (req, res) => {
+router.get('/', requireManager, (req, res) => {
     const loggedInUser = req.loggedInUser;
     
     //if manager only show own team
@@ -89,12 +89,17 @@ router.get('/:id', requireUser, (req, res) => {
     
 
     //if admin or su or own user
-    if ((loggedInUser.role === ADMIN) || (loggedInUser.role === SU) || (req.params.id === loggedInUser.id)) {
+    if ((loggedInUser.role === ADMIN) || (loggedInUser.role === SU) || (loggedInUser.role === MANAGER) || (req.params.id === loggedInUser.id)) {
 
         User.findOne({ _id: req.params.id }, (err, user) => {
             if (err) return res.json({ status: ERROR, data: err, message: 'Error finding user' });
             
             if (!user) return res.json({ status: ERROR, data: err, code: 404, message: 'User not found' });
+            
+            //check manager authorization after we know the team of the user
+            if ((loggedInUser.role === MANAGER) && (user.team != loggedInUser.team)) {
+                return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
+            }
             
             const safeUser = Object.assign({}, user._doc);
             

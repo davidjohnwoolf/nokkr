@@ -40,7 +40,7 @@ import { SU, ADMIN, MANAGER, USER } from '../lib/constants';
 
 //use react production build for production https://reactjs.org/docs/optimizing-performance.html#use-the-production-build
 
-const createStoreWithMiddleware = applyMiddleware(thunk, authorization)(createStore);
+const createStoreWithMiddleware = applyMiddleware(authorization, thunk)(createStore);
 
 //remove the devtools extensiom for production
 const store = createStoreWithMiddleware(reducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());

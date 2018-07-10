@@ -91,8 +91,6 @@ router.put('/:id', requireManager, excludeReadOnly, (req, res) => {
         
         const teamIndex = account.teams.findIndex(team => team.id === req.params.id);
         
-        console.log(teamIndex)
-        
         if (teamIndex < 0) return res.json({ status: ERROR, code: 404, message: 'Team not found' });
         
         for (let key in req.body) {
