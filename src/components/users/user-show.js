@@ -17,7 +17,7 @@ class UserShow extends React.Component {
 
     renderUser() {
         
-        const { user, history, role, sessionId, sessionTeam } = this.props;
+        const { user, history, role, sessionId, sessionTeam, isReadOnly } = this.props;
         
         if (!user) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
@@ -32,7 +32,7 @@ class UserShow extends React.Component {
                     <header className="content-header">
                         <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
                         <h1>{ `${user.firstName} ${user.lastName}` }</h1>
-                        { (role === ADMIN || (role === SU))
+                        { ((role === ADMIN || (role === SU)) && !isReadOnly)
                             ? <Link to={ `/users/${ this.props.match.params.id }/edit` } className="icon-button-primary"><i className="fas fa-edit"></i></Link>
                             : '' }
                     </header>
@@ -68,6 +68,7 @@ const mapStateToProps = state => ({
     user: state.users.user,
     message: state.users.message,
     role: state.auth.role,
+    isReadOnly: state.auth.isReadOnly,
     sessionTeam: state.auth.sessionTeam,
     sessionId: state.auth.sessionId
 });

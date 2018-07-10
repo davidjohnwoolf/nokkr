@@ -124,8 +124,11 @@ class UserEdit extends React.Component {
         for (let key in userData) {
             let fieldType = ('checked' in userData[key]) ? 'checked' : 'value';
             
+            //remove password if empty
             if ((key === 'password' || key === 'passwordConfirmation') && !userData[key].value) {
-                //remove password if empty
+                delete userData[key];
+            //remove team if empty
+            } else if (key === 'team' && !userData[key][fieldType]) {
                 delete userData[key];
             } else {
                 userData[key] = userData[key][fieldType];
