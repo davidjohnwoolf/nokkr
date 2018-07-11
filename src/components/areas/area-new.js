@@ -124,6 +124,7 @@ class AreaNew extends React.Component {
                             error={ areaGroup.error }
                             options={ areaGroupOptions }
                         />
+                        <a href="#">Create New Group</a>
                         <FieldSelect
                             name="userId"
                             value={ userId.value }
