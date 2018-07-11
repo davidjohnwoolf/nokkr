@@ -1,0 +1,23 @@
+.map-container {
+    > .custom-map-controls {
+        display: flex;
+        
+        > div {
+            width: 100%;
+            margin: .65rem .5rem 0 .5rem;
+        }
+    }
+    
+    > #map {
+        width: 100%;
+        height: 40rem;
+        
+        @include media-xs {
+            height: 50rem;
+        }
+    
+        @include media-sm-plus {
+            height: 60rem;
+        }
+    }
+}

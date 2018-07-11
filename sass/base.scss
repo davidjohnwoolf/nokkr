@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,900');
 @import 'variables';
 @import 'mixins';
+@import 'buttons';
 @import 'tables';
+@import 'maps';
 
 //Elements
 
@@ -300,108 +302,6 @@ select {
     }
 }
 
-//Buttons
-
-.btn-group {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    
-    > select {
-        width: auto;
-    }
-}
-
-.btn {
-    border: none;
-    padding: $gutter $gutter-lg;
-    margin: $gutter 0;
-    color: $white;
-    text-decoration: none;
-    transition: $transition;
-    line-height: normal;
-    border-radius: $radius;
-    
-    > .icon-front {
-        display: none;
-        margin-right: $gutter-sm;
-        
-        @include media-xs-plus {
-            display: inline-block;
-        }
-    }
-    
-    &:hover {
-        color: $white;
-        cursor: pointer;
-    }
-}
-
-.btn-primary {
-    background: $primary;
-    
-    &:hover {
-        background: $primary-light;
-    }
-}
-
-.btn-cancel {
-    background: $gray;
-    
-    &:hover {
-        background: $gray-light;
-    }
-}
-
-.btn-danger {
-    background: $error;
-    
-    &:hover {
-        background: $error-light;
-    }
-}
-
-.btn-warning {
-    background: $warning;
-    
-    &:hover {
-        background: $warning-light;
-    }
-}
-
-.icon-button-success {
-    color: $success;
-    font-size: 2.5rem;
-    padding: $gutter;
-    margin-top: $gutter;
-    
-    &:hover {
-        color: $success-light;
-    }
-}
-
-.icon-button-danger {
-    color: $error;
-    font-size: 2.5rem;
-    padding: $gutter;
-    margin-top: $gutter;
-    
-    &:hover {
-        color: $error-light;
-    }
-}
-
-.icon-button-primary {
-    color: primary;
-    font-size: 2.5rem;
-    padding: $gutter;
-    margin-top: $gutter;
-    
-    &:hover {
-        color: $primary-light;
-    }
-}
-
 //Messages
 
 .flash {
@@ -450,21 +350,6 @@ select {
     justify-content: space-between;
     align-items: center;
 }
-
-//Maps
-#map {
-    width: 100%;
-    height: 40rem;
-    
-    @include media-xs {
-        height: 50rem;
-    }
-
-    @include media-sm-plus {
-        height: 60rem;
-    }
-}
-
 
 //General Classes
 
