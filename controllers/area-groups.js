@@ -44,7 +44,13 @@ router.post('/', requireManager, excludeReadOnly, (req, res) => {
                 });
             }
             
-            return res.json({ status: SUCCESS, data: { message: 'Area group created' } });
+            return res.json({
+                status: SUCCESS,
+                data: {
+                    message: 'Area group created',
+                    id: account.areaGroups.find(areaGroup => areaGroup.title === req.body.title).id
+                }
+            });
         });
     });
 });
