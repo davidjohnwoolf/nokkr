@@ -1,125 +1,179 @@
-/*const express = require('express');
+const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const User = require('../models/user');
+const Area = require('../models/area');
 
-const verifyToken = require('./helpers/authorization');
+//status variables for Jsend API spec, password regex and role constants
+const { SUCCESS, FAIL, ERROR, PW_REGEX, USER, MANAGER, ADMIN, SU } = require('../lib/constants');
 
-//for specific user requests
-const USER_PATH = '/users/:id';
+const { requireAdmin, requireManager, requireUser, excludeReadOnly } = require('./helpers/authorization');
 
-//status variables for Jsend API spec
-const { SUCCESS, FAIL, ERROR } = require('../lib/constants');
-
-// body parser middleware
+//body parser middleware
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
-//index all
-router.get('/areas', (req, res) => {
-    User.find({}, (err, users) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding users' });
+//index
+router.get('/', requireManager, (req, res) => {
+    const loggedInUser = req.loggedInUser;
+    
+    //if manager only show own teams areas
+    if (loggedInUser.role === MANAGER) {
+        User.find({ team: loggedInUser.team }, (err, users) => {
+            if (err) return res.json({ status: ERROR, data: err, message: 'Error finding users' });
+            
+            const areas = [];
+            
+            users.forEach(user => areas.concat(user.areas));
+            
+            return res.json({ status: SUCCESS, data: { areas } });
+        });
         
-        const allAreas = [];
-        
-        for (let user in users) {
-            users[user].areas.forEach(c => {
-
-                let area = Object.assign({}, c._doc);
-                
-                area.userData = { name: users[user].name, id: users[user].id };
-                
-                allAreas.push(area);
-            });
-        }
-        
-        return res.json({ status: SUCCESS, data: { allAreas } });
-    });
-});
-
-//index user
-router.get(`${ USER_PATH }/areas`, (req, res) => {
-    User.findOne({ _id: req.params.id }, (err, user) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
-        
-        return res.json({ status: SUCCESS, data: { areas: user.areas } });
-    });
+    //if above manager show all areas
+    } else {
+        User.find({}, (err, users) => {
+            if (err) return res.json({ status: ERROR, data: err, message: 'Error finding users' });
+            
+            const areas = [];
+            
+            users.forEach(user => areas.concat(user.areas));
+            
+            return res.json({ status: SUCCESS, data: { areas } });
+        });
+    }
 });
 
 //create
-router.post('/areas', (req, res) => {
-    User.findOne({ _id: req.body.userId }, (err, user) => {
-        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
+router.post('/', requireManager, excludeReadOnly, (req, res) => {
+    User.findOne({ _id: req.params.id }, (err, user) => {
+        if (err) return res.json({ status: ERROR, data: err, message: 'Error finding user' });
         
-        if (!user) {
-            return res.json({ status: FAIL, data: { message: 'User either not selected or invalid' } });
-        }
+        user.areas.push(new Area(req.body));
         
-        if (user.areas.find(area => area.title === req.body.title)) {
-            return res.json({ status: FAIL, data: { message: 'Area title already exists for this user' } });
-        }
-        
-        delete req.body.userId;
-        
-        user.areas.push(req.body);
-        
-        user.save(err => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error saving user' });
+        user.save((err, user) => {
+            if (err) {
+                return res.json({
+                    status: ERROR,
+                    data: err,
+                    message: err.message || 'Error creating area'
+                });
+            }
             
-            return res.json({ status: SUCCESS, data: { message: 'Area created' } });
+            return res.json({
+                status: SUCCESS,
+                data: {
+                    message: 'Area created',
+                    id: user.areas.find(area => area.title === req.body.title).id
+                }
+            });
         });
     });
 });
 
 //show
-router.get(`${ USER_PATH }/areas/:areaId`, (req, res) => {
-    User.findOne({ _id: req.params.id }, (err, user) => {
+router.get('/:id', requireUser, (req, res) => {
+    const loggedInUser = req.loggedInUser;
+
+    User.find({}, (err, users) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
         
-        const area = user.areas.find(area => area.id === req.params.areaId);
+        let area;
+        let user;
+        
+        users.forEach(currentUser => {
+            let currentArea = user.areas.find(area => area.id === req.params.areaId)
+            if (currentArea) {
+                area = currentArea;
+                user = currentUser;
+            }
+        });
         
         if (!area) return res.json({ status: ERROR, data: err, code: 404, message: 'Area not found' });
         
+        //manager and not own team or user and not own area
+        if ((loggedInUser.role === MANAGER && (user.team != loggedInUser.team)) || (loggedInUser.role === USER && (loggedInUser.id != user.id))) {
+            return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
+        }
+        
         return res.json({ status: SUCCESS, data: { area } });
     });
+
 });
 
 //update
-router.put(`${ USER_PATH }/areas/:areaId`, (req, res) => {
-    User.findOne({ _id: req.params.id }, (err, user) => {
+router.put('/:id', requireUser, excludeReadOnly, (req, res) => {
+    const loggedInUser = req.loggedInUser;
+    
+    User.find({}, (err, users) => {
         if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
         
-        const areaIndex = user.areas.findIndex(area => area.id === req.params.id);
+        let areaIndex;
+        let user;
+        
+        users.forEach(currentUser => {
+            let currentAreaIndex = user.areas.findIndex(area => area.id === req.params.areaId)
+            if (currentAreaIndex) {
+                areaIndex = currentAreaIndex;
+                user = currentUser;
+            }
+        });
         
         if (!areaIndex) return res.json({ status: ERROR, data: err, code: 404, message: 'Area not found' });
         
-        for (let key in req.body) {
-        	user.areas[areaIndex][key] = req.body[key];
+        //manager and not own team or user and not own area
+        if ((loggedInUser.role === MANAGER && (user.team != loggedInUser.team)) || (loggedInUser.role === USER && (loggedInUser.id != user.id))) {
+            return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
         }
         
-        user.save(err => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error updating area' });
+        for (let key in req.body) {
+        	user[areaIndex][key] = req.body[key];
+        }
+        
+        user.save((err, user) => {
+            if (err) {
+                return res.json({
+                    status: ERROR,
+                    data: err,
+                    message: err.message || 'Error creating area'
+                });
+            }
             
             return res.json({ status: SUCCESS, data: { message: 'Area updated' } });
         });
     });
 });
 
-// destroy
-router.delete(`${ USER_PATH }/areas/:areaId`, verifyToken, (req, res) => {
-    User.findOne({ _id: req.params.id }, (err, user) => {
-    	if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
-    	
-    	const areaIndex = user.areas.findIndex(area => area.id === req.params.id);
-    	
-    	user.areas[areaIndex].remove();
-    	
-    	user.save(err => {
-            if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error deleting area' });
-            
-            return res.json({ status: SUCCESS, data: { message: 'Area deleted' } });
+
+//destroy
+router.delete('/:id', requireAdmin, excludeReadOnly, (req, res) => {
+    const loggedInUser = req.loggedInUser;
+    
+    User.find({}, (err, users) => {
+        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
+        
+        let areaIndex;
+        let user;
+        
+        users.forEach(currentUser => {
+            let currentAreaIndex = user.areas.findIndex(area => area.id === req.params.areaId)
+            if (currentAreaIndex) {
+                areaIndex = currentAreaIndex;
+                user = currentUser;
+            }
         });
+        
+        if (!areaIndex) return res.json({ status: ERROR, data: err, code: 404, message: 'Area not found' });
+        
+        //manager and not own team or user and not own area
+        if ((loggedInUser.role === MANAGER && (user.team != loggedInUser.team)) || (loggedInUser.role === USER && (loggedInUser.id != user.id))) {
+            return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
+        }
+        
+        user.areas[areaIndex].remove();
+        
+        return res.json({ status: SUCCESS, data: { message: 'User deleted' } });
+        
     });
 });
 
-module.exports = router;*/
+module.exports = router;
