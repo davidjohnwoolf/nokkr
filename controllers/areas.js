@@ -45,8 +45,10 @@ router.get('/', requireManager, (req, res) => {
 
 //create
 router.post('/', requireManager, excludeReadOnly, (req, res) => {
-    User.findOne({ _id: req.params.id }, (err, user) => {
+    User.findOne({ _id: req.body.userId }, (err, user) => {
         if (err) return res.json({ status: ERROR, data: err, message: 'Error finding user' });
+        
+        delete req.body.userId;
         
         user.areas.push(new Area(req.body));
         
