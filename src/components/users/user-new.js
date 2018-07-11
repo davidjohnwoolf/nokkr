@@ -236,7 +236,7 @@ class UserNew extends React.Component {
                                 type="submit">
                                 Submit
                             </button>
-                            <a onClick={ this.props.history.goBack } style={{ cursor: 'pointer' }} className="btn btn-cancel">Cancel</a>
+                            <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="btn btn-cancel">Cancel</a>
                         </div>
                     </form>
                 </section>
