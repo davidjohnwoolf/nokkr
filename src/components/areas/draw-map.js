@@ -9,7 +9,7 @@ class DrawMap extends React.Component {
         super(props);
         
         //not in state, letting Google handle map control, just making available to component
-        //think of a different patter for this
+        //think of a different pattern for this
         this.autocomplete = null;
         this.drawingManager = null;
         this.map = null;
@@ -18,10 +18,14 @@ class DrawMap extends React.Component {
         this.overlay = null;
         this.areaPolygons = {};
         
+        this.state = {
+            drawingMode: true
+        }
+        
         this.resetMap = this.resetMap.bind(this);
-        this.showAreas = this.showAreas.bind(this);
-        this.goToArea = this.goToArea.bind(this);
+        //this.goToArea = this.goToArea.bind(this);
         this.renderAreaOptions = this.renderAreaOptions.bind(this);
+        this.toggleDrawingMode = this.toggleDrawingMode.bind(this);
     }
     
     componentDidMount() {
@@ -44,6 +48,8 @@ class DrawMap extends React.Component {
         this.map = new google.maps.Map(document.getElementById('map'), {
             center: {lat: 40, lng: -100},
             zoom: 4,
+            disableDefaultUI: true,
+            zoomControl: true,
             styles: mapStyles
         });
         
@@ -51,15 +57,14 @@ class DrawMap extends React.Component {
         
         this.drawingManager = new google.maps.drawing.DrawingManager({
             drawingMode: google.maps.drawing.OverlayType.POLYGON,
-            drawingControl: true,
-            drawingControlOptions: {
-                position: google.maps.ControlPosition.TOP_CENTER,
-                drawingModes: ['polygon']
-            },
-            polygonOptions: {
+            drawingControl: false,
+            //drawingControlOptions: {
+            //    drawingModes: ['polygon']
+            //},
+            //polygonOptions: {
                 //see if you can get this to update the coords
                 //editable: true
-            }
+            //}
         });
         
         this.autocomplete.addListener('place_changed', () => {
@@ -90,8 +95,8 @@ class DrawMap extends React.Component {
                 //basically you need to make it so only one overlay is available
                 this.overlay.setMap(null);
             }
-        
-            this.drawingManager.setDrawingMode(null);
+            
+            this.toggleDrawingMode();
             
             this.overlay = e.overlay;
             
@@ -118,7 +123,13 @@ class DrawMap extends React.Component {
             }
             
             areaPolygon.addListener('click', () => this.map.fitBounds(this.areaPolygons[area._id].bounds));
+            
         });
+        
+        //show areas
+        for (let poly in this.areaPolygons) {
+            this.areaPolygons[poly].polygon.setMap(this.map);
+        }
     }
     
     resetMap() {
@@ -127,16 +138,20 @@ class DrawMap extends React.Component {
         this.props.handleOverlay(null);
     }
     
-    showAreas() {
+    toggleDrawingMode() {
 
-        for (let poly in this.areaPolygons) {
-            this.areaPolygons[poly].polygon.setMap(this.map);
+        if (this.state.drawingMode) {
+            this.drawingManager.setDrawingMode(null);
+            this.setState({ drawingMode: false });
+        } else {
+            this.drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+            this.setState({ drawingMode: true });
         }
     }
     
-    goToArea(e) {
-        if (e.target.value) this.map.fitBounds(this.areaPolygons[e.target.value].bounds);
-    }
+    //goToArea(e) {
+    //    if (e.target.value) this.map.fitBounds(this.areaPolygons[e.target.value].bounds);
+    //}
     
     renderAreaOptions() {
         return this.props.areas.map(area => {
@@ -151,20 +166,20 @@ class DrawMap extends React.Component {
 
     render() {
         
-        const { resetMap, showAreas, goToArea, renderAreaOptions } = this;
-        
+        const { resetMap, goToArea, renderAreaOptions } = this;
         return (
-            <div className="map-constainer">
-                <input id="map-search" type="text" placeholder="enter location to go to" />
+            <div className="map-container">
+                <div className="custom-map-controls">
+                    <button onClick={ resetMap } disabled={ !this.overlay } className="btn btn-primary"><i className="fas fa-undo"></i></button>
+                    <div><input id="map-search" type="text" placeholder="enter location to go to" /></div>
+                    <button onClick={ this.toggleDrawingMode } className={ this.state.drawingMode ? 'btn btn-success' : 'btn btn-cancel' }><i className="fas fa-pencil-alt"></i></button>
+                </div>
                 <div id="map"></div>
-                <select onChange={ e => goToArea(e) }>
+                
+                { /*<select onChange={ e => goToArea(e) }>
                     <option value="">Go to Area</option>
                     { renderAreaOptions() }
-                </select>
-                <div className="btn-group">
-                    <button className="btn btn-warning" onClick={ resetMap } disabled={ !this.overlay }>Reset</button>
-                    <button className="btn btn-warning" onClick={ showAreas }>Show Current Areas</button>
-                </div>
+                </select> */ }
             </div>
         );
     }

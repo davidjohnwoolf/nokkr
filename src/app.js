@@ -32,7 +32,7 @@ import UserNew from './components/users/user-new';
 import UserEdit from './components/users/user-edit';
 import UserShow from './components/users/user-show';
 import UserIndex from './components/users/user-index';
-//import AreaNew from './components/areas/area-new';
+import AreaNew from './components/areas/area-new';
 //import AreasAll from './components/areas/areas-all';
 //import AreasUser from './components/areas/areas-user';
 
@@ -96,6 +96,11 @@ ReactDOM.render(
                         <PrivateRoute exact path="/users/:id/edit" access={ ADMIN } writeAccess="true" component={ UserEdit } />
                         <PrivateRoute exact path="/users/:id" component={ UserShow } />
                 		<PrivateRoute exact path="/users" access={ ADMIN } component={ UserIndex } />
+                		
+                		<PrivateRoute exact path="/areas/new" access={ MANAGER } writeAccess="true" component={ AreaNew } />
+                        { /*<PrivateRoute exact path="/areas/:id/edit" access={ MANAGER } writeAccess="true" component={ AreaEdit } />
+                        <PrivateRoute exact path="/areas/:id" component={ AreaShow } />
+                		<PrivateRoute exact path="/areas" access={ MANAGER } component={ AreaIndex } /> */ }
                 		
                 		<PrivateRoute exact path="/" permission="user" component={ Dashboard } />
                 		

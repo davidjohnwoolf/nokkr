@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import DrawMap from './draw-map';
-import { required, validate } from '../helpers/validation';
-import FieldInput from '../helpers/field-input';
-import FieldSelect from '../helpers/field-select';
+import { required, validate } from '../helpers/forms';
+import FieldInput from '../forms/field-input';
+import FieldSelect from '../forms/field-select';
 import { createArea, clearArea } from '../../actions/areas.action';
 import { fetchUsers } from '../../actions/users.action';
 import { sendMessage } from '../../actions/flash.action';
@@ -21,15 +21,15 @@ class AreaNew extends React.Component {
         
         this.validationRules = {
             title: [required],
-            city: [required],
+            areaGroup: [required],
             userId: [required]
         };
         
         this.state = {
             fields: {
                 title: { value: '', error: '' },
-                userId: { value: '', error: '' },
-                city: { value: '', error: '' }
+                areaGroup: { value: '', error: '' },
+                userId: { value: '', error: '' }
             },
             coords: null,
             formValid: false,
@@ -75,20 +75,21 @@ class AreaNew extends React.Component {
 
     render() {
         
-        const { handleSubmit, handleUserInput, handleOverlay } = this;
-        const { formValid, serverError, coords } = this.state;
-        const { title, city, userId } = this.state.fields;
-        const { users } = this.props;
+        const { handleSubmit, handleUserInput, handleOverlay, state, props } = this;
+        const { formValid, serverError, coords } = state;
+        const { title, areaGroup, userId } = state.fields;
+        const { users, history } = props;
+        
         const userSelectOptions = [['Assign User', '']];
+        const areaGroupOptions = [['Select Group', '']];
         let areas = [];
         
-        if (!users) return null;
+        if (!users) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
         
         users.forEach(user => {
-            let userOption = [user.name, user.id];
+            let userOption = [`${user.firstName} ${user.lastName}` , user._id];
             
             userSelectOptions.push(userOption);
-            
             
             areas = areas.concat(user.areas);
         });
@@ -98,7 +99,12 @@ class AreaNew extends React.Component {
                 
             <main id="area-new" className="content">
                 <section className="form">
-                    <h1>Create Area</h1>
+                    <header className="content-header">
+                        <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
+                        <h1>Create Area</h1>
+                        { /* onClick={ openSettings } */ }
+                        <a style={{ cursor: 'pointer' }} className="icon-button-primary"><i className="fas fas fa-cog"></i></a>
+                    </header>
                     
                     <DrawMap handleOverlay={ handleOverlay } areas={ areas } />
                     
@@ -108,18 +114,17 @@ class AreaNew extends React.Component {
                         <FieldInput
                             name="title"
                             type="text"
-                            placeholder="area title"
+                            placeholder="title"
                             value={ title.value }
                             handleUserInput={ handleUserInput }
                             error={ title.error }
                         />
-                        <FieldInput
-                            name="city"
-                            type="text"
-                            placeholder="enter city name"
-                            value={ city.value }
+                        <FieldSelect
+                            name="areaGroup"
+                            value={ areaGroup.id }
                             handleUserInput={ handleUserInput }
-                            error={ city.error }
+                            error={ areaGroup.error }
+                            options={ areaGroupOptions }
                         />
                         <FieldSelect
                             name="userId"
@@ -138,9 +143,7 @@ class AreaNew extends React.Component {
                                 type="submit">
                                 Save Area
                             </button>
-                            <Link className="btn btn-cancel" to="/areas">
-                                Cancel
-                            </Link>
+                            <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="btn btn-cancel">Cancel</a>
                         </div>
                     </form>
                 </section>
