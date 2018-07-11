@@ -102,8 +102,6 @@ class AreaNew extends React.Component {
                     <header className="content-header">
                         <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
                         <h1>Create Area</h1>
-                        { /* onClick={ openSettings } */ }
-                        <a style={{ cursor: 'pointer' }} className="icon-button-primary"><i className="fas fas fa-cog"></i></a>
                     </header>
                     
                     <DrawMap handleOverlay={ handleOverlay } areas={ areas } />

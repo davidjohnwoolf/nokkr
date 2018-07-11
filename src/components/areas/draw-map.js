@@ -170,12 +170,12 @@ class DrawMap extends React.Component {
         return (
             <div className="map-container">
                 <div className="custom-map-controls">
-                    <button onClick={ resetMap } disabled={ !this.overlay } className="btn btn-primary"><i className="fas fa-undo"></i></button>
-                    <div><input id="map-search" type="text" placeholder="enter location to go to" /></div>
                     <button onClick={ this.toggleDrawingMode } className={ this.state.drawingMode ? 'btn btn-success' : 'btn btn-cancel' }><i className="fas fa-pencil-alt"></i></button>
+                    <div><input id="map-search" type="text" placeholder="enter location to go to" /></div>
+                    <a style={{ cursor: 'pointer' }} className="btn btn-primary"><i className="fas fas fa-cog"></i></a>
                 </div>
                 <div id="map"></div>
-                
+                <button onClick={ resetMap } disabled={ !this.overlay } className="btn btn-primary"><i className="fas fa-undo"></i></button>
                 { /*<select onChange={ e => goToArea(e) }>
                     <option value="">Go to Area</option>
                     { renderAreaOptions() }
