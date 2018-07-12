@@ -1,8 +1,10 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,900');
 @import 'variables';
 @import 'mixins';
+@import 'forms';
 @import 'buttons';
 @import 'tables';
+@import 'modals';
 @import 'maps';
 
 //Elements
@@ -208,55 +210,6 @@ select {
         > .btn-group .btn {
             margin: 0;
         }
-    }
-}
-
-//Forms
-
-.form {
-    padding: $gutter-lg;
-    
-    > form {
-    
-        > .field {
-            margin: $gutter-xs 0;
-            
-            > .input-message {
-                display: inline-block;
-                font-style: italic;
-                margin-top: $gutter;
-            }
-            
-            > .input {
-                > .input-error {
-                    border-color: $error;
-                    &:focus {
-                        box-shadow: 0 0 3px $error;
-                        outline: none;
-                    }
-                }
-            }
-            
-            > .checkbox {
-                display: flex;
-                
-                > input {
-                    box-shadow: none;
-                    width: auto;
-                    margin-right: $gutter;
-                }
-            }
-            
-            > .input-error-message {
-                display: inline-block;
-                color: $error;
-            }
-        }
-    }
-    
-    > .server-error {
-        color: $error;
-        margin: $gutter 0;
     }
 }
 

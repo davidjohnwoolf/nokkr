@@ -1,0 +1,46 @@
+.modal-overlay {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $black;
+    opacity: .5;
+    z-index: 50;
+}
+
+.modal {
+    position: fixed;
+    top: 4rem;
+    left: 3rem;
+    right: 3rem;
+    background: $white;
+    border: $border;
+    z-index: 60;
+    padding: $gutter-lg;
+    
+    > .modal-header {
+        display: flex;
+        justify-content: space-between;
+        
+        > h2 {
+            margin-top: 0;
+        }
+        
+        > .modal-close {
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: $error;
+            margin-top: -3.5rem;
+            margin-right: -2rem;
+            font-size: $font-size-lg;
+            
+            &:hover {
+                color: $error-light;
+            }
+        }
+    }
+}

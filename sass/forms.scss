@@ -1,0 +1,86 @@
+//Forms
+
+.form {
+    padding: $gutter-lg;
+}
+
+form {
+    
+    > .field-with-icon {
+        display: flex;
+        justify-content: space-between;
+        
+        > .field {
+            width: 85%;
+        }
+        
+        > a {
+            width: 15%;
+            margin-top: 0;
+            text-align: right;
+        }
+    }
+
+    > .field {
+        margin: $gutter-xs 0;
+        
+        > .input-message {
+            display: inline-block;
+            font-style: italic;
+            margin-top: $gutter;
+        }
+        
+        > .input {
+            > .input-error {
+                border-color: $error;
+                &:focus {
+                    box-shadow: 0 0 3px $error;
+                    outline: none;
+                }
+            }
+        }
+        
+        > .color-picker {
+            display: flex;
+            
+            > label {
+                margin-top: 1rem;
+                margin-right: 1rem;
+            }
+            
+            > input {
+                height: 4rem;
+                width: 8rem;
+                padding: $gutter-sm;
+            }
+            
+            > .input-error {
+                border-color: $error;
+                &:focus {
+                    box-shadow: 0 0 3px $error;
+                    outline: none;
+                }
+            }
+        }
+        
+        > .checkbox {
+            display: flex;
+            
+            > input {
+                box-shadow: none;
+                width: auto;
+                margin-right: $gutter;
+            }
+        }
+        
+        > .input-error-message {
+            display: inline-block;
+            color: $error;
+        }
+    }
+}
+
+.server-error {
+    color: $error;
+    margin: $gutter 0;
+}
