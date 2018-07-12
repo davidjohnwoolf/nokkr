@@ -1,5 +1,9 @@
 import React from 'react';
+
 import mapStyles from '../helpers/map-styles';
+
+import Modal from '../layout/modal';
+import MapOptions from './map-options';
 
 //can you write your own react style listeners?
 
@@ -19,19 +23,26 @@ class DrawMap extends React.Component {
         this.areaPolygons = {};
         
         this.state = {
-            drawingMode: true
-        }
+            drawingMode: true,
+            modalShown: false,
+            mapType: 'roadmap'
+        };
         
         this.resetMap = this.resetMap.bind(this);
-        this.renderAreaOptions = this.renderAreaOptions.bind(this);
         this.toggleDrawingMode = this.toggleDrawingMode.bind(this);
+        this.toggleModal = this.toggleModal.bind(this);
+        this.setMapType = this.setMapType.bind(this);
+    }
+    
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.mapType !== this.state.mapType) this.map.setMapTypeId(this.state.mapType);
     }
     
     componentDidMount() {
         
         //maps no longer supports getBounds so we construct our own
-        google.maps.Polygon.prototype.getBounds = function() {
-            let bounds = new google.maps.LatLngBounds();
+        window.google.maps.Polygon.prototype.getBounds = function() {
+            let bounds = new window.google.maps.LatLngBounds();
             let paths = this.getPaths();
             let path;        
             for (var i = 0; i < paths.getLength(); i++) {
@@ -42,9 +53,9 @@ class DrawMap extends React.Component {
                 }
             }
             return bounds;
-        }
+        };
         
-        this.map = new google.maps.Map(document.getElementById('map'), {
+        this.map = new window.google.maps.Map(document.getElementById('map'), {
             center: {lat: 40, lng: -100},
             zoom: 4,
             disableDefaultUI: true,
@@ -52,10 +63,10 @@ class DrawMap extends React.Component {
             styles: mapStyles
         });
         
-        this.autocomplete = new google.maps.places.Autocomplete(document.getElementById('map-search'));
+        this.autocomplete = new window.google.maps.places.Autocomplete(document.getElementById('map-search'));
         
-        this.drawingManager = new google.maps.drawing.DrawingManager({
-            drawingMode: google.maps.drawing.OverlayType.POLYGON,
+        this.drawingManager = new window.google.maps.drawing.DrawingManager({
+            drawingMode: window.google.maps.drawing.OverlayType.POLYGON,
             drawingControl: false,
             //drawingControlOptions: {
             //    drawingModes: ['polygon']
@@ -106,7 +117,7 @@ class DrawMap extends React.Component {
         
         this.props.areas.forEach(area => {
             
-            let areaPolygon = new google.maps.Polygon({
+            let areaPolygon = new window.google.maps.Polygon({
                 paths: area.coords,
                 strokeColor: 'red',
                 strokeOpacity: 0.8,
@@ -119,7 +130,7 @@ class DrawMap extends React.Component {
                 bounds: areaPolygon.getBounds(),
                 center: areaPolygon.getBounds().getCenter(),
                 polygon: areaPolygon
-            }
+            };
             
             areaPolygon.addListener('click', () => this.map.fitBounds(this.areaPolygons[area._id].bounds));
             
@@ -143,34 +154,35 @@ class DrawMap extends React.Component {
             this.drawingManager.setDrawingMode(null);
             this.setState({ drawingMode: false });
         } else {
-            this.drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+            this.drawingManager.setDrawingMode(window.google.maps.drawing.OverlayType.POLYGON);
             this.setState({ drawingMode: true });
         }
     }
     
-    renderAreaOptions() {
-        return this.props.areas.map(area => {
-            
-            return (
-                <option key={ area._id } value={ area._id }>
-                    { area.title } - { area.city }
-                </option>
-            );
-        });
+    toggleModal() {
+        this.setState({ modalShown: !this.state.modalShown });
+    }
+    
+    setMapType(type) {
+        this.setState({ mapType: type });
     }
 
     render() {
         
-        const { resetMap, goToArea, renderAreaOptions } = this;
+        const { resetMap, toggleModal, toggleDrawingMode, setMapType, state } = this;
+        const { modalShown, drawingMode, mapType } = state;
         return (
             <div className="map-container">
                 <div className="custom-map-controls">
-                    <button onClick={ this.toggleDrawingMode } className={ this.state.drawingMode ? 'btn btn-success' : 'btn btn-cancel' }><i className="fas fa-pencil-alt"></i></button>
+                    <button onClick={ toggleDrawingMode } className={ drawingMode ? 'btn btn-success' : 'btn btn-cancel' }><i className="fas fa-pencil-alt"></i></button>
                     <div><input id="map-search" type="text" placeholder="enter location to go to" /></div>
-                    <a style={{ cursor: 'pointer' }} className="btn btn-primary"><i className="fas fas fa-cog"></i></a>
+                    <a style={{ cursor: 'pointer' }} onClick={ toggleModal } className="btn btn-primary"><i className="fas fas fa-cog"></i></a>
                 </div>
                 <div id="map"></div>
                 <button onClick={ resetMap } disabled={ !this.overlay } className="btn btn-primary"><i className="fas fa-undo"></i></button>
+                <Modal close={ toggleModal } shown={ modalShown } title="Area Settings">
+                    <MapOptions mapType={ mapType } setMapType={ setMapType } />
+                </Modal>
             </div>
         );
     }

@@ -9,7 +9,7 @@ const Modal = ({ close, shown, title, children }) => {
                     <h2>{ title }</h2>
                     <button onClick={ close } className="modal-close"><i className="fas fa-times"></i></button>
                 </header>
-                {children}
+                { children }
             </section>
         </div>
     );

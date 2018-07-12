@@ -17,7 +17,7 @@ export const fetchAreaGroups = () => {
         const response = await axios.get('/account/area-groups');
         
         if (response.data.status === ERROR) dispatch(sendError(response.data.message));
-        
+
         dispatch({ type: FETCH_AREA_GROUPS, areaGroups: response.data.data.areaGroups });
     };
 };

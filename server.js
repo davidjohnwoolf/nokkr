@@ -17,7 +17,7 @@ const LeadFields = require('./controllers/lead-fields');
 const AreaGroups = require('./controllers/area-groups');
 const Teams = require('./controllers/teams');
 const Users = require('./controllers/users');
-//const Areas = require('./controllers/areas');
+const Areas = require('./controllers/areas');
 
 // connect database
 if (process.env.NODE_ENV !== 'test') {
@@ -46,6 +46,7 @@ app.use('/account/fields', LeadFields);
 app.use('/account/area-groups', AreaGroups);
 app.use('/account/teams', Teams);
 app.use('/users/', Users);
+app.use('/areas/', Areas);
 
 //app.use('/', Areas);
 //app.use('/', Authentication);

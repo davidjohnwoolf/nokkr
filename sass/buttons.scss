@@ -107,3 +107,29 @@
         color: $primary-light;
     }
 }
+
+.button-toggle {
+    > button {
+        border: none;
+        padding: $gutter $gutter-lg;
+        margin: $gutter 0;
+        color: $white;
+        text-decoration: none;
+        transition: $transition;
+        line-height: normal;
+        background: $gray;
+        cursor: pointer;
+    
+        &:hover {
+            background: $gray-light;
+        }
+        
+        &.active {
+            background: $primary;
+        
+            &:hover {
+                background: $primary-light;
+            }
+        }
+    }
+}

@@ -4,17 +4,13 @@ import { connect } from 'react-redux';
 import { required, unique, validate } from '../helpers/forms';
 import FieldInput from '../forms/field-input';
 import FieldColor from '../forms/field-color';
-import { fetchAreaGroups, createAreaGroup, clearAreaGroup } from '../../actions/area-groups.action';
+import { createAreaGroup } from '../../actions/area-groups.action';
 import { sendMessage } from '../../actions/flash.action';
 
 class AreaGroupNew extends React.Component {
     
     constructor(props) {
         super(props);
-        
-        props.clearAreaGroup();
-
-        props.fetchAreaGroups();
         
         this.validationRules = Object.freeze({
             title: [required, unique],
@@ -26,34 +22,12 @@ class AreaGroupNew extends React.Component {
                 title: { value: '', error: '' },
                 color: { value: '#1e80c6', error: '' }
             },
-            isInitialized: false,
-            uniqueCandidateList: [],
+            uniqueCandidateList: props.areaGroups,
             formValid: false
         };
 
         this.handleUserInput = this.handleUserInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-    }
-    
-    static getDerivedStateFromProps(nextProps, prevState) {
-        const { areaGroups } = nextProps;
-        const { isInitialized } = prevState;
-        
-        if (!isInitialized && areaGroups) {
-            
-            return { uniqueCandidateList: areaGroups, isInitialized: true };
-            
-        } else {
-            return prevState;
-        }
-    }
-    
-    componentDidUpdate() {
-        const { success, message, sendMessage } = this.props;
-        
-        if (success) {
-            sendMessage(message);
-        }
     }
     
     handleUserInput(e) {
@@ -114,9 +88,7 @@ class AreaGroupNew extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    message: state.areaGroups.message,
-    success: state.areaGroups.success,
     areaGroups: state.areaGroups.areaGroups
 });
 
-export default connect(mapStateToProps, { fetchAreaGroups, createAreaGroup, sendMessage, clearAreaGroup })(AreaGroupNew);
+export default connect(mapStateToProps, { createAreaGroup, sendMessage })(AreaGroupNew);

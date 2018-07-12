@@ -22,7 +22,16 @@ router.get('/', requireManager, (req, res) => {
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
-        return res.json({ status: SUCCESS, data: { areas: account.areaGroups } });
+        const areaGroups = [];
+        
+        account.areaGroups.forEach(c => {
+            let areaGroup = Object.assign({}, c._doc);
+            areaGroups.push(areaGroup);
+        });
+        
+        console.log(areaGroups)
+        
+        return res.json({ status: SUCCESS, data: { areaGroups } });
     });
 });
 
