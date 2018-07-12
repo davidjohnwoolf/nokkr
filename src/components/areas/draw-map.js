@@ -23,7 +23,6 @@ class DrawMap extends React.Component {
         }
         
         this.resetMap = this.resetMap.bind(this);
-        //this.goToArea = this.goToArea.bind(this);
         this.renderAreaOptions = this.renderAreaOptions.bind(this);
         this.toggleDrawingMode = this.toggleDrawingMode.bind(this);
     }
@@ -149,10 +148,6 @@ class DrawMap extends React.Component {
         }
     }
     
-    //goToArea(e) {
-    //    if (e.target.value) this.map.fitBounds(this.areaPolygons[e.target.value].bounds);
-    //}
-    
     renderAreaOptions() {
         return this.props.areas.map(area => {
             
@@ -176,10 +171,6 @@ class DrawMap extends React.Component {
                 </div>
                 <div id="map"></div>
                 <button onClick={ resetMap } disabled={ !this.overlay } className="btn btn-primary"><i className="fas fa-undo"></i></button>
-                { /*<select onChange={ e => goToArea(e) }>
-                    <option value="">Go to Area</option>
-                    { renderAreaOptions() }
-                </select> */ }
             </div>
         );
     }

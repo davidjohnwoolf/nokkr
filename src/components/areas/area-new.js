@@ -2,10 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import DrawMap from './draw-map';
 import { required, validate } from '../helpers/forms';
+
+import DrawMap from './draw-map';
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
+import Modal from '../layout/modal';
+import AreaGroupNew from '../area-groups/area-group-new';
+
 import { createArea, clearArea } from '../../actions/areas.action';
 import { fetchUsers } from '../../actions/users.action';
 import { sendMessage } from '../../actions/flash.action';
@@ -33,11 +37,13 @@ class AreaNew extends React.Component {
             },
             coords: null,
             formValid: false,
+            modalAreaGroupShown: false
         };
 
         this.handleOverlay = this.handleOverlay.bind(this);
         this.handleUserInput = this.handleUserInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.toggleModalAreaGroup = this.toggleModalAreaGroup.bind(this);
     }
     
     componentDidUpdate() {
@@ -72,11 +78,15 @@ class AreaNew extends React.Component {
         
         this.props.createArea(areaData);
     }
+    
+    toggleModalAreaGroup() {
+        this.setState({ modalAreaGroupShown: !this.state.modalAreaGroupShown });
+    }
 
     render() {
         
-        const { handleSubmit, handleUserInput, handleOverlay, state, props } = this;
-        const { formValid, serverError, coords } = state;
+        const { handleSubmit, handleUserInput, handleOverlay, toggleModalAreaGroup, state, props } = this;
+        const { formValid, serverError, coords, modalAreaGroupShown } = state;
         const { title, areaGroup, userId } = state.fields;
         const { users, history } = props;
         
@@ -117,14 +127,16 @@ class AreaNew extends React.Component {
                             handleUserInput={ handleUserInput }
                             error={ title.error }
                         />
-                        <FieldSelect
-                            name="areaGroup"
-                            value={ areaGroup.id }
-                            handleUserInput={ handleUserInput }
-                            error={ areaGroup.error }
-                            options={ areaGroupOptions }
-                        />
-                        <a href="#">Create New Group <i className="fas fa-plus"></i></a>
+                        <div className="field-with-icon">
+                            <FieldSelect
+                                name="areaGroup"
+                                value={ areaGroup.id }
+                                handleUserInput={ handleUserInput }
+                                error={ areaGroup.error }
+                                options={ areaGroupOptions }
+                            />
+                            <a onClick={ toggleModalAreaGroup } className="icon-button-success" style={{ cursor: 'pointer' }}><i className="fas fa-plus"></i></a>
+                        </div>
                         <FieldSelect
                             name="userId"
                             value={ userId.value }
@@ -145,6 +157,9 @@ class AreaNew extends React.Component {
                             <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="btn btn-cancel">Cancel</a>
                         </div>
                     </form>
+                    <Modal close={ toggleModalAreaGroup } shown={ modalAreaGroupShown } title="Create Area Group">
+                        <AreaGroupNew />
+                    </Modal>
                 </section>
             </main>
         );
