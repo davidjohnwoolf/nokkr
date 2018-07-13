@@ -1,12 +1,15 @@
 import { USER, MANAGER, PW_REGEX } from '../../../lib/constants.js';
 
+const CHECKED = 'checked';
+const VALUE = 'value';
+
 //===============
 // helpers
 //===============
 
 export const initializeForm = (fields, data) => {
     for (let field in fields) {
-        let fieldType = ('checked' in fields[field]) ? 'checked' : 'value';
+        let fieldType = (CHECKED in fields[field]) ? CHECKED : VALUE;
         
         if (!field.includes('password')) {
             fields[field][fieldType] = data[field];
@@ -14,6 +17,22 @@ export const initializeForm = (fields, data) => {
     }
     
     return { ...fields };
+};
+
+export const formSubmit = ({ e, fields, excludeKeys, action, id }) => {
+     e.preventDefault();
+
+    for (let key in fields) {
+        let fieldType = (CHECKED in fields[key]) ? CHECKED : VALUE;
+
+        if (excludeKeys.find(excludeKey => excludeKey === key) && !fields[key][fieldType]) {
+            delete fields[key];
+        } else {
+            fields[key] = fields[key][fieldType];
+        }
+    }
+    
+    id ? action(id, fields) : action(fields);
 };
 
 //===============
@@ -62,7 +81,7 @@ export const unique = args => {
 export const validate = (e, rules, fields, candidates, data) => {
     let formValid = true;
     let error;
-    let fieldType = ('checked' in fields[e.target.name]) ? 'checked' : 'value';
+    let fieldType = (CHECKED in fields[e.target.name]) ? CHECKED : VALUE;
     
     fields[e.target.name][fieldType] = e.target[fieldType];
     
@@ -78,7 +97,7 @@ export const validate = (e, rules, fields, candidates, data) => {
     //handle all rules
     for (let field in fields ) {
         
-        let currentType = ('checked' in fields[field]) ? 'checked' : 'value';
+        let currentType = (CHECKED in fields[field]) ? CHECKED : VALUE;
 
         //run function for the rule (e.g. required) from validation rules on each field value
         rules[field].forEach(rule => {

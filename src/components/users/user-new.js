@@ -10,7 +10,7 @@ import { createUser, clearUsers, fetchUsers } from '../../actions/users.action';
 import { fetchTeams } from '../../actions/teams.action';
 import { sendMessage } from '../../actions/flash.action';
 
-import { required, requiredExceptAdmin, password, passwordMatch, unique, validate } from '../helpers/forms';
+import { required, requiredExceptAdmin, password, passwordMatch, unique, validate, formSubmit } from '../helpers/forms';
 import { ADMIN, MANAGER, USER } from '../../../lib/constants';
 import { capitalize } from '../../../lib/functions';
 
@@ -90,24 +90,7 @@ class UserNew extends React.Component {
     }
     
     handleSubmit(e) {
-        
-        e.preventDefault();
-        
-        const userData = { ...this.state.fields };
-        
-        //convert fields obj into user obj
-        for (let key in userData) {
-            let fieldType = ('checked' in userData[key]) ? 'checked' : 'value';
-            
-            //if no team, remove team
-            if (key === 'team' && !userData[key][fieldType]) {
-                delete userData[key];
-            } else {
-                userData[key] = userData[key][fieldType];
-            }
-        }
-        
-        this.props.createUser(userData);
+        formSubmit({ e, fields: { ...this.state.fields }, excludeKeys: ['team'], action: this.props.createUser });
     }
     
     render() {

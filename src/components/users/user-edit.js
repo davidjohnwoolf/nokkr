@@ -6,11 +6,11 @@ import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 import FieldCheckbox from '../forms/field-checkbox';
 
-import { fetchUsers, fetchUser, updateUser, clearUsers, deleteUser } from '../../actions/users.action';
+import { fetchUsers, updateUser, clearUsers, deleteUser } from '../../actions/users.action';
 import { fetchTeams } from '../../actions/teams.action';
 import { sendMessage, sendError } from '../../actions/flash.action';
 
-import { required, requiredExceptAdmin, password, passwordMatch, validate, unique, initializeForm } from '../helpers/forms';
+import { required, requiredExceptAdmin, password, passwordMatch, validate, unique, initializeForm, formSubmit } from '../helpers/forms';
 import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
 import { capitalize } from '../../../lib/functions';
 
@@ -50,8 +50,10 @@ class UserEdit extends React.Component {
                 passwordConfirmation: { value: '', error: '' }
             },
             uniqueCandidateList: null,
+            user: null,
             teamOptions: null,
-            formValid: false
+            formValid: false,
+            isLoading: true
         };
 
         this.handleUserInput = this.handleUserInput.bind(this);
@@ -60,9 +62,8 @@ class UserEdit extends React.Component {
     }
     
     componentDidMount() {
-        const { fetchUser, fetchUsers, fetchTeams, match } = this.props;
-        
-        fetchUser(match.params.id);
+        const { fetchUsers, fetchTeams } = this.props;
+
         fetchUsers();
         fetchTeams();
     }
@@ -83,17 +84,20 @@ class UserEdit extends React.Component {
 
     
     componentDidUpdate() {
-        const { success, message, history, sendMessage, match, user, users, teams } = this.props;
+        const { success, message, history, sendMessage, match, users, teams, deleted } = this.props;
         const fields = { ...this.state.fields };
         
-        if (users && teams && user && this.state.isLoading) {
+        if (users && teams && this.state.isLoading) {
             const teamOptions = [['Select Team', '']];
+            
+            const user = users.find(user => user._id === match.params.id)
         
             teams.forEach(team => teamOptions.push([team.title, team._id]));
             
             this.setState({
                 isLoading: false,
                 fields: initializeForm(fields, user),
+                user,
                 uniqueCandidateList: users,
                 teamOptions
             });
@@ -101,9 +105,8 @@ class UserEdit extends React.Component {
         
         if (success) {
             sendMessage(message);
-            
-            //either deleted user or updated user based on user presence
-            !user ? history.push('/users') : history.push(`/users/${ match.params.id }`);
+
+            deleted ? history.push('/users') : history.push(`/users/${ match.params.id }`);
         }
     }
     
@@ -122,32 +125,18 @@ class UserEdit extends React.Component {
     handleUserInput(e) {
         
         this.setState(
-            validate(e, this.validationRules, { ...this.state.fields }, this.state.uniqueCandidateList, this.props.user)
+            validate(e, this.validationRules, { ...this.state.fields }, this.state.uniqueCandidateList, this.state.user)
         );
     }
     
     handleSubmit(e) {
-        
-        e.preventDefault();
-        
-        const userData = { ...this.state.fields };
-        
-        //convert fields obj into user obj
-        for (let key in userData) {
-            let fieldType = ('checked' in userData[key]) ? 'checked' : 'value';
-            
-            //remove password if empty
-            if ((key === 'password' || key === 'passwordConfirmation') && !userData[key].value) {
-                delete userData[key];
-            //remove team if empty
-            } else if (key === 'team' && !userData[key][fieldType]) {
-                delete userData[key];
-            } else {
-                userData[key] = userData[key][fieldType];
-            }
-        }
-        
-        this.props.updateUser(this.props.match.params.id, userData);
+        formSubmit({
+            e,
+            fields: { ...this.state.fields },
+            excludeKeys: ['team', 'password', 'passwordConfirmation'],
+            action: this.props.updateUser,
+            id: this.props.match.params.id
+        });
     }
     
     render() {
@@ -167,7 +156,6 @@ class UserEdit extends React.Component {
             team,
             isReadOnly,
             isActive,
-            //userImage
         } = state.fields;
         
         return (
@@ -284,10 +272,10 @@ class UserEdit extends React.Component {
 const mapStateToProps = state => ({
     message: state.users.message,
     success: state.users.success,
-    user: state.users.user,
+    deleted: state.users.deleted,
     users: state.users.users,
     sessionId: state.auth.sessionId,
     teams: state.teams.teams
 });
 
-export default connect(mapStateToProps, { fetchUser, clearUsers, updateUser, sendMessage, fetchTeams, fetchUsers, deleteUser, sendError })(UserEdit);
+export default connect(mapStateToProps, { clearUsers, updateUser, sendMessage, fetchTeams, fetchUsers, deleteUser, sendError })(UserEdit);
