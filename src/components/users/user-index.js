@@ -39,8 +39,6 @@ class UserIndex extends React.Component {
         const { users, isReadOnly } = this.props;
         const { activeUsersShown } = this.state;
         
-        console.log(users)
-        
         return (
             users.map(user => {
                 
