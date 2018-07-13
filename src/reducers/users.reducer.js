@@ -4,20 +4,20 @@ import {
     CREATE_USER,
     UPDATE_USER,
     DELETE_USER,
-    CLEAR_USER
+    CLEAR_USERS
 } from '../actions/users.action';
 
 export default function(state = {}, action) {
 
     switch (action.type) {
         case FETCH_USER:
-            return { ...state, user: action.user };
+            return { ...state, user: action.payload };
         
         case FETCH_USERS:
-            return { ...state, users: action.users };
+            return { ...state, users: action.payload };
         
         case CREATE_USER:
-            return { ...state, success: true, message: action.message, userId: action.userId };
+            return { ...state, success: true, message: action.message, userId: action.payload };
         
         case UPDATE_USER:
             return { ...state, success: true, message: action.message };
@@ -25,7 +25,7 @@ export default function(state = {}, action) {
         case DELETE_USER:
             return { ...state, success: true, user: null, message: action.message };
             
-        case CLEAR_USER:
+        case CLEAR_USERS:
             return {};
             
         default:

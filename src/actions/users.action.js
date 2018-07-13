@@ -1,83 +1,35 @@
-import axios from 'axios';
-
-import { sendError } from './flash.action';
+//helper functions to construct common action creators
+import { fetchList, fetchObject, createObject, updateObject, deleteObject, clearReducer } from './helpers';
 
 export const FETCH_USERS = 'FETCH_USERS';
 export const FETCH_USER = 'FETCH_USER';
 export const CREATE_USER = 'CREATE_USER';
 export const UPDATE_USER = 'UPDATE_USER';
 export const DELETE_USER = 'DELETE_USER';
-export const CLEAR_USER = 'CLEAR_USER';
+export const CLEAR_USERS = 'CLEAR_USERS';
 
-//status variables for Jsend API spec
-import { SUCCESS, FAIL, ERROR } from '../../lib/constants';
+const BASE_URL = '/users/';
 
 export const fetchUsers = () => {
-    return async dispatch => {
-        const response = await axios.get('/users');
-        
-        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
-        
-        dispatch({ type: FETCH_USERS, users: response.data.data.users });
-    };
+    return fetchList({ url: BASE_URL, type: FETCH_USERS });
 };
 
 export const fetchUser = id => {
-    return async dispatch => {
-        const response = await axios.get(`/users/${id}`);
-        
-        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
-        
-        dispatch({ type: FETCH_USER, user: response.data.data.user });
-    };
+    return fetchObject({ url: BASE_URL + id, type: FETCH_USER });
 };
 
 export const createUser = user => {
-    
-    return async dispatch => {
-        const response = await axios.post('/users', user);
-        
-        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
-
-        if (response.data.status === SUCCESS) {
-            dispatch({
-                type: CREATE_USER,
-                message: response.data.data.message,
-                userId: response.data.data.id
-            });
-        }
-    };
+    return createObject({ url: BASE_URL, type: CREATE_USER, body: user })
 };
 
 export const updateUser = (id, user) => {
-    
-    return async dispatch => {
-        const response = await axios.put(`/users/${id}`, user);
-        
-        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
-        
-        if (response.data.status === SUCCESS) {
-            dispatch({
-                type: UPDATE_USER,
-                message: response.data.data.message
-            });
-        }
-    };
+    return updateObject({ url: BASE_URL + id, type: UPDATE_USER, body: user });
 };
 
 export const deleteUser = id => {
-    
-    return async dispatch => {
-        const response = await axios.delete(`/users/${id}`);
-        
-        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
-        
-        dispatch({ type: DELETE_USER, message: response.data.data.message });
-    };
+    return deleteObject({ url: BASE_URL + id, type: DELETE_USER });
 };
 
-export const clearUser = () => {
-    return dispatch => {
-        dispatch({ type: CLEAR_USER });
-    };
+export const clearUsers = () => {
+    return clearReducer({ type: CLEAR_USERS });
 };

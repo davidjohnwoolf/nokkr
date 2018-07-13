@@ -1,18 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Redirect } from 'react-router-dom';
 
-import { required, requiredExceptAdmin, password, passwordMatch, validate, unique, initializeForm } from '../helpers/forms';
-
+import Loading from '../layout/loading';
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 import FieldCheckbox from '../forms/field-checkbox';
 
-import { fetchUsers, fetchUser, updateUser, clearUser, deleteUser } from '../../actions/users.action';
+import { fetchUsers, fetchUser, updateUser, clearUsers, deleteUser } from '../../actions/users.action';
 import { fetchTeams } from '../../actions/teams.action';
 import { sendMessage, sendError } from '../../actions/flash.action';
 
+import { required, requiredExceptAdmin, password, passwordMatch, validate, unique, initializeForm } from '../helpers/forms';
 import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
 import { capitalize } from '../../../lib/functions';
 
@@ -21,10 +19,7 @@ class UserEdit extends React.Component {
     constructor(props) {
         super(props);
         
-        props.clearUser();
-        props.fetchUser(props.match.params.id);
-        props.fetchUsers();
-        props.fetchTeams();
+        props.clearUsers();
         
         this.validationRules = Object.freeze({
             firstName: [required],
@@ -54,14 +49,22 @@ class UserEdit extends React.Component {
                 password: { value: '', error: '' },
                 passwordConfirmation: { value: '', error: '' }
             },
-            uniqueCandidateList: [],
-            formValid: false,
-            isInitialized: false
+            uniqueCandidateList: null,
+            teamOptions: null,
+            formValid: false
         };
 
         this.handleUserInput = this.handleUserInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+    }
+    
+    componentDidMount() {
+        const { fetchUser, fetchUsers, fetchTeams, match } = this.props;
+        
+        fetchUser(match.params.id);
+        fetchUsers();
+        fetchTeams();
     }
     
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -80,18 +83,27 @@ class UserEdit extends React.Component {
 
     
     componentDidUpdate() {
-        const { success, message, history, sendMessage, match, user } = this.props;
+        const { success, message, history, sendMessage, match, user, users, teams } = this.props;
+        const fields = { ...this.state.fields };
+        
+        if (users && teams && user && this.state.isLoading) {
+            const teamOptions = [['Select Team', '']];
+        
+            teams.forEach(team => teamOptions.push([team.title, team._id]));
+            
+            this.setState({
+                isLoading: false,
+                fields: initializeForm(fields, user),
+                uniqueCandidateList: users,
+                teamOptions
+            });
+        }
         
         if (success) {
             sendMessage(message);
             
-            if (!user) {
-                //user deleted
-                history.push('/users');
-            } else {
-                //user updated
-                history.push(`/users/${ match.params.id }`);
-            }
+            //either deleted user or updated user based on user presence
+            !user ? history.push('/users') : history.push(`/users/${ match.params.id }`);
         }
     }
     
@@ -139,11 +151,11 @@ class UserEdit extends React.Component {
     }
     
     render() {
-        const { user, teams, history, sessionId, match } = this.props;
+        if (this.state.isLoading) return <Loading />;
         
-        if (!teams || !user) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
-        
-        const { handleSubmit, handleUserInput, state } = this;
+        const { handleSubmit, handleUserInput, handleDelete, state, props } = this;
+        const { sessionId, history, match } = props;
+        const { teamOptions, formValid } = state;
         const {
             firstName,
             lastName,
@@ -158,124 +170,112 @@ class UserEdit extends React.Component {
             //userImage
         } = state.fields;
         
-        const roleOptions = [
-            ['Select Role', ''],
-            [capitalize(ADMIN), ADMIN],
-            [capitalize(MANAGER), MANAGER],
-            [capitalize(USER), USER]
-        ];
-        
-        const teamOptions = [['Select Team', '']];
-        
-        teams.forEach(team => {
-           teamOptions.push([team.title, team._id]); 
-        });
-        
         return (
                 
             <main id="user-edit" className="content">
-                <section className="form">
-                    <header className="content-header">
-                        <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
-                        <h1>Edit User</h1>
-                        { !this.isReadOnly
-                            ? <a onClick={ this.handleDelete } style={{ cursor: 'pointer' }} className="icon-button-danger"><i className="fas fa-trash-alt"></i></a>
-                            : '' }
-                    </header>
-                    <form onSubmit={ handleSubmit }>
-                    
-                        <FieldInput
-                            name="firstName"
-                            type="text"
-                            placeholder="first name"
-                            value={ firstName.value }
-                            handleUserInput={ handleUserInput }
-                            error={ firstName.error }
-                        />
-                        <FieldInput
-                            name="lastName"
-                            type="text"
-                            placeholder="last name"
-                            value={ lastName.value }
-                            handleUserInput={ handleUserInput }
-                            error={ lastName.error }
-                        />
-                        <FieldInput
-                            name="username"
-                            type="text"
-                            placeholder="username"
-                            value={ username.value }
-                            handleUserInput={ handleUserInput }
-                            error={ username.error }
-                        />
-                        <FieldInput
-                            name="email"
-                            type="email"
-                            placeholder="email"
-                            value={ email.value }
-                            handleUserInput={ handleUserInput }
-                            error={ email.error }
-                        />
-                        <FieldSelect
-                            name="role"
-                            value={ role.value }
-                            handleUserInput={ handleUserInput }
-                            error={ role.error }
-                            options={ roleOptions }
-                        />
-                        <FieldCheckbox
-                            name="isReadOnly"
-                            label="Read Only"
-                            checked={ isReadOnly.checked }
-                            value="true"
-                            handleUserInput={ handleUserInput }
-                            error={ isReadOnly.error }
-                        />
-                        <FieldSelect
-                            message="Optional for admin users"
-                            name="team"
-                            value={ team.value }
-                            handleUserInput={ handleUserInput }
-                            error={ team.error }
-                            options={ teamOptions }
-                        />
-                        <FieldInput
-                            name="password"
-                            type="password"
-                            placeholder="password"
-                            value={ password.value }
-                            handleUserInput={ handleUserInput }
-                            error={ password.error }
-                            message="If staying the same, leave password fields blank"
-                        />
-                        <FieldInput
-                            name="passwordConfirmation"
-                            type="password"
-                            placeholder="password confirmation"
-                            value={ passwordConfirmation.value }
-                            handleUserInput={ handleUserInput }
-                            error={ passwordConfirmation.error }
-                        />
-                        <FieldCheckbox
-                            name="isActive"
-                            label="Active"
-                            value="true"
-                            checked={ isActive.checked }
-                            handleUserInput={ handleUserInput }
-                            error={ isActive.error }
-                            disabled={ sessionId === match.params.id }
-                        />
-                        <div className="btn-group">
-                            <button
-                                disabled={ !state.formValid }
-                                className="btn btn-primary"
-                                type="submit">
-                                Submit
-                            </button>
-                            <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="btn btn-cancel">Cancel</a>
-                        </div>
-                    </form>
-                </section>
+                <header className="content-header">
+                    <a onClick={ history.goBack } className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
+                    <h1>Edit User</h1>
+                    <a onClick={ handleDelete } className="icon-button-danger"><i className="fas fa-trash-alt"></i></a>
+                </header>
+                <form onSubmit={ handleSubmit }>
+                
+                    <FieldInput
+                        name="firstName"
+                        type="text"
+                        placeholder="first name"
+                        value={ firstName.value }
+                        handleUserInput={ handleUserInput }
+                        error={ firstName.error }
+                    />
+                    <FieldInput
+                        name="lastName"
+                        type="text"
+                        placeholder="last name"
+                        value={ lastName.value }
+                        handleUserInput={ handleUserInput }
+                        error={ lastName.error }
+                    />
+                    <FieldInput
+                        name="username"
+                        type="text"
+                        placeholder="username"
+                        value={ username.value }
+                        handleUserInput={ handleUserInput }
+                        error={ username.error }
+                    />
+                    <FieldInput
+                        name="email"
+                        type="email"
+                        placeholder="email"
+                        value={ email.value }
+                        handleUserInput={ handleUserInput }
+                        error={ email.error }
+                    />
+                    <FieldSelect
+                        name="role"
+                        value={ role.value }
+                        handleUserInput={ handleUserInput }
+                        error={ role.error }
+                        options={[
+                            ['Select Role', ''],
+                            [capitalize(ADMIN), ADMIN],
+                            [capitalize(MANAGER), MANAGER],
+                            [capitalize(USER), USER]
+                        ]}
+                    />
+                    <FieldCheckbox
+                        name="isReadOnly"
+                        label="Read Only"
+                        checked={ isReadOnly.checked }
+                        value="true"
+                        handleUserInput={ handleUserInput }
+                        error={ isReadOnly.error }
+                    />
+                    <FieldSelect
+                        message="Optional for admin users"
+                        name="team"
+                        value={ team.value }
+                        handleUserInput={ handleUserInput }
+                        error={ team.error }
+                        options={ teamOptions }
+                    />
+                    <FieldInput
+                        name="password"
+                        type="password"
+                        placeholder="password"
+                        value={ password.value }
+                        handleUserInput={ handleUserInput }
+                        error={ password.error }
+                        message="If staying the same, leave password fields blank"
+                    />
+                    <FieldInput
+                        name="passwordConfirmation"
+                        type="password"
+                        placeholder="password confirmation"
+                        value={ passwordConfirmation.value }
+                        handleUserInput={ handleUserInput }
+                        error={ passwordConfirmation.error }
+                    />
+                    <FieldCheckbox
+                        name="isActive"
+                        label="Active"
+                        value="true"
+                        checked={ isActive.checked }
+                        handleUserInput={ handleUserInput }
+                        error={ isActive.error }
+                        disabled={ sessionId === match.params.id }
+                    />
+                    <div className="btn-group">
+                        <button
+                            disabled={ !formValid }
+                            className="btn btn-primary"
+                            type="submit">
+                            Submit
+                        </button>
+                        <a onClick={ history.goBack } className="btn btn-cancel">Cancel</a>
+                    </div>
+                </form>
             </main>
         );
     }
@@ -287,8 +287,7 @@ const mapStateToProps = state => ({
     user: state.users.user,
     users: state.users.users,
     sessionId: state.auth.sessionId,
-    isReadOnly: state.auth.isReadOnly,
     teams: state.teams.teams
 });
 
-export default connect(mapStateToProps, { fetchUser, clearUser, updateUser, sendMessage, fetchTeams, fetchUsers, deleteUser, sendError })(UserEdit);
+export default connect(mapStateToProps, { fetchUser, clearUsers, updateUser, sendMessage, fetchTeams, fetchUsers, deleteUser, sendError })(UserEdit);

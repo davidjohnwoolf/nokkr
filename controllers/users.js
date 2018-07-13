@@ -32,7 +32,7 @@ router.get('/', requireManager, (req, res) => {
                 safeUsers.push(safeUser);
             });
             
-            return res.json({ status: SUCCESS, data: { users: safeUsers } });
+            return res.json({ status: SUCCESS, data: { payload: safeUsers } });
         });
         
     //if above manager show all
@@ -51,7 +51,7 @@ router.get('/', requireManager, (req, res) => {
                 safeUsers.push(safeUser);
             });
             
-            return res.json({ status: SUCCESS, data: { users: safeUsers } });
+            return res.json({ status: SUCCESS, data: { payload: safeUsers } });
         });
     }
 });
@@ -76,7 +76,7 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
                 status: SUCCESS,
                 data: {
                     message: 'User created',
-                    id: user.id
+                    payload: user.id
                 }
             });
         });
@@ -105,7 +105,7 @@ router.get('/:id', requireUser, (req, res) => {
             
             delete safeUser.password;
             
-            return res.json({ status: SUCCESS, data: { user: safeUser } });
+            return res.json({ status: SUCCESS, data: { payload: safeUser } });
         });
     } else {
         return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
