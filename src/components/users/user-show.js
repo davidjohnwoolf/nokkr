@@ -43,8 +43,10 @@ class UserShow extends React.Component {
                         <address>{ user.username }</address>
                         <h4>Email</h4>
                         <address>{ user.email }</address>
+                        <h4>Team</h4>
+                        <p>{ user.teamTitle }</p>
                         <h4>Role</h4>
-                        <p>{ capitalize(user.role) }</p>
+                        <p>{ capitalize(user.role) + (isReadOnly ? ' Read Only' : '') }</p>
                     </section>
                 </section>
                 <section className="index">

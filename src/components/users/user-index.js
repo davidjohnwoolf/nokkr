@@ -23,7 +23,9 @@ class UserIndex extends React.Component {
         this.renderUsers = this.renderUsers.bind(this);
     }
     
-    componentDidMount() { this.props.fetchUsers() }
+    componentDidMount() {
+        this.props.fetchUsers()
+    }
     
     componentDidUpdate() {
         if (this.props.users && this.state.isLoading) this.setState({ isLoading: false });
@@ -36,6 +38,8 @@ class UserIndex extends React.Component {
     renderUsers() {
         const { users, isReadOnly } = this.props;
         const { activeUsersShown } = this.state;
+        
+        console.log(users)
         
         return (
             users.map(user => {
@@ -52,7 +56,7 @@ class UserIndex extends React.Component {
                                 { !isReadOnly ? <Link to={ `/users/${ user._id }/edit` }><i className="fa fa-edit"></i></Link> : '' }
                             </div>
                         </td>
-                        <td>{ 'FUCK' /* update to user.teamTitle once api updated */ }</td>
+                        <td>{ user.teamTitle }</td>
                         <td>{ capitalize(user.role) + (user.isReadOnly ? ' Read Only' : '') }</td>
                     </tr>
                 );

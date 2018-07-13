@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const User = require('../models/user');
+const Account = require('../models/account');
 
 //status variables for Jsend API spec, password regex and role constants
 const { SUCCESS, FAIL, ERROR, PW_REGEX, USER, MANAGER, ADMIN, SU } = require('../lib/constants');
@@ -13,47 +14,31 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 //index
-router.get('/', requireManager, (req, res) => {
-    const loggedInUser = req.loggedInUser;
+router.get('/', requireAdmin, (req, res) => {
     
-    //if manager only show own team
-    if (loggedInUser.role === MANAGER) {
-        User.find({ team: loggedInUser.team }, (err, users) => {
-            if (err) return res.json({ status: ERROR, data: err, message: 'Error finding users' });
-            
-            //to store users after removing the password hash
-            const safeUsers = [];
-            
-            users.forEach(user => {
-                
-                let safeUser = Object.assign({}, user._doc);
-                delete safeUser.password;
-                
-                safeUsers.push(safeUser);
-            });
-            
-            return res.json({ status: SUCCESS, data: { payload: safeUsers } });
-        });
+    User.find({}, (err, users) => {
+        if (err) return res.json({ status: ERROR, data: err, message: 'Error finding users' });
         
-    //if above manager show all
-    } else {
-        User.find({}, (err, users) => {
-            if (err) return res.json({ status: ERROR, data: err, message: 'Error finding users' });
+        Account.findOne({}, (err, account) => {
+            if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
+            
+            
             
             //to store users after removing the password hash
-            const safeUsers = [];
-            
-            users.forEach(user => {
+            const safeUsers = users.map(user => {
                 
-                let safeUser = Object.assign({}, user._doc);
+                let teamTitle = user.team ? account.teams.find(team => team.id == user.team).title : 'NA';
+                
+                let safeUser = Object.assign({ teamTitle }, user._doc);
+                
                 delete safeUser.password;
                 
-                safeUsers.push(safeUser);
+                return safeUser;
             });
             
             return res.json({ status: SUCCESS, data: { payload: safeUsers } });
         });
-    }
+    });
 });
 
 //create
@@ -101,11 +86,17 @@ router.get('/:id', requireUser, (req, res) => {
                 return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
             }
             
-            const safeUser = Object.assign({}, user._doc);
-            
-            delete safeUser.password;
-            
-            return res.json({ status: SUCCESS, data: { payload: safeUser } });
+            Account.findOne({}, (err, account) => {
+                if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
+                
+                const teamTitle = user.team ? account.teams.find(team => team.id == user.team).title : 'NA';
+                
+                const safeUser = Object.assign({ teamTitle }, user._doc);
+                
+                delete safeUser.password;
+                
+                return res.json({ status: SUCCESS, data: { payload: safeUser } });
+            });
         });
     } else {
         return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
