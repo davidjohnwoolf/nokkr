@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Loading from '../layout/loading';
+import IconLink from '../layout/icon-link';
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 import FieldCheckbox from '../forms/field-checkbox';
@@ -63,9 +64,12 @@ class UserNew extends React.Component {
     }
     
     componentDidUpdate() {
-        const { success, message, history, sendMessage, userId, users, teams } = this.props;
+        const {
+            props: { success, message, history, sendMessage, userId, users, teams },
+            state: { isLoading }
+        } = this;
         
-        if (users && teams && this.state.isLoading) {
+        if (users && teams && isLoading) {
             const teamOptions = [['Select Team', '']];
         
             teams.forEach(team => teamOptions.push([team.title, team._id]));
@@ -84,38 +88,48 @@ class UserNew extends React.Component {
     }
     
     handleUserInput(e) {
+        const { validationRules, state: { fields, uniqueCandidateList } } = this;
+        
         this.setState(
-            validate(e, this.validationRules, { ...this.state.fields }, this.state.uniqueCandidateList, null)
+            validate(e, validationRules, { ...fields }, uniqueCandidateList, null)
         );
     }
     
     handleSubmit(e) {
-        formSubmit({ e, fields: { ...this.state.fields }, excludeKeys: ['team'], action: this.props.createUser });
+        const { state: { fields }, props: { createUser } } = this;
+        
+        formSubmit({ e, fields: { ...fields }, excludeKeys: ['team'], action: createUser });
     }
     
     render() {
-        if (this.state.isLoading) return <Loading />;
-        
-        const { handleSubmit, handleUserInput, props } = this;
-        const { teamOptions, formValid } = this.state;
-        const { history } = props;
         const {
-            firstName,
-            lastName,
-            username,
-            email,
-            password,
-            passwordConfirmation,
-            role,
-            team,
-            isReadOnly
-        } = this.state.fields;
+            props: { history },
+            state: {
+                teamOptions,
+                formValid,
+                isLoading,
+                fields: {
+                    firstName,
+                    lastName,
+                    username,
+                    email,
+                    password,
+                    passwordConfirmation,
+                    role,
+                    team,
+                    isReadOnly
+                }
+            },
+            handleSubmit,
+            handleUserInput
+        } = this;
+        
+        if (isLoading) return <Loading />;
         
         return (
-                
             <main id="user-new" className="content">
                 <header className="content-header">
-                    <a onClick={ history.goBack } className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
+                    <IconLink clickEvent={ history.goBack } icon="arrow-left" />
                     <h1>Create User</h1>
                 </header>
                 <form onSubmit={ handleSubmit }>

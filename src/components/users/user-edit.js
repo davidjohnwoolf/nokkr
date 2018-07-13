@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Loading from '../layout/loading';
+import IconLink from '../layout/icon-link';
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 import FieldCheckbox from '../forms/field-checkbox';
@@ -62,41 +63,35 @@ class UserEdit extends React.Component {
     }
     
     componentDidMount() {
-        const { fetchUsers, fetchTeams } = this.props;
-
-        fetchUsers();
-        fetchTeams();
-    }
-    
-    static getDerivedStateFromProps(nextProps, prevState) {
-        const { user, users } = nextProps;
-        const { isInitialized } = prevState;
-        
-        if (!isInitialized && user && users) {
-            const fields = { ...prevState.fields };
-            
-            return { uniqueCandidateList: users, fields: initializeForm(fields, user), isInitialized: true };
-
-        } else {
-            return prevState;
-        }
+        this.props.fetchUsers();
+        this.props.fetchTeams();
     }
 
-    
     componentDidUpdate() {
-        const { success, message, history, sendMessage, match, users, teams, deleted } = this.props;
-        const fields = { ...this.state.fields };
+        const {
+            props: {
+                success,
+                message,
+                history,
+                sendMessage,
+                match: { params },
+                users,
+                teams,
+                deleted
+            },
+            state: { fields, isLoading }
+        } = this;
         
-        if (users && teams && this.state.isLoading) {
+        if (users && teams && isLoading) {
             const teamOptions = [['Select Team', '']];
             
-            const user = users.find(user => user._id === match.params.id)
+            const user = users.find(user => user._id === params.id)
         
             teams.forEach(team => teamOptions.push([team.title, team._id]));
             
             this.setState({
                 isLoading: false,
-                fields: initializeForm(fields, user),
+                fields: initializeForm({ ...fields }, user),
                 user,
                 uniqueCandidateList: users,
                 teamOptions
@@ -106,16 +101,16 @@ class UserEdit extends React.Component {
         if (success) {
             sendMessage(message);
 
-            deleted ? history.push('/users') : history.push(`/users/${ match.params.id }`);
+            deleted ? history.push('/users') : history.push(`/users/${ params.id }`);
         }
     }
     
     handleDelete() {
-        const { match, sessionId, sendError, deleteUser } = this.props;
+        const { match: { params }, sessionId, sendError, deleteUser } = this.props;
         
-        if (match.params.id !== sessionId) {
+        if (params.id !== sessionId) {
             if (confirm('Are you sure you want to delete this user?  This is not reversible.')) {
-                deleteUser(match.params.id);
+                deleteUser(params.id);
             }
         } else {
             sendError('You cannot delete a user you are logged in as');
@@ -123,48 +118,58 @@ class UserEdit extends React.Component {
     }
     
     handleUserInput(e) {
+        const { validationRules, state: { fields, uniqueCandidateList, user } } = this;
         
         this.setState(
-            validate(e, this.validationRules, { ...this.state.fields }, this.state.uniqueCandidateList, this.state.user)
+            validate(e, validationRules, { ...fields }, uniqueCandidateList, user)
         );
     }
     
     handleSubmit(e) {
+        const { state: { fields }, props: { updateUser, match: { params } } } = this;
+        
         formSubmit({
             e,
-            fields: { ...this.state.fields },
+            fields: { ...fields },
             excludeKeys: ['team', 'password', 'passwordConfirmation'],
-            action: this.props.updateUser,
-            id: this.props.match.params.id
+            action: updateUser,
+            id: params.id
         });
     }
     
     render() {
-        if (this.state.isLoading) return <Loading />;
-        
-        const { handleSubmit, handleUserInput, handleDelete, state, props } = this;
-        const { sessionId, history, match } = props;
-        const { teamOptions, formValid } = state;
         const {
-            firstName,
-            lastName,
-            username,
-            email,
-            password,
-            passwordConfirmation,
-            role,
-            team,
-            isReadOnly,
-            isActive,
-        } = state.fields;
+            props: { sessionId, history, match: { params } },
+            state: {
+                teamOptions,
+                formValid,
+                isLoading,
+                fields: {
+                    firstName,
+                    lastName,
+                    username,
+                    email,
+                    password,
+                    passwordConfirmation,
+                    role,
+                    team,
+                    isReadOnly,
+                    isActive
+                }
+            },
+            handleSubmit,
+            handleUserInput,
+            handleDelete
+        } = this;
+        
+        if (isLoading) return <Loading />;
         
         return (
-                
             <main id="user-edit" className="content">
                 <header className="content-header">
-                    <a onClick={ history.goBack } className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
+                    <IconLink clickEvent={ history.goBack } icon="arrow-left" />
                     <h1>Edit User</h1>
-                    <a onClick={ handleDelete } className="icon-button-danger"><i className="fas fa-trash-alt"></i></a>
+                    <IconLink clickEvent={ handleDelete } type="danger" icon="trash-alt" />
                 </header>
                 <form onSubmit={ handleSubmit }>
                 
@@ -252,7 +257,7 @@ class UserEdit extends React.Component {
                         checked={ isActive.checked }
                         handleUserInput={ handleUserInput }
                         error={ isActive.error }
-                        disabled={ sessionId === match.params.id }
+                        disabled={ sessionId === params.id }
                     />
                     <div className="btn-group">
                         <button

@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { fetchUsers } from '../../actions/users.action';
 
 import Loading from '../layout/loading';
+import IconLink from '../layout/icon-link';
 
 import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
 import { capitalize } from '../../../lib/functions';
@@ -24,11 +25,13 @@ class UserIndex extends React.Component {
     }
     
     componentDidMount() {
-        this.props.fetchUsers()
+        this.props.fetchUsers();
     }
     
     componentDidUpdate() {
-        if (this.props.users && this.state.isLoading) this.setState({ isLoading: false });
+        const { props: { users }, state: { isLoading } } = this;
+        
+        if (users && isLoading) this.setState({ isLoading: false });
     }
     
     toggleActiveUsers() {
@@ -36,8 +39,7 @@ class UserIndex extends React.Component {
     }
 	
     renderUsers() {
-        const { users, isReadOnly } = this.props;
-        const { activeUsersShown } = this.state;
+        const { props: { users, isReadOnly }, state: { activeUsersShown } } = this;
         
         return (
             users.map(user => {
@@ -51,7 +53,11 @@ class UserIndex extends React.Component {
                         <td>
                             <div className="cell-container">
                                 <Link to={ `/users/${ user._id }` }>{ `${ user.firstName } ${ user.lastName }` }</Link>
-                                { !isReadOnly ? <Link to={ `/users/${ user._id }/edit` }><i className="fa fa-edit"></i></Link> : '' }
+                                {
+                                    !isReadOnly
+                                        ? <Link to={ `/users/${ user._id }/edit` }><i className="fas fa-edit"></i></Link>
+                                        : ''
+                                }
                             </div>
                         </td>
                         <td>{ user.teamTitle }</td>
@@ -63,17 +69,21 @@ class UserIndex extends React.Component {
     }
     
     render() {
-        if (this.state.isLoading) return <Loading />;
+        const {
+            props: { isReadOnly, history },
+            state: { isLoading, activeUsersShown },
+            toggleActiveUsers,
+            renderUsers
+        } = this;
         
-        const { toggleActiveUsers, renderUsers, props } = this;
-        const { isReadOnly, history } = props;
+        if (isLoading) return <Loading />;
         
         return (
             <main id="user-index" className="content">
                 <header className="content-header">
-                    <a onClick={ history.goBack } className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
+                    <IconLink clickEvent={ history.goBack } icon="arrow-left" />
                     <h1>User Management</h1>
-                    { !isReadOnly ? <Link className="icon-button-success" to="/users/new"><i className="fas fa-plus"></i></Link> : '' }
+                    { !isReadOnly ? <IconLink url="/users/new" type="success" icon="plus" /> : '' }
                 </header>
                 
                 <table className="table">
@@ -89,7 +99,7 @@ class UserIndex extends React.Component {
                     </tbody>
                 </table>
                 <button className="btn btn-primary" onClick={ toggleActiveUsers }>
-                    { this.state.activeUsersShown ? 'Show Inactive Users' : 'Show Active Users' }
+                    { activeUsersShown ? 'Show Inactive Users' : 'Show Active Users' }
                 </button>
             </main>
         );

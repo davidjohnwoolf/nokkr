@@ -75,36 +75,34 @@
     }
 }
 
-.icon-button-success {
-    color: $success;
+.icon-link {
     font-size: 2.5rem;
     padding: $gutter;
     margin-top: $gutter;
+    cursor: pointer;
     
-    &:hover {
-        color: $success-light;
+    &.primary {
+        color: $primary;
+        
+        &:hover {
+            color: $primary-light;
+        }
     }
-}
-
-.icon-button-danger {
-    color: $error;
-    font-size: 2.5rem;
-    padding: $gutter;
-    margin-top: $gutter;
     
-    &:hover {
-        color: $error-light;
+    &.success {
+        color: $success;
+        
+        &:hover {
+            color: $success-light;
+        }
     }
-}
-
-.icon-button-primary {
-    color: primary;
-    font-size: 2.5rem;
-    padding: $gutter;
-    margin-top: $gutter;
     
-    &:hover {
-        color: $primary-light;
+    &.danger {
+        color: $error;
+        
+        &:hover {
+            color: $error-light;
+        }
     }
 }
 

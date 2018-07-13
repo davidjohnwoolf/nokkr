@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 
 import { fetchUser } from '../../actions/users.action';
 
 import Loading from '../layout/loading';
+import IconLink from '../layout/icon-link';
 
 import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
 import { capitalize } from '../../../lib/functions';
@@ -24,18 +24,29 @@ class UserShow extends React.Component {
     }
     
     render() {
-        if (this.state.isLoading) return <Loading />;
+        const {
+            props: {
+                user,
+                role,
+                isReadOnly,
+                history,
+                match: { params }
+            },
+            state: { isLoading }
+        } = this;
         
-        const { user, role, isReadOnly, history, match } = this.props;
+        if (isLoading) return <Loading />;
         
         return (
             <main id="user-show" className="content">
                 <header className="content-header">
-                    <a onClick={ history.goBack } className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
-                    <h1>{ `${ user.firstName } ${ user.lastName }` }</h1>
-                    { ((role === ADMIN || (role === SU)) && !isReadOnly)
-                        ? <Link to={ `/users/${ match.params.id }/edit` } className="icon-button-primary"><i className="fas fa-edit"></i></Link>
-                        : '' }
+                    <IconLink clickEvent={ history.goBack } icon="arrow-left" />
+                    <h1>{ user.firstName } { user.lastName }</h1>
+                    {
+                        ((role === ADMIN || (role === SU)) && !isReadOnly)
+                            ? <IconLink url={ `/users/${ params.id }/edit` } icon="edit" />
+                            : ''
+                    }
                 </header>
                 <section className="card">
                     <section>
@@ -49,9 +60,7 @@ class UserShow extends React.Component {
                         <p>{ capitalize(user.role) + (isReadOnly ? ' Read Only' : '') }</p>
                     </section>
                 </section>
-                <section className="index">
-                    <h2>Upcoming Apts, Recent Leads etc.</h2>
-                </section>
+                <h2>Upcoming Apts, Recent Leads etc.</h2>
             </main>
         );
     }
