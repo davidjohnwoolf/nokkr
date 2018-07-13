@@ -23,7 +23,7 @@ export default function(state = {}, action) {
             return { ...state, success: true, message: action.message };
             
         case DELETE_USER:
-            return { ...state, success: true, user: null, message: action.message };
+            return { ...state, success: true, deleted: true, message: action.message };
             
         case CLEAR_USERS:
             return {};
