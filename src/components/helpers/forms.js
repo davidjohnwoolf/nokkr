@@ -4,43 +4,13 @@ const CHECKED = 'checked';
 const VALUE = 'value';
 
 //===============
-// helpers
-//===============
-
-export const initializeForm = (fields, data) => {
-    for (let field in fields) {
-        let fieldType = (CHECKED in fields[field]) ? CHECKED : VALUE;
-        
-        if (!field.includes('password')) {
-            fields[field][fieldType] = data[field];
-        }
-    }
-    
-    return { ...fields };
-};
-
-export const formSubmit = ({ e, fields, excludeKeys, action, id }) => {
-     e.preventDefault();
-
-    for (let key in fields) {
-        let fieldType = (CHECKED in fields[key]) ? CHECKED : VALUE;
-
-        if (excludeKeys.find(excludeKey => excludeKey === key) && !fields[key][fieldType]) {
-            delete fields[key];
-        } else {
-            fields[key] = fields[key][fieldType];
-        }
-    }
-    
-    id ? action(id, fields) : action(fields);
-};
-
-//===============
 // validation rules
 //===============
 
+//required
 export const required = args => args.value ? undefined : 'Required';
 
+//requiredExceptAdmin
 export const requiredExceptAdmin = args => {
     const { value, fields } = args;
     
@@ -53,6 +23,7 @@ export const requiredExceptAdmin = args => {
     return undefined;
 };
 
+//password
 export const password = args => {
     const { value } = args;
     return (
@@ -62,11 +33,13 @@ export const password = args => {
     );
 };
 
+//passwordMatch
 export const passwordMatch = args => {
     const { password, passwordConfirmation } = args.fields;
     return password.value === passwordConfirmation.value ? undefined : 'Passwords must match';
 };
 
+//unique
 export const unique = args => {
     const { value, field, candidates, data } = args;
     
@@ -114,3 +87,91 @@ export const validate = (e, rules, fields, candidates, data) => {
     
     return { fields, formValid };
 };
+
+//===============
+// form helpers
+//===============
+
+//initializeForm
+export const initializeForm = (fields, data) => {
+    for (let field in fields) {
+        let fieldType = (CHECKED in fields[field]) ? CHECKED : VALUE;
+        
+        if (!field.includes('password')) {
+            fields[field][fieldType] = data[field];
+        }
+    }
+    
+    return { ...fields };
+};
+
+//formSubmit
+export const formSubmit = ({ e, fields, excludeKeys, action, id }) => {
+     e.preventDefault();
+
+    for (let key in fields) {
+        let fieldType = (CHECKED in fields[key]) ? CHECKED : VALUE;
+
+        if (excludeKeys.find(excludeKey => excludeKey === key) && !fields[key][fieldType]) {
+            delete fields[key];
+        } else {
+            fields[key] = fields[key][fieldType];
+        }
+    }
+    
+    id ? action(id, fields) : action(fields);
+};
+
+//buildForm
+/*export const buildForm = ({ formOptions, handleUserInput, handleSubmit, formValid, history, submitText, fields, state }) => {
+    
+    let inputs = []
+    for (let input in formOptions) {
+        switch (formOptions[input].type) {
+            case 'select':
+                inputs.push(<FieldSelect
+                    name={ input }
+                    value={ fields[input].value }
+                    handleUserInput={ handleUserInput }
+                    error={ fields[input].error }
+                    options={ state[formOptions[input].options] }
+                />);
+                
+            case 'checkbox':
+                inputs.push(<FieldCheckbox
+                    name={ input }
+                    label={ formOptions[input].label }
+                    checked={ fields[input].checked }
+                    value="true"
+                    handleUserInput={ handleUserInput }
+                    error={ fields[input].error }
+                />)
+                
+            default:
+                inputs.push(<FieldInput
+                    name={ input }
+                    type={ formOptions[input].type }
+                    placeholder={ formOptions[input].label }
+                    value={ fields[input].value }
+                    handleUserInput={ handleUserInput }
+                    error={ fields[input].error }
+                />);
+        }
+    };
+    
+    return (
+        <form onSubmit={ handleSubmit }>
+            { inputs }
+            <div className="btn-group">
+                <button
+                    disabled={ !formValid }
+                    className="btn btn-primary"
+                    type="submit">
+                    { submitText }
+                </button>
+                <a onClick={ history.goBack } className="btn btn-cancel">Cancel</a>
+            </div>
+        </form>
+    )
+};
+*/
