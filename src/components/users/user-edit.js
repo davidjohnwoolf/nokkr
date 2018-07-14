@@ -2,10 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Loading from '../layout/loading';
+import ContentHeader from '../layout/content-header';
 import IconLink from '../layout/icon-link';
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 import FieldCheckbox from '../forms/field-checkbox';
+import SubmitBlock from '../forms/submit-block';
 
 import { fetchUsers, updateUser, clearUsers, deleteUser } from '../../actions/users.action';
 import { fetchTeams } from '../../actions/teams.action';
@@ -166,11 +168,10 @@ class UserEdit extends React.Component {
         
         return (
             <main id="user-edit" className="content">
-                <header className="content-header">
-                    <IconLink clickEvent={ history.goBack } icon="arrow-left" />
-                    <h1>Edit User</h1>
+                <ContentHeader title="Edit User" history={ history } chilrenAccess={ true }>
                     <IconLink clickEvent={ handleDelete } type="danger" icon="trash-alt" />
-                </header>
+                </ContentHeader>
+                
                 <form onSubmit={ handleSubmit }>
                 
                     <FieldInput
@@ -259,15 +260,7 @@ class UserEdit extends React.Component {
                         error={ isActive.error }
                         disabled={ sessionId === params.id }
                     />
-                    <div className="btn-group">
-                        <button
-                            disabled={ !formValid }
-                            className="btn btn-primary"
-                            type="submit">
-                            Submit
-                        </button>
-                        <a onClick={ history.goBack } className="btn btn-cancel">Cancel</a>
-                    </div>
+                    <SubmitBlock formValid={ formValid } submitText="Update User" history={ history } />
                 </form>
             </main>
         );

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { fetchUser } from '../../actions/users.action';
 
 import Loading from '../layout/loading';
+import ContentHeader from '../layout/content-header';
 import IconLink from '../layout/icon-link';
 
 import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
@@ -35,19 +36,15 @@ class UserShow extends React.Component {
             state: { isLoading }
         } = this;
         
+        let contentAccess = ((role === ADMIN || (role === SU)) && !isReadOnly);
+        
         if (isLoading) return <Loading />;
         
         return (
             <main id="user-show" className="content">
-                <header className="content-header">
-                    <IconLink clickEvent={ history.goBack } icon="arrow-left" />
-                    <h1>{ user.firstName } { user.lastName }</h1>
-                    {
-                        ((role === ADMIN || (role === SU)) && !isReadOnly)
-                            ? <IconLink url={ `/users/${ params.id }/edit` } icon="edit" />
-                            : ''
-                    }
-                </header>
+                <ContentHeader title={ user.firstName + ' ' + user.lastName } history={ history } chilrenAccess={ contentAccess }>
+                    <IconLink url={ `/users/${ params.id }/edit` } icon="edit" />
+                </ContentHeader>
                 <section className="card">
                     <section>
                         <h4>Username</h4>

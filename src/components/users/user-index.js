@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { fetchUsers } from '../../actions/users.action';
 
 import Loading from '../layout/loading';
+import ContentHeader from '../layout/content-header';
 import IconLink from '../layout/icon-link';
 
 import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
@@ -80,11 +81,9 @@ class UserIndex extends React.Component {
         
         return (
             <main id="user-index" className="content">
-                <header className="content-header">
-                    <IconLink clickEvent={ history.goBack } icon="arrow-left" />
-                    <h1>User Management</h1>
-                    { !isReadOnly ? <IconLink url="/users/new" type="success" icon="plus" /> : '' }
-                </header>
+                <ContentHeader title="User Management" history={ history } chilrenAccess={ !isReadOnly }>
+                    <IconLink url="/users/new" type="success" icon="plus" />
+                </ContentHeader>
                 
                 <table className="table">
                     <thead>
@@ -98,7 +97,7 @@ class UserIndex extends React.Component {
                         { renderUsers() }
                     </tbody>
                 </table>
-                <button className="btn btn-primary" onClick={ toggleActiveUsers }>
+                <button className="button primary" onClick={ toggleActiveUsers }>
                     { activeUsersShown ? 'Show Inactive Users' : 'Show Active Users' }
                 </button>
             </main>

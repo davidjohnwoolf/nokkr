@@ -2,10 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Loading from '../layout/loading';
-import IconLink from '../layout/icon-link';
+import ContentHeader from '../layout/content-header';
+//import IconLink from '../layout/icon-link';
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 import FieldCheckbox from '../forms/field-checkbox';
+import SubmitBlock from '../forms/submit-block';
 
 import { createUser, clearUsers, fetchUsers } from '../../actions/users.action';
 import { fetchTeams } from '../../actions/teams.action';
@@ -126,10 +128,7 @@ class UserNew extends React.Component {
         
         return (
             <main id="user-new" className="content">
-                <header className="content-header">
-                    <IconLink clickEvent={ history.goBack } icon="arrow-left" />
-                    <h1>Create User</h1>
-                </header>
+                <ContentHeader title="Create User" history={ history } />
                 <form onSubmit={ handleSubmit }>
                 
                     <FieldInput
@@ -209,15 +208,7 @@ class UserNew extends React.Component {
                         error={ passwordConfirmation.error }
                     />
                     
-                    <div className="btn-group">
-                        <button
-                            disabled={ !formValid }
-                            className="btn btn-primary"
-                            type="submit">
-                            Create User
-                        </button>
-                        <a onClick={ history.goBack } className="btn btn-cancel">Cancel</a>
-                    </div>
+                    <SubmitBlock formValid={ formValid } submitText="Create User" history={ history } />
                 </form>
             </main>
         );

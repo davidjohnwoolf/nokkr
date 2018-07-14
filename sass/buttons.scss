@@ -1,16 +1,6 @@
 //Buttons
 
-.btn-group {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    
-    > select {
-        width: auto;
-    }
-}
-
-.btn {
+.button {
     border: none;
     padding: $gutter $gutter-lg;
     margin: $gutter 0;
@@ -29,51 +19,89 @@
         }
     }
     
+    &.primary {
+        background: $primary;
+        
+        &:hover {
+            background: $primary-light;
+        }
+    }
+    
+    &.cancel {
+        background: $gray;
+        
+        &:hover {
+            background: $gray-light;
+        }
+    }
+    
+    &.success {
+        background: $success;
+        
+        &:hover {
+            background: $success-light;
+        }
+    }
+    
+    &.danger {
+        background: $error;
+        
+        &:hover {
+            background: $error-light;
+        }
+    }
+    
+    &.warning {
+        background: $warning;
+        
+        &:hover {
+            background: $warning-light;
+        }
+    }
+    
     &:hover {
         color: $white;
         cursor: pointer;
     }
 }
 
-.btn-primary {
-    background: $primary;
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
     
-    &:hover {
-        background: $primary-light;
+    > select {
+        width: auto;
     }
 }
 
-.btn-cancel {
-    background: $gray;
+.button-toggle {
+    > button {
+        border: none;
+        padding: $gutter $gutter-lg;
+        margin: $gutter 0;
+        color: $white;
+        text-decoration: none;
+        transition: $transition;
+        line-height: normal;
+        background: $gray;
+        cursor: pointer;
     
-    &:hover {
-        background: $gray-light;
+        &:hover {
+            background: $gray-light;
+        }
+        
+        &.active {
+            background: $primary;
+        
+            &:hover {
+                background: $primary-light;
+            }
+        }
     }
 }
 
-.btn-success {
-    background: $success;
-    
-    &:hover {
-        background: $success-light;
-    }
-}
-
-.btn-danger {
-    background: $error;
-    
-    &:hover {
-        background: $error-light;
-    }
-}
-
-.btn-warning {
-    background: $warning;
-    
-    &:hover {
-        background: $warning-light;
-    }
-}
+// Icons
 
 .icon-link {
     font-size: 2.5rem;
@@ -102,32 +130,6 @@
         
         &:hover {
             color: $error-light;
-        }
-    }
-}
-
-.button-toggle {
-    > button {
-        border: none;
-        padding: $gutter $gutter-lg;
-        margin: $gutter 0;
-        color: $white;
-        text-decoration: none;
-        transition: $transition;
-        line-height: normal;
-        background: $gray;
-        cursor: pointer;
-    
-        &:hover {
-            background: $gray-light;
-        }
-        
-        &.active {
-            background: $primary;
-        
-            &:hover {
-                background: $primary-light;
-            }
         }
     }
 }
