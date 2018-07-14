@@ -30,7 +30,6 @@ class UserNew extends React.Component {
             role: [required],
             team: [requiredExceptAdmin],
             isReadOnly: [],
-            userImage: [],
             password: [required, password],
             passwordConfirmation: [required, passwordMatch]
         });
@@ -44,7 +43,6 @@ class UserNew extends React.Component {
                 role: { value: '', error: '' },
                 team: { value: '', error: '' },
                 isReadOnly: { checked: false, error: '' },
-                userImage: { value: '', error: '' },
                 password: { value: '', error: '' },
                 passwordConfirmation: { value: '', error: '' }
             },
@@ -216,7 +214,7 @@ class UserNew extends React.Component {
                             disabled={ !formValid }
                             className="btn btn-primary"
                             type="submit">
-                            Submit
+                            Create User
                         </button>
                         <a onClick={ history.goBack } className="btn btn-cancel">Cancel</a>
                     </div>
