@@ -33,7 +33,6 @@ class UserEdit extends React.Component {
             team: [requiredExceptAdmin],
             isReadOnly: [],
             isActive: [],
-            userImage: [],
             password: [password],
             passwordConfirmation: [passwordMatch]
         });
@@ -48,7 +47,6 @@ class UserEdit extends React.Component {
                 team: { value: '', error: '' },
                 isReadOnly: { checked: false, error: '' },
                 isActive: { checked: true, error: '' },
-                userImage: { value: '', error: '' },
                 password: { value: '', error: '' },
                 passwordConfirmation: { value: '', error: '' }
             },
