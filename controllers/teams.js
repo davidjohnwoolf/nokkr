@@ -72,7 +72,13 @@ router.get('/:id', requireManager, (req, res) => {
         
         if (!team) return res.json({ status: ERROR, code: 404, message: 'Team not found' });
         
-        return res.json({ status: SUCCESS, data: { payload: team } });
+        User.find({ team: req.params.id }, (err, users) => {
+            if (err) return res.json({ status: ERROR, data: err, message: 'Error finding users' });
+            
+            const teamWithUsers = Object.assign({ users: users }, team._doc);
+            
+            return res.json({ status: SUCCESS, data: { payload: teamWithUsers } });
+        });
     });
 });
 
