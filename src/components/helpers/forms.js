@@ -106,13 +106,11 @@ export const initializeForm = (fields, data) => {
 };
 
 //formSubmit
-export const formSubmit = ({ e, fields, excludeKeys, action, id }) => {
-     e.preventDefault();
-
+export const formSubmit = ({ fields, excludeKeys, action, id }) => {
     for (let key in fields) {
         let fieldType = (CHECKED in fields[key]) ? CHECKED : VALUE;
 
-        if (excludeKeys.find(excludeKey => excludeKey === key) && !fields[key][fieldType]) {
+        if (excludeKeys && excludeKeys.find(excludeKey => excludeKey === key) && !fields[key][fieldType]) {
             delete fields[key];
         } else {
             fields[key] = fields[key][fieldType];
