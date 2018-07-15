@@ -126,10 +126,11 @@ class UserEdit extends React.Component {
     }
     
     handleSubmit(e) {
+        e.preventDefault();
+        
         const { state: { fields }, props: { updateUser, match: { params } } } = this;
         
         formSubmit({
-            e,
             fields: { ...fields },
             excludeKeys: ['team', 'password', 'passwordConfirmation'],
             action: updateUser,
