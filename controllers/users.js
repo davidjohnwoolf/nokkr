@@ -27,7 +27,7 @@ router.get('/', requireAdmin, (req, res) => {
             //to store users after removing the password hash
             const safeUsers = users.map(user => {
                 
-                let teamTitle = user.team ? account.teams.find(team => team.id == user.team).title : 'NA';
+                let teamTitle = user.team ? account.teams.find(team => team.id == user.team).title : '---';
                 
                 let safeUser = Object.assign({ teamTitle }, user._doc);
                 
@@ -89,7 +89,7 @@ router.get('/:id', requireUser, (req, res) => {
             Account.findOne({}, (err, account) => {
                 if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
                 
-                const teamTitle = user.team ? account.teams.find(team => team.id == user.team).title : 'NA';
+                const teamTitle = user.team ? account.teams.find(team => team.id == user.team).title : '---';
                 
                 const safeUser = Object.assign({ teamTitle }, user._doc);
                 

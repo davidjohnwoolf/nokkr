@@ -4,6 +4,7 @@
 @import 'forms';
 @import 'buttons';
 @import 'tables';
+@import 'lists';
 @import 'modals';
 @import 'maps';
 
@@ -217,42 +218,6 @@ select {
 
 .index {
     padding: $gutter-lg;
-}
-
-//Lists
-
-.link-list {
-    box-shadow: 0 2px 3px $gray-transparent, 0 0 0 1px $gray-transparent;
-    padding: 0;
-    
-    > li {
-        list-style: none;
-        border-bottom: $border;
-        
-        > a {
-            display: block;
-            padding: $gutter-lg;
-            color: $gray-dark;
-            
-            &.icon-link {
-                display: flex;
-                justify-content: space-between;
-                
-                > svg {
-                    color: $white;
-                }
-            }
-            
-            &:hover {
-                color: $white;
-                background: $primary;
-            }
-        }
-        
-        &:last-child {
-            border-bottom: none;
-        }
-    }
 }
 
 //Messages

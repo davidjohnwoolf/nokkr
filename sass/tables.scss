@@ -15,6 +15,12 @@
                 border: $border;
                 margin: 0;
                 font-weight: normal;
+                
+                > .sort-control {
+                    display: flex;
+                    justify-content: space-between;
+                    cursor: pointer;
+                }
             }
         }
     }
@@ -28,11 +34,6 @@
                 padding: $gutter;
                 border: $border;
                 margin: 0;
-                
-                > .cell-container {
-                    display: flex;
-                    justify-content: space-between;
-                }
             }
             
             &:nth-child(odd) {
