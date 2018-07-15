@@ -28,7 +28,7 @@ router.get('/', requireAdmin, (req, res) => {
             teams.push(team);
         });
         
-        return res.json({ status: SUCCESS, data: { teams } });
+        return res.json({ status: SUCCESS, data: { payload: teams } });
     });
 });
 
@@ -50,7 +50,7 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
                 });
             }
             
-            return res.json({ status: SUCCESS, data: { message: 'Team created', id: account.teams.find(team => team.title === req.body.title).id } });
+            return res.json({ status: SUCCESS, data: { message: 'Team created', payload: account.teams.find(team => team.title === req.body.title).id } });
         });
     });
 });
@@ -72,7 +72,7 @@ router.get('/:id', requireManager, (req, res) => {
         
         if (!team) return res.json({ status: ERROR, code: 404, message: 'Team not found' });
         
-        return res.json({ status: SUCCESS, data: { team } });
+        return res.json({ status: SUCCESS, data: { payload: team } });
     });
 });
 
