@@ -94,14 +94,12 @@ class Login extends React.Component {
                             error={ password.error }
                         />
                         
-                        <div className="btn-group">
-                            <button
-                                disabled={ !formValid }
-                                className="btn btn-primary"
-                                type="submit">
-                                Submit
-                            </button>
-                        </div>
+                        <button
+                            disabled={ !formValid }
+                            className="button primary"
+                            type="submit">
+                            Login
+                        </button>
                     </form>
                 </section>
             </main>
