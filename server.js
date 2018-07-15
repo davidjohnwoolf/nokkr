@@ -41,10 +41,10 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use('/', Authentication);
 app.use('/account/', Accounts);
-app.use('/account/statuses', LeadStatuses);
-app.use('/account/fields', LeadFields);
-app.use('/account/area-groups', AreaGroups);
-app.use('/account/teams', Teams);
+app.use('/statuses', LeadStatuses);
+app.use('/fields', LeadFields);
+app.use('/area-groups', AreaGroups);
+app.use('/teams', Teams);
 app.use('/users/', Users);
 app.use('/areas/', Areas);
 
