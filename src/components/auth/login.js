@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import { required, validate } from '../helpers/forms';
+import { required, validate, formSubmit } from '../helpers/forms';
 import FieldInput from '../forms/field-input';
 import { login, clearAuth } from '../../actions/auth.action';
 
@@ -11,11 +11,9 @@ class Login extends React.Component {
     constructor(props) {
         super(props);
         
-        if (props.authenticated) {
-            props.history.push('/');
-        } else {
-            props.clearAuth();
-        }
+        props.authenticated
+            ? props.history.push('/')
+            :props.clearAuth();
         
         this.validationRules = Object.freeze({
             username: [required],
@@ -36,9 +34,12 @@ class Login extends React.Component {
     }
     
     componentDidUpdate() {
-        const { success, fail, message, token, history } = this.props;
+        const {
+            props: { success, fail, message, token, history },
+            state: { serverError }
+        } = this;
         
-        if (fail && (message !== this.state.serverError)) this.setState({ serverError: message });
+        if (fail && (message !== serverError)) this.setState({ serverError: message });
         
         if (success) {
             sessionStorage.setItem('token', token);
@@ -54,26 +55,26 @@ class Login extends React.Component {
     }
     
     handleSubmit(e) {
-        
         e.preventDefault();
         
-        const credsData = { ...this.state.fields };
+        const { state: { fields }, props: { login } } = this;
         
-        for (let key in credsData) { credsData[key] = credsData[key].value; }
-        
-        this.props.login({ ...credsData });
+        formSubmit({ fields: { ...fields }, action: login });
     }
     
     render() {
-        const { handleSubmit, handleUserInput } = this;
-        const { username, password } = { ...this.state.fields };
+        const {
+            state: { serverError, formValid, fields: { username, password } },
+            handleSubmit,
+            handleUserInput
+        } = this;
         
         return (
                 
             <main id="login" className="content">
                 <section className="form">
                     <h1>Login</h1>
-                    <small className="server-error">{ this.state.serverError }</small>
+                    <small className="server-error">{ serverError }</small>
                     <form onSubmit={ handleSubmit }>
                     
                         <FieldInput
@@ -95,7 +96,7 @@ class Login extends React.Component {
                         
                         <div className="btn-group">
                             <button
-                                disabled={ !this.state.formValid }
+                                disabled={ !formValid }
                                 className="btn btn-primary"
                                 type="submit">
                                 Submit

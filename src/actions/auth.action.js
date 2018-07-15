@@ -13,16 +13,16 @@ import { SUCCESS, FAIL, ERROR } from '../../lib/constants';
 export const login = creds => {
     
     return async dispatch => {
-        const response = await axios.post('/login', creds);
+        const { data: res } = await axios.post('/login', creds);
         
-        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
+        if (res.status === ERROR) dispatch(sendError(res.message));
         
-        if (response.data.status === SUCCESS) {
-            const decoded = jwtDecode(response.data.data.token);
+        if (res.status === SUCCESS) {
+            const decoded = jwtDecode(res.data.token);
                 
             dispatch({
                 type: LOGIN,
-                token: response.data.data.token,
+                token: res.data.token,
                 role: decoded.role,
                 isReadOnly: decoded.isReadOnly,
                 sessionTeam: decoded.team,
@@ -30,10 +30,10 @@ export const login = creds => {
             });
         }
         
-        if (response.data.status === FAIL) {
+        if (res.status === FAIL) {
             dispatch({
                 type: LOGIN_FAIL,
-                message: response.data.data.message
+                message: res.data.message
             });
         }
     };
