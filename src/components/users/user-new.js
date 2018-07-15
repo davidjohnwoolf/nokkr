@@ -96,9 +96,11 @@ class UserNew extends React.Component {
     }
     
     handleSubmit(e) {
+        e.preventDefault();
+        
         const { state: { fields }, props: { createUser } } = this;
         
-        formSubmit({ e, fields: { ...fields }, excludeKeys: ['team'], action: createUser });
+        formSubmit({ fields: { ...fields }, excludeKeys: ['team'], action: createUser });
     }
     
     render() {
