@@ -6,7 +6,7 @@ const Team = require('../models/team');
 const User = require('../models/user');
 
 //status variables for Jsend API spec and su role
-const { SUCCESS, FAIL, ERROR, MANAGER } = require('../lib/constants');
+const { SUCCESS, ERROR, MANAGER } = require('../lib/constants');
 
 const { requireAdmin, requireManager, excludeReadOnly } = require('./helpers/authorization');
 
