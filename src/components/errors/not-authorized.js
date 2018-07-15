@@ -4,10 +4,6 @@ import { Link } from 'react-router-dom';
 
 class NotAuthorized extends React.Component {
     
-    constructor(props) {
-        super(props);
-    }
-    
     render() {
         const { authenticated } = this.props;
         
