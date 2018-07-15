@@ -13,13 +13,9 @@
             padding: $gutter-lg;
             color: $gray-dark;
             
-            &.icon-link {
+            &.with-icon {
                 display: flex;
                 justify-content: space-between;
-                
-                > svg {
-                    color: $white;
-                }
             }
             
             &:hover {

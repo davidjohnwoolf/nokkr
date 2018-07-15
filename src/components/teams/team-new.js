@@ -1,11 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { required, unique, validate } from '../helpers/forms';
+import { required, unique, validate, formSubmit } from '../helpers/forms';
+
+import Loading from '../layout/loading';
+import ContentHeader from '../layout/content-header';
 import FieldInput from '../forms/field-input';
 import FieldCheckbox from '../forms/field-checkbox';
+import SubmitBlock from '../forms/submit-block';
 
-import { createTeam, clearTeam, fetchTeams } from '../../actions/teams.action';
+import { createTeam, clearTeams, fetchTeams } from '../../actions/teams.action';
 import { sendMessage } from '../../actions/flash.action';
 
 class TeamNew extends React.Component {
@@ -13,8 +17,7 @@ class TeamNew extends React.Component {
     constructor(props) {
         super(props);
         
-        props.clearTeam();
-        props.fetchTeams();
+        props.clearTeams();
         
         this.validationRules = Object.freeze({
             title: [required, unique],
@@ -26,7 +29,7 @@ class TeamNew extends React.Component {
                 title: { value: '', error: '' },
                 notifySales: { checked: null, error: '' }
             },
-            isInitialized: false,
+            isLoading: true,
             uniqueCandidateList: [],
             formValid: false
         };
@@ -35,21 +38,22 @@ class TeamNew extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     
-    static getDerivedStateFromProps(nextProps, prevState) {
-        const { teams } = nextProps;
-        const { isInitialized } = prevState;
-        
-        if (!isInitialized && teams) {
-            
-            return { uniqueCandidateList: teams, isInitialized: true };
-            
-        } else {
-            return prevState;
-        }
+    componentDidMount() {
+        this.props.fetchTeams();
     }
     
     componentDidUpdate() {
-        const { success, message, history, sendMessage, teamId } = this.props;
+        const {
+            props: { success, message, history, sendMessage, teamId, teams },
+            state: { isLoading }
+        } = this;
+        
+        if (teams && isLoading) {
+            this.setState({
+                isLoading: false,
+                uniqueCandidateList: teams
+            });
+        }
         
         if (success) {
             sendMessage(message);
@@ -58,44 +62,37 @@ class TeamNew extends React.Component {
     }
     
     handleUserInput(e) {
+        const { validationRules, state: { fields, uniqueCandidateList } } = this;
 
         this.setState(
-            validate(e, this.validationRules, { ...this.state.fields }, this.state.uniqueCandidateList, null)
+            validate(e, validationRules, { ...fields }, uniqueCandidateList, null)
         );
     }
     
     handleSubmit(e) {
-        
         e.preventDefault();
         
-        const teamData = { ...this.state.fields };
+        const { state: { fields }, props: { createTeam, match: { params } } } = this;
         
-        //convert fields obj into team obj
-        for (let key in teamData) {
-            let fieldType = ('checked' in teamData[key]) ? 'checked' : 'value';
-
-            teamData[key] = teamData[key][fieldType];
-        }
-        
-        this.props.createTeam(teamData);
+        formSubmit({ fields: { ...fields }, action: createTeam, id: params.id });
     }
     
     render() {
-        const { teams, history } = this.props;
+        const {
+            props: { history },
+            state: { fields: { title, notifySales }, formValid, isLoading },
+            handleSubmit,
+            handleUserInput
+        } = this;
         
-        if (!teams) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
-        
-        const { handleSubmit, handleUserInput, state } = this;
-        const { title, notifySales } = state.fields;
+        if (isLoading) return <Loading />;
         
         return (
                 
             <main id="team-new" className="content">
                 <section className="form">
-                    <header className="content-header">
-                        <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
-                        <h1>Create Team</h1>
-                    </header>
+                    <ContentHeader title="Create Team" history={ history } />
+                    
                     <form onSubmit={ handleSubmit }>
                     
                         <FieldInput
@@ -114,16 +111,8 @@ class TeamNew extends React.Component {
                             handleUserInput={ handleUserInput }
                             error={ notifySales.error }
                         />
-                        
-                        <div className="btn-group">
-                            <button
-                                disabled={ !this.state.formValid }
-                                className="btn btn-primary"
-                                type="submit">
-                                Submit
-                            </button>
-                            <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="btn btn-cancel">Cancel</a>
-                        </div>
+
+                        <SubmitBlock formValid={ formValid } submitText="Create Team" history={ history } />
                     </form>
                 </section>
             </main>
@@ -138,4 +127,4 @@ const mapStateToProps = state => ({
     success: state.teams.success
 });
 
-export default connect(mapStateToProps, { clearTeam, createTeam, sendMessage, fetchTeams })(TeamNew);
+export default connect(mapStateToProps, { clearTeams, createTeam, sendMessage, fetchTeams })(TeamNew);

@@ -1,6 +1,8 @@
 //helper functions to construct common action creators
 import { fetchList, fetchObject, createObject, updateObject, deleteObject, clearReducer } from './helpers';
 
+import { sendError } from './flash.action';
+
 export const FETCH_USERS = 'FETCH_USERS';
 export const FETCH_USER = 'FETCH_USER';
 export const CREATE_USER = 'CREATE_USER';

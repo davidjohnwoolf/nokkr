@@ -1,12 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { required, unique, validate, initializeForm } from '../helpers/forms';
+import { required, unique, validate, initializeForm, formSubmit } from '../helpers/forms';
+
+import Loading from '../layout/loading';
+import ContentHeader from '../layout/content-header';
+import IconLink from '../layout/icon-link';
 import FieldInput from '../forms/field-input';
 import FieldCheckbox from '../forms/field-checkbox';
+import SubmitBlock from '../forms/submit-block';
 
-import { fetchTeam, fetchTeams, updateTeam, clearTeam, deleteTeam } from '../../actions/teams.action';
-import { fetchUsers } from '../../actions/users.action';
+import { fetchTeams, updateTeam, clearTeams, deleteTeam } from '../../actions/teams.action';
 import { sendMessage, sendError } from '../../actions/flash.action';
 
 class TeamEdit extends React.Component {
@@ -14,10 +18,7 @@ class TeamEdit extends React.Component {
     constructor(props) {
         super(props);
         
-        props.clearTeam();
-        props.fetchTeam(props.match.params.id);
-        props.fetchTeams();
-        props.fetchUsers();
+        props.clearTeams();
         
         this.validationRules = Object.freeze({
             title: [required, unique],
@@ -29,10 +30,10 @@ class TeamEdit extends React.Component {
                 title: { value: '', error: '' },
                 notifySales: { checked: false, error: '' }
             },
-            serverMessage: '',
+            isLoading: true,
             formValid: false,
-            uniqueCandidateList: [],
-            isInitialized: false
+            team: null,
+            uniqueCandidateList: []
         };
 
         this.handleUserInput = this.handleUserInput.bind(this);
@@ -40,71 +41,58 @@ class TeamEdit extends React.Component {
         this.handleDelete = this.handleDelete.bind(this);
     }
     
+    componentDidMount() {
+        const { fetchTeams, match: { params } } = this.props;
+        
+        fetchTeams();
+    }
+    
     componentDidUpdate() {
-        const { success, message, history, sendMessage, match, team } = this.props;
+        const {
+            props: { success, deleted, message, history, sendMessage, match: { params }, teams },
+            state: { isLoading, fields }
+        } = this;
+        
+        if (teams && isLoading) {
+            const team = teams.find(team => team._id === params.id);
+            
+            this.setState({
+                isLoading: false,
+                team,
+                fields: initializeForm({ ...fields }, team),
+                uniqueCandidateList: teams
+            });
+        }
         
         if (success) {
             sendMessage(message);
-            
-            if (!team) {
-                //team deleted
-                history.push('/teams');
-            } else {
-                //team updated
-                history.push(`/teams/${ match.params.id }`);
-            }
-        }
-    }
-    
-    static getDerivedStateFromProps(nextProps, prevState) {
-        const { team, teams } = nextProps;
-        const { isInitialized } = prevState;
-        
-        if (!isInitialized && team && teams) {
-            const fields = { ...prevState.fields };
-            
-            return { uniqueCandidateList: teams, fields: initializeForm(fields, team), isInitialized: true };
 
-        } else {
-            return prevState;
+            deleted ? history.push('/teams') : history.push(`/teams/${ params.id }`);
         }
     }
     
     handleUserInput(e) {
+        const { validationRules, state: { fields, uniqueCandidateList, team } } = this;
 
         this.setState(
-            validate(e, this.validationRules, { ...this.state.fields }, this.state.uniqueCandidateList, this.props.team)
+            validate(e, validationRules, { ...fields }, uniqueCandidateList, team)
         );
     }
     
     handleSubmit(e) {
-        
         e.preventDefault();
         
-        const teamData = { ...this.state.fields };
+        const { state: { fields }, props: { updateTeam, match: { params } } } = this;
         
-        //convert fields obj into team obj
-        for (let key in teamData) {
-            let fieldType = ('checked' in teamData[key]) ? 'checked' : 'value';
-
-            teamData[key] = teamData[key][fieldType];
-        }
-        
-        this.props.updateTeam(this.props.match.params.id, teamData);
+        formSubmit({ fields: { ...fields }, action: updateTeam, id: params.id });
     }
     
     handleDelete() {
-        const { match, sendError, deleteTeam, users, team } = this.props;
+        const { match: { params }, sendError, deleteTeam, team } = this.props;
         
-        let teamHasUsers = false;
-        
-        users.forEach(user => {
-            if (user.team === team._id) teamHasUsers = true;
-        });
-        
-        if (!teamHasUsers) {
+        if (!team.users.length) {
             if (confirm('Are you sure you want to delete this Team? This is not reversible.')) {
-                deleteTeam(match.params.id);
+                deleteTeam(params.id);
             }
         } else {
             sendError('You cannot delete a team that has members, first update member teams');
@@ -112,54 +100,48 @@ class TeamEdit extends React.Component {
     }
     
     render() {
-        const { team, teams, users, isReadOnly, history } = this.props;
+        const {
+            props: { isReadOnly, history },
+            state: {
+                formValid,
+                isLoading,
+                fields: { title, notifySales }
+            },
+            handleSubmit,
+            handleUserInput,
+            handleDelete
+        } = this;
         
-        if (!team || !teams || !users) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
-        
-        const { handleSubmit, handleUserInput, state, handleDelete } = this;
-        const { title, notifySales } = state.fields;
+        if (isLoading) return <Loading />;
         
         return (
                 
-            <main id="team-new" className="content">
-                <section className="form">
-                    <header className="content-header">
-                        <a onClick={ history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
-                        <h1>Edit Team</h1>
-                        { !isReadOnly
-                            ? <a onClick={ handleDelete } style={{ cursor: 'pointer' }} className="icon-button-danger"><i className="fas fa-trash-alt"></i></a>
-                            : '' }
-                    </header>
-                    <form onSubmit={ handleSubmit }>
+            <main id="team-edit" className="content">
+                <ContentHeader title="Edit Team" history={ history } chilrenAccess={ true }>
+                    <IconLink clickEvent={ handleDelete } type="danger" icon="trash-alt" />
+                </ContentHeader>
+                
+                <form onSubmit={ handleSubmit }>
+                
+                    <FieldInput
+                        name="title"
+                        type="text"
+                        placeholder="team name"
+                        value={ title.value }
+                        handleUserInput={ handleUserInput }
+                        error={ title.error }
+                    />
+                    <FieldCheckbox
+                        name="notifySales"
+                        label="Notify Team on Sale"
+                        checked={ notifySales.checked }
+                        value="true"
+                        handleUserInput={ handleUserInput }
+                        error={ notifySales.error }
+                    />
                     
-                        <FieldInput
-                            name="title"
-                            type="text"
-                            placeholder="team name"
-                            value={ title.value }
-                            handleUserInput={ handleUserInput }
-                            error={ title.error }
-                        />
-                        <FieldCheckbox
-                            name="notifySales"
-                            label="Notify Team on Sale"
-                            checked={ notifySales.checked }
-                            value="true"
-                            handleUserInput={ handleUserInput }
-                            error={ notifySales.error }
-                        />
-                        
-                        <div className="btn-group">
-                            <button
-                                disabled={ !this.state.formValid }
-                                className="btn btn-primary"
-                                type="submit">
-                                Submit
-                            </button>
-                            <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="btn btn-cancel">Cancel</a>
-                        </div>
-                    </form>
-                </section>
+                    <SubmitBlock formValid={ formValid } submitText="Update Team" history={ history } />
+                </form>
             </main>
         );
     }
@@ -168,10 +150,10 @@ class TeamEdit extends React.Component {
 const mapStateToProps = state => ({
     team: state.teams.team,
     teams: state.teams.teams,
-    users: state.users.users,
+    deleted: state.teams.deleted,
     message: state.teams.message,
     isReadOnly: state.auth.isReadOnly,
     success: state.teams.success
 });
 
-export default connect(mapStateToProps, { clearTeam, fetchTeam, fetchTeams, updateTeam, sendMessage, deleteTeam, fetchUsers, sendError })(TeamEdit);
+export default connect(mapStateToProps, { clearTeams, fetchTeams, updateTeam, sendMessage, deleteTeam, sendError })(TeamEdit);

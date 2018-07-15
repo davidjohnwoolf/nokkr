@@ -4,14 +4,22 @@ import { Link } from 'react-router-dom';
 
 import { fetchTeams } from '../../actions/teams.action';
 
-import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
+import Loading from '../layout/loading';
+import ContentHeader from '../layout/content-header';
+import IconLink from '../layout/icon-link';
 
 class TeamIndex extends React.Component {
     
-    constructor(props) {
-        super(props);
+    state = { isLoading: true }
+    
+    componentDidMount() {
+        this.props.fetchTeams();
+    }
+    
+    componentDidUpdate() {
+        const { props: { teams }, state: { isLoading } } = this;
         
-        props.fetchTeams();
+        if (teams && isLoading) this.setState({ isLoading: false });
     }
 	
     renderTeams() {
@@ -21,10 +29,10 @@ class TeamIndex extends React.Component {
             teams.map(team => {
                 
                 return (
-                    <li className="cell-container" key={ team._id }>
-                        <Link to={ `/teams/${ team._id }` } className="icon-link">
-                            { team.title }
-                            <i className="fa fa-chevron-right"></i>
+                    <li key={ team._id }>
+                        <Link to={ `/teams/${ team._id }` } className="with-icon">
+                            <span>{ team.title }</span>
+                            <i className="fas fa-chevron-right"></i>
                         </Link>
                     </li>
                 );
@@ -33,21 +41,19 @@ class TeamIndex extends React.Component {
     }
     
     render() {
-        if (!this.props.teams) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
+        const { props: { isReadOnly, history }, state: { isLoading } } = this;
+        
+        if (isLoading) return <Loading />;
         
         return (
-            <main id="user-index" className="content">
-                <section className="index">
-                    <header className="content-header">
-                        <a onClick={ this.props.history.goBack } href="#" className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
-                        <h1>Team Management</h1>
-                        { !this.props.isReadOnly ? <Link className="icon-button-success" to="/teams/new"><i className="fas fa-plus"></i></Link> : '' }
-                    </header>
+            <main id="team-index" className="content">
+                <ContentHeader title="Team Management" history={ history } chilrenAccess={ !isReadOnly }>
+                    <IconLink type="success" url="/teams/new" icon="plus" />
+                </ContentHeader>
 
-                    <ul className="link-list">
-                        { this.renderTeams() }
-                    </ul>
-                </section>
+                <ul className="link-list">
+                    { this.renderTeams() }
+                </ul>
             </main>
         );
     }
