@@ -3,9 +3,6 @@ import { closeMessage } from '../../actions/flash.action';
 import { connect } from 'react-redux';
 
 class Flash extends React.Component {
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         const { message, closeMessage, error } = this.props;
