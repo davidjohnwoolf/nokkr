@@ -36,7 +36,7 @@ class UserShow extends React.Component {
             state: { isLoading }
         } = this;
         
-        let contentAccess = ((role === ADMIN || (role === SU)) && !isReadOnly);
+        const contentAccess = ((role === ADMIN || (role === SU)) && !isReadOnly);
         
         if (isLoading) return <Loading />;
         
