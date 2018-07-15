@@ -85,7 +85,7 @@ class UserEdit extends React.Component {
         if (users && teams && isLoading) {
             const teamOptions = [['Select Team', '']];
             
-            const user = users.find(user => user._id === params.id)
+            const user = users.find(user => user._id === params.id);
         
             teams.forEach(team => teamOptions.push([team.title, team._id]));
             
