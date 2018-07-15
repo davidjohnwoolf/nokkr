@@ -23,7 +23,11 @@ class Header extends React.Component {
     }
 
     render() {
-        const { authenticated, sessionId, role, sessionTeam, logout } = this.props;
+        const {
+            props: { authenticated, sessionId, role, sessionTeam, logout },
+            state: { menuActive },
+            showMenu
+        } = this;
         
         if (authenticated) {
             return (
@@ -47,16 +51,16 @@ class Header extends React.Component {
                             </li>
                             <li>
                                 <a
-                                    onClick={ this.showMenu }
+                                    onClick={ showMenu }
                                     style={{ cursor: 'pointer' }}
-                                    className={ this.state.menuActive ? 'active' : '' }>
+                                    className={ menuActive ? 'active' : '' }>
                                     
                                     <i className="fas fa-bars"></i>
                                 </a>
                             </li>
                         </ul>
                     </nav>
-                    <Menu shown={ this.state.menuActive } id={ sessionId } role={ role } team={ sessionTeam } logout={ logout } showMenu={ this.showMenu } />
+                    <Menu shown={ menuActive } id={ sessionId } role={ role } team={ sessionTeam } logout={ logout } showMenu={ showMenu } />
                 </header>
             );
         } else {

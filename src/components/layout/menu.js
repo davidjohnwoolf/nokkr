@@ -20,7 +20,7 @@ class Menu extends React.Component {
     }
     
     render() {
-            const { shown, id, role, team, showMenu } = this.props;
+            const { props: { shown, id, role, team, showMenu }, handleLogout } = this;
         
             return (
                 <nav id="main-menu" className={ shown ? '' : 'invisible' }>
@@ -42,7 +42,7 @@ class Menu extends React.Component {
                             <li>
                                 <a onClick={ () => {
                                         showMenu();
-                                        this.handleLogout();
+                                        handleLogout();
                                     }
                                 } style={{ cursor: 'pointer' }}>Logout <i className="fas fa-sign-out-alt"></i></a>
                             </li>
