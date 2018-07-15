@@ -1,83 +1,35 @@
-import axios from 'axios';
-
-import { sendError } from './flash.action';
+//helper functions to construct common action creators
+import { fetchList, fetchObject, createObject, updateObject, deleteObject, clearReducer } from './helpers';
 
 export const FETCH_TEAMS = 'FETCH_TEAMS';
 export const FETCH_TEAM = 'FETCH_TEAM';
-export const CREATE_TEAM = 'CREATE_TEAML';
+export const CREATE_TEAM = 'CREATE_TEAM';
 export const UPDATE_TEAM = 'UPDATE_TEAM';
 export const DELETE_TEAM = 'DELETE_TEAM';
-export const CLEAR_TEAM = 'CLEAR_TEAM';
+export const CLEAR_TEAMS = 'CLEAR_TEAMS';
 
-//status variables for Jsend API spec
-import { SUCCESS, FAIL, ERROR } from '../../lib/constants';
+const BASE_URL = '/teams/';
 
 export const fetchTeams = () => {
-    return async dispatch => {
-        const response = await axios.get('/account/teams');
-        
-        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
-        
-        dispatch({ type: FETCH_TEAMS, teams: response.data.data.teams });
-    };
+    return fetchList({ url: BASE_URL, type: FETCH_TEAMS });
 };
 
 export const fetchTeam = id => {
-    return async dispatch => {
-        const response = await axios.get(`/account/teams/${id}`);
-        
-        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
-        
-        dispatch({ type: FETCH_TEAM, team: response.data.data.team });
-    };
+    return fetchObject({ url: BASE_URL + id, type: FETCH_TEAM });
 };
 
 export const createTeam = team => {
-    
-    return async dispatch => {
-        const response = await axios.post('/account/teams', team);
-        
-        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
-
-        if (response.data.status === SUCCESS) {
-            dispatch({
-                type: CREATE_TEAM,
-                message: response.data.data.message,
-                teamId: response.data.data.id
-            });
-        }
-    };
+    return createObject({ url: BASE_URL, type: CREATE_TEAM, body: team })
 };
 
 export const updateTeam = (id, team) => {
-    
-    return async dispatch => {
-        const response = await axios.put(`/account/teams/${id}`, team);
-        
-        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
-        
-        if (response.data.status === SUCCESS) {
-            dispatch({
-                type: UPDATE_TEAM,
-                message: response.data.data.message
-            });
-        }
-    };
+    return updateObject({ url: BASE_URL + id, type: UPDATE_TEAM, body: team });
 };
 
 export const deleteTeam = id => {
-    
-    return async dispatch => {
-        const response = await axios.delete(`/account/teams/${id}`);
-        
-        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
-        
-        dispatch({ type: DELETE_TEAM, message: response.data.data.message });
-    };
+    return deleteObject({ url: BASE_URL + id, type: DELETE_TEAM });
 };
 
-export const clearTeam = () => {
-    return dispatch => {
-        dispatch({ type: CLEAR_TEAM });
-    };
+export const clearTeams = () => {
+    return clearReducer({ type: CLEAR_TEAMS });
 };

@@ -4,28 +4,28 @@ import {
     CREATE_TEAM,
     UPDATE_TEAM,
     DELETE_TEAM,
-    CLEAR_TEAM
+    CLEAR_TEAMS
 } from '../actions/teams.action';
 
 export default function(state = {}, action) {
 
     switch (action.type) {
         case FETCH_TEAM:
-            return { ...state, team: action.team };
+            return { ...state, team: action.payload };
         
         case FETCH_TEAMS:
-            return { ...state, teams: action.teams };
+            return { ...state, teams: action.payload };
         
         case CREATE_TEAM:
-            return { ...state, success: true, message: action.message, teamId: action.teamId };
+            return { ...state, success: true, message: action.message, teamId: action.payload };
         
         case UPDATE_TEAM:
             return { ...state, success: true, message: action.message };
             
         case DELETE_TEAM:
-            return { ...state, success: true, message: action.message, team: null };
+            return { ...state, success: true, deleted: true, message: action.message };
             
-        case CLEAR_TEAM:
+        case CLEAR_TEAMS:
             return {};
             
         default:
