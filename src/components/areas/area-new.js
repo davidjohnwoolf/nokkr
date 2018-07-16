@@ -137,9 +137,9 @@ class AreaNew extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         
-        console.log(fields)
-        
         const { state: { fields }, props: { createArea } } = this;
+        
+        console.log(fields)
         
         formSubmit({ fields: { ...fields }, action: createArea });
     }
