@@ -12,6 +12,7 @@ import SubmitBlock from '../forms/submit-block';
 import Modal from '../layout/modal';
 import Loading from '../layout/loading';
 import ContentHeader from '../layout/content-header';
+import IconLink from '../layout/icon-link';
 
 import { createArea, clearAreas, fetchAreas } from '../../actions/areas.action';
 import { fetchUsers } from '../../actions/users.action';
@@ -39,8 +40,6 @@ class AreaNew extends React.Component {
                 userId: { value: '', error: '' }
             },
             isLoading: true,
-            areaList: true,
-            areaGroupList: true,
             coords: null,
             formValid: false,
             modalShown: false
@@ -80,9 +79,7 @@ class AreaNew extends React.Component {
         
         if (areas && areaGroups && users && isLoading) {
             this.setState({
-                isLoading: false,
-                areaList: areas,
-                areaGroupList: areaGroups,
+                isLoading: false
             })
         }
 
@@ -104,10 +101,10 @@ class AreaNew extends React.Component {
     }
     
     handleUserInput(e) {
-        const { state: { fields }, props: { areaList }, validationRules } = this
+        const { state: { fields }, props: { areas }, validationRules } = this
         
         this.setState(
-            validate(e, validationRules, { ...fields }, areaList, null)
+            validate(e, validationRules, { ...fields }, areas, null)
         );
     }
     
@@ -177,7 +174,7 @@ class AreaNew extends React.Component {
                                 error={ areaGroup.error }
                                 options={ areaGroupOptions }
                             />
-                            <a onClick={ toggleModal } className="icon-button-success" style={{ cursor: 'pointer' }}><i className="fas fa-plus"></i></a>
+                            <IconLink clickEvent={ toggleModal } type="success" icon="plus" />
                         </div>
                         <FieldSelect
                             name="userId"

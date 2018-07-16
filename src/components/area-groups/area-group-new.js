@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { required, unique, validate } from '../helpers/forms';
+import { required, unique, validate, formSubmit } from '../helpers/forms';
 import FieldInput from '../forms/field-input';
 import FieldColor from '../forms/field-color';
 import { createAreaGroup } from '../../actions/area-groups.action';
@@ -22,17 +22,18 @@ class AreaGroupNew extends React.Component {
                 title: { value: '', error: '' },
                 color: { value: '#1e80c6', error: '' }
             },
-            uniqueCandidateList: props.areaGroups,
             formValid: false
         };
 
         this.handleUserInput = this.handleUserInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-    
+
     handleUserInput(e) {
+        const { state: { fields }, props: { areaGroups }, validationRules } = this
+        
         this.setState(
-            validate(e, this.validationRules, { ...this.state.fields }, this.state.uniqueCandidateList, null)
+            validate(e, validationRules, { ...fields }, areaGroups, null)
         );
     }
     
@@ -40,21 +41,15 @@ class AreaGroupNew extends React.Component {
         
         e.preventDefault();
         
-        const areaGroupData = { ...this.state.fields };
+        const { state: { fields }, props: { createArea } } = this;
         
-        //convert fields obj into user obj
-        for (let key in areaGroupData) {
-            areaGroupData[key] = areaGroupData[key].value;
-        }
-        
-        this.props.createAreaGroup(areaGroupData);
+        formSubmit({ fields: { ...fields }, action: createArea });
     }
     
     render() {
-        const { title, color } = this.state.fields;
-        const { handleSubmit, handleUserInput } = this;
+        const {state: { fields: { title, color }, formValid }, handleUserInput, handleSubmit } = this;
         
-        //render in modal
+        //meant to render in modal
         return (
             <form onSubmit={ handleSubmit }>
             
@@ -73,15 +68,13 @@ class AreaGroupNew extends React.Component {
                     handleUserInput={ handleUserInput }
                     error={ color.error }
                 />
-                
-                <div className="btn-group">
-                    <button
-                        disabled={ !this.state.formValid }
-                        className="btn btn-success"
-                        type="submit">
-                        Save
-                    </button>
-                </div>
+
+                <button
+                    disabled={ !formValid }
+                    className="button success"
+                    type="submit">
+                    Save
+                </button>
             </form>
         );
     }
