@@ -29,9 +29,7 @@ router.get('/', requireManager, (req, res) => {
             areaGroups.push(areaGroup);
         });
         
-        console.log(areaGroups)
-        
-        return res.json({ status: SUCCESS, data: { areaGroups } });
+        return res.json({ status: SUCCESS, data: { payload: areaGroups } });
     });
 });
 
@@ -57,7 +55,7 @@ router.post('/', requireManager, excludeReadOnly, (req, res) => {
                 status: SUCCESS,
                 data: {
                     message: 'Area group created',
-                    id: account.areaGroups.find(areaGroup => areaGroup.title === req.body.title).id
+                    payload: account.areaGroups.find(areaGroup => areaGroup.title === req.body.title).id
                 }
             });
         });
@@ -75,7 +73,7 @@ router.get('/:id', requireManager, (req, res) => {
         
         if (!areaGroup) return res.json({ status: ERROR, code: 404, message: 'Area group not found' });
         
-        return res.json({ status: SUCCESS, data: { areaGroup } });
+        return res.json({ status: SUCCESS, data: { payload: areaGroup } });
     });
 });
 
