@@ -37,13 +37,12 @@ router.get('/', requireUser, (req, res) => {
 
 //create
 router.post('/', requireManager, excludeReadOnly, (req, res) => {
-    console.log(req.body);
-    
+
     User.findOne({ _id: req.body.userId }, (err, user) => {
         if (err) return res.json({ status: ERROR, data: err, message: 'Error finding user' });
         
         delete req.body.userId;
-        
+
         user.areas.push(new Area(req.body));
         
         user.save((err, user) => {
