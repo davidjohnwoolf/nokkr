@@ -1,18 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 
-import { required, validate } from '../helpers/forms';
+import { required, unique, validate, formSubmit } from '../helpers/forms';
+import { AREA_PATH } from '../../../lib/constants';
 
+import AreaGroupNew from '../area-groups/area-group-new';
 import DrawMap from './draw-map';
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
+import SubmitBlock from '../forms/submit-block';
 import Modal from '../layout/modal';
-import AreaGroupNew from '../area-groups/area-group-new';
+import Loading from '../layout/loading';
+import ContentHeader from '../layout/content-header';
 
-import { createArea, clearArea } from '../../actions/areas.action';
+import { createArea, clearAreas, fetchAreas } from '../../actions/areas.action';
 import { fetchUsers } from '../../actions/users.action';
-import { fetchAreaGroups, clearAreaGroup } from '../../actions/area-groups.action';
+import { fetchAreaGroups, clearAreaGroups } from '../../actions/area-groups.action';
 import { sendMessage } from '../../actions/flash.action';
 
 class AreaNew extends React.Component {
@@ -20,14 +23,11 @@ class AreaNew extends React.Component {
     constructor(props) {
         super(props);
         
-        props.clearArea();
-        props.clearAreaGroup();
-        
-        props.fetchUsers();
-        props.fetchAreaGroups();
+        props.clearAreas();
+        props.clearAreaGroups();
         
         this.validationRules = {
-            title: [required],
+            title: [required, unique],
             areaGroup: [required],
             userId: [required]
         };
@@ -38,6 +38,9 @@ class AreaNew extends React.Component {
                 areaGroup: { value: '', error: '' },
                 userId: { value: '', error: '' }
             },
+            isLoading: true,
+            areaList: true,
+            areaGroupList: true,
             coords: null,
             formValid: false,
             modalShown: false
@@ -49,19 +52,50 @@ class AreaNew extends React.Component {
         this.toggleModal = this.toggleModal.bind(this);
     }
     
+    componentDidMount() {
+        this.props.fetchUsers();
+        this.props.fetchAreaGroups();
+        this.props.fetchAreas();
+    }
+    
     componentDidUpdate() {
-        const { success, message, history, sendMessage, areaGroupSuccess, areaGroupMessage, areaId } = this.props;
+        const {
+            props: {
+                success,
+                message,
+                history,
+                sendMessage,
+                areaGroupSuccess,
+                areaGroupMessage,
+                areaId,
+                clearAreaGroup,
+                fetchAreaGroups,
+                areas,
+                areaGroups,
+                users
+            },
+            state: { isLoading },
+            toggleModal
+        } = this;
+        
+        if (areas && areaGroups && users && isLoading) {
+            this.setState({
+                isLoading: false,
+                areaList: areas,
+                areaGroupList: areaGroups,
+            })
+        }
 
         if (success) {
             sendMessage(message);
-            history.push(`/areas/${ areaId }`);
+            history.push(AREA_PATH + areaId);
         }
         
         if (areaGroupSuccess) {
             sendMessage(areaGroupMessage);
-            this.props.clearAreaGroup();
-            this.props.fetchAreaGroups();
-            this.toggleModal();
+            clearAreaGroup();
+            fetchAreaGroups();
+            toggleModal();
         }
     }
     
@@ -70,21 +104,19 @@ class AreaNew extends React.Component {
     }
     
     handleUserInput(e) {
+        const { state: { fields }, props: { areaList }, validationRules } = this
+        
         this.setState(
-            validate(e, this.validationRules, { ...this.state.fields })
+            validate(e, validationRules, { ...fields }, areaList, null)
         );
     }
     
     handleSubmit(e) {
         e.preventDefault();
         
-        const areaData = { ...this.state.fields };
+        const { state: { fields }, props: { createArea } } = this;
         
-        for (let key in areaData) { areaData[key] = areaData[key].value; }
-        
-        areaData.coords = this.state.coords;
-        
-        this.props.createArea(areaData);
+        formSubmit({ fields: { ...fields }, action: createArea });
     }
     
     toggleModal() {
@@ -92,17 +124,20 @@ class AreaNew extends React.Component {
     }
 
     render() {
-        
-        const { handleSubmit, handleUserInput, handleOverlay, toggleModal, state, props } = this;
-        const { formValid, serverError, coords, modalShown } = state;
-        const { title, areaGroup, userId } = state.fields;
-        const { users, areaGroups, history } = props;
+        const {
+            props: { users, areaGroups, history },
+            state: { isLoading, formValid, serverError, coords, modalShown, fields: { title, areaGroup, userId } },
+            handleSubmit,
+            handleUserInput,
+            handleOverlay,
+            toggleModal
+        } = this;
         
         const userOptions = [['Assign User', '']];
         const areaGroupOptions = [['Select Group', '']];
         let areas = [];
         
-        if (!users || !areaGroups) return <section className="spinner"><i className="fas fa-spinner fa-spin"></i></section>;
+        if (isLoading) return <Loading />;
         
         users.forEach(user => {
             userOptions.push([`${user.firstName} ${user.lastName}` , user._id]);
@@ -119,10 +154,7 @@ class AreaNew extends React.Component {
                 
             <main id="area-new" className="content">
                 <section className="form">
-                    <header className="content-header">
-                        <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="icon-button-primary"><i className="fas fa-arrow-left"></i></a>
-                        <h1>Create Area</h1>
-                    </header>
+                    <ContentHeader title="Create Area" history={ history } />
                     
                     <DrawMap handleOverlay={ handleOverlay } areas={ areas } />
                     
@@ -156,16 +188,8 @@ class AreaNew extends React.Component {
                         />
                         
                         <input type="hidden" name="coords" value={ coords || '' } />
-                        
-                        <div className="btn-group">
-                            <button
-                                disabled={ !formValid || !coords }
-                                className="btn btn-primary"
-                                type="submit">
-                                Save Area
-                            </button>
-                            <a onClick={ history.goBack } style={{ cursor: 'pointer' }} className="btn btn-cancel">Cancel</a>
-                        </div>
+
+                        <SubmitBlock submitText="Save Area" history={ history } formValid={ formValid && coords } />
                     </form>
                     <Modal close={ toggleModal } shown={ modalShown } title="Create Area Group">
                         <AreaGroupNew />
@@ -180,10 +204,11 @@ const mapStateToProps = state => ({
     message: state.areas.message,
     success: state.areas.success,
     areaId: state.areas.areaId,
+    areas: state.areas.areas,
     users: state.users.users,
     areaGroupSuccess: state.areaGroups.success,
     areaGroupMessage: state.areaGroups.message,
     areaGroups: state.areaGroups.areaGroups
 });
 
-export default connect(mapStateToProps, { createArea, fetchUsers, clearArea, sendMessage, fetchAreaGroups, clearAreaGroup })(AreaNew);
+export default connect(mapStateToProps, { createArea, fetchUsers, clearAreas, sendMessage, fetchAreaGroups, clearAreaGroups, fetchAreas })(AreaNew);
