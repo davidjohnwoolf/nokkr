@@ -46,8 +46,6 @@ const store = createStoreWithMiddleware(reducers, window.__REDUX_DEVTOOLS_EXTENS
 const token = sessionStorage.getItem('token');
 const authenticated = store.getState().auth.authenticated;
 
-console.log('testing')
-
 //set authentication state on load
 if (token && !authenticated) {
 	

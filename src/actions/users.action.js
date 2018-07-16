@@ -1,6 +1,6 @@
 //helper functions to construct common action creators
 import { fetchList, fetchObject, createObject, updateObject, deleteObject, clearReducer } from './helpers';
-const { USER_PATH } = '../../lib/constants';
+import { USER_PATH } from '../../lib/constants';
 
 import { sendError } from './flash.action';
 

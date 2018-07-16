@@ -1,6 +1,6 @@
 //helper functions to construct common action creators
 import { fetchList, fetchObject, createObject, updateObject, deleteObject, clearReducer } from './helpers';
-const { TEAM_PATH } = '../../lib/constants';
+import { TEAM_PATH } from '../../lib/constants';
 
 export const FETCH_TEAMS = 'FETCH_TEAMS';
 export const FETCH_TEAM = 'FETCH_TEAM';
