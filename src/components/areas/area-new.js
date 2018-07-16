@@ -101,7 +101,7 @@ class AreaNew extends React.Component {
     }
     
     handleUserInput(e) {
-        const { state: { fields }, props: { areas }, validationRules } = this
+        const { state: { fields }, props: { areas }, validationRules } = this;
         
         this.setState(
             validate(e, validationRules, { ...fields }, areas, null)

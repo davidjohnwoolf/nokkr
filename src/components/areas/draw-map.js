@@ -3,6 +3,7 @@ import React from 'react';
 import mapStyles from '../helpers/map-styles';
 
 import Modal from '../layout/modal';
+import IconLink from '../layout/icon-link';
 import MapOptions from './map-options';
 
 //can you write your own react style listeners?
@@ -168,18 +169,17 @@ class DrawMap extends React.Component {
     }
 
     render() {
+        const { state: { modalShown, drawingMode, mapType }, resetMap, toggleModal, toggleDrawingMode, setMapType } = this;
         
-        const { resetMap, toggleModal, toggleDrawingMode, setMapType, state } = this;
-        const { modalShown, drawingMode, mapType } = state;
         return (
             <div className="map-container">
                 <div className="custom-map-controls">
-                    <button onClick={ toggleDrawingMode } className={ drawingMode ? 'btn btn-success' : 'btn btn-cancel' }><i className="fas fa-pencil-alt"></i></button>
+                    <button onClick={ toggleDrawingMode } className={ drawingMode ? 'button success' : 'button cancel' }><i className="fas fa-pencil-alt"></i></button>
                     <div><input id="map-search" type="text" placeholder="enter location to go to" /></div>
-                    <a style={{ cursor: 'pointer' }} onClick={ toggleModal } className="btn btn-primary"><i className="fas fas fa-cog"></i></a>
+                    <button onClick={ toggleModal } className="button primary"><i className="fas fas fa-cog"></i></button>
                 </div>
                 <div id="map"></div>
-                <button onClick={ resetMap } disabled={ !this.overlay } className="btn btn-primary"><i className="fas fa-undo"></i></button>
+                <button onClick={ resetMap } disabled={ !this.overlay } className="button primary"><i className="fas fa-undo"></i></button>
                 <Modal close={ toggleModal } shown={ modalShown } title="Area Settings">
                     <MapOptions mapType={ mapType } setMapType={ setMapType } />
                 </Modal>
