@@ -33,8 +33,6 @@ import UserEdit from './components/users/user-edit';
 import UserShow from './components/users/user-show';
 import UserIndex from './components/users/user-index';
 import AreaNew from './components/areas/area-new';
-//import AreasAll from './components/areas/areas-all';
-//import AreasUser from './components/areas/areas-user';
 
 import { SU, ADMIN, MANAGER, USER } from '../lib/constants';
 
@@ -47,6 +45,8 @@ const store = createStoreWithMiddleware(reducers, window.__REDUX_DEVTOOLS_EXTENS
 
 const token = sessionStorage.getItem('token');
 const authenticated = store.getState().auth.authenticated;
+
+console.log('testing')
 
 //set authentication state on load
 if (token && !authenticated) {

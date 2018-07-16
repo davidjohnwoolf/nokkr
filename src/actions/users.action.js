@@ -1,5 +1,6 @@
 //helper functions to construct common action creators
 import { fetchList, fetchObject, createObject, updateObject, deleteObject, clearReducer } from './helpers';
+const { USER_PATH } = '../../lib/constants';
 
 import { sendError } from './flash.action';
 
@@ -9,8 +10,6 @@ export const CREATE_USER = 'CREATE_USER';
 export const UPDATE_USER = 'UPDATE_USER';
 export const DELETE_USER = 'DELETE_USER';
 export const CLEAR_USERS = 'CLEAR_USERS';
-
-const { USER_PATH } = '../lib/constants';
 
 export const fetchUsers = () => {
     return fetchList({ url: USER_PATH, type: FETCH_USERS });
