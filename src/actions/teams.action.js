@@ -8,26 +8,26 @@ export const UPDATE_TEAM = 'UPDATE_TEAM';
 export const DELETE_TEAM = 'DELETE_TEAM';
 export const CLEAR_TEAMS = 'CLEAR_TEAMS';
 
-const BASE_URL = '/teams/';
+const { TEAM_PATH } = '../lib/constants';
 
 export const fetchTeams = () => {
-    return fetchList({ url: BASE_URL, type: FETCH_TEAMS });
+    return fetchList({ url: TEAM_PATH, type: FETCH_TEAMS });
 };
 
 export const fetchTeam = id => {
-    return fetchObject({ url: BASE_URL + id, type: FETCH_TEAM });
+    return fetchObject({ url: TEAM_PATH + id, type: FETCH_TEAM });
 };
 
 export const createTeam = team => {
-    return createObject({ url: BASE_URL, type: CREATE_TEAM, body: team })
+    return createObject({ url: TEAM_PATH, type: CREATE_TEAM, body: team })
 };
 
 export const updateTeam = (id, team) => {
-    return updateObject({ url: BASE_URL + id, type: UPDATE_TEAM, body: team });
+    return updateObject({ url: TEAM_PATH + id, type: UPDATE_TEAM, body: team });
 };
 
 export const deleteTeam = id => {
-    return deleteObject({ url: BASE_URL + id, type: DELETE_TEAM });
+    return deleteObject({ url: TEAM_PATH + id, type: DELETE_TEAM });
 };
 
 export const clearTeams = () => {

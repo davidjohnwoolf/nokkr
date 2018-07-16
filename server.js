@@ -1,15 +1,12 @@
-// load environment variables
+//load environment variables
 require('dotenv').config();
 
-// dependencies
-// const config = require('./config');
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
 const app = express();
 const mongoose = require('mongoose');
 
-// controllers
 const Authentication = require('./controllers/authentication');
 const Accounts = require('./controllers/accounts');
 const LeadStatuses = require('./controllers/lead-statuses');
@@ -19,39 +16,36 @@ const Teams = require('./controllers/teams');
 const Users = require('./controllers/users');
 const Areas = require('./controllers/areas');
 
-// connect database
+const { ACCOUNT_PATH, TEAM_PATH, USER_PATH, FIELD_PATH, STATUS_PATH, AREA_PATH, AREA_GROUP_PATH } = require('./lib/constants');
+
+//connect database
 if (process.env.NODE_ENV !== 'test') {
     mongoose.connect(process.env.DB, () => console.log('database running...'));
 } else {
     mongoose.connect(process.env.DB_TEST);
 }
 
-// get default connection
+//get default connection
 const db = mongoose.connection;
 
-// bind connection to error event
+//bind connection to error event
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-// middleware
+//middleware
 if (process.env.NODE_ENV !== 'test') app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// routes
-//app.use(expressJWT({ secret: process.env.JWT_SECRET }).unless({ path: ['/login'] }));
-
+//routes
 app.use('/', Authentication);
-app.use('/account/', Accounts);
-app.use('/statuses', LeadStatuses);
-app.use('/fields', LeadFields);
-app.use('/area-groups', AreaGroups);
-app.use('/teams', Teams);
-app.use('/users/', Users);
-app.use('/areas/', Areas);
+app.use(ACCOUNT_PATH, Accounts);
+app.use(STATUS_PATH, LeadStatuses);
+app.use(FIELD_PATH, LeadFields);
+app.use(AREA_GROUP_PATH, AreaGroups);
+app.use(TEAM_PATH, Teams);
+app.use(USER_PATH, Users);
+app.use(AREA_PATH, Areas);
 
-//app.use('/', Areas);
-//app.use('/', Authentication);
-
-// start server
+//start server
 app.listen(process.env.PORT || 8080, () => console.log('server listening...'));
 
 module.exports = app;
