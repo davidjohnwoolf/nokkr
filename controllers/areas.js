@@ -14,33 +14,25 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
 //index
-router.get('/', requireManager, (req, res) => {
+router.get('/', requireUser, (req, res) => {
     const loggedInUser = req.loggedInUser;
     
-    //if manager only show own teams areas
-    if (loggedInUser.role === MANAGER) {
-        User.find({ team: loggedInUser.team }, (err, users) => {
-            if (err) return res.json({ status: ERROR, data: err, message: 'Error finding users' });
-            
-            const areas = [];
-            
-            users.forEach(user => areas.concat(user.areas));
-            
-            return res.json({ status: SUCCESS, data: { areas } });
-        });
+    let userQuery = {};
+    
+    if (loggedInUser.role === USER) userQuery = { _id: loggedInUser.id };
+    if (loggedInUser.role === MANAGER) userQuery = { team: loggedInUser.team };
+    
+
+    User.find(userQuery, (err, users) => {
+        if (err) return res.json({ status: ERROR, data: err, message: 'Error finding users' });
         
-    //if above manager show all areas
-    } else {
-        User.find({}, (err, users) => {
-            if (err) return res.json({ status: ERROR, data: err, message: 'Error finding users' });
-            
-            const areas = [];
-            
-            users.forEach(user => areas.concat(user.areas));
-            
-            return res.json({ status: SUCCESS, data: { areas } });
-        });
-    }
+        const areas = [];
+        
+        users.forEach(user => areas.concat(user.areas));
+        
+        return res.json({ status: SUCCESS, data: { payload: areas } });
+    });
+    
 });
 
 //create
@@ -65,7 +57,7 @@ router.post('/', requireManager, excludeReadOnly, (req, res) => {
                 status: SUCCESS,
                 data: {
                     message: 'Area created',
-                    id: user.areas.find(area => area.title === req.body.title).id
+                    payload: user.areas.find(area => area.title === req.body.title).id
                 }
             });
         });
@@ -83,7 +75,7 @@ router.get('/:id', requireUser, (req, res) => {
         let user;
         
         users.forEach(currentUser => {
-            let currentArea = user.areas.find(area => area.id === req.params.areaId)
+            let currentArea = user.areas.find(area => area.id === req.params.areaId);
             if (currentArea) {
                 area = currentArea;
                 user = currentUser;
@@ -97,7 +89,7 @@ router.get('/:id', requireUser, (req, res) => {
             return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
         }
         
-        return res.json({ status: SUCCESS, data: { area } });
+        return res.json({ status: SUCCESS, data: { payload: area } });
     });
 
 });

@@ -1,106 +1,34 @@
-import axios from 'axios';
+//helper functions to construct common action creators
+import { fetchList, fetchObject, createObject, updateObject, deleteObject, clearReducer } from './helpers';
+import { AREA_PATH } from '../../lib/constants';
 
-import { sendError } from './flash.action';
-
-export const FETCH_AREAS_ALL = 'FETCH_AREAS_ALL';
-export const FETCH_AREAS_USER = 'FETCH_AREAS_USER';
+export const FETCH_AREAS = 'FETCH_AREAS';
 export const FETCH_AREA = 'FETCH_AREA';
-export const CREATE_AREA_SUCCESS = 'CREATE_AREA_SUCCESS';
-export const CREATE_AREA_FAIL = 'CREATE_AREA_FAIL';
-export const UPDATE_AREA_SUCCESS = 'UPDATE_AREA_SUCCESS';
-export const UPDATE_AREA_FAIL = 'UPDATE_AREA_FAIL';
+export const CREATE_AREA = 'CREATE_AREA';
+export const UPDATE_AREA = 'UPDATE_AREA';
 export const DELETE_AREA = 'DELETE_AREA';
-export const CLEAR_AREA = 'CLEAR_AREA';
+export const CLEAR_AREAS = 'CLEAR_AREA';
 
-//status variables for Jsend API spec
-import { SUCCESS, FAIL, ERROR } from '../../lib/constants';
-
-export const fetchAreasAll = () => {
-    return async dispatch => {
-        const response = await axios.get('/areas');
-        
-        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
-        
-        dispatch({ type: FETCH_AREAS_ALL, allAreas: response.data.data.allAreas });
-    };
+export const fetchAreas = () => {
+    return fetchList({ url: AREA_PATH, type: FETCH_AREAS });
 };
 
-export const fetchAreasUser = id => {
-    return async dispatch => {
-        const response = await axios.get(`/users/${ id }/areas`);
-        
-        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
-        
-        dispatch({ type: FETCH_AREAS_USER, areas: response.data.data.areas });
-    };
+export const fetchArea = id => {
+    return fetchObject({ url: AREA_PATH + id, type: FETCH_AREA });
 };
 
-export const fetchArea = (userId, areaId) => {
-    return async dispatch => {
-        const response = await axios.get(`/users/${ userId }/areas/${ areaId }`);
-        
-        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
-        
-        dispatch({ type: FETCH_AREA, area: response.data.data.area });
-    };
+export const createArea = user => {
+    return createObject({ url: AREA_PATH, type: CREATE_AREA, body: user });
 };
 
-export const createArea = area => {
-    return async dispatch => {
-        const response = await axios.post('/areas', area);
-        
-        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
-        
-        if (response.data.status === SUCCESS) {
-            dispatch({
-                type: CREATE_AREA_SUCCESS,
-                message: response.data.data.message
-            });
-        }
-        
-        if (response.data.status === FAIL) {
-            dispatch({
-                type: CREATE_AREA_FAIL,
-                message: response.data.data.message
-            });
-        }
-    };
+export const updateArea = (id, user) => {
+    return updateObject({ url: AREA_PATH + id, type: UPDATE_AREA, body: user });
 };
 
-export const updateArea = (userId, areaId, area) => {
-    return async dispatch => {
-        const response = await axios.put(`/users/${ userId }/areas/${ areaId }`, area);
-        
-        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
-        
-        if (response.data.status === SUCCESS) {
-            dispatch({
-                type: UPDATE_AREA_SUCCESS,
-                message: response.data.data.message
-            });
-        }
-        
-        if (response.data.status === FAIL) {
-            dispatch({
-                type: UPDATE_AREA_FAIL,
-                message: response.data.data.message
-            });
-        }
-    };
+export const deleteArea = id => {
+    return deleteObject({ url: AREA_PATH + id, type: DELETE_AREA });
 };
 
-export const deleteArea = (userId, areaId) => {
-    return async dispatch => {
-        const response = await axios.delete(`/users/${ userId }/areas/${ areaId }`);
-        
-        if (response.data.status === ERROR) dispatch(sendError(response.data.message));
-        
-        dispatch({ type: DELETE_AREA, message: response.data.data.message });
-    };
-};
-
-export const clearArea = () => {
-    return dispatch => {
-        dispatch({ type: CLEAR_AREA });
-    };
+export const clearAreas = () => {
+    return clearReducer({ type: CLEAR_AREAS });
 };
