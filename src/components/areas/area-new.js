@@ -14,7 +14,7 @@ import Loading from '../layout/loading';
 import ContentHeader from '../layout/content-header';
 import IconLink from '../layout/icon-link';
 
-import { createArea, clearAreas, fetchAreas } from '../../actions/areas.action';
+import { createArea, clearAreas } from '../../actions/areas.action';
 import { fetchUsers } from '../../actions/users.action';
 import { fetchAreaGroups, clearAreaGroups } from '../../actions/area-groups.action';
 import { sendMessage } from '../../actions/flash.action';
@@ -30,6 +30,7 @@ class AreaNew extends React.Component {
         this.validationRules = {
             title: [required, unique],
             areaGroup: [required],
+            coords: [required],
             userId: [required]
         };
         
@@ -37,12 +38,16 @@ class AreaNew extends React.Component {
             fields: {
                 title: { value: '', error: '' },
                 areaGroup: { value: '', error: '' },
+                coords: { value: '', error: '' },
                 userId: { value: '', error: '' }
             },
             isLoading: true,
             coords: null,
             formValid: false,
-            modalShown: false
+            modalShown: false,
+            userOptions: [['Assign User', '']],
+            areaGroupOptions: [['Select Group', '']],
+            areaList: []
         };
 
         this.handleOverlay = this.handleOverlay.bind(this);
@@ -54,7 +59,6 @@ class AreaNew extends React.Component {
     componentDidMount() {
         this.props.fetchUsers();
         this.props.fetchAreaGroups();
-        this.props.fetchAreas();
     }
     
     componentDidUpdate() {
@@ -69,7 +73,6 @@ class AreaNew extends React.Component {
                 areaId,
                 clearAreaGroup,
                 fetchAreaGroups,
-                areas,
                 areaGroups,
                 users
             },
@@ -77,9 +80,28 @@ class AreaNew extends React.Component {
             toggleModal
         } = this;
         
-        if (areas && areaGroups && users && isLoading) {
+        if (areaGroups && users && isLoading) {
+            
+            let userOptions = [...this.state.userOptions];
+            let areaGroupOptions = [...this.state.areaGroupOptions];
+            let areaList = [];
+            
+            users.forEach(user => {
+                if (user.isActive) userOptions.push([user.firstName +' '+ user.lastName, user._id]);
+                
+                //create area array to display on map
+                areaList = areaList.concat(user.areas);
+            });
+            
+            areaGroups.forEach(areaGroup => {
+                areaGroupOptions.push([areaGroup.title, areaGroup._id]);
+            });
+            
             this.setState({
-                isLoading: false
+                isLoading: false,
+                userOptions,
+                areaGroupOptions,
+                areaList
             })
         }
 
@@ -97,19 +119,25 @@ class AreaNew extends React.Component {
     }
     
     handleOverlay(coords) {
-        this.setState({ coords });
+        const fields = { ...this.state.fields };
+        
+        fields.coords.value = coords;
+        
+        this.setState({ fields });
     }
     
     handleUserInput(e) {
-        const { state: { fields }, props: { areas }, validationRules } = this;
+        const { state: { fields, areaList }, validationRules } = this;
         
         this.setState(
-            validate(e, validationRules, { ...fields }, areas, null)
+            validate(e, validationRules, { ...fields }, areaList, null)
         );
     }
     
     handleSubmit(e) {
         e.preventDefault();
+        
+        console.log(fields)
         
         const { state: { fields }, props: { createArea } } = this;
         
@@ -122,30 +150,23 @@ class AreaNew extends React.Component {
 
     render() {
         const {
-            props: { users, areaGroups, history },
-            state: { isLoading, formValid, serverError, coords, modalShown, fields: { title, areaGroup, userId } },
+            props: { history },
+            state: {
+                isLoading,
+                formValid,
+                modalShown,
+                areaList,
+                userOptions,
+                areaGroupOptions,
+                fields: { title, areaGroup, userId, coords }
+            },
             handleSubmit,
             handleUserInput,
             handleOverlay,
             toggleModal
         } = this;
         
-        const userOptions = [['Assign User', '']];
-        const areaGroupOptions = [['Select Group', '']];
-        let areas = [];
-        
         if (isLoading) return <Loading />;
-        
-        users.forEach(user => {
-            userOptions.push([`${user.firstName} ${user.lastName}` , user._id]);
-            
-            //create area array to display on map
-            areas = areas.concat(user.areas);
-        });
-        areaGroups.forEach(areaGroup => {
-            areaGroupOptions.push([areaGroup.title, areaGroup._id]);
-        });
-        
         
         return (
                 
@@ -153,10 +174,9 @@ class AreaNew extends React.Component {
                 <section className="form">
                     <ContentHeader title="Create Area" history={ history } />
                     
-                    <DrawMap handleOverlay={ handleOverlay } areas={ areas } />
+                    <DrawMap handleOverlay={ handleOverlay } areas={ areaList } />
                     
                     <h2>Save Area</h2>
-                    <small className="server-error">{ serverError }</small>
                     <form onSubmit={ handleSubmit }>
                         <FieldInput
                             name="title"
@@ -186,7 +206,7 @@ class AreaNew extends React.Component {
                         
                         <input type="hidden" name="coords" value={ coords || '' } />
 
-                        <SubmitBlock submitText="Save Area" history={ history } formValid={ formValid && coords } />
+                        <SubmitBlock submitText="Save Area" history={ history } formValid={ formValid && coords.value } />
                     </form>
                     <Modal close={ toggleModal } shown={ modalShown } title="Create Area Group">
                         <AreaGroupNew />
@@ -208,4 +228,4 @@ const mapStateToProps = state => ({
     areaGroups: state.areaGroups.areaGroups
 });
 
-export default connect(mapStateToProps, { createArea, fetchUsers, clearAreas, sendMessage, fetchAreaGroups, clearAreaGroups, fetchAreas })(AreaNew);
+export default connect(mapStateToProps, { createArea, fetchUsers, clearAreas, sendMessage, fetchAreaGroups, clearAreaGroups })(AreaNew);

@@ -18,7 +18,7 @@ export default function(state = {}, action) {
             return { ...state, area: action.area };
         
         case CREATE_AREA:
-            return { ...state, message: action.message, areaId: action.payload };
+            return { ...state, success: true, message: action.message, areaId: action.payload };
 
         case UPDATE_AREA:
             return { ...state, success: true, message: action.message };
