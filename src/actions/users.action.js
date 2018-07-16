@@ -2,8 +2,6 @@
 import { fetchList, fetchObject, createObject, updateObject, deleteObject, clearReducer } from './helpers';
 import { USER_PATH } from '../../lib/constants';
 
-import { sendError } from './flash.action';
-
 export const FETCH_USERS = 'FETCH_USERS';
 export const FETCH_USER = 'FETCH_USER';
 export const CREATE_USER = 'CREATE_USER';
@@ -20,7 +18,7 @@ export const fetchUser = id => {
 };
 
 export const createUser = user => {
-    return createObject({ url: USER_PATH, type: CREATE_USER, body: user })
+    return createObject({ url: USER_PATH, type: CREATE_USER, body: user });
 };
 
 export const updateUser = (id, user) => {

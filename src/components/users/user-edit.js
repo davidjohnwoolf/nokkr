@@ -108,6 +108,7 @@ class UserEdit extends React.Component {
     handleDelete() {
         const { match: { params }, sessionId, sendError, deleteUser } = this.props;
         
+        //update to check if user has leads etc
         if (params.id !== sessionId) {
             if (confirm('Are you sure you want to delete this user?  This is not reversible.')) {
                 deleteUser(params.id);

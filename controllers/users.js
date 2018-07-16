@@ -22,8 +22,6 @@ router.get('/', requireAdmin, (req, res) => {
         Account.findOne({}, (err, account) => {
             if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
             
-            
-            
             //to store users after removing the password hash
             const safeUsers = users.map(user => {
                 
