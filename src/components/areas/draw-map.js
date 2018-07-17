@@ -33,6 +33,7 @@ class DrawMap extends React.Component {
         this.toggleDrawingMode = this.toggleDrawingMode.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
         this.setMapType = this.setMapType.bind(this);
+        this.setGroupBounds = this.setGroupBounds.bind(this);
     }
     
     componentDidUpdate(prevProps, prevState) {
@@ -45,7 +46,7 @@ class DrawMap extends React.Component {
         window.google.maps.Polygon.prototype.getBounds = function() {
             let bounds = new window.google.maps.LatLngBounds();
             let paths = this.getPaths();
-            let path;        
+            let path;
             for (var i = 0; i < paths.getLength(); i++) {
                 path = paths.getAt(i);
                 
@@ -167,9 +168,34 @@ class DrawMap extends React.Component {
     setMapType(type) {
         this.setState({ mapType: type });
     }
+    
+    setGroupBounds(groupId) {
+        //make the bounds the whole group, not just the one area
+        //only show groups with areas
+        //set the group in are form on selection
+        
+        let bounds = [];
+        let id;
+        this.props.areas.forEach(area => {
+            
+            if (area.areaGroup === groupId) {
+                console.log(this.areaPolygons[area._id].bounds);
+                return id = area._id;
+            }
+            
+        });
+        
+        if (!id) return alert('No areas in this group');
+        
+        this.map.fitBounds(this.areaPolygons[id].bounds);
+    }
 
     render() {
-        const { state: { modalShown, drawingMode, mapType }, resetMap, toggleModal, toggleDrawingMode, setMapType } = this;
+        const {
+            props: { areaGroups },
+            state: { modalShown, drawingMode, mapType },
+            resetMap, toggleModal, toggleDrawingMode, setMapType, setGroupBounds
+        } = this;
         
         return (
             <div className="map-container">
@@ -180,6 +206,16 @@ class DrawMap extends React.Component {
                 </div>
                 <div id="map"></div>
                 <button onClick={ resetMap } disabled={ !this.overlay } className="button primary"><i className="fas fa-undo"></i></button>
+                <select onChange={ (e) => setGroupBounds(e.target.value) }>
+                    <option value="">Go to Group</option>
+                    {
+                        areaGroups.map(group => {
+                            return (
+                                <option key={ group._id } value={ group._id }>{ group.title }</option>
+                            );
+                        })
+                    }
+                </select>
                 <Modal close={ toggleModal } shown={ modalShown } title="Area Settings">
                     <MapOptions mapType={ mapType } setMapType={ setMapType } />
                 </Modal>

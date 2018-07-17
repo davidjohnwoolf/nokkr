@@ -3,6 +3,7 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const User = require('../models/user');
 const Area = require('../models/area');
+const Account = require('../models/account');
 
 //status variables for Jsend API spec, password regex and role constants
 const { SUCCESS, FAIL, ERROR, PW_REGEX, USER, MANAGER, ADMIN, SU } = require('../lib/constants');
@@ -22,15 +23,33 @@ router.get('/', requireUser, (req, res) => {
     if (loggedInUser.role === USER) userQuery = { _id: loggedInUser.id };
     if (loggedInUser.role === MANAGER) userQuery = { team: loggedInUser.team };
     
-
     User.find(userQuery, (err, users) => {
         if (err) return res.json({ status: ERROR, data: err, message: 'Error finding users' });
         
-        const areas = [];
+        Account.findOne({}, (err, account) => {
+            if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
+            
+            let areas = [];
+
+            users.forEach(user => {
         
-        users.forEach(user => areas.concat(user.areas));
-        
-        return res.json({ status: SUCCESS, data: { payload: areas } });
+                const updatedAreas = user.areas.map(area => {
+
+                    const newArea = Object.assign({
+                        assignedUserName: user.firstName + ' ' + user.lastName,
+                        groupTitle: account.areaGroups.find(group => group.id == area.areaGroup).title,
+                        teamTitle: account.teams.find(team => team.id == user.team).title
+                    }, area._doc);
+                    
+                    return newArea;
+                });
+                
+                areas = areas.concat(updatedAreas);
+            });
+            
+            return res.json({ status: SUCCESS, data: { payload: areas } });
+            
+        });
     });
     
 });

@@ -150,7 +150,7 @@ class AreaNew extends React.Component {
 
     render() {
         const {
-            props: { history },
+            props: { history, areaGroups },
             state: {
                 isLoading,
                 formValid,
@@ -174,7 +174,7 @@ class AreaNew extends React.Component {
                 <section className="form">
                     <ContentHeader title="Create Area" history={ history } />
                     
-                    <DrawMap handleOverlay={ handleOverlay } areas={ areaList } />
+                    <DrawMap handleOverlay={ handleOverlay } areas={ areaList } areaGroups={ areaGroups } />
                     
                     <h2>Save Area</h2>
                     <form onSubmit={ handleSubmit }>

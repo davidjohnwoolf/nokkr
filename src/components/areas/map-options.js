@@ -40,11 +40,6 @@ const MapOptions = ({ mapType, setMapType }) => {
                     </div>
                 </div>
             </div> */}
-            
-            <h4>Go To Group</h4>
-            <select>
-                <option value="">Select group to use</option>
-            </select>
         </section>
     );
 }
