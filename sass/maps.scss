@@ -2,7 +2,7 @@
     > .custom-map-controls {
         display: flex;
         
-        > div {
+        > div, > select {
             width: 100%;
             margin: .65rem .5rem 0 .5rem;
         }

@@ -66,6 +66,11 @@ input, textarea {
     }
 }
 
+input[type="checkbox"], input[type="radio"] {
+    width: auto;
+    border: none;
+}
+
 select {
     margin: $gutter-sm 0;
     padding: $gutter;
