@@ -8,7 +8,7 @@ import IconLink from '../layout/icon-link';
 
 import { fetchAreas } from '../../actions/areas.action';
 
-class AreasAll extends React.Component {
+class AreaIndex extends React.Component {
     
     constructor(props) {
         super(props);
@@ -81,7 +81,7 @@ class AreasAll extends React.Component {
         if (isLoading) return <Loading />;
         
         return (
-            <main id="areas-index" className="content">
+            <main id="area-index" className="content">
                 <ContentHeader title="Area Management" history={ history } chilrenAccess={ !isReadOnly }>
                     <IconLink url="/areas/new" type="success" icon="plus" />
                 </ContentHeader>
@@ -145,4 +145,4 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps, { fetchAreas })(AreasAll);
+export default connect(mapStateToProps, { fetchAreas })(AreaIndex);
