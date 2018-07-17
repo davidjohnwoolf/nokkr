@@ -42,7 +42,7 @@ class AreasAll extends React.Component {
             sortedList.sort((a, b) => {
                 return sortSettings.ascending
                     ? (a[sortSettings.column] > b[sortSettings.column] ? 1 : -1)
-                    : (a[sortSettings.column] < b[sortSettings.column]  ? 1 : -1)
+                    : (a[sortSettings.column] < b[sortSettings.column]  ? 1 : -1);
             });
             
             this.setState({ areaList: sortedList });
@@ -52,7 +52,6 @@ class AreasAll extends React.Component {
     renderAreas() {
         return (
             this.state.areaList.map(area => {
-                console.log(area)
                 return (
 			        <tr key={ area._id }>
                         <td>
@@ -87,7 +86,8 @@ class AreasAll extends React.Component {
                     <IconLink url="/areas/new" type="success" icon="plus" />
                 </ContentHeader>
                 <h3>Filters</h3>
-                <select><option>Select user to filter</option></select>
+                <select><option>Select column to filter</option></select>
+                <select><option>Select filter</option></select>
                 <table className="table">
                     <thead>
                         <tr>
