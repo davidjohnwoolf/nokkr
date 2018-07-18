@@ -11,7 +11,7 @@ class NotAuthorized extends React.Component {
             <main id="not-authorized" className="content">
                 <section className="error-page">
                     <h1>403 Not Authorized</h1>
-                    { !authenticated ? <Link className="btn btn-primary" to="/login">Login</Link> : <h4>You do not have permission to see this</h4> }
+                    { !authenticated ? <Link to="/login">Login</Link> : <h4>You do not have permission to see this</h4> }
                 </section>
             </main>
         )
