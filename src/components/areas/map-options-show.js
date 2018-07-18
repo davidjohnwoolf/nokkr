@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const MapOptionsShow = ({ mapType, setMapType, toggleOverlay }) => {
+const MapOptionsShow = ({ mapType, setMapType, toggleOverlay, overlayShown }) => {
 
     return (
         <section className="area-settings">
@@ -18,7 +18,7 @@ const MapOptionsShow = ({ mapType, setMapType, toggleOverlay }) => {
                 </div>
                 <div>
                     <label htmlFor="show-area">Show Area Overlay</label>
-                    <input type="checkbox" id="show-area" value="true" defaultChecked onChange={ toggleOverlay } />
+                    <input type="checkbox" id="show-area" value="true" checked={ overlayShown } onChange={ toggleOverlay } />
                 </div>
             </div>
             <button className="button primary">Edit Area</button>

@@ -171,7 +171,7 @@ class Map extends React.Component {
     render() {
         const {
             props: { id },
-            state: { modalShown, locationActive, mapType },
+            state: { modalShown, locationActive, mapType, overlayShown },
             setLocation, toggleModal, setMapType, goToArea, toggleOverlay
         } = this;
         
@@ -193,7 +193,7 @@ class Map extends React.Component {
                     <i className="fas fa-users"></i>
                 </button>
                 <Modal close={ toggleModal } shown={ modalShown } title="Area Settings">
-                    <MapOptions mapType={ mapType } setMapType={ setMapType } toggleOverlay={ toggleOverlay } />
+                    <MapOptions mapType={ mapType } setMapType={ setMapType } toggleOverlay={ toggleOverlay } overlayShown={ overlayShown } />
                 </Modal>
             </div>
         );
