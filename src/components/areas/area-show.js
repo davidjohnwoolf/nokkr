@@ -41,9 +41,7 @@ class AreaShow extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    areas: state.areas.areas,
-    //isReadOnly: state.auth.isReadOnly
+    areas: state.areas.areas
 });
-
 
 export default connect(mapStateToProps, { fetchAreas })(AreaShow);
