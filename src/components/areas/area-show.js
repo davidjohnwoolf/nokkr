@@ -12,7 +12,8 @@ class AreaShow extends React.Component {
         super(props);
         
         this.state = {
-            isLoading: true
+            isLoading: true,
+            areaList: null
         };
     }
     
@@ -23,18 +24,21 @@ class AreaShow extends React.Component {
     componentDidUpdate() {
         const { props: { areas }, state: { isLoading } } = this;
         
-        if (areas && isLoading) this.setState({ isLoading: false });
+        //filter out inactive
+        const areaList = areas.filter(area => area.isActive);
+        
+        if (areas && isLoading) this.setState({ isLoading: false, areaList });
     }
     
     render() {
         
-        const { props: { areas, history, match: { params } }, state: { isLoading } } = this;
+        const { props: { history, match: { params } }, state: { isLoading, areaList } } = this;
         
         if (isLoading) return <Loading />;
         
         return (
             <main id="area-show" className="content">
-                <Map areas={ areas } id={ params.id } history={ history } />
+                <Map areas={ areaList } id={ params.id } history={ history } />
             </main>
         );
     }

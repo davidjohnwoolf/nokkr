@@ -1,6 +1,7 @@
 import React from 'react';
 
 import mapStyles from '../helpers/map-styles';
+import { createOuterBounds } from '../helpers/maps';
 
 import Modal from '../layout/modal';
 import MapOptions from './map-options-show';
@@ -19,6 +20,7 @@ class Map extends React.Component {
         
         //maybe move overlay to state
         this.areaPolygon = null;
+        this.globalPolygon = null;
         
         this.state = {
             locationActive: false,
@@ -51,6 +53,8 @@ class Map extends React.Component {
             return bounds;
         };
         
+        let outerbounds = createOuterBounds(window.google.maps);
+        
         this.map = new window.google.maps.Map(document.getElementById('map'), {
             center: {lat: 40, lng: -100},
             zoom: 4,
@@ -59,13 +63,17 @@ class Map extends React.Component {
             styles: mapStyles
         });
         
-        let areaPolygon = new window.google.maps.Polygon({
-            paths: this.props.areas.find(area => area._id === this.props.id).coords,
-            strokeColor: 'red',
+        this.globalPolygon = new window.google.maps.Polygon({
+            paths: [outerbounds, this.props.areas.find(area => area._id === this.props.id).coords],
+            strokeColor: 'black',
             strokeOpacity: 0.8,
             strokeWeight: 2,
-            fillColor: 'red',
-            fillOpacity: 0.35
+            fillColor: 'black',
+            fillOpacity: 0.2
+        });
+        
+        let areaPolygon = new window.google.maps.Polygon({
+            paths: this.props.areas.find(area => area._id === this.props.id).coords
         });
         
         this.areaPolygon = {
@@ -75,7 +83,7 @@ class Map extends React.Component {
         };
         
         //show area
-        this.areaPolygon.polygon.setMap(this.map);
+        this.globalPolygon.setMap(this.map);
         
         //go to area
         this.map.fitBounds(this.areaPolygon.bounds);
@@ -86,15 +94,29 @@ class Map extends React.Component {
         
         if (prevProps.id !== this.props.id) {
             //clear current area
-            this.areaPolygon.polygon.setMap(null);
+            this.globalPolygon.setMap(null);
             
-            let areaPolygon = new window.google.maps.Polygon({
-                paths: this.props.areas.find(area => area._id === this.props.id).coords,
-                strokeColor: 'red',
+            let outerbounds = createOuterBounds(window.google.maps);
+            
+            this.map = new window.google.maps.Map(document.getElementById('map'), {
+                center: {lat: 40, lng: -100},
+                zoom: 4,
+                disableDefaultUI: true,
+                zoomControl: true,
+                styles: mapStyles
+            });
+            
+            this.globalPolygon = new window.google.maps.Polygon({
+                paths: [outerbounds, this.props.areas.find(area => area._id === this.props.id).coords],
+                strokeColor: 'black',
                 strokeOpacity: 0.8,
                 strokeWeight: 2,
-                fillColor: 'red',
-                fillOpacity: 0.35
+                fillColor: 'black',
+                fillOpacity: 0.2
+            });
+            
+            let areaPolygon = new window.google.maps.Polygon({
+                paths: this.props.areas.find(area => area._id === this.props.id).coords
             });
             
             this.areaPolygon = {
@@ -104,7 +126,7 @@ class Map extends React.Component {
             };
             
             //show area
-            this.areaPolygon.polygon.setMap(this.map);
+            this.globalPolygon.setMap(this.map);
             
             //go to area
             this.map.fitBounds(this.areaPolygon.bounds);
@@ -113,8 +135,8 @@ class Map extends React.Component {
         if (prevState.overlayShown !== this.state.overlayShown) {
             
             this.state.overlayShown
-                ? this.areaPolygon.polygon.setMap(this.map)
-                : this.areaPolygon.polygon.setMap(null);
+                ? this.globalPolygon.setMap(this.map)
+                : this.globalPolygon.setMap(null);
         }
     }
     
