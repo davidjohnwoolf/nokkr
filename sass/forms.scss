@@ -81,3 +81,15 @@
     color: $error;
     margin: $gutter 0;
 }
+
+.checkbox-options {
+    display: flex;
+    
+    > div {
+        margin-right: 3rem;
+        
+        > label {
+            margin-right: 1rem;
+        }
+    }
+}

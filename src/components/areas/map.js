@@ -18,12 +18,12 @@ class Map extends React.Component {
         this.infoWindow = null;
         
         //maybe move overlay to state
-        this.overlay = null;
         this.areaPolygon = null;
         
         this.state = {
             locationActive: false,
             modalShown: false,
+            overlayShown: true,
             mapType: 'roadmap'
         };
 
@@ -31,6 +31,7 @@ class Map extends React.Component {
         this.setMapType = this.setMapType.bind(this);
         this.goToArea = this.goToArea.bind(this);
         this.setLocation = this.setLocation.bind(this);
+        this.toggleOverlay = this.toggleOverlay.bind(this);
     }
     
     componentDidMount() {
@@ -108,6 +109,13 @@ class Map extends React.Component {
             //go to area
             this.map.fitBounds(this.areaPolygon.bounds);
         }
+        
+        if (prevState.overlayShown !== this.state.overlayShown) {
+            
+            this.state.overlayShown
+                ? this.areaPolygon.polygon.setMap(this.map)
+                : this.areaPolygon.polygon.setMap(null);
+        }
     }
     
     goToArea(e) {
@@ -152,6 +160,10 @@ class Map extends React.Component {
         this.setState({ modalShown: !this.state.modalShown });
     }
     
+    toggleOverlay() {
+        this.setState({ overlayShown: !this.state.overlayShown });
+    }
+    
     setMapType(type) {
         this.setState({ mapType: type });
     }
@@ -160,7 +172,7 @@ class Map extends React.Component {
         const {
             props: { id },
             state: { modalShown, locationActive, mapType },
-            setLocation, toggleModal, setMapType, goToArea
+            setLocation, toggleModal, setMapType, goToArea, toggleOverlay
         } = this;
         
         return (
@@ -181,7 +193,7 @@ class Map extends React.Component {
                     <i className="fas fa-users"></i>
                 </button>
                 <Modal close={ toggleModal } shown={ modalShown } title="Area Settings">
-                    <MapOptions mapType={ mapType } setMapType={ setMapType } />
+                    <MapOptions mapType={ mapType } setMapType={ setMapType } toggleOverlay={ toggleOverlay } />
                 </Modal>
             </div>
         );

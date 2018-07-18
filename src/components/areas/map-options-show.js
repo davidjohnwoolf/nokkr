@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const MapOptionsShow = ({ mapType, setMapType }) => {
+const MapOptionsShow = ({ mapType, setMapType, toggleOverlay }) => {
 
     return (
         <section className="area-settings">
@@ -11,14 +11,14 @@ const MapOptionsShow = ({ mapType, setMapType }) => {
                 <button onClick={ () => setMapType('hybrid') } className={ mapType === 'hybrid' ? 'active' : '' }>Hybrid</button>
             </div>
             
-            <div style={{ display: 'flex' }}>
+            <div className="checkbox-options">
                 <div>
-                    <label style={{ marginRight: '1rem' }} htmlFor="show-leads">Show Leads</label>
-                    <input style={{ marginRight: '3rem' }} type="checkbox" id="show-leads" value="true" defaultChecked />
+                    <label htmlFor="show-leads">Show Leads</label>
+                    <input type="checkbox" id="show-leads" value="true" defaultChecked />
                 </div>
                 <div>
-                    <label style={{ marginRight: '1rem' }} htmlFor="show-area">Show Area Overlay</label>
-                    <input style={{ marginRight: '3rem' }} type="checkbox" id="show-area" value="true" defaultChecked />
+                    <label htmlFor="show-area">Show Area Overlay</label>
+                    <input type="checkbox" id="show-area" value="true" defaultChecked onChange={ toggleOverlay } />
                 </div>
             </div>
             <button className="button primary">Edit Area</button>
