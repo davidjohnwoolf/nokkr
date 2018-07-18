@@ -1,7 +1,6 @@
 import React from 'react';
 
-import mapStyles from '../helpers/map-styles';
-import { createOuterBounds } from '../helpers/maps';
+import { getBounds, createMap, createOuterPolygon, setArea } from '../helpers/maps';
 
 import Modal from '../layout/modal';
 import MapOptions from './map-options-show';
@@ -12,21 +11,19 @@ class Map extends React.Component {
     
 	constructor(props) {
         super(props);
-        
-        //not in state, letting Google handle map control, just making available to component
-        //think of a different pattern for this
-        this.map = null;
-        this.infoWindow = null;
-        
-        //maybe move overlay to state
-        this.areaPolygon = null;
-        this.globalPolygon = null;
+
+        this.googleMaps = window.google.maps;
         
         this.state = {
             locationActive: false,
             modalShown: false,
             overlayShown: true,
-            mapType: 'roadmap'
+            mapType: 'roadmap',
+            isInitialized: false,
+            map: null,
+            areaPolygon: null,
+            outerPolygon: null,
+            infoWindow: null
         };
 
         this.toggleModal = this.toggleModal.bind(this);
@@ -34,109 +31,67 @@ class Map extends React.Component {
         this.goToArea = this.goToArea.bind(this);
         this.setLocation = this.setLocation.bind(this);
         this.toggleOverlay = this.toggleOverlay.bind(this);
+        
+        //maps no longer supports getBounds so we build our own function
+        window.google.maps.Polygon.prototype.getBounds = getBounds(this.googleMaps);
     }
     
     componentDidMount() {
-        
-        //maps no longer supports getBounds so we construct our own
-        window.google.maps.Polygon.prototype.getBounds = function() {
-            let bounds = new window.google.maps.LatLngBounds();
-            let paths = this.getPaths();
-            let path;
-            for (var i = 0; i < paths.getLength(); i++) {
-                path = paths.getAt(i);
-                
-                for (var ii = 0; ii < path.getLength(); ii++) {
-                    bounds.extend(path.getAt(ii));
-                }
-            }
-            return bounds;
-        };
-        
-        let outerbounds = createOuterBounds(window.google.maps);
-        
-        this.map = new window.google.maps.Map(document.getElementById('map'), {
-            center: {lat: 40, lng: -100},
-            zoom: 4,
-            disableDefaultUI: true,
-            zoomControl: true,
-            styles: mapStyles
-        });
-        
-        this.globalPolygon = new window.google.maps.Polygon({
-            paths: [outerbounds, this.props.areas.find(area => area._id === this.props.id).coords],
-            strokeColor: 'black',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: 'black',
-            fillOpacity: 0.2
-        });
-        
-        let areaPolygon = new window.google.maps.Polygon({
-            paths: this.props.areas.find(area => area._id === this.props.id).coords
-        });
-        
-        this.areaPolygon = {
-            bounds: areaPolygon.getBounds(),
-            center: areaPolygon.getBounds().getCenter(),
-            polygon: areaPolygon
-        };
-        
-        //show area
-        this.globalPolygon.setMap(this.map);
-        
-        //go to area
-        this.map.fitBounds(this.areaPolygon.bounds);
+        this.setState({ map: createMap(this.googleMaps) });
     }
     
     componentDidUpdate(prevProps, prevState) {
-        if (prevState.mapType !== this.state.mapType) this.map.setMapTypeId(this.state.mapType);
+        const { props: { areas }, state: { mapType, overlayShown, isInitialized }, googleMaps } = this;
         
-        if (prevProps.id !== this.props.id) {
-            //clear current area
-            this.globalPolygon.setMap(null);
-            
-            let outerbounds = createOuterBounds(window.google.maps);
-            
-            this.map = new window.google.maps.Map(document.getElementById('map'), {
-                center: {lat: 40, lng: -100},
-                zoom: 4,
-                disableDefaultUI: true,
-                zoomControl: true,
-                styles: mapStyles
-            });
-            
-            this.globalPolygon = new window.google.maps.Polygon({
-                paths: [outerbounds, this.props.areas.find(area => area._id === this.props.id).coords],
-                strokeColor: 'black',
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: 'black',
-                fillOpacity: 0.2
-            });
-            
-            let areaPolygon = new window.google.maps.Polygon({
-                paths: this.props.areas.find(area => area._id === this.props.id).coords
-            });
-            
-            this.areaPolygon = {
-                bounds: areaPolygon.getBounds(),
-                center: areaPolygon.getBounds().getCenter(),
-                polygon: areaPolygon
+        if (!isInitialized) {
+            const areaCoords = areas.find(area => area._id === this.props.id).coords;
+            const polygon = new googleMaps.Polygon({ paths: areaCoords });
+            //overlay for everything but area
+            const outerPolygon = createOuterPolygon(googleMaps, areaCoords);
+            const areaPolygon = {
+                bounds: polygon.getBounds(),
+                center: polygon.getBounds().getCenter(),
+                polygon: polygon
             };
             
             //show area
-            this.globalPolygon.setMap(this.map);
+            outerPolygon.setMap(this.state.map);
             
-            //go to area
-            this.map.fitBounds(this.areaPolygon.bounds);
+            //set area bounds
+            this.state.map.fitBounds(areaPolygon.bounds);
+            
+            this.setState({ isInitialized: true, outerPolygon, areaPolygon });
         }
         
-        if (prevState.overlayShown !== this.state.overlayShown) {
+        if (prevState.mapType !== mapType) this.state.map.setMapTypeId(mapType);
+        
+        if (prevProps.id !== this.props.id) {
+            const areaCoords = areas.find(area => area._id === this.props.id).coords;
+            const polygon = new googleMaps.Polygon({ paths: areaCoords });
+            const outerPolygon = createOuterPolygon(googleMaps, areaCoords);
+            const areaPolygon = {
+                bounds: polygon.getBounds(),
+                center: polygon.getBounds().getCenter(),
+                polygon: polygon
+            };
             
-            this.state.overlayShown
-                ? this.globalPolygon.setMap(this.map)
-                : this.globalPolygon.setMap(null);
+            //clear current overlay
+            this.state.outerPolygon.setMap(null);
+            
+            //show area
+            outerPolygon.setMap(this.state.map);
+            
+            //set area bounds
+            this.state.map.fitBounds(areaPolygon.bounds);
+            
+            this.setState({ outerPolygon, areaPolygon });
+        }
+        
+        if (prevState.overlayShown !== overlayShown) {
+            
+            overlayShown
+                ? this.state.outerPolygon.setMap(this.state.map)
+                : this.state.outerPolygon.setMap(null);
         }
     }
     
@@ -146,14 +101,14 @@ class Map extends React.Component {
     
     setLocation() {
 
-        this.infoWindow = new window.google.maps.InfoWindow;
+        this.setState({ infoWindow: new this.googleMaps.InfoWindow });
         
         function handleLocationError(browserHasGeolocation, infoWindow, pos) {
             infoWindow.setPosition(pos);
             infoWindow.setContent(browserHasGeolocation
                 ? 'Error: The Geolocation service failed.'
                 : 'Error: Your browser doesn\'t support geolocation.');
-            infoWindow.open(this.map);
+            infoWindow.open(this.state.map);
         }
         
         if (window.navigator.geolocation) {
@@ -165,16 +120,16 @@ class Map extends React.Component {
                     lng: position.coords.longitude
                 };
                 
-                this.infoWindow.setPosition(pos);
-                this.infoWindow.setContent('Location found.');
-                this.infoWindow.open(this.map);
-                this.map.setCenter(pos);
+                this.state.infoWindow.setPosition(pos);
+                this.state.infoWindow.setContent('Location found.');
+                this.state.infoWindow.open(this.state.map);
+                this.state.map.setCenter(pos);
             }, function() {
-                handleLocationError(true, this.infoWindow, this.map.getCenter());
+                handleLocationError(true, this.state.infoWindow, this.state.map.getCenter());
             });
         } else {
             // Browser doesn't support Geolocation
-            handleLocationError(false, this.infoWindow, this.map.getCenter());
+            handleLocationError(false, this.state.infoWindow, this.state.map.getCenter());
         }
     }
     
