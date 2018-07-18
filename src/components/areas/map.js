@@ -11,8 +11,6 @@ class Map extends React.Component {
     
 	constructor(props) {
         super(props);
-
-        this.googleMaps = window.google.maps;
         
         this.state = {
             locationActive: false,
@@ -33,62 +31,34 @@ class Map extends React.Component {
         this.toggleOverlay = this.toggleOverlay.bind(this);
         
         //maps no longer supports getBounds so we build our own function
-        window.google.maps.Polygon.prototype.getBounds = getBounds(this.googleMaps);
+        window.google.maps.Polygon.prototype.getBounds = getBounds(window.google.maps);
     }
     
     componentDidMount() {
-        this.setState({ map: createMap(this.googleMaps) });
+        //component must be mounted to reference the map element
+        this.setState({ map: createMap(window.google.maps) });
     }
     
     componentDidUpdate(prevProps, prevState) {
-        const { props: { areas }, state: { mapType, overlayShown, isInitialized }, googleMaps } = this;
+        const {
+            props: { areas, id },
+            state: { map, mapType, overlayShown, isInitialized }
+        } = this;
         
         if (!isInitialized) {
-            const areaCoords = areas.find(area => area._id === this.props.id).coords;
-            const polygon = new googleMaps.Polygon({ paths: areaCoords });
-            //overlay for everything but area
-            const outerPolygon = createOuterPolygon(googleMaps, areaCoords);
-            const areaPolygon = {
-                bounds: polygon.getBounds(),
-                center: polygon.getBounds().getCenter(),
-                polygon: polygon
-            };
-            
-            //show area
-            outerPolygon.setMap(this.state.map);
-            
-            //set area bounds
-            this.state.map.fitBounds(areaPolygon.bounds);
-            
-            this.setState({ isInitialized: true, outerPolygon, areaPolygon });
+            this.setState({ isInitialized: true, ...setArea({ googleMaps: window.google.maps, map, id, areas }) });
         }
         
         if (prevState.mapType !== mapType) this.state.map.setMapTypeId(mapType);
         
         if (prevProps.id !== this.props.id) {
-            const areaCoords = areas.find(area => area._id === this.props.id).coords;
-            const polygon = new googleMaps.Polygon({ paths: areaCoords });
-            const outerPolygon = createOuterPolygon(googleMaps, areaCoords);
-            const areaPolygon = {
-                bounds: polygon.getBounds(),
-                center: polygon.getBounds().getCenter(),
-                polygon: polygon
-            };
-            
             //clear current overlay
             this.state.outerPolygon.setMap(null);
             
-            //show area
-            outerPolygon.setMap(this.state.map);
-            
-            //set area bounds
-            this.state.map.fitBounds(areaPolygon.bounds);
-            
-            this.setState({ outerPolygon, areaPolygon });
+            this.setState(setArea({ googleMaps: window.google.maps, map, id, areas }));
         }
         
         if (prevState.overlayShown !== overlayShown) {
-            
             overlayShown
                 ? this.state.outerPolygon.setMap(this.state.map)
                 : this.state.outerPolygon.setMap(null);
@@ -101,7 +71,7 @@ class Map extends React.Component {
     
     setLocation() {
 
-        this.setState({ infoWindow: new this.googleMaps.InfoWindow });
+        this.setState({ infoWindow: new window.google.maps.InfoWindow });
         
         function handleLocationError(browserHasGeolocation, infoWindow, pos) {
             infoWindow.setPosition(pos);
@@ -131,6 +101,25 @@ class Map extends React.Component {
             // Browser doesn't support Geolocation
             handleLocationError(false, this.state.infoWindow, this.state.map.getCenter());
         }
+        
+        /*
+        window.google.maps.event.addListenerOnce(geoMarker, 'position_changed', function() {
+            this.state.map.setCenter(this.getPosition());
+            this.state.map.fitBounds(this.getBounds());
+        });
+
+        window.navigator.geolocation.watchPosition(function(position) {
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            var geolocpoint = new window.google.maps.LatLng(latitude, longitude);
+            this.state.map.setCenter(geolocpoint);
+        });
+
+        window.google.maps.event.addListener(geoMarker, 'geolocation_error', function(e) {
+            alert('There was an error obtaining your position. Message: ' + e.message);
+        });
+        geoMarker.setMap(this.state.map);
+        */
     }
     
     toggleModal() {
