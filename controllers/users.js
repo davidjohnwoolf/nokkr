@@ -41,6 +41,7 @@ router.get('/', requireAdmin, (req, res) => {
 
 //create
 router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
+    //do you need to make this find call?
     User.findOne({ $or: [ { username: req.body.username }, { email: req.body.email } ] }, (err, user) => {
         if (err) return res.json({ status: ERROR, data: err, message: 'Error finding user' });
 
