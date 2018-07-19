@@ -20,8 +20,7 @@ class Map extends React.Component {
             isInitialized: false,
             map: null,
             areaPolygon: null,
-            outerPolygon: null,
-            infoWindow: null
+            outerPolygon: null
         };
 
         this.toggleModal = this.toggleModal.bind(this);
@@ -37,6 +36,7 @@ class Map extends React.Component {
     componentDidMount() {
         //component must be mounted to reference the map element
         this.setState({ map: createMap(window.google.maps) });
+        
     }
     
     componentDidUpdate(prevProps, prevState) {
@@ -70,56 +70,94 @@ class Map extends React.Component {
     }
     
     setLocation() {
-
-        this.setState({ infoWindow: new window.google.maps.InfoWindow });
         
-        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-            infoWindow.setPosition(pos);
-            infoWindow.setContent(browserHasGeolocation
-                ? 'Error: The Geolocation service failed.'
-                : 'Error: Your browser doesn\'t support geolocation.');
-            infoWindow.open(this.state.map);
-        }
+        let currentPositionMarker;
+        let positionWatcher;
+            
+        const locError = error => {
+            // the current position could not be located
+            console.log(error);
+            alert("The current position could not be found!");
+        };
         
-        if (window.navigator.geolocation) {
+        const setCurrentPosition = (pos) => {
+            if (!currentPositionMarker) {
+                currentPositionMarker = new window.google.maps.Marker({
+                    map: this.state.map,
+                    position: new window.google.maps.LatLng(
+                        pos.coords.latitude,
+                        pos.coords.longitude
+                    ),
+                    title: 'You are here',
+                    icon: {
+                        path: window.google.maps.SymbolPath.CIRCLE,
+                        scale: 10,
+                        fillColor: '#4169e1',
+                        fillOpacity: 1,
+                        strokeColor: '#6687e7',
+                        strokeOpacity: 0.3
+                    }
+                });
+            } else {
+                currentPositionMarker.setPosition(
+                    new window.google.maps.LatLng(
+                        pos.coords.latitude,
+                        pos.coords.longitude
+                    )
+                );
+            }
+            this.state.map.panTo(new window.google.maps.LatLng(
+                pos.coords.latitude,
+                pos.coords.longitude
+            ));
+        };
+        
+        const setMarkerPosition = (marker, position) => {
+            marker.setPosition(
+                new window.google.maps.LatLng(
+                    position.coords.latitude,
+                    position.coords.longitude)
+            );
+        };
+        
+        const watchCurrentPosition = () => {
+            positionWatcher = window.navigator.geolocation.watchPosition(position => {
+                setMarkerPosition(
+                    currentPositionMarker,
+                    position
+                );
+            });
+        };
+        
+        const displayAndWatch = position => {
+            // set current position
+            setCurrentPosition(position);
+            // watch position
+            watchCurrentPosition();
+        };
+        
+        //this doesn't really work well
+        this.state.map.addListener('dragstart', () => {
+            if (this.state.locationActive) {
+                this.setState({ locationActive: false });
+                if (positionWatcher) window.navigator.geolocation.clearWatch(positionWatcher);
+            }
+        });
+        
+        if (this.state.locationActive) {
+            this.setState({ locationActive: false });
+            window.navigator.geolocation.clearWatch(positionWatcher);
+            
+        } else {
             this.setState({ locationActive: true });
             
-            window.navigator.geolocation.getCurrentPosition(position => {
-                let pos = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-                
-                this.state.infoWindow.setPosition(pos);
-                this.state.infoWindow.setContent('Location found.');
-                this.state.infoWindow.open(this.state.map);
-                this.state.map.setCenter(pos);
-            }, function() {
-                handleLocationError(true, this.state.infoWindow, this.state.map.getCenter());
-            });
-        } else {
-            // Browser doesn't support Geolocation
-            handleLocationError(false, this.state.infoWindow, this.state.map.getCenter());
+            if (window.navigator.geolocation) {
+                window.navigator.geolocation.getCurrentPosition(displayAndWatch, locError);
+            } else {
+                alert("Your browser does not support the Geolocation API");
+            }
         }
         
-        /*
-        window.google.maps.event.addListenerOnce(geoMarker, 'position_changed', function() {
-            this.state.map.setCenter(this.getPosition());
-            this.state.map.fitBounds(this.getBounds());
-        });
-
-        window.navigator.geolocation.watchPosition(function(position) {
-            var latitude = position.coords.latitude;
-            var longitude = position.coords.longitude;
-            var geolocpoint = new window.google.maps.LatLng(latitude, longitude);
-            this.state.map.setCenter(geolocpoint);
-        });
-
-        window.google.maps.event.addListener(geoMarker, 'geolocation_error', function(e) {
-            alert('There was an error obtaining your position. Message: ' + e.message);
-        });
-        geoMarker.setMap(this.state.map);
-        */
     }
     
     toggleModal() {
