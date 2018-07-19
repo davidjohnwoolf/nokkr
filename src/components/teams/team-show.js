@@ -7,7 +7,6 @@ import ContentHeader from '../layout/content-header';
 import IconLink from '../layout/icon-link';
 
 import { fetchTeam, clearTeams } from '../../actions/teams.action';
-import { sendMessage } from '../../actions/flash.action';
 
 import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
 
@@ -116,4 +115,4 @@ const mapStateToProps = state => ({
     sessionTeam: state.auth.sessionTeam
 });
 
-export default connect(mapStateToProps, { fetchTeam, sendMessage, clearTeams })(TeamShow);
+export default connect(mapStateToProps, { fetchTeam, clearTeams })(TeamShow);
