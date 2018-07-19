@@ -18,6 +18,8 @@ class Map extends React.Component {
             overlayShown: true,
             mapType: 'roadmap',
             isInitialized: false,
+            settingPosition: false,
+            currentPositionMarker: null,
             map: null,
             areaPolygon: null,
             outerPolygon: null
@@ -39,6 +41,8 @@ class Map extends React.Component {
     }
     
     componentDidUpdate(prevProps, prevState) {
+        
+        console.log('positionsetting', this.state.settingPosition)
         const {
             props: { areas, id },
             state: { map, mapType, overlayShown, isInitialized }
@@ -69,9 +73,6 @@ class Map extends React.Component {
     }
     
     setLocation() {
-        
-        let currentPositionMarker;
-        let positionWatcher;
             
         const locError = error => {
             // the current position could not be located
@@ -80,8 +81,10 @@ class Map extends React.Component {
         };
         
         const setCurrentPosition = (pos) => {
-            if (!currentPositionMarker) {
-                currentPositionMarker = new window.google.maps.Marker({
+            let positionMarker;
+            
+            if (!this.state.currentPositionMarker) {
+                positionMarker: new window.google.maps.Marker({
                     map: this.state.map,
                     position: new window.google.maps.LatLng(
                         pos.coords.latitude,
@@ -90,21 +93,25 @@ class Map extends React.Component {
                     title: 'You are here',
                     icon: {
                         path: window.google.maps.SymbolPath.CIRCLE,
-                        scale: 10,
+                        scale: 5,
                         fillColor: '#4169e1',
                         fillOpacity: 1,
-                        strokeColor: '#6687e7',
+                        strokeColor: '#91a6e2',
+                        strokeWeight: 20,
                         strokeOpacity: 0.3
                     }
-                });
+                })
             } else {
-                currentPositionMarker.setPosition(
+                this.state.currentPositionMarker.setPosition(
                     new window.google.maps.LatLng(
                         pos.coords.latitude,
                         pos.coords.longitude
                     )
                 );
             }
+            
+            this.setState({ currentPositionMarker: positionMarker || this.state.currentPositionMarker, settingPosition: true });
+            
             this.state.map.panTo(new window.google.maps.LatLng(
                 pos.coords.latitude,
                 pos.coords.longitude
@@ -120,12 +127,16 @@ class Map extends React.Component {
         };
         
         const watchCurrentPosition = () => {
-            positionWatcher = window.navigator.geolocation.watchPosition(position => {
-                setMarkerPosition(
-                    currentPositionMarker,
-                    position
-                );
-            });
+            if (!this.state.positionWatcher) {
+                this.setState({
+                    positionWatcher: window.navigator.geolocation.watchPosition(position => {
+                        setMarkerPosition(
+                            this.state.currentPositionMarker,
+                            position
+                        );
+                    })
+                });
+            }
         };
         
         const displayAndWatch = position => {
@@ -135,26 +146,28 @@ class Map extends React.Component {
             watchCurrentPosition();
         };
         
-        //this doesn't really work well
-        this.state.map.addListener('dragstart', () => {
-            if (this.state.locationActive) {
+        this.state.map.addListener('center_changed', () => {
+            if (this.state.locationActive && !this.state.settingPosition) {
                 this.setState({ locationActive: false });
-                if (positionWatcher) window.navigator.geolocation.clearWatch(positionWatcher);
+                window.google.maps.event.clearListeners(this.state.map, 'center_changed');
+                if (this.state.positionWatcher) {
+                    window.navigator.geolocation.clearWatch(this.state.positionWatcher);
+                }
+            } else if (this.state.locationActive && this.state.settingPosition) {
+                this.setState({ settingPosition: false });
             }
         });
         
-        if (this.state.locationActive) {
-            this.setState({ locationActive: false });
-            window.navigator.geolocation.clearWatch(positionWatcher);
+        //actual calls
+        if (window.navigator.geolocation) {
             
-        } else {
-            this.setState({ locationActive: true });
-            
-            if (window.navigator.geolocation) {
+            if (!this.state.locationActive) {
+                this.setState({ locationActive: true });
                 window.navigator.geolocation.getCurrentPosition(displayAndWatch, locError);
-            } else {
-                alert("Your browser does not support the Geolocation API");
             }
+                
+        } else {
+            alert("Your browser does not support the Geolocation API");
         }
         
     }
