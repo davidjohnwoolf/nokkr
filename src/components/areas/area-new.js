@@ -71,7 +71,7 @@ class AreaNew extends React.Component {
                 areaGroupSuccess,
                 areaGroupMessage,
                 areaId,
-                clearAreaGroup,
+                clearAreaGroups,
                 fetchAreaGroups,
                 areaGroups,
                 users
@@ -112,7 +112,7 @@ class AreaNew extends React.Component {
         
         if (areaGroupSuccess) {
             sendMessage(areaGroupMessage);
-            clearAreaGroup();
+            clearAreaGroups();
             fetchAreaGroups();
             toggleModal();
         }

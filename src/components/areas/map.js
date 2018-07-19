@@ -36,7 +36,6 @@ class Map extends React.Component {
     componentDidMount() {
         //component must be mounted to reference the map element
         this.setState({ map: createMap(window.google.maps) });
-        
     }
     
     componentDidUpdate(prevProps, prevState) {
@@ -187,7 +186,7 @@ class Map extends React.Component {
                     </button>
                     <select onChange={ (e) => goToArea(e) } value={ id }>
                         { this.props.areas.map(area => {
-                            return <option key={ area._id } value={ area._id }>{ area.title }</option>;
+                            return <option key={ area._id } value={ area._id }>{ area.title } ({ area.assignedUserName })</option>;
                         }) }
                     </select>
                     <button onClick={ toggleModal } className="button primary"><i className="fas fas fa-cog"></i></button>

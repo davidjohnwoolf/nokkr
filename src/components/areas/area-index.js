@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import { sortItems } from '../helpers/list';
+
 import Loading from '../layout/loading';
 import ContentHeader from '../layout/content-header';
 import IconLink from '../layout/icon-link';
@@ -16,6 +18,8 @@ class AreaIndex extends React.Component {
         this.state = {
             isLoading: true,
             areaList: null,
+            areaCount: 0,
+            activeShown: true,
             sortSettings: {
                 column: undefined,
                 ascending: true
@@ -24,6 +28,7 @@ class AreaIndex extends React.Component {
         
         this.sortList = this.sortList.bind(this);
         this.renderAreas = this.renderAreas.bind(this);
+        this.toggleActive = this.toggleActive.bind(this);
     }
     
     componentDidMount() {
@@ -31,21 +36,23 @@ class AreaIndex extends React.Component {
     }
     
     componentDidUpdate(prevProps, prevState) {
-        const { props: { areas }, state: { isLoading, areaList, sortSettings } } = this;
+        const { props: { areas }, state: { isLoading, areaList, sortSettings, activeShown } } = this;
         
-        if (areas && isLoading) this.setState({ isLoading: false, areaList: areas });
+        if (areas && isLoading) this.setState({ isLoading: false, areaList: areas, areaCount: areas.length });
+        
+        //update area list on active toggle
+        if (!isLoading && prevState.activeShown !== activeShown) {
+            
+            const filteredList = areas.filter(area => {
+                return activeShown ? area.isActive : !area.isActive;
+            });
+            
+            this.setState({ areaList: sortItems(filteredList, sortSettings), areaCount: filteredList.length });
+        }
         
         //update area list on sort
         if (!isLoading && prevState.sortSettings !== sortSettings) {
-            const sortedList = [...areaList];
-            
-            sortedList.sort((a, b) => {
-                return sortSettings.ascending
-                    ? (a[sortSettings.column] > b[sortSettings.column] ? 1 : -1)
-                    : (a[sortSettings.column] < b[sortSettings.column]  ? 1 : -1);
-            });
-            
-            this.setState({ areaList: sortedList });
+            this.setState({ areaList: sortItems(areaList, sortSettings) });
         }
     }
 	
@@ -66,6 +73,10 @@ class AreaIndex extends React.Component {
         );
     }
     
+    toggleActive() {
+        this.setState({ activeShown: !this.state.activeShown});
+    }
+    
     sortList(col) {
         const { sortSettings: { column, ascending } } = this.state;
         
@@ -76,7 +87,11 @@ class AreaIndex extends React.Component {
     
     render() {
         
-        const { props: { isReadOnly, history }, state: { sortSettings, isLoading }, sortList, renderAreas } = this;
+        const {
+            props: { isReadOnly, history },
+            state: { sortSettings, isLoading, activeShown, areaCount },
+            sortList, renderAreas, toggleActive
+        } = this;
         
         if (isLoading) return <Loading />;
         
@@ -131,6 +146,15 @@ class AreaIndex extends React.Component {
                         { renderAreas() }
                     </tbody>
                 </table>
+                <div className="button-group">
+                    <div className="toggle">
+                        <label>Toggle Inactive</label>
+                        <span onClick={ toggleActive }>
+                            <i className={ !activeShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
+                        </span>
+                    </div>
+                    <p style={{ marginTop: '1rem' }}>Areas Shown: { areaCount }</p>
+                </div>
             </main>
         );
     }

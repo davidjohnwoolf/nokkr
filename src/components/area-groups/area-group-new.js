@@ -41,9 +41,9 @@ class AreaGroupNew extends React.Component {
         
         e.preventDefault();
         
-        const { state: { fields }, props: { createArea } } = this;
+        const { state: { fields }, props: { createAreaGroup } } = this;
         
-        formSubmit({ fields: { ...fields }, action: createArea });
+        formSubmit({ fields: { ...fields }, action: createAreaGroup });
     }
     
     render() {

@@ -2,14 +2,15 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
+import { capitalize } from '../../../lib/functions';
+import { sortItems } from '../helpers/list';
+
 import { fetchUsers } from '../../actions/users.action';
 
 import Loading from '../layout/loading';
 import ContentHeader from '../layout/content-header';
 import IconLink from '../layout/icon-link';
-
-import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
-import { capitalize } from '../../../lib/functions';
 
 class UserIndex extends React.Component {
 
@@ -27,7 +28,7 @@ class UserIndex extends React.Component {
             }
         };
         
-        this.toggleActiveUsers = this.toggleActiveUsers.bind(this);
+        this.toggleActive = this.toggleActive.bind(this);
         this.sortList = this.sortList.bind(this);
         this.renderUsers = this.renderUsers.bind(this);
     }
@@ -59,37 +60,20 @@ class UserIndex extends React.Component {
         //update user list on active user toggle
         if (!isLoading && prevState.activeShown !== activeShown) {
             
-            const updatedList = users.filter(user => {
+            const filteredList = users.filter(user => {
                 if (user.role !== SU) return activeShown ? user.isActive : !user.isActive;
             });
             
-            if (sortSettings.column) {
-                // sort new user list on active toggle based on current sort settings
-                updatedList.sort((a, b) => {
-                    return sortSettings.ascending
-                        ? (a[sortSettings.column] > b[sortSettings.column] ? 1 : -1)
-                        : (a[sortSettings.column] < b[sortSettings.column]  ? 1 : -1)
-                });
-            }
-            
-            this.setState({ userList: updatedList, userCount: updatedList.length });
+            this.setState({ userList: sortItems(filteredList, sortSettings), userCount: filteredList.length });
         }
         
         //update user list on sort
         if (!isLoading && prevState.sortSettings !== sortSettings) {
-            const sortedList = [...userList];
-            
-            sortedList.sort((a, b) => {
-                return sortSettings.ascending
-                    ? (a[sortSettings.column] > b[sortSettings.column] ? 1 : -1)
-                    : (a[sortSettings.column] < b[sortSettings.column]  ? 1 : -1)
-            });
-            
-            this.setState({ userList: sortedList });
+            this.setState({ userList: sortItems(userList, sortSettings) });
         }
     }
     
-    toggleActiveUsers() {
+    toggleActive() {
         this.setState({ activeShown: !this.state.activeShown});
     }
     
@@ -124,7 +108,7 @@ class UserIndex extends React.Component {
         const {
             props: { isReadOnly, history },
             state: { isLoading, activeShown, userCount, sortSettings },
-            toggleActiveUsers,
+            toggleActive,
             renderUsers,
             sortList
         } = this;
@@ -175,8 +159,8 @@ class UserIndex extends React.Component {
                 </table>
                 <div className="button-group">
                     <div className="toggle">
-                        <label>Show Inactive</label>
-                        <span onClick={ toggleActiveUsers }>
+                        <label>Toggle Inactive</label>
+                        <span onClick={ toggleActive }>
                             <i className={ !activeShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
                         </span>
                     </div>

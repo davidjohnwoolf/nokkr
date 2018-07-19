@@ -36,12 +36,13 @@ router.get('/', requireUser, (req, res) => {
                 const updatedAreas = user.areas.map(area => {
                     
                     let areaGroup = account.areaGroups.find(group => group.id == area.areaGroup);
+                    let areaTeam
 
                     const newArea = Object.assign({
                         assignedUserName: user.firstName + ' ' + user.lastName,
                         groupTitle: areaGroup.title,
                         groupId: areaGroup.id,
-                        teamTitle: account.teams.find(team => team.id == user.team).title
+                        teamTitle: areaTeam ? areaTeam.title : undefined
                     }, area._doc);
                     
                     return newArea;
