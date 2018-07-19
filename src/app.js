@@ -32,9 +32,12 @@ import UserNew from './components/users/user-new';
 import UserEdit from './components/users/user-edit';
 import UserShow from './components/users/user-show';
 import UserIndex from './components/users/user-index';
+
 import AreaNew from './components/areas/area-new';
 import AreaIndex from './components/areas/area-index';
 import AreaShow from './components/areas/area-show';
+
+import AreaGroupShow from './components/area-groups/area-group-show';
 
 import { SU, ADMIN, MANAGER, USER } from '../lib/constants';
 
@@ -104,6 +107,8 @@ ReactDOM.render(
                         { /*<PrivateRoute exact path="/areas/:id/edit" access={ MANAGER } writeAccess="true" component={ AreaEdit } />
                         <PrivateRoute exact path="/areas/:id" component={ AreaShow } />
                 		<PrivateRoute exact path="/areas" access={ MANAGER } component={ AreaIndex } /> */ }
+                		
+                		<PrivateRoute exact path="/area-groups/:id" access={ MANAGER } component={ AreaGroupShow } />
                 		
                 		<PrivateRoute exact path="/" permission="user" component={ Dashboard } />
                 		
