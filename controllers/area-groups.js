@@ -3,6 +3,7 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const Account = require('../models/account');
 const AreaGroup = require('../models/area-group');
+const User = require('../models/user');
 
 //const verifyToken = require('./helpers/authorization');
 
@@ -73,7 +74,25 @@ router.get('/:id', requireManager, (req, res) => {
         
         if (!areaGroup) return res.json({ status: ERROR, code: 404, message: 'Area group not found' });
         
-        return res.json({ status: SUCCESS, data: { payload: areaGroup } });
+        User.find({}, (err, users) => {
+            if (err) return res.json({ status: ERROR, data: err, message: 'Error finding users' });
+            
+            const areas = [];
+            let user;
+            
+            users.forEach(user => {
+                user.areas.forEach(area => {
+                    if (area.areaGroup == req.params.id) {
+                        areas.push(Object.assign({
+                            assignedUserName: user.firstName + ' ' + user.lastName,
+                        }, area._doc));
+                    }
+                })
+            });
+            
+            return res.json({ status: SUCCESS, data: { payload: Object.assign({ areas }, areaGroup._doc) } });
+        });
+        
     });
 });
 
