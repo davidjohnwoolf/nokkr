@@ -41,8 +41,6 @@ class Map extends React.Component {
     }
     
     componentDidUpdate(prevProps, prevState) {
-        
-        console.log('positionsetting', this.state.settingPosition)
         const {
             props: { areas, id },
             state: { map, mapType, overlayShown, isInitialized }
