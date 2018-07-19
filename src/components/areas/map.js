@@ -98,8 +98,9 @@ class Map extends React.Component {
                         strokeWeight: 20,
                         strokeOpacity: 0.3
                     }
-                })
+                });
             } else {
+                console.log(this.state.currentPositionMarker)
                 this.state.currentPositionMarker.setPosition(
                     new window.google.maps.LatLng(
                         pos.coords.latitude,
@@ -107,9 +108,11 @@ class Map extends React.Component {
                     )
                 );
             }
-            
-            this.setState({ currentPositionMarker: positionMarker || this.state.currentPositionMarker, settingPosition: true });
-            
+
+            positionMarker
+                ? this.setState({ currentPositionMarker: positionMarker, settingPosition: true })
+                : this.setState({ settingPosition: true });
+
             this.state.map.panTo(new window.google.maps.LatLng(
                 pos.coords.latitude,
                 pos.coords.longitude
