@@ -55,10 +55,10 @@ class AreaIndex extends React.Component {
                 return (
 			        <tr key={ area._id }>
                         <td>
-                            <Link to={ `/areas/${ area._id }` }>{ area.title } - Edit</Link>
+                            <Link to={ `/areas/${ area._id }` }>{ area.title }</Link>
                         </td>
                         <td>{ area.assignedUserName }</td>
-                        <td>{ area.groupTitle }</td>
+                        <td><Link to={ `/area-groups/${ area.groupId }` }>{ area.groupTitle }</Link></td>
                         <td>{ area.teamTitle }</td>
                     </tr>
                 );
@@ -85,9 +85,6 @@ class AreaIndex extends React.Component {
                 <ContentHeader title="Area Management" history={ history } chilrenAccess={ !isReadOnly }>
                     <IconLink url="/areas/new" type="success" icon="plus" />
                 </ContentHeader>
-                <h3>Filters</h3>
-                <select><option>Select column to filter</option></select>
-                <select><option>Select filter</option></select>
                 <table className="table">
                     <thead>
                         <tr>
