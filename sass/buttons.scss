@@ -214,6 +214,7 @@
 .toggle {
     display: flex;
     margin-top: 1rem;
+    cursor: pointer;
     
     > label {
         margin-right: 1rem;
@@ -221,7 +222,6 @@
     }
     
     > span {
-        cursor: pointer;
         font-size: 1.8rem;
         
         .fa-toggle-off {
