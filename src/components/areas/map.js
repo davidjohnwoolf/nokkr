@@ -135,7 +135,9 @@ class Map extends React.Component {
                 <button style={{ position: 'absolute', top: '0', left: '1rem', zIndex: 10 }} onClick={ setLocation } className={ locationActive ? 'map-button success' : 'map-button cancel' }>
                     <i className="fas fa-location-arrow"></i>
                 </button>
-                <button style={{ position: 'absolute', top: '0', right: '1rem', zIndex: 10 }} onClick={ toggleModal } className="map-button primary"><i className="fas fas fa-cog"></i></button>
+                <button style={{ position: 'absolute', top: '0', right: '1rem', zIndex: 10 }} onClick={ toggleModal } className="map-button primary">
+                    <i className="fas fas fa-cog"></i>
+                </button>
                 
                 <div id="map" style={{ height: window.innerHeight - 58 }}></div>
                 

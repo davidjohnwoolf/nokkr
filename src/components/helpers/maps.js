@@ -21,6 +21,7 @@ export const createMap = googleMaps => {
         center: {lat: 40, lng: -100},
         zoom: 4,
         disableDefaultUI: true,
+        streetViewControl: true,
         styles: mapStyles
     });
 };
