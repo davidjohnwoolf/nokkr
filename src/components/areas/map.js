@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { getBounds, createMap, setArea, setPosition, locationError } from '../helpers/maps';
-import { AREA_PATH } from '../../../lib/constants';
+import { AREA_PATH, USER } from '../../../lib/constants';
 
 import Modal from '../layout/modal';
 
@@ -126,7 +126,7 @@ class Map extends React.Component {
 
     render() {
         const {
-            props: { id, areas },
+            props: { id, areas, isReadOnly, role },
             state: { modalShown, locationActive, mapType, overlayShown },
             setLocation, toggleModal, setMapType, goToArea, toggleOverlay
         } = this;
@@ -146,21 +146,14 @@ class Map extends React.Component {
                             <button onClick={ () => setMapType('satellite') } className={ mapType === 'satellite' ? 'active' : '' }>Satellite</button>
                             <button onClick={ () => setMapType('hybrid') } className={ mapType === 'hybrid' ? 'active' : '' }>Hybrid</button>
                         </div>
-
-                        <div className="button-group">
-                            <div className="toggle" onClick={ () => console.log('toggleleads') }>
-                                <label>Show Leads</label>
-                                <span>
-                                    <i className={ true ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
-                                </span>
-                            </div>
-                            <div className="toggle" onClick={ toggleOverlay }>
-                                <label>Show Overlay</label>
-                                <span>
-                                    <i className={ overlayShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
-                                </span>
-                            </div>
+                        
+                        <div className="toggle" onClick={ toggleOverlay }>
+                            <label>Show Overlay</label>
+                            <span>
+                                <i className={ overlayShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
+                            </span>
                         </div>
+                        
                         <h4>Switch Area</h4>
                         <select onChange={ (e) => goToArea(e) } value={ id }>
                             { areas.map(area => {
@@ -171,9 +164,13 @@ class Map extends React.Component {
                             <button onClick={ () => console.log('go to leads') } className="button primary">
                                 Area Leads <i className="fas fa-users"></i>
                             </button>
-                            <Link className="button primary" to={ AREA_PATH + id + '/edit' }>
-                                Edit Area <i className="fas fa-edit"></i>
-                            </Link>
+                            {
+                                !isReadOnly && role !== USER
+                                    ? (<Link className="button primary" to={ AREA_PATH + id + '/edit' }>
+                                        Edit Area <i className="fas fa-edit"></i>
+                                    </Link>)
+                                    : ''
+                            }
                         </div>
                     </section>
                 </Modal>

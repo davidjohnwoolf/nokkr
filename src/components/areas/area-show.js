@@ -32,20 +32,22 @@ class AreaShow extends React.Component {
     
     render() {
         
-        const { props: { history, match: { params } }, state: { isLoading, areaList } } = this;
+        const { props: { history, isReadOnly, role, match: { params } }, state: { isLoading, areaList } } = this;
         
         if (isLoading) return <Loading />;
         
         return (
             <main id="area-show" className="map-content">
-                <Map areas={ areaList } id={ params.id } history={ history } />
+                <Map areas={ areaList } id={ params.id } history={ history } isREadOnly={ isReadOnly } role={ role } />
             </main>
         );
     }
 }
 
 const mapStateToProps = state => ({
-    areas: state.areas.areas
+    areas: state.areas.areas,
+    isReadOnly: state.auth.isReadOnly,
+    role: state.auth.role
 });
 
 export default connect(mapStateToProps, { fetchAreas })(AreaShow);
