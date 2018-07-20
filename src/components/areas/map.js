@@ -5,6 +5,7 @@ import { getBounds, createMap, setArea, setPosition, locationError } from '../he
 import { AREA_PATH, USER } from '../../../lib/constants';
 
 import Modal from '../layout/modal';
+import FieldInput from '../forms/field-input';
 
 //can you write your own react style listeners for maps?
 
@@ -13,9 +14,16 @@ class Map extends React.Component {
 	constructor(props) {
         super(props);
         
+        this.propConstants = Object.freeze({
+            SETTINGS_MODAL_SHOWN: 'settingsModalShown',
+            LEAD_MODAL_SHOWN: 'leadModalShown',
+            OVERLAY_SHOWN: 'overlayShown',
+        });
+        
         this.state = {
             locationActive: false,
             settingsModalShown: false,
+            leadModalShown: false,
             overlayShown: true,
             mapType: 'roadmap',
             isInitialized: false,
@@ -31,9 +39,8 @@ class Map extends React.Component {
         this.setMapType = this.setMapType.bind(this);
         this.goToArea = this.goToArea.bind(this);
         this.setLocation = this.setLocation.bind(this);
-        this.toggleOverlay = this.toggleOverlay.bind(this);
         
-        //maps no longer supports getBounds so we build our own function
+        //build get bounds function
         window.google.maps.Polygon.prototype.getBounds = getBounds(window.google.maps);
     }
     
@@ -45,13 +52,14 @@ class Map extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         const {
             props: { areas, id },
-            state: { map, mapType, overlayShown, isInitialized }
+            state: { map, mapType, overlayShown, isInitialized },
+            toggleProp, propConstants: { LEAD_MODAL_SHOWN }
         } = this;
         
         if (!isInitialized) {
             
             this.state.map.addListener('click', () => {
-                console.log('click');
+                toggleProp(LEAD_MODAL_SHOWN)();
             });
             
             this.setState({ isInitialized: true, ...setArea({ googleMaps: window.google.maps, map, id, areas }) });
@@ -128,9 +136,11 @@ class Map extends React.Component {
     render() {
         const {
             props: { id, areas, isReadOnly, role },
-            state: { settingsModalShown, locationActive, mapType, overlayShown },
-            setLocation, toggleProp, setMapType, goToArea
+            state: { settingsModalShown, locationActive, mapType, overlayShown, leadModalShown },
+            setLocation, toggleProp, setMapType, goToArea,
+            propConstants: { SETTINGS_MODAL_SHOWN, LEAD_MODAL_SHOWN, OVERLAY_SHOWN }
         } = this;
+        console.log(leadModalShown)
         
         return (
             <div className="full-map-container">
@@ -138,14 +148,14 @@ class Map extends React.Component {
                     <button style={{ marginRight: '1rem' }} onClick={ setLocation } className={ locationActive ? 'map-button success' : 'map-button cancel' }>
                         <i className="fas fa-location-arrow"></i>
                     </button>
-                    <button onClick={ toggleProp('settingsModalShown') } className="map-button primary">
+                    <button onClick={ toggleProp(SETTINGS_MODAL_SHOWN) } className="map-button primary">
                         <i className="fas fas fa-cog"></i>
                     </button>
                 </div>
                 
                 <div id="map" style={{ height: window.innerHeight - 58 }}></div>
                 
-                <Modal close={ toggleProp('settingsModalShown') } shown={ settingsModalShown } title="Area Settings">
+                <Modal close={ toggleProp(SETTINGS_MODAL_SHOWN) } shown={ settingsModalShown } title="Area Settings">
                     <section className="area-settings">
                         <div className="button-toggle">
                             <button onClick={ setMapType('roadmap') } className={ mapType === 'roadmap' ? 'active' : '' }>Roadmap</button>
@@ -153,7 +163,7 @@ class Map extends React.Component {
                             <button onClick={ setMapType('hybrid') } className={ mapType === 'hybrid' ? 'active' : '' }>Hybrid</button>
                         </div>
                         
-                        <div className="toggle" onClick={ toggleProp('overlayShown') }>
+                        <div className="toggle" onClick={ toggleProp(OVERLAY_SHOWN) }>
                             <label>Show Overlay</label>
                             <span>
                                 <i className={ overlayShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
@@ -179,6 +189,34 @@ class Map extends React.Component {
                             }
                         </div>
                     </section>
+                </Modal>
+                <Modal close={ toggleProp(LEAD_MODAL_SHOWN) } shown={ leadModalShown } title="Create Lead">
+                    <form>
+                        <FieldInput
+                            name="firstName"
+                            type="text"
+                            placeholder="first name"
+                        />
+                        <FieldInput
+                            name="lastName"
+                            type="text"
+                            placeholder="last name"
+                        />
+                        <FieldInput
+                            name="address"
+                            type="text"
+                            placeholder="address"
+                        />
+                        <div className="button-group">
+                            <button
+                                disabled="true"
+                                className="button success"
+                                type="submit">
+                                Create Lead
+                            </button>
+                            <a onClick={ toggleProp(LEAD_MODAL_SHOWN) } className="button cancel">Cancel</a>
+                        </div>
+                    </form>
                 </Modal>
             </div>
         );
