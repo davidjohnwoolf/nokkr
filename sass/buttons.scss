@@ -142,7 +142,10 @@
 }
 
 .button-toggle {
+    display: flex;
+    
     > button {
+        width: 100%;
         border: none;
         padding: $gutter $gutter-lg;
         margin: $gutter 0;

@@ -146,15 +146,19 @@ class Map extends React.Component {
                             <button onClick={ () => setMapType('satellite') } className={ mapType === 'satellite' ? 'active' : '' }>Satellite</button>
                             <button onClick={ () => setMapType('hybrid') } className={ mapType === 'hybrid' ? 'active' : '' }>Hybrid</button>
                         </div>
-                        
-                        <div className="checkbox-options">
-                            <div>
-                                <input type="checkbox" id="show-leads" value="true" defaultChecked />
-                                <label htmlFor="show-leads">Show Leads</label>
+
+                        <div className="button-group">
+                            <div className="toggle">
+                                <label>Show Leads</label>
+                                <span onClick={ () => console.log('toggleleads') }>
+                                    <i className={ !true ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
+                                </span>
                             </div>
-                            <div>
-                                <input type="checkbox" id="show-area" value="true" checked={ overlayShown } onChange={ toggleOverlay } />
-                                <label htmlFor="show-area">Show Area Overlay</label>
+                            <div className="toggle">
+                                <label>Show Overlay</label>
+                                <span onClick={ toggleOverlay }>
+                                    <i className={ overlayShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
+                                </span>
                             </div>
                         </div>
                         <h4>Switch Area</h4>
