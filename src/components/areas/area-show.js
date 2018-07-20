@@ -38,7 +38,7 @@ class AreaShow extends React.Component {
         
         return (
             <main id="area-show" className="map-content">
-                <Map areas={ areaList } id={ params.id } history={ history } isREadOnly={ isReadOnly } role={ role } />
+                <Map areas={ areaList } id={ params.id } history={ history } isReadOnly={ isReadOnly } role={ role } />
             </main>
         );
     }

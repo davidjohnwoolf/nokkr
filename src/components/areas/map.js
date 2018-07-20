@@ -15,7 +15,7 @@ class Map extends React.Component {
         
         this.state = {
             locationActive: false,
-            modalShown: false,
+            settingsModalShown: false,
             overlayShown: true,
             mapType: 'roadmap',
             isInitialized: false,
@@ -25,8 +25,9 @@ class Map extends React.Component {
             areaPolygon: null,
             outerPolygon: null
         };
-
-        this.toggleModal = this.toggleModal.bind(this);
+        
+        
+        this.toggleProp = this.toggleProp.bind(this);
         this.setMapType = this.setMapType.bind(this);
         this.goToArea = this.goToArea.bind(this);
         this.setLocation = this.setLocation.bind(this);
@@ -48,6 +49,11 @@ class Map extends React.Component {
         } = this;
         
         if (!isInitialized) {
+            
+            this.state.map.addListener('click', () => {
+                console.log('click');
+            });
+            
             this.setState({ isInitialized: true, ...setArea({ googleMaps: window.google.maps, map, id, areas }) });
         }
         
@@ -65,10 +71,6 @@ class Map extends React.Component {
                 ? this.state.outerPolygon.setOptions({ fillOpacity: .5 })
                 : this.state.outerPolygon.setOptions({ fillOpacity: 0 });
         }
-    }
-    
-    goToArea(e) {
-        this.props.history.push(AREA_PATH + e.target.value);
     }
     
     setLocation() {
@@ -111,23 +113,23 @@ class Map extends React.Component {
         }
     }
     
-    toggleModal() {
-        this.setState({ modalShown: !this.state.modalShown });
-    }
-    
-    toggleOverlay() {
-        this.setState({ overlayShown: !this.state.overlayShown });
+    toggleProp(prop) {
+        return () => this.setState({ [prop]: !this.state[prop] });
     }
     
     setMapType(type) {
-        this.setState({ mapType: type });
+        return () => this.setState({ mapType: type });
+    }
+    
+    goToArea(e) {
+        this.props.history.push(AREA_PATH + e.target.value);
     }
 
     render() {
         const {
             props: { id, areas, isReadOnly, role },
-            state: { modalShown, locationActive, mapType, overlayShown },
-            setLocation, toggleModal, setMapType, goToArea, toggleOverlay
+            state: { settingsModalShown, locationActive, mapType, overlayShown },
+            setLocation, toggleProp, setMapType, goToArea
         } = this;
         
         return (
@@ -136,22 +138,22 @@ class Map extends React.Component {
                     <button style={{ marginRight: '1rem' }} onClick={ setLocation } className={ locationActive ? 'map-button success' : 'map-button cancel' }>
                         <i className="fas fa-location-arrow"></i>
                     </button>
-                    <button onClick={ toggleModal } className="map-button primary">
+                    <button onClick={ toggleProp('settingsModalShown') } className="map-button primary">
                         <i className="fas fas fa-cog"></i>
                     </button>
                 </div>
                 
                 <div id="map" style={{ height: window.innerHeight - 58 }}></div>
                 
-                <Modal close={ toggleModal } shown={ modalShown } title="Area Settings">
+                <Modal close={ toggleProp('settingsModalShown') } shown={ settingsModalShown } title="Area Settings">
                     <section className="area-settings">
                         <div className="button-toggle">
-                            <button onClick={ () => setMapType('roadmap') } className={ mapType === 'roadmap' ? 'active' : '' }>Roadmap</button>
-                            <button onClick={ () => setMapType('satellite') } className={ mapType === 'satellite' ? 'active' : '' }>Satellite</button>
-                            <button onClick={ () => setMapType('hybrid') } className={ mapType === 'hybrid' ? 'active' : '' }>Hybrid</button>
+                            <button onClick={ setMapType('roadmap') } className={ mapType === 'roadmap' ? 'active' : '' }>Roadmap</button>
+                            <button onClick={ setMapType('satellite') } className={ mapType === 'satellite' ? 'active' : '' }>Satellite</button>
+                            <button onClick={ setMapType('hybrid') } className={ mapType === 'hybrid' ? 'active' : '' }>Hybrid</button>
                         </div>
                         
-                        <div className="toggle" onClick={ toggleOverlay }>
+                        <div className="toggle" onClick={ toggleProp('overlayShown') }>
                             <label>Show Overlay</label>
                             <span>
                                 <i className={ overlayShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
