@@ -132,12 +132,14 @@ class Map extends React.Component {
         
         return (
             <div className="full-map-container">
-                <button style={{ position: 'absolute', top: '0', left: '1rem', zIndex: 10 }} onClick={ setLocation } className={ locationActive ? 'map-button success' : 'map-button cancel' }>
-                    <i className="fas fa-location-arrow"></i>
-                </button>
-                <button style={{ position: 'absolute', top: '0', right: '1rem', zIndex: 10 }} onClick={ toggleModal } className="map-button primary">
-                    <i className="fas fas fa-cog"></i>
-                </button>
+                <div style={{ position: 'absolute', right: '1rem', zIndex: '10' }}>
+                    <button style={{ marginRight: '1rem' }} onClick={ setLocation } className={ locationActive ? 'map-button success' : 'map-button cancel' }>
+                        <i className="fas fa-location-arrow"></i>
+                    </button>
+                    <button onClick={ toggleModal } className="map-button primary">
+                        <i className="fas fas fa-cog"></i>
+                    </button>
+                </div>
                 
                 <div id="map" style={{ height: window.innerHeight - 58 }}></div>
                 
