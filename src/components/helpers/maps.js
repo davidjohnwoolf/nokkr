@@ -67,3 +67,48 @@ export const setArea = ({ googleMaps, areas, id, map }) => {
     
     return { outerPolygon, areaPolygon };
 };
+
+export const setPosition = ({ position, positionMarker, positionWatcher, map }) => {
+    const result = { settingPosition: true, locationActive: true };
+    let currentPositionMarker;
+    
+    if (!positionMarker) {
+        currentPositionMarker = new window.google.maps.Marker({
+            map: map,
+            position: new window.google.maps.LatLng(
+                position.coords.latitude,
+                position.coords.longitude
+            ),
+            title: 'You are here',
+            icon: {
+                path: window.google.maps.SymbolPath.CIRCLE,
+                scale: 7,
+                fillColor: '#306eff',
+                fillOpacity: 1,
+                strokeColor: '#fff',
+                strokeWeight: 2,
+                strokeOpacity: 1
+            }
+        });
+    }
+    
+    if (currentPositionMarker) result.positionMarker = currentPositionMarker;
+    
+    if (!positionWatcher) {
+        result.positionWatcher = window.navigator.geolocation.watchPosition(position => {
+            positionMarker.setPosition(
+                new window.google.maps.LatLng(
+                    position.coords.latitude,
+                    position.coords.longitude
+                )
+            );
+        });
+    }
+    
+    return result;
+};
+
+export const locationError = err => {
+    console.log(err);
+    alert('Error finding location');
+};

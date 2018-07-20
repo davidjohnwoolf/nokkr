@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { getBounds, createMap, setArea } from '../helpers/maps';
+import { getBounds, createMap, setArea, setPosition, locationError } from '../helpers/maps';
 import { AREA_PATH } from '../../../lib/constants';
 
 import Modal from '../layout/modal';
@@ -20,7 +20,7 @@ class Map extends React.Component {
             mapType: 'roadmap',
             isInitialized: false,
             settingPosition: false,
-            currentPositionMarker: null,
+            positionMarker: null,
             map: null,
             areaPolygon: null,
             outerPolygon: null
@@ -72,106 +72,44 @@ class Map extends React.Component {
     }
     
     setLocation() {
-            
-        const locError = error => {
-            // the current position could not be located
-            console.log(error);
-            alert("The current position could not be found!");
-        };
-        
-        const setCurrentPosition = (pos) => {
-            let positionMarker;
-            
-            if (!this.state.currentPositionMarker) {
-                positionMarker: new window.google.maps.Marker({
-                    map: this.state.map,
-                    position: new window.google.maps.LatLng(
-                        pos.coords.latitude,
-                        pos.coords.longitude
-                    ),
-                    title: 'You are here',
-                    icon: {
-                        path: window.google.maps.SymbolPath.CIRCLE,
-                        scale: 7,
-                        fillColor: '#306eff',
-                        fillOpacity: 1,
-                        strokeColor: '#fff',
-                        strokeWeight: 2,
-                        strokeOpacity: 1
-                    }
-                });
-            } else {
-                console.log(this.state.currentPositionMarker)
-                this.state.currentPositionMarker.setPosition(
-                    new window.google.maps.LatLng(
-                        pos.coords.latitude,
-                        pos.coords.longitude
-                    )
-                );
-            }
-
-            positionMarker
-                ? this.setState({ currentPositionMarker: positionMarker, settingPosition: true })
-                : this.setState({ settingPosition: true });
-
-            this.state.map.panTo(new window.google.maps.LatLng(
-                pos.coords.latitude,
-                pos.coords.longitude
-            ));
-        };
-        
-        const setMarkerPosition = (marker, position) => {
-            marker.setPosition(
-                new window.google.maps.LatLng(
-                    position.coords.latitude,
-                    position.coords.longitude)
-            );
-        };
-        
-        const watchCurrentPosition = () => {
-            if (!this.state.positionWatcher) {
-                this.setState({
-                    positionWatcher: window.navigator.geolocation.watchPosition(position => {
-                        setMarkerPosition(
-                            this.state.currentPositionMarker,
-                            position
-                        );
-                    })
-                });
-            }
-        };
+        const { state: { map, positionMarker, positionWatcher } } = this;
         
         const displayAndWatch = position => {
-            // set current position
-            setCurrentPosition(position);
-            // watch position
-            watchCurrentPosition();
+            
+            //go to position
+            this.state.map.panTo(new window.google.maps.LatLng(
+                position.coords.latitude,
+                position.coords.longitude
+            ));
+            
+            //set and watch position
+            //make params obj
+            this.setState(setPosition({ position, positionMarker, positionWatcher, map }));
         };
         
-        this.state.map.addListener('center_changed', () => {
-            if (this.state.locationActive && !this.state.settingPosition) {
-                this.setState({ locationActive: false });
-                window.google.maps.event.clearListeners(this.state.map, 'center_changed');
-                if (this.state.positionWatcher) {
-                    window.navigator.geolocation.clearWatch(this.state.positionWatcher);
-                }
-            } else if (this.state.locationActive && this.state.settingPosition) {
-                this.setState({ settingPosition: false });
-            }
-        });
-        
-        //actual calls
+        //actual call
         if (window.navigator.geolocation) {
             
             if (!this.state.locationActive) {
-                this.setState({ locationActive: true });
-                window.navigator.geolocation.getCurrentPosition(displayAndWatch, locError);
+                window.navigator.geolocation.getCurrentPosition(displayAndWatch, locationError);
             }
                 
         } else {
-            alert("Your browser does not support the Geolocation API");
+            alert('Your browser does not support the Geolocation API');
         }
         
+        this.state.map.addListener('center_changed', () => {
+            if (this.state.locationActive && !this.state.settingPosition) {
+                window.google.maps.event.clearListeners(this.state.map, 'center_changed');
+                window.navigator.geolocation.clearWatch(this.state.positionWatcher);
+                
+                this.setState({ positionWatcher: null, locationActive: false });
+            }
+            
+            if (this.state.locationActive && this.state.settingPosition) {
+                this.setState({ settingPosition: false });
+            }
+        });
     }
     
     toggleModal() {
