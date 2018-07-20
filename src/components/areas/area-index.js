@@ -5,8 +5,10 @@ import { Link } from 'react-router-dom';
 import { sortItems } from '../helpers/list';
 
 import Loading from '../layout/loading';
+import Modal from '../layout/modal';
 import ContentHeader from '../layout/content-header';
 import IconLink from '../layout/icon-link';
+import MapIndex from './map-index';
 
 import { fetchAreas } from '../../actions/areas.action';
 
@@ -18,6 +20,9 @@ class AreaIndex extends React.Component {
         this.state = {
             isLoading: true,
             areaList: null,
+            modalShown: false,
+            mapShown: false,
+            areaGroups: null,
             areaCount: 0,
             activeShown: true,
             sortSettings: {
@@ -29,6 +34,8 @@ class AreaIndex extends React.Component {
         this.sortList = this.sortList.bind(this);
         this.renderAreas = this.renderAreas.bind(this);
         this.toggleActive = this.toggleActive.bind(this);
+        this.toggleModal = this.toggleModal.bind(this);
+        this.toggleMapActive = this.toggleMapActive.bind(this);
     }
     
     componentDidMount() {
@@ -38,7 +45,17 @@ class AreaIndex extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         const { props: { areas }, state: { isLoading, areaList, sortSettings, activeShown } } = this;
         
-        if (areas && isLoading) this.setState({ isLoading: false, areaList: areas, areaCount: areas.length });
+        if (areas && isLoading) {
+            const areaGroups = [];
+            
+            areas.forEach(area => {
+                if (!areaGroups.find(areaGroup => areaGroup._id == area.groupId)) {
+                    areaGroups.push({ _id: area.groupId, title: area.groupTitle });
+                }
+            });
+            
+            this.setState({ isLoading: false, areaList: areas, areaGroups, areaCount: areas.length });
+        }
         
         //update area list on active toggle
         if (!isLoading && prevState.activeShown !== activeShown) {
@@ -77,6 +94,10 @@ class AreaIndex extends React.Component {
         this.setState({ activeShown: !this.state.activeShown});
     }
     
+    toggleMapActive() {
+        this.setState({ mapShown: !this.state.mapShown });
+    }
+    
     sortList(col) {
         const { sortSettings: { column, ascending } } = this.state;
         
@@ -85,22 +106,28 @@ class AreaIndex extends React.Component {
             : this.setState({ sortSettings: { column: col, ascending: true } });
     }
     
+    toggleModal() {
+        this.setState({ modalShown: !this.state.modalShown });
+    }
+    
     render() {
         
         const {
-            props: { isReadOnly, history },
-            state: { sortSettings, isLoading, activeShown, areaCount },
-            sortList, renderAreas, toggleActive
+            props: { history },
+            state: { sortSettings, isLoading, activeShown, areaCount, modalShown, mapShown, areaGroups, areaList },
+            sortList, renderAreas, toggleActive, toggleModal, toggleMapActive
         } = this;
         
         if (isLoading) return <Loading />;
         
         return (
             <main id="area-index" className="content">
-                <ContentHeader title="Area Management" history={ history } chilrenAccess={ !isReadOnly }>
-                    <IconLink url="/areas/new" type="success" icon="plus" />
+                
+                <ContentHeader title="Area Management" history={ history } chilrenAccess={ /*!isReadOnly*/ true }>
+                    { /*<IconLink url="/areas/new" type="success" icon="plus" /> */ }
+                    <IconLink clickEvent={ toggleModal } icon="cog" />
                 </ContentHeader>
-                <table className="table">
+                <table className={ `table ${ !mapShown ? '' : 'invisible' }` }>
                     <thead>
                         <tr>
                             
@@ -146,15 +173,27 @@ class AreaIndex extends React.Component {
                         { renderAreas() }
                     </tbody>
                 </table>
-                <div className="button-group">
-                    <div className="toggle">
-                        <label>Toggle Inactive</label>
-                        <span onClick={ toggleActive }>
-                            <i className={ !activeShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
-                        </span>
+                <p style={{ marginTop: '1rem' }}>Areas Shown: { areaCount }</p>
+                <Modal close={ toggleModal } shown={ modalShown } title="Create Area Group">
+                    <div style={{ margin: '2rem 0' }}>
+                        <Link className="button success" to="/areas/new">New Area <i className="fas fa-plus"></i></Link>
                     </div>
-                    <p style={{ marginTop: '1rem' }}>Areas Shown: { areaCount }</p>
-                </div>
+                    <div className="button-group">
+                        <div className="toggle">
+                            <label>Toggle Inactive</label>
+                            <span onClick={ toggleActive }>
+                                <i className={ !activeShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
+                            </span>
+                        </div>
+                        <div className="toggle">
+                            <label>Toggle Map View</label>
+                            <span onClick={ toggleMapActive }>
+                                <i className={ mapShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
+                            </span>
+                        </div>
+                    </div>
+                </Modal>
+                <MapIndex areas={ areaList } mapShown={ mapShown } areaGroups={ areaGroups } />
             </main>
         );
     }
