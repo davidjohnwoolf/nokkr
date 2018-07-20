@@ -14,7 +14,7 @@ class Map extends React.Component {
 	constructor(props) {
         super(props);
         
-        this.toggleProps = Object.freeze({
+        this.constants = Object.freeze({
             SETTINGS_MODAL_SHOWN: 'settingsModalShown',
             LEAD_MODAL_SHOWN: 'leadModalShown',
             OVERLAY_SHOWN: 'overlayShown',
@@ -53,7 +53,7 @@ class Map extends React.Component {
         const {
             props: { areas, id },
             state: { map, mapType, overlayShown, isInitialized },
-            toggleProp, toggleProps: { LEAD_MODAL_SHOWN }
+            toggleProp, constants: { LEAD_MODAL_SHOWN }
         } = this;
         
         if (!isInitialized) {
@@ -138,7 +138,7 @@ class Map extends React.Component {
             props: { id, areas, isReadOnly, role },
             state: { settingsModalShown, locationActive, mapType, overlayShown, leadModalShown },
             setLocation, toggleProp, setMapType, goToArea,
-            toggleProps: { SETTINGS_MODAL_SHOWN, LEAD_MODAL_SHOWN, OVERLAY_SHOWN }
+            constants: { SETTINGS_MODAL_SHOWN, LEAD_MODAL_SHOWN, OVERLAY_SHOWN }
         } = this;
         console.log(leadModalShown)
         
