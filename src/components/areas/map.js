@@ -62,8 +62,8 @@ class Map extends React.Component {
         
         if (prevState.overlayShown !== overlayShown) {
             overlayShown
-                ? this.state.outerPolygon.setMap(this.state.map)
-                : this.state.outerPolygon.setMap(null);
+                ? this.state.outerPolygon.setOptions({ fillOpacity: .5 })
+                : this.state.outerPolygon.setOptions({ fillOpacity: 0 });
         }
     }
     
@@ -148,15 +148,15 @@ class Map extends React.Component {
                         </div>
 
                         <div className="button-group">
-                            <div className="toggle">
+                            <div className="toggle" onClick={ () => console.log('toggleleads') }>
                                 <label>Show Leads</label>
-                                <span onClick={ () => console.log('toggleleads') }>
-                                    <i className={ !true ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
+                                <span>
+                                    <i className={ true ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
                                 </span>
                             </div>
-                            <div className="toggle">
+                            <div className="toggle" onClick={ toggleOverlay }>
                                 <label>Show Overlay</label>
-                                <span onClick={ toggleOverlay }>
+                                <span>
                                     <i className={ overlayShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
                                 </span>
                             </div>

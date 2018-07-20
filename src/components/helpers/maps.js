@@ -49,9 +49,9 @@ export const setArea = ({ googleMaps, areas, id, map }) => {
         paths: [outerBounds, areaCoords],
         strokeColor: 'red',
         strokeOpacity: 0.8,
-        strokeWeight: 2,
+        strokeWeight: 3,
         fillColor: 'black',
-        fillOpacity: 0.3
+        fillOpacity: 0.5
     });
     const areaPolygon = {
         bounds: polygon.getBounds(),
