@@ -65,6 +65,72 @@
     }
 }
 
+.map-button {
+    border: none;
+    padding: $gutter $gutter-lg;
+    margin: $gutter 0;
+    color: $white;
+    text-decoration: none;
+    transition: $transition;
+    line-height: normal;
+    border-radius: $radius;
+    box-shadow: .05rem .05rem .3rem #333;
+    
+    > .icon-front {
+        display: none;
+        margin-right: $gutter-sm;
+        
+        @include media-xs-plus {
+            display: inline-block;
+        }
+    }
+    
+    &.primary {
+        background: $primary;
+        
+        &:hover {
+            background: $primary-light;
+        }
+    }
+    
+    &.cancel {
+        background: $gray;
+        
+        &:hover {
+            background: $gray-light;
+        }
+    }
+    
+    &.success {
+        background: $success;
+        
+        &:hover {
+            background: $success-light;
+        }
+    }
+    
+    &.danger {
+        background: $error;
+        
+        &:hover {
+            background: $error-light;
+        }
+    }
+    
+    &.warning {
+        background: $warning;
+        
+        &:hover {
+            background: $warning-light;
+        }
+    }
+    
+    &:hover {
+        color: $white;
+        cursor: pointer;
+    }
+}
+
 .button-group {
     display: flex;
     flex-wrap: wrap;

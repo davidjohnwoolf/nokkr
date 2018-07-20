@@ -26,3 +26,11 @@
         }
     }
 }
+
+.full-map-container {
+    position: relative;
+    
+    > #map {
+        width: 100%;
+    }
+}

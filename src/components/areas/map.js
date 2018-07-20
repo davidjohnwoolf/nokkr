@@ -1,9 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-import { getBounds, createMap, createOuterPolygon, setArea } from '../helpers/maps';
+import { getBounds, createMap, setArea } from '../helpers/maps';
+import { AREA_PATH } from '../../../lib/constants';
 
 import Modal from '../layout/modal';
-import MapOptions from './map-options-show';
 
 //can you write your own react style listeners for maps?
 
@@ -67,7 +68,7 @@ class Map extends React.Component {
     }
     
     goToArea(e) {
-        this.props.history.push(`/areas/${ e.target.value }`);
+        this.props.history.push(AREA_PATH + e.target.value);
     }
     
     setLocation() {
@@ -91,12 +92,12 @@ class Map extends React.Component {
                     title: 'You are here',
                     icon: {
                         path: window.google.maps.SymbolPath.CIRCLE,
-                        scale: 5,
-                        fillColor: '#4169e1',
+                        scale: 7,
+                        fillColor: '#306eff',
                         fillOpacity: 1,
-                        strokeColor: '#91a6e2',
-                        strokeWeight: 20,
-                        strokeOpacity: 0.3
+                        strokeColor: '#fff',
+                        strokeWeight: 2,
+                        strokeOpacity: 1
                     }
                 });
             } else {
@@ -187,30 +188,52 @@ class Map extends React.Component {
 
     render() {
         const {
-            props: { id },
+            props: { id, areas },
             state: { modalShown, locationActive, mapType, overlayShown },
             setLocation, toggleModal, setMapType, goToArea, toggleOverlay
         } = this;
         
         return (
-            <div className="map-container">
-                <div className="custom-map-controls">
-                    <button onClick={ setLocation } className={ locationActive ? 'button success' : 'button cancel' }>
-                        <i className="fas fa-location-arrow"></i>
-                    </button>
-                    <select onChange={ (e) => goToArea(e) } value={ id }>
-                        { this.props.areas.map(area => {
-                            return <option key={ area._id } value={ area._id }>{ area.title } ({ area.assignedUserName })</option>;
-                        }) }
-                    </select>
-                    <button onClick={ toggleModal } className="button primary"><i className="fas fas fa-cog"></i></button>
-                </div>
-                <div id="map"></div>
-                <button onClick={ () => console.log('go to leads') } className="button primary">
-                    <i className="fas fa-users"></i>
+            <div className="full-map-container">
+                <button style={{ position: 'absolute', top: '0', left: '1rem', zIndex: 10 }} onClick={ setLocation } className={ locationActive ? 'map-button success' : 'map-button cancel' }>
+                    <i className="fas fa-location-arrow"></i>
                 </button>
+                <button style={{ position: 'absolute', top: '0', right: '1rem', zIndex: 10 }} onClick={ toggleModal } className="map-button primary"><i className="fas fas fa-cog"></i></button>
+                <div id="map" style={{ height: window.innerHeight - 58 }}></div>
+                
                 <Modal close={ toggleModal } shown={ modalShown } title="Area Settings">
-                    <MapOptions mapType={ mapType } setMapType={ setMapType } toggleOverlay={ toggleOverlay } overlayShown={ overlayShown } />
+                    <section className="area-settings">
+                        <div className="button-toggle">
+                            <button onClick={ () => setMapType('roadmap') } className={ mapType === 'roadmap' ? 'active' : '' }>Roadmap</button>
+                            <button onClick={ () => setMapType('satellite') } className={ mapType === 'satellite' ? 'active' : '' }>Satellite</button>
+                            <button onClick={ () => setMapType('hybrid') } className={ mapType === 'hybrid' ? 'active' : '' }>Hybrid</button>
+                        </div>
+                        
+                        <div className="checkbox-options">
+                            <div>
+                                <input type="checkbox" id="show-leads" value="true" defaultChecked />
+                                <label htmlFor="show-leads">Show Leads</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="show-area" value="true" checked={ overlayShown } onChange={ toggleOverlay } />
+                                <label htmlFor="show-area">Show Area Overlay</label>
+                            </div>
+                        </div>
+                        <h4>Switch Area</h4>
+                        <select onChange={ (e) => goToArea(e) } value={ id }>
+                            { areas.map(area => {
+                                return <option key={ area._id } value={ area._id }>{ area.title } ({ area.assignedUserName })</option>;
+                            }) }
+                        </select>
+                        <div className="button-group">
+                            <button onClick={ () => console.log('go to leads') } className="button primary">
+                                Area Leads <i className="fas fa-users"></i>
+                            </button>
+                            <Link className="button primary" to={ AREA_PATH + id + '/edit' }>
+                                Edit Area <i className="fas fa-edit"></i>
+                            </Link>
+                        </div>
+                    </section>
                 </Modal>
             </div>
         );
