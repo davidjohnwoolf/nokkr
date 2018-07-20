@@ -83,7 +83,6 @@ class Map extends React.Component {
             ));
             
             //set and watch position
-            //make params obj
             this.setState(setPosition({ position, positionMarker, positionWatcher, map }));
         };
         
@@ -92,24 +91,24 @@ class Map extends React.Component {
             
             if (!this.state.locationActive) {
                 window.navigator.geolocation.getCurrentPosition(displayAndWatch, locationError);
+                
+                this.state.map.addListener('center_changed', () => {
+                    if (this.state.locationActive && !this.state.settingPosition) {
+                        window.google.maps.event.clearListeners(this.state.map, 'center_changed');
+                        window.navigator.geolocation.clearWatch(this.state.positionWatcher);
+                        
+                        this.setState({ positionWatcher: null, locationActive: false });
+                    }
+                    
+                    if (this.state.locationActive && this.state.settingPosition) {
+                        this.setState({ settingPosition: false });
+                    }
+                });
             }
                 
         } else {
             alert('Your browser does not support the Geolocation API');
         }
-        
-        this.state.map.addListener('center_changed', () => {
-            if (this.state.locationActive && !this.state.settingPosition) {
-                window.google.maps.event.clearListeners(this.state.map, 'center_changed');
-                window.navigator.geolocation.clearWatch(this.state.positionWatcher);
-                
-                this.setState({ positionWatcher: null, locationActive: false });
-            }
-            
-            if (this.state.locationActive && this.state.settingPosition) {
-                this.setState({ settingPosition: false });
-            }
-        });
     }
     
     toggleModal() {
