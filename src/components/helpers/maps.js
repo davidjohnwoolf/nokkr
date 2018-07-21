@@ -97,7 +97,7 @@ export const setPosition = ({ position, positionMarker, positionWatcher, map }) 
     
     if (!positionWatcher) {
         result.positionWatcher = window.navigator.geolocation.watchPosition(position => {
-            positionMarker.setPosition(
+            (positionMarker || result.positionMarker).setPosition(
                 new window.google.maps.LatLng(
                     position.coords.latitude,
                     position.coords.longitude

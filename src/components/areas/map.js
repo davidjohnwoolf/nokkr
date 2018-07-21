@@ -92,8 +92,23 @@ class Map extends React.Component {
                 position.coords.longitude
             ));
             
+            this.state.map.setZoom(19);
+            
             //set and watch position
             this.setState(setPosition({ position, positionMarker, positionWatcher, map }));
+        };
+        
+        const onMapChange = () => {
+            if (this.state.locationActive && !this.state.settingPosition) {
+                window.google.maps.event.clearListeners(this.state.map, 'center_changed');
+                window.navigator.geolocation.clearWatch(this.state.positionWatcher);
+                
+                this.setState({ positionWatcher: null, locationActive: false });
+            }
+            
+            if (this.state.locationActive && this.state.settingPosition) {
+                this.setState({ settingPosition: false });
+            }
         };
         
         //actual call
@@ -102,18 +117,7 @@ class Map extends React.Component {
             if (!this.state.locationActive) {
                 window.navigator.geolocation.getCurrentPosition(displayAndWatch, locationError);
                 
-                this.state.map.addListener('center_changed', () => {
-                    if (this.state.locationActive && !this.state.settingPosition) {
-                        window.google.maps.event.clearListeners(this.state.map, 'center_changed');
-                        window.navigator.geolocation.clearWatch(this.state.positionWatcher);
-                        
-                        this.setState({ positionWatcher: null, locationActive: false });
-                    }
-                    
-                    if (this.state.locationActive && this.state.settingPosition) {
-                        this.setState({ settingPosition: false });
-                    }
-                });
+                this.state.map.addListener('center_changed', onMapChange);
             }
                 
         } else {
@@ -130,6 +134,7 @@ class Map extends React.Component {
     }
     
     goToArea(e) {
+        window.google.maps.event.trigger(this.state.map, 'center_changed');
         this.props.history.push(AREA_PATH + e.target.value);
     }
 
@@ -140,7 +145,6 @@ class Map extends React.Component {
             setLocation, toggleProp, setMapType, goToArea,
             constants: { SETTINGS_MODAL_SHOWN, LEAD_MODAL_SHOWN, OVERLAY_SHOWN }
         } = this;
-        console.log(leadModalShown)
         
         return (
             <div className="full-map-container">
