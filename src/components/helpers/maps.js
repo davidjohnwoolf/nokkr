@@ -88,9 +88,25 @@ export const setPosition = ({ position, positionMarker, positionWatcher, map }) 
                 fillOpacity: 1,
                 strokeColor: '#fff',
                 strokeWeight: 2,
-                strokeOpacity: 1
+                strokeOpacity: 1,
+                radius: 20
             }
         });
+        
+        //accuracy circle
+        /*const circle = new window.google.maps.Circle({
+            center: new window.google.maps.LatLng(
+                position.coords.latitude,
+                position.coords.longitude
+            ),
+            radius: position.coords.accuracy,
+            map,
+            fillColor: '#306eff',
+            fillOpacity: 0.2,
+            strokeColor: '#306eff',
+            strokeWeight: 1,
+            strokeOpacity: 0.5
+        });*/
     }
     
     if (currentPositionMarker) result.positionMarker = currentPositionMarker;
