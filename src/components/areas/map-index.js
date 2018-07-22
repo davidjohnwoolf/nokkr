@@ -1,6 +1,7 @@
 import React from 'react';
 
 import mapStyles from '../helpers/map-styles';
+import { getBounds, createMap, setAreas, getGroupBounds } from '../helpers/maps';
 
 import Modal from '../layout/modal';
 import IconLink from '../layout/icon-link';
@@ -13,143 +14,104 @@ class MapIndex extends React.Component {
 	constructor(props) {
         super(props);
         
-        //not in state, letting Google handle map control, just making available to component
-        //think of a different pattern for this
-        this.autocomplete = null;
-        this.map = null;
-        
-        //maybe move overlay to state
-        this.overlay = null;
-        this.areaPolygons = {};
-        
         this.state = {
-            mapType: 'roadmap'
+            mapType: 'roadmap',
+            overlay: null,
+            areaPolygons: null,
+            map: null,
+            autocomplete: null,
+            settingsModalShown: false,
+            isInitialized: false
         };
         
-        this.setMapType = this.setMapType.bind(this);
         this.setGroupBounds = this.setGroupBounds.bind(this);
-    }
-    
-    componentDidUpdate(prevProps, prevState) {
-        if (prevState.mapType !== this.state.mapType) this.map.setMapTypeId(this.state.mapType);
+        
+        //build get bounds function
+        window.google.maps.Polygon.prototype.getBounds = getBounds(window.google.maps);
     }
     
     componentDidMount() {
-        
-        //maps no longer supports getBounds so we construct our own
-        window.google.maps.Polygon.prototype.getBounds = function() {
-            let bounds = new window.google.maps.LatLngBounds();
-            let paths = this.getPaths();
-            let path;
-            for (var i = 0; i < paths.getLength(); i++) {
-                path = paths.getAt(i);
-                
-                for (var ii = 0; ii < path.getLength(); ii++) {
-                    bounds.extend(path.getAt(ii));
-                }
-            }
-            return bounds;
-        };
-        
-        this.map = new window.google.maps.Map(document.getElementById('map'), {
-            center: {lat: 40, lng: -100},
-            zoom: 4,
-            disableDefaultUI: true,
-            zoomControl: true,
-            styles: mapStyles
-        });
-        
-        this.autocomplete = new window.google.maps.places.Autocomplete(document.getElementById('map-search'));
-        
-        this.autocomplete.addListener('place_changed', () => {
-            let place = this.autocomplete.getPlace();
-            
-            //update the alert to be flash message
-            if (!place.geometry) {
-                // User entered the name of a Place that was not suggested and
-                // pressed the Enter key, or the Place Details request failed.
-                window.alert('No details available for input: "' + place.name + '"');
-                return;
-            }
-            
-            // If the place has a geometry, then present it on a map.
-            if (place.geometry.viewport) {
-                this.map.fitBounds(place.geometry.viewport);
-            } else {
-                this.map.setCenter(place.geometry.location);
-                this.map.setZoom(15);
-            }
-        });
-        
-        this.props.areas.forEach(area => {
-            
-            let areaPolygon = new window.google.maps.Polygon({
-                paths: area.coords,
-                strokeColor: 'red',
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: 'red',
-                fillOpacity: 0.35
-            });
-            
-            this.areaPolygons[area._id] = {
-                bounds: areaPolygon.getBounds(),
-                center: areaPolygon.getBounds().getCenter(),
-                polygon: areaPolygon
-            };
-            
-            areaPolygon.addListener('click', () => this.map.fitBounds(this.areaPolygons[area._id].bounds));
-            
-        });
-        
-        //show areas
-        for (let poly in this.areaPolygons) {
-            this.areaPolygons[poly].polygon.setMap(this.map);
-        }
+        //component must be mounted to reference the map element
+        this.setState({ map: createMap(window.google.maps) });
     }
     
-    setMapType(type) {
-        this.setState({ mapType: type });
+    componentDidUpdate(prevProps, prevState) {
+        if (!this.state.isInitialized) {
+            const autocomplete = new window.google.maps.places.Autocomplete(document.getElementById('map-search'));
+
+            autocomplete.addListener('place_changed', () => {
+                let place = autocomplete.getPlace();
+                
+                //update the alert to be flash message
+                if (!place.geometry) {
+                    // User entered the name of a Place that was not suggested and
+                    // pressed the Enter key, or the Place Details request failed.
+                    window.alert('No details available for input: "' + place.name + '"');
+                    return;
+                }
+                
+                // If the place has a geometry, then present it on a map.
+                if (place.geometry.viewport) {
+                    this.state.map.fitBounds(place.geometry.viewport);
+                } else {
+                    this.state.map.setCenter(place.geometry.location);
+                    this.state.map.setZoom(15);
+                }
+            });
+            
+            this.setState({
+                autocomplete,
+                areaPolygons: setAreas(this.props.areas, this.state.map),
+                isInitialized: true
+            });
+        }
+        
+        if (prevProps.areas !== this.props.areas) {
+            //clear map
+            for (let poly in this.state.areaPolygons) {
+                this.state.areaPolygons[poly].polygon.setMap(null);
+            }
+            
+            this.setState({
+                areaPolygons: setAreas(this.props.areas, this.state.map)
+            });
+        }
+        
+        if (prevState.mapType !== this.state.mapType) this.state.map.setMapTypeId(this.state.mapType);
     }
     
     setGroupBounds(groupId) {
-        //make the bounds the whole group, not just the one area
-        //only show groups with areas
-        //set the group in are form on selection
-        
-        let bounds = [];
-        let id;
+        let groupPolygons = [];
         this.props.areas.forEach(area => {
             
             if (area.areaGroup === groupId) {
-                console.log(this.areaPolygons[area._id].bounds);
-                return id = area._id;
+                groupPolygons.push(this.state.areaPolygons[area._id]);
             }
             
         });
         
-        if (!id) return alert('No areas in this group');
+        console.log(groupPolygons)
+        console.log('area')
+        console.log(this.state.areaPolygons)
         
-        this.map.fitBounds(this.areaPolygons[id].bounds);
+        this.state.map.fitBounds(getGroupBounds(groupPolygons));
     }
 
     render() {
         const {
             props: { areaGroups },
-            state: { mmapType },
-            setMapType, setGroupBounds
+            state: { mapType },
+            setGroupBounds
         } = this;
         
         return (
             <div className={ `map-container ${ this.props.mapShown ? '' : 'invisible' }` }>
-                <div className="custom-map-controls">
-                    { /*<button onClick={ setLocation } className={ locationActive ? 'button success' : 'button cancel' }>
-                        <i className="fas fa-location-arrow"></i>
-                    </button> */}
-                    <div><input id="map-search" type="text" placeholder="enter location to go to" /></div>
-                    <button onClick={ () => console.log('settings') } className="button primary"><i className="fas fas fa-cog"></i></button>
+                <div style={{ display: 'flex' }}>
+                    <input id="map-search" type="text" placeholder="enter location to go to" className="map-input" style={{ width: '100%'}} />
                 </div>
                 <div id="map"></div>
+                
+                <h4>Go To Group</h4>
                 <select onChange={ (e) => setGroupBounds(e.target.value) }>
                     <option value="">Go to Group</option>
                     {
@@ -160,9 +122,6 @@ class MapIndex extends React.Component {
                         })
                     }
                 </select>
-                { /*<Modal close={ toggleModal } shown={ modalShown } title="Area Settings">
-                    <MapOptions mapType={ mapType } setMapType={ setMapType } />
-                </Modal> */}
             </div>
         );
     }

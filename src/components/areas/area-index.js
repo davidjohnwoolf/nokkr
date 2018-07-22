@@ -18,9 +18,10 @@ class AreaIndex extends React.Component {
         super(props);
         
         this.state = {
+            mapType: 'roadmap',
             isLoading: true,
             areaList: null,
-            modalShown: false,
+            settingsModalShown: false,
             mapShown: false,
             areaGroups: null,
             areaCount: 0,
@@ -34,8 +35,9 @@ class AreaIndex extends React.Component {
         this.sortList = this.sortList.bind(this);
         this.renderAreas = this.renderAreas.bind(this);
         this.toggleActive = this.toggleActive.bind(this);
-        this.toggleModal = this.toggleModal.bind(this);
+        this.toggleProp = this.toggleProp.bind(this);
         this.toggleMapActive = this.toggleMapActive.bind(this);
+        this.setMapType = this.setMapType.bind(this);
     }
     
     componentDidMount() {
@@ -106,16 +108,20 @@ class AreaIndex extends React.Component {
             : this.setState({ sortSettings: { column: col, ascending: true } });
     }
     
-    toggleModal() {
-        this.setState({ modalShown: !this.state.modalShown });
+    toggleProp(prop) {
+        return () => this.setState({ [prop]: !this.state[prop] });
+    }
+    
+    setMapType(type) {
+        return () => this.setState({ mapType: type });
     }
     
     render() {
         
         const {
             props: { history },
-            state: { sortSettings, isLoading, activeShown, areaCount, modalShown, mapShown, areaGroups, areaList },
-            sortList, renderAreas, toggleActive, toggleModal, toggleMapActive
+            state: { sortSettings, isLoading, activeShown, areaCount, settingsModalShown, mapShown, areaGroups, areaList, mapType },
+            sortList, renderAreas, toggleActive, toggleProp, toggleMapActive, setMapType
         } = this;
         
         if (isLoading) return <Loading />;
@@ -125,7 +131,7 @@ class AreaIndex extends React.Component {
                 
                 <ContentHeader title="Area Management" history={ history } chilrenAccess={ /*!isReadOnly*/ true }>
                     { /*<IconLink url="/areas/new" type="success" icon="plus" /> */ }
-                    <IconLink clickEvent={ toggleModal } icon="cog" />
+                    <IconLink clickEvent={ toggleProp('settingsModalShown') } icon="cog" />
                 </ContentHeader>
                 <table className={ `table ${ !mapShown ? '' : 'invisible' }` }>
                     <thead>
@@ -173,27 +179,38 @@ class AreaIndex extends React.Component {
                         { renderAreas() }
                     </tbody>
                 </table>
+                
+                <MapIndex areas={ areaList } mapShown={ mapShown } areaGroups={ areaGroups } activeShown={ activeShown } />
                 <p style={{ marginTop: '1rem' }}>Areas Shown: { areaCount }</p>
-                <Modal close={ toggleModal } shown={ modalShown } title="Create Area Group">
-                    <div style={{ margin: '2rem 0' }}>
-                        <Link className="button success" to="/areas/new">New Area <i className="fas fa-plus"></i></Link>
-                    </div>
-                    <div className="button-group">
-                        <div className="toggle">
-                            <label>Toggle Inactive</label>
-                            <span onClick={ toggleActive }>
-                                <i className={ !activeShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
-                            </span>
+                
+                <Modal close={ toggleProp('settingsModalShown') } shown={ settingsModalShown } title="Area Settings">
+
+                    <section className="area-settings">
+                        <div className={ `button-toggle ${ mapShown ? '' : 'invisible' }` }>
+                            <button onClick={ setMapType('roadmap') } className={ mapType === 'roadmap' ? 'active' : '' }>Roadmap</button>
+                            <button onClick={ setMapType('satellite') } className={ mapType === 'satellite' ? 'active' : '' }>Satellite</button>
+                            <button onClick={ setMapType('hybrid') } className={ mapType === 'hybrid' ? 'active' : '' }>Hybrid</button>
                         </div>
-                        <div className="toggle">
-                            <label>Toggle Map View</label>
-                            <span onClick={ toggleMapActive }>
-                                <i className={ mapShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
-                            </span>
+                        
+                        <div style={{ margin: '2rem 0' }}>
+                            <Link className="button success" to="/areas/new">New Area <i className="fas fa-plus"></i></Link>
                         </div>
-                    </div>
+                        <div className="button-group">
+                            <div className="toggle">
+                                <label>Show Inactive Areas</label>
+                                <span onClick={ toggleActive }>
+                                    <i className={ !activeShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
+                                </span>
+                            </div>
+                            <div className="toggle">
+                                <label>Toggle Map View</label>
+                                <span onClick={ toggleMapActive }>
+                                    <i className={ mapShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
+                                </span>
+                            </div>
+                        </div>
+                    </section>
                 </Modal>
-                <MapIndex areas={ areaList } mapShown={ mapShown } areaGroups={ areaGroups } />
             </main>
         );
     }

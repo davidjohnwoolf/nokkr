@@ -5,16 +5,50 @@ export const getBounds = googleMaps => {
         let bounds = new googleMaps.LatLngBounds();
         let paths = this.getPaths();
         let path;
-        for (var i = 0; i < paths.getLength(); i++) {
+        for (let i = 0; i < paths.getLength(); i++) {
             path = paths.getAt(i);
             
-            for (var ii = 0; ii < path.getLength(); ii++) {
+            for (let ii = 0; ii < path.getLength(); ii++) {
                 bounds.extend(path.getAt(ii));
             }
         }
         return bounds;
     };
 };
+
+export const getGroupBounds = groupPolygons => {
+    let bounds = new window.google.maps.LatLngBounds();
+    
+    for (let i = 0; i < groupPolygons.length; i++) {
+        let paths = groupPolygons[i].polygon.getPaths();
+        let path;
+        for (let j = 0; j < paths.getLength(); j++) {
+            path = paths.getAt(j);
+            
+            for (let j = 0; j < path.getLength(); j++) {
+                bounds.extend(path.getAt(j));
+            }
+        }
+    }
+    
+    return bounds;
+};
+
+/*export const getGroupBounds = (areaPolygons) => {
+    var bounds = new window.google.maps.LatLngBounds();
+    for (let poly in areaPolygons){
+            let paths = areaPolygons[poly].getPaths();
+             paths.forEach(function(path){
+               var ar = path.getArray();
+               for(var i=0, l = ar.length; i <l; i++){
+                  bounds.extend(ar[i]);
+                }
+            })
+     }
+     
+     return bounds;
+     //map.fitBounds(bounds)
+ }*/
 
 export const createMap = googleMaps => {
     return new googleMaps.Map(document.getElementById('map'), {
@@ -129,3 +163,35 @@ export const locationError = err => {
     console.log(err);
     alert('Error finding location');
 };
+
+export const setAreas = (areas, map) => {
+    const areaPolygons = {};
+    
+    areas.forEach(area => {
+        
+        let areaPolygon = new window.google.maps.Polygon({
+            paths: area.coords,
+            strokeColor: 'red',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: 'red',
+            fillOpacity: 0.35
+        });
+        
+        areaPolygons[area._id] = {
+            bounds: areaPolygon.getBounds(),
+            center: areaPolygon.getBounds().getCenter(),
+            polygon: areaPolygon
+        };
+        
+        areaPolygon.addListener('click', () => map.fitBounds(areaPolygons[area._id].bounds));
+        
+    });
+    
+    //show areas
+    for (let poly in areaPolygons) {
+        areaPolygons[poly].polygon.setMap(map);
+    }
+    
+    return areaPolygons;
+}
