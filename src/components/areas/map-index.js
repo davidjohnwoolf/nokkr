@@ -90,10 +90,6 @@ class MapIndex extends React.Component {
             
         });
         
-        console.log(groupPolygons)
-        console.log('area')
-        console.log(this.state.areaPolygons)
-        
         this.state.map.fitBounds(getGroupBounds(groupPolygons));
     }
 
