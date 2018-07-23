@@ -18,6 +18,7 @@ class MapIndex extends React.Component {
             mapType: 'roadmap',
             overlay: null,
             areaPolygons: null,
+            //groupInfoWindows: null,
             map: null,
             autocomplete: null,
             settingsModalShown: false,
@@ -38,7 +39,9 @@ class MapIndex extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (!this.state.isInitialized) {
             const autocomplete = new window.google.maps.places.Autocomplete(document.getElementById('map-search'));
-
+            //const groupInfoWindows = {};
+            //const groupPolygons = {};
+                
             autocomplete.addListener('place_changed', () => {
                 let place = autocomplete.getPlace();
                 
@@ -59,9 +62,39 @@ class MapIndex extends React.Component {
                 }
             });
             
+            /*this.props.areaGroups.forEach(group => {
+                let groupAreaPolygons = [];
+                
+                this.props.areas.forEach(area => {
+                    
+                    if (area.areaGroup._id === group._id) {
+                        groupAreaPolygons.push(this.state.areaPolygons[area._id]);
+                    }
+                    
+                });
+                
+                groupPolygons[group._id] = groupAreaPolygons;
+            });
+            
+            for (let polyArray in groupPolygons) {
+                let group = this.props.areaGroups.find(group => group._id == polyArray);
+                if (group) {
+                    let infowindow = new window.google.maps.InfoWindow({
+                        content: group.title,
+                        position: getGroupBounds(groupPolygons[polyArray]).getCenter()
+                    });
+                    
+                    infowindow.open(this.state.map);
+                    infowindow.setPosition(getGroupBounds(groupPolygons[polyArray]).getCenter());
+                    
+                    groupInfoWindows[polyArray] = infowindow;
+                }
+            }*/
+            
             this.setState({
                 autocomplete,
                 areaPolygons: setAreas(this.props.areas, this.state.map),
+                //groupInfoWindows,
                 isInitialized: true
             });
         }
@@ -96,7 +129,6 @@ class MapIndex extends React.Component {
     render() {
         const {
             props: { areaGroups },
-            state: { mapType },
             setGroupBounds
         } = this;
         

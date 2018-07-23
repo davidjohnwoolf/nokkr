@@ -29,7 +29,7 @@ class AreaNew extends React.Component {
         
         this.validationRules = {
             title: [required, unique],
-            areaGroup: [required],
+            areaGroupId: [required],
             coords: [required],
             userId: [required]
         };
@@ -37,7 +37,7 @@ class AreaNew extends React.Component {
         this.state = {
             fields: {
                 title: { value: '', error: '' },
-                areaGroup: { value: '', error: '' },
+                areaGroupId: { value: '', error: '' },
                 coords: { value: '', error: '' },
                 userId: { value: '', error: '' }
             },
@@ -158,7 +158,7 @@ class AreaNew extends React.Component {
                 areaList,
                 userOptions,
                 areaGroupOptions,
-                fields: { title, areaGroup, userId, coords }
+                fields: { title, areaGroupId, userId, coords }
             },
             handleSubmit,
             handleUserInput,
@@ -189,9 +189,9 @@ class AreaNew extends React.Component {
                         <div className="field-with-icon">
                             <FieldSelect
                                 name="areaGroup"
-                                value={ areaGroup.id }
+                                value={ areaGroupId.id }
                                 handleUserInput={ handleUserInput }
-                                error={ areaGroup.error }
+                                error={ areaGroupId.error }
                                 options={ areaGroupOptions }
                             />
                             <IconLink clickEvent={ toggleModal } type="success" icon="plus" />

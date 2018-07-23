@@ -51,8 +51,9 @@ class AreaIndex extends React.Component {
             const areaGroups = [];
             
             areas.forEach(area => {
-                if (!areaGroups.find(areaGroup => areaGroup._id == area.groupId)) {
-                    areaGroups.push({ _id: area.groupId, title: area.groupTitle });
+                console.log(area.areaGroup)
+                if (!areaGroups.find(areaGroup => areaGroup._id == area.areaGroup._id)) {
+                    areaGroups.push(area.areaGroup);
                 }
             });
             
@@ -84,7 +85,7 @@ class AreaIndex extends React.Component {
                             <Link to={ `/areas/${ area._id }` }>{ area.title }</Link>
                         </td>
                         <td>{ area.assignedUserName }</td>
-                        <td><Link to={ `/area-groups/${ area.groupId }` }>{ area.groupTitle }</Link></td>
+                        <td><Link to={ `/area-groups/${ area.areaGroup._id }` }>{ area.areaGroup.title }</Link></td>
                         <td>{ area.teamTitle }</td>
                     </tr>
                 );

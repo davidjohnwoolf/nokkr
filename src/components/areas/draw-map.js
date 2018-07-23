@@ -178,7 +178,7 @@ class DrawMap extends React.Component {
         let id;
         this.props.areas.forEach(area => {
             
-            if (area.areaGroup === groupId) {
+            if (area.areaGroupId === groupId) {
                 console.log(this.areaPolygons[area._id].bounds);
                 return id = area._id;
             }
