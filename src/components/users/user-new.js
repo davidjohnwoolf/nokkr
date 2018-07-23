@@ -30,7 +30,7 @@ class UserNew extends React.Component {
             username: [required, unique],
             email: [required, unique],
             role: [required],
-            team: [requiredExceptAdmin],
+            teamId: [requiredExceptAdmin],
             isReadOnly: [],
             password: [required, password],
             passwordConfirmation: [required, passwordMatch]
@@ -43,7 +43,7 @@ class UserNew extends React.Component {
                 username: { value: '', error: '' },
                 email: { value: '', error: '' },
                 role: { value: '', error: '' },
-                team: { value: '', error: '' },
+                teamId: { value: '', error: '' },
                 isReadOnly: { checked: false, error: '' },
                 password: { value: '', error: '' },
                 passwordConfirmation: { value: '', error: '' }
@@ -118,7 +118,7 @@ class UserNew extends React.Component {
                     password,
                     passwordConfirmation,
                     role,
-                    team,
+                    teamId,
                     isReadOnly
                 }
             },
@@ -187,10 +187,10 @@ class UserNew extends React.Component {
                     />
                     <FieldSelect
                         message="Optional for admin users"
-                        name="team"
-                        value={ team.value }
+                        name="teamId"
+                        value={ teamId.value }
                         handleUserInput={ handleUserInput }
-                        error={ team.error }
+                        error={ teamId.error }
                         options={ teamOptions }
                     />
                     <FieldInput

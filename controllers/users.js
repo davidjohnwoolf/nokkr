@@ -25,7 +25,7 @@ router.get('/', requireAdmin, (req, res) => {
             //to store users after removing the password hash
             const safeUsers = users.map(user => {
                 
-                let teamTitle = user.team ? account.teams.find(team => team.id == user.team).title : '---';
+                let teamTitle = user.teamId ? account.teams.find(team => team.id == user.teamId).title : '---';
                 
                 let safeUser = Object.assign({ teamTitle }, user._doc);
                 
@@ -81,14 +81,14 @@ router.get('/:id', requireUser, (req, res) => {
             if (!user) return res.json({ status: ERROR, data: err, code: 404, message: 'User not found' });
             
             //check manager authorization after we know the team of the user
-            if ((loggedInUser.role === MANAGER) && (user.team != loggedInUser.team)) {
+            if ((loggedInUser.role === MANAGER) && (user.teamId != loggedInUser.team)) {
                 return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
             }
             
             Account.findOne({}, (err, account) => {
                 if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
                 
-                const teamTitle = user.team ? account.teams.find(team => team.id == user.team).title : '---';
+                const teamTitle = user.teamId ? account.teams.find(team => team.id == user.teamId).title : '---';
                 
                 const safeUser = Object.assign({ teamTitle }, user._doc);
                 

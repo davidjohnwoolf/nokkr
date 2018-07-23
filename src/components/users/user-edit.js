@@ -30,7 +30,7 @@ class UserEdit extends React.Component {
             username: [required, unique],
             email: [required, unique],
             role: [required],
-            team: [requiredExceptAdmin],
+            teamId: [requiredExceptAdmin],
             isReadOnly: [],
             isActive: [],
             password: [password],
@@ -44,7 +44,7 @@ class UserEdit extends React.Component {
                 username: { value: '', error: '' },
                 email: { value: '', error: '' },
                 role: { value: '', error: '' },
-                team: { value: '', error: '' },
+                teamId: { value: '', error: '' },
                 isReadOnly: { checked: false, error: '' },
                 isActive: { checked: true, error: '' },
                 password: { value: '', error: '' },
@@ -154,7 +154,7 @@ class UserEdit extends React.Component {
                     password,
                     passwordConfirmation,
                     role,
-                    team,
+                    teamId,
                     isReadOnly,
                     isActive
                 }
@@ -228,10 +228,10 @@ class UserEdit extends React.Component {
                     />
                     <FieldSelect
                         message="Optional for admin users"
-                        name="team"
-                        value={ team.value }
+                        name="teamId"
+                        value={ teamId.value }
                         handleUserInput={ handleUserInput }
-                        error={ team.error }
+                        error={ teamId.error }
                         options={ teamOptions }
                     />
                     <FieldInput

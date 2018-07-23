@@ -20,7 +20,7 @@ class UserIndex extends React.Component {
         this.state = {
             isLoading: true,
             activeShown: true,
-            userList: [],
+            itemList: [],
             userCount: 0,
             sortSettings: {
                 column: undefined,
@@ -43,7 +43,7 @@ class UserIndex extends React.Component {
             state: {
                 isLoading,
                 activeShown,
-                userList, 
+                itemList, 
                 sortSettings
             }
         } = this;
@@ -54,7 +54,7 @@ class UserIndex extends React.Component {
             //initialize with sort by name
             const initialList = users.filter(user => (user.role !== SU) && user.isActive);
             
-            this.setState({ isLoading: false, userCount: initialList.length, userList: initialList });
+            this.setState({ isLoading: false, userCount: initialList.length, itemList: initialList });
         }
         
         //update user list on active user toggle
@@ -64,12 +64,12 @@ class UserIndex extends React.Component {
                 if (user.role !== SU) return activeShown ? user.isActive : !user.isActive;
             });
             
-            this.setState({ userList: sortItems(filteredList, sortSettings), userCount: filteredList.length });
+            this.setState({ itemList: sortItems(filteredList, sortSettings), userCount: filteredList.length });
         }
         
         //update user list on sort
         if (!isLoading && prevState.sortSettings !== sortSettings) {
-            this.setState({ userList: sortItems(userList, sortSettings) });
+            this.setState({ itemList: sortItems(itemList, sortSettings) });
         }
     }
     
@@ -86,10 +86,10 @@ class UserIndex extends React.Component {
     }
 	
     renderUsers() {
-        const { userList } = this.state;
+        const { itemList } = this.state;
         
         return (
-            userList.map(user => {
+            itemList.map(user => {
 
                 return (
                     <tr key={ user._id }>

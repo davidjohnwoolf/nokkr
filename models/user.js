@@ -20,7 +20,7 @@ const UserSchema = new Schema({
         required: true,
         match: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,24}/
     },
-    team: { type: Schema.Types.ObjectId },
+    teamId: { type: Schema.Types.ObjectId },
     //userImage: { data: Buffer, contentType: String },
     role: { type: String, required: true, enum: ['user', 'manager', 'admin', 'su'], default: 'user'},
     isReadOnly: { type: Boolean, default: false },
