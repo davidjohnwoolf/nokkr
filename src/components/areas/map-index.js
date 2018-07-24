@@ -39,7 +39,6 @@ class MapIndex extends React.Component {
     }
     
     componentDidUpdate(prevProps, prevState) {
-        console.log(this.state.areaNewFormShown)
         if (!this.state.isInitialized) {
             const autocomplete = new window.google.maps.places.Autocomplete(document.getElementById('map-search'));
             //const groupInfoWindows = {};
@@ -147,14 +146,17 @@ class MapIndex extends React.Component {
     }
     
     setGroupBounds(groupId) {
+        console.log('group id', groupId)
         let groupPolygons = [];
         this.props.areas.forEach(area => {
             
-            if (area.areaGroup === groupId) {
+            if (area.areaGroupId === groupId) {
                 groupPolygons.push(this.state.areaPolygons[area._id]);
             }
             
         });
+        
+        console.log(groupPolygons)
         
         this.state.map.fitBounds(getGroupBounds(groupPolygons));
     }
