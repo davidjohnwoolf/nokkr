@@ -186,7 +186,7 @@ class AreaIndex extends React.Component {
                     </tbody>
                 </table>
                 
-                <MapIndex areas={ areaList } mapShown={ mapShown } areaGroups={ areaGroups } activeShown={ activeShown } />
+                <MapIndex areas={ areaList } mapShown={ mapShown } mapType={ mapType } areaGroups={ areaGroups } activeShown={ activeShown } />
                 <p style={{ marginTop: '1rem' }}>Areas Shown: { areaCount }</p>
                 
                 <Modal close={ toggleProp('settingsModalShown') } shown={ settingsModalShown } title="Area Settings">

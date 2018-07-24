@@ -13,7 +13,6 @@ class MapIndex extends React.Component {
         super(props);
         
         this.state = {
-            mapType: 'roadmap',
             overlay: null,
             coords: null,
             areaPolygons: null,
@@ -144,7 +143,7 @@ class MapIndex extends React.Component {
             this.state.drawingManager.setDrawingMode(drawingMode);
         }
         
-        if (prevState.mapType !== this.state.mapType) this.state.map.setMapTypeId(this.state.mapType);
+        if (prevProps.mapType !== this.props.mapType) this.state.map.setMapTypeId(this.props.mapType);
     }
     
     setGroupBounds(groupId) {
