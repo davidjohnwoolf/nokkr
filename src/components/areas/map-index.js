@@ -146,7 +146,6 @@ class MapIndex extends React.Component {
     }
     
     setGroupBounds(groupId) {
-        console.log('group id', groupId)
         let groupPolygons = [];
         this.props.areas.forEach(area => {
             
@@ -155,8 +154,6 @@ class MapIndex extends React.Component {
             }
             
         });
-        
-        console.log(groupPolygons)
         
         this.state.map.fitBounds(getGroupBounds(groupPolygons));
     }
