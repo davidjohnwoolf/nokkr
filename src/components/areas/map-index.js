@@ -1,11 +1,9 @@
 import React from 'react';
 
-import mapStyles from '../helpers/map-styles';
 import { getBounds, createMap, setAreas, getGroupBounds } from '../helpers/maps';
 
+import AreaNew from './area-new';
 import Modal from '../layout/modal';
-import IconLink from '../layout/icon-link';
-import MapOptions from './map-options';
 
 //can you write your own react style listeners?
 
@@ -17,7 +15,11 @@ class MapIndex extends React.Component {
         this.state = {
             mapType: 'roadmap',
             overlay: null,
+            coords: null,
             areaPolygons: null,
+            areaNewFormShown: false,
+            drawingManager: null,
+            drawingModeActive: false,
             //groupInfoWindows: null,
             map: null,
             autocomplete: null,
@@ -26,6 +28,7 @@ class MapIndex extends React.Component {
         };
         
         this.setGroupBounds = this.setGroupBounds.bind(this);
+        this.toggleProp = this.toggleProp.bind(this);
         
         //build get bounds function
         window.google.maps.Polygon.prototype.getBounds = getBounds(window.google.maps);
@@ -37,6 +40,7 @@ class MapIndex extends React.Component {
     }
     
     componentDidUpdate(prevProps, prevState) {
+        console.log(this.state.areaNewFormShown)
         if (!this.state.isInitialized) {
             const autocomplete = new window.google.maps.places.Autocomplete(document.getElementById('map-search'));
             //const groupInfoWindows = {};
@@ -60,6 +64,30 @@ class MapIndex extends React.Component {
                     this.state.map.setCenter(place.geometry.location);
                     this.state.map.setZoom(15);
                 }
+            });
+            
+            const drawingManager = new window.google.maps.drawing.DrawingManager({
+                drawingMode: window.google.maps.drawing.OverlayType.POLYGON,
+                drawingControl: false
+            });
+            
+            drawingManager.setMap(this.state.map);
+            drawingManager.setDrawingMode(null);
+            
+            drawingManager.addListener('overlaycomplete', e => {
+                
+                if (this.overlay) {
+                    this.overlay.setMap(null);
+                }
+                
+                //pass coords do area new
+                this.setState({ drawingModeActive: false, areaNewFormShown: true, coords: e.overlay.getPath().getArray() })
+                
+                
+                //cords
+                const coords = e.overlay.getPath().getArray();
+                
+                console.log(coords);
             });
             
             /*this.props.areaGroups.forEach(group => {
@@ -95,6 +123,7 @@ class MapIndex extends React.Component {
                 autocomplete,
                 areaPolygons: setAreas(this.props.areas, this.state.map),
                 //groupInfoWindows,
+                drawingManager,
                 isInitialized: true
             });
         }
@@ -108,6 +137,11 @@ class MapIndex extends React.Component {
             this.setState({
                 areaPolygons: setAreas(this.props.areas, this.state.map)
             });
+        }
+        
+        if (prevState.drawingModeActive !== this.state.drawingModeActive) {
+            const drawingMode = this.state.drawingModeActive ? window.google.maps.drawing.OverlayType.POLYGON : null;
+            this.state.drawingManager.setDrawingMode(drawingMode);
         }
         
         if (prevState.mapType !== this.state.mapType) this.state.map.setMapTypeId(this.state.mapType);
@@ -125,31 +159,44 @@ class MapIndex extends React.Component {
         
         this.state.map.fitBounds(getGroupBounds(groupPolygons));
     }
+    
+    toggleProp(prop) {
+        return () => this.setState({ [prop]: !this.state[prop] });
+    }
 
     render() {
         const {
             props: { areaGroups },
-            setGroupBounds
+            state: { drawingModeActive, areaNewFormShown, coords },
+            setGroupBounds, toggleProp
         } = this;
         
         return (
-            <div className={ `map-container ${ this.props.mapShown ? '' : 'invisible' }` }>
-                <div style={{ display: 'flex' }}>
-                    <input id="map-search" type="text" placeholder="enter location to go to" className="map-input" style={{ width: '100%'}} />
+            <div>
+                <div className={ `map-container ${ this.props.mapShown ? '' : 'invisible' }` }>
+                    <div style={{ display: 'flex' }}>
+                        <button onClick={ toggleProp('drawingModeActive') } className={ drawingModeActive ? 'button success' : 'button cancel' }>
+                            <i className="fas fa-pencil-alt"></i>
+                        </button>
+                        <input id="map-search" type="text" placeholder="enter location to go to" className="map-input" style={{ width: '100%'}} />
+                    </div>
+                    <div id="map"></div>
+                    
+                    <h4>Go To Group</h4>
+                    <select onChange={ (e) => setGroupBounds(e.target.value) }>
+                        <option value="">Go to Group</option>
+                        {
+                            areaGroups.map(group => {
+                                return (
+                                    <option key={ group._id } value={ group._id }>{ group.title }</option>
+                                );
+                            })
+                        }
+                    </select>
                 </div>
-                <div id="map"></div>
-                
-                <h4>Go To Group</h4>
-                <select onChange={ (e) => setGroupBounds(e.target.value) }>
-                    <option value="">Go to Group</option>
-                    {
-                        areaGroups.map(group => {
-                            return (
-                                <option key={ group._id } value={ group._id }>{ group.title }</option>
-                            );
-                        })
-                    }
-                </select>
+                <Modal title="Create Area" close={ toggleProp('areaNewFormShown') } shown={ areaNewFormShown }>
+                    <AreaNew coords={ coords } />
+                </Modal>
             </div>
         );
     }

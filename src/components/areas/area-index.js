@@ -10,12 +10,16 @@ import ContentHeader from '../layout/content-header';
 import IconLink from '../layout/icon-link';
 import MapIndex from './map-index';
 
-import { fetchAreas } from '../../actions/areas.action';
+import { fetchAreas, clearAreas } from '../../actions/areas.action';
+import { clearAreaGroups } from '../../actions/area-groups.action';
 
 class AreaIndex extends React.Component {
     
     constructor(props) {
         super(props);
+        
+        props.clearAreas();
+        props.clearAreaGroups();
         
         this.state = {
             mapType: 'roadmap',
@@ -61,6 +65,8 @@ class AreaIndex extends React.Component {
         
         //update area list on active toggle
         if (!isLoading && prevState.activeShown !== activeShown) {
+            
+            console.log(areas)
             
             const filteredList = areas.filter(area => {
                 return activeShown ? area.isActive : !area.isActive;
@@ -192,9 +198,6 @@ class AreaIndex extends React.Component {
                             <button onClick={ setMapType('hybrid') } className={ mapType === 'hybrid' ? 'active' : '' }>Hybrid</button>
                         </div>
                         
-                        <div style={{ margin: '2rem 0' }}>
-                            <Link className="button success" to="/areas/new">New Area <i className="fas fa-plus"></i></Link>
-                        </div>
                         <div className="button-group">
                             <div className="toggle">
                                 <label>Show Inactive Areas</label>
@@ -222,4 +225,4 @@ const mapStateToProps = state => ({
 });
 
 
-export default connect(mapStateToProps, { fetchAreas })(AreaIndex);
+export default connect(mapStateToProps, { fetchAreas, clearAreas, clearAreaGroups })(AreaIndex);
