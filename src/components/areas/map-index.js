@@ -19,7 +19,6 @@ class MapIndex extends React.Component {
             areaNewFormShown: false,
             drawingManager: null,
             drawingModeActive: false,
-            //groupInfoWindows: null,
             map: null,
             autocomplete: null,
             settingsModalShown: false,
@@ -72,55 +71,22 @@ class MapIndex extends React.Component {
             drawingManager.setMap(this.state.map);
             drawingManager.setDrawingMode(null);
             
+            //=====
+            //also make click give option to show form or remove overlay
+            //=====
             drawingManager.addListener('overlaycomplete', e => {
                 
-                if (this.overlay) {
-                    this.overlay.setMap(null);
+                if (this.state.overlay) {
+                    this.state.overlay.setMap(null);
                 }
-                
+
                 //pass coords do area new
-                this.setState({ drawingModeActive: false, areaNewFormShown: true, coords: e.overlay.getPath().getArray() })
-                
-                
-                //cords
-                const coords = e.overlay.getPath().getArray();
-                
-                console.log(coords);
+                this.setState({ drawingModeActive: false, areaNewFormShown: true, coords: e.overlay.getPath().getArray(), overlay: e.overlay })
             });
-            
-            /*this.props.areaGroups.forEach(group => {
-                let groupAreaPolygons = [];
-                
-                this.props.areas.forEach(area => {
-                    
-                    if (area.areaGroup._id === group._id) {
-                        groupAreaPolygons.push(this.state.areaPolygons[area._id]);
-                    }
-                    
-                });
-                
-                groupPolygons[group._id] = groupAreaPolygons;
-            });
-            
-            for (let polyArray in groupPolygons) {
-                let group = this.props.areaGroups.find(group => group._id == polyArray);
-                if (group) {
-                    let infowindow = new window.google.maps.InfoWindow({
-                        content: group.title,
-                        position: getGroupBounds(groupPolygons[polyArray]).getCenter()
-                    });
-                    
-                    infowindow.open(this.state.map);
-                    infowindow.setPosition(getGroupBounds(groupPolygons[polyArray]).getCenter());
-                    
-                    groupInfoWindows[polyArray] = infowindow;
-                }
-            }*/
             
             this.setState({
                 autocomplete,
                 areaPolygons: setAreas(this.props.areas, this.state.map),
-                //groupInfoWindows,
                 drawingManager,
                 isInitialized: true
             });
@@ -136,6 +102,13 @@ class MapIndex extends React.Component {
                 areaPolygons: setAreas(this.props.areas, this.state.map)
             });
         }
+        
+        /*if (prevState.areaNewFormShown !== this.state.areaNewFormShown) {
+            //clear overlay if are new form is closed
+            if (!this.state.areaNewFormShown) {
+                this.state.overlay.setMap(null);
+            }
+        }*/
         
         if (prevState.drawingModeActive !== this.state.drawingModeActive) {
             const drawingMode = this.state.drawingModeActive ? window.google.maps.drawing.OverlayType.POLYGON : null;
