@@ -178,13 +178,26 @@ export const setAreas = (areas, map) => {
             fillOpacity: 0.35
         });
         
+        let infowindow = new window.google.maps.InfoWindow({
+          content: `<h4>${ area.title }</h4><p>Group: ${ area.areaGroup.title }</p><p>Assigned User: ${ area.assignedUserName }</p><p>Times Knocked: ${ area.timesKnocked }</p>`,
+          position: areaPolygon.getBounds().getCenter()
+        });
+        
+        areaPolygon.addListener('click', e => {
+            //map.fitBounds(areaPolygons[area._id].bounds))
+            infowindow.open(map);
+            
+        });
+        
         areaPolygons[area._id] = {
             bounds: areaPolygon.getBounds(),
             center: areaPolygon.getBounds().getCenter(),
             polygon: areaPolygon
         };
         
-        areaPolygon.addListener('click', () => map.fitBounds(areaPolygons[area._id].bounds));
+        return areaPolygons;
+        
+        //areaPolygon.addListener('click', () => map.fitBounds(areaPolygons[area._id].bounds));
         
     });
     

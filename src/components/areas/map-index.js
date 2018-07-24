@@ -3,7 +3,6 @@ import React from 'react';
 import { getBounds, createMap, setAreas, getGroupBounds } from '../helpers/maps';
 
 import AreaNew from './area-new';
-import Modal from '../layout/modal';
 
 //can you write your own react style listeners?
 
@@ -20,13 +19,15 @@ class MapIndex extends React.Component {
             drawingManager: null,
             drawingModeActive: false,
             map: null,
+            groupMarkers: null,
             autocomplete: null,
             settingsModalShown: false,
             isInitialized: false
         };
         
-        this.setGroupBounds = this.setGroupBounds.bind(this);
+        this.goToGroup = this.goToGroup.bind(this);
         this.toggleProp = this.toggleProp.bind(this);
+        this.cancelCreateArea = this.cancelCreateArea.bind(this);
         
         //build get bounds function
         window.google.maps.Polygon.prototype.getBounds = getBounds(window.google.maps);
@@ -38,10 +39,12 @@ class MapIndex extends React.Component {
     }
     
     componentDidUpdate(prevProps, prevState) {
+        console.log(this.state.areaNewFormShown)
         if (!this.state.isInitialized) {
             const autocomplete = new window.google.maps.places.Autocomplete(document.getElementById('map-search'));
-            //const groupInfoWindows = {};
-            //const groupPolygons = {};
+            //const groupPositions = {};
+            //const groupMarkers = {};
+            const areaPolygons = setAreas(this.props.areas, this.state.map);
                 
             autocomplete.addListener('place_changed', () => {
                 let place = autocomplete.getPlace();
@@ -65,7 +68,10 @@ class MapIndex extends React.Component {
             
             const drawingManager = new window.google.maps.drawing.DrawingManager({
                 drawingMode: window.google.maps.drawing.OverlayType.POLYGON,
-                drawingControl: false
+                drawingControl: false,
+                polygonOptions: {
+                    editable: true
+                }
             });
             
             drawingManager.setMap(this.state.map);
@@ -81,13 +87,39 @@ class MapIndex extends React.Component {
                 }
 
                 //pass coords do area new
-                this.setState({ drawingModeActive: false, areaNewFormShown: true, coords: e.overlay.getPath().getArray(), overlay: e.overlay })
+                this.setState({ drawingModeActive: false, coords: e.overlay.getPath().getArray(), overlay: e.overlay });
             });
+            
+            /*this.props.areaGroups.forEach(group => {
+                let groupPolygons = [];
+                this.props.areas.forEach(area => {
+                    
+                    if (area.areaGroupId == group._id) {
+                        groupPolygons.push(areaPolygons[area._id]);
+                    }
+                });
+                groupPositions[group._id] = getGroupBounds(groupPolygons);
+            });
+            
+            for (let key in groupPositions) {
+                let marker = new window.google.maps.Marker({
+                    position: groupPositions[key].getCenter(),
+                    map: this.state.map,
+                    label: this.props.areaGroups.find(group => group._id == key).title
+                });
+                
+                marker.addListener('click', e => {
+                    this.state.map.fitBounds(groupPositions[key]);
+                });
+                
+                groupMarkers[key] = marker;
+            }*/
             
             this.setState({
                 autocomplete,
-                areaPolygons: setAreas(this.props.areas, this.state.map),
+                areaPolygons,
                 drawingManager,
+                //groupMarkers,
                 isInitialized: true
             });
         }
@@ -103,32 +135,40 @@ class MapIndex extends React.Component {
             });
         }
         
-        /*if (prevState.areaNewFormShown !== this.state.areaNewFormShown) {
-            //clear overlay if are new form is closed
-            if (!this.state.areaNewFormShown) {
-                this.state.overlay.setMap(null);
+        /*if (prevState.overlay !== this.state.overlay) {
+            if (this.state.overlay) {
+                this.state.overlay.addListener('click', e => {
+                    //open area new
+                    this.setState({ areaNewFormShown: true });
+                });
             }
         }*/
         
         if (prevState.drawingModeActive !== this.state.drawingModeActive) {
             const drawingMode = this.state.drawingModeActive ? window.google.maps.drawing.OverlayType.POLYGON : null;
             this.state.drawingManager.setDrawingMode(drawingMode);
+            if (this.state.drawingModeActive) this.setState({ areaNewFormShown: true });
         }
         
         if (prevProps.mapType !== this.props.mapType) this.state.map.setMapTypeId(this.props.mapType);
     }
     
-    setGroupBounds(groupId) {
-        let groupPolygons = [];
+    goToGroup(groupId) {
+        const groupPolygons = [];
         this.props.areas.forEach(area => {
             
             if (area.areaGroupId === groupId) {
                 groupPolygons.push(this.state.areaPolygons[area._id]);
             }
-            
         });
         
         this.state.map.fitBounds(getGroupBounds(groupPolygons));
+    }
+    
+    cancelCreateArea() {
+        console.log('test')
+        if (this.state.overlay) this.state.overlay.setMap(null);
+        this.setState({ areaNewFormShown: false, overlay: null, drawingModeActive: false })
     }
     
     toggleProp(prop) {
@@ -139,7 +179,7 @@ class MapIndex extends React.Component {
         const {
             props: { areaGroups },
             state: { drawingModeActive, areaNewFormShown, coords },
-            setGroupBounds, toggleProp
+            goToGroup, toggleProp, cancelCreateArea
         } = this;
         
         return (
@@ -152,9 +192,9 @@ class MapIndex extends React.Component {
                         <input id="map-search" type="text" placeholder="enter location to go to" className="map-input" style={{ width: '100%'}} />
                     </div>
                     <div id="map"></div>
-                    
+                    <AreaNew coords={ coords } shown={ areaNewFormShown } close={ cancelCreateArea } />
                     <h4>Go To Group</h4>
-                    <select onChange={ (e) => setGroupBounds(e.target.value) }>
+                    <select onChange={ (e) => goToGroup(e.target.value) }>
                         <option value="">Go to Group</option>
                         {
                             areaGroups.map(group => {
@@ -165,9 +205,9 @@ class MapIndex extends React.Component {
                         }
                     </select>
                 </div>
-                <Modal title="Create Area" close={ toggleProp('areaNewFormShown') } shown={ areaNewFormShown }>
-                    <AreaNew coords={ coords } />
-                </Modal>
+                { /*<Modal title="Create Area" close={ toggleProp('areaNewFormShown') } shown={ areaNewFormShown }>
+                    
+                </Modal> */ }
             </div>
         );
     }

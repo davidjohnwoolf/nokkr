@@ -7,8 +7,9 @@ import { AREA_PATH } from '../../../lib/constants';
 import AreaGroupNew from '../area-groups/area-group-new';
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
-import SubmitBlock from '../forms/submit-block';
 import Loading from '../layout/loading';
+import Modal from '../layout/modal';
+import IconLink from '../layout/icon-link';
 
 import { createArea } from '../../actions/areas.action';
 import { fetchUsers } from '../../actions/users.action';
@@ -39,12 +40,14 @@ class AreaNew extends React.Component {
             isLoading: true,
             coords: null,
             formValid: false,
+            areaGroupNewFormShown: false,
             userOptions: [['Assign User', '']],
             areaGroupOptions: [['Select Group', '']],
             areaList: []
         };
 
         this.handleUserInput = this.handleUserInput.bind(this);
+        this.toggleProp = this.toggleProp.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     
@@ -125,6 +128,10 @@ class AreaNew extends React.Component {
         
         formSubmit({ fields: { ...fields }, action: createArea });
     }
+    
+    toggleProp(prop) {
+        return () => this.setState({ [prop]: !this.state[prop] });
+    }
 
     render() {
         const {
@@ -144,7 +151,8 @@ class AreaNew extends React.Component {
         
         return (
                 
-            <div>
+            <div className={ this.props.shown ? '' : 'invisible' }>
+                <h2>Create Area</h2>
                 <form onSubmit={ handleSubmit }>
                     <FieldInput
                         name="title"
@@ -154,13 +162,16 @@ class AreaNew extends React.Component {
                         handleUserInput={ handleUserInput }
                         error={ title.error }
                     />
-                    <FieldSelect
-                        name="areaGroup"
-                        value={ areaGroupId.value }
-                        handleUserInput={ handleUserInput }
-                        error={ areaGroupId.error }
-                        options={ areaGroupOptions }
-                    />
+                    <div style={{ display: 'flex' }}>
+                        <FieldSelect
+                            name="areaGroup"
+                            value={ areaGroupId.value }
+                            handleUserInput={ handleUserInput }
+                            error={ areaGroupId.error }
+                            options={ areaGroupOptions }
+                        />
+                        <IconLink clickEvent={ this.toggleProp('areaGroupNewFormShown') } type="success" icon="plus" />
+                    </div>
                     <FieldSelect
                         name="userId"
                         value={ userId.value }
@@ -171,10 +182,16 @@ class AreaNew extends React.Component {
                     
                     <input type="hidden" name="coords" value={ coords } />
 
-                    <button type="submit" className="button success">Save Area</button>
+                    <button type="submit" disabled="true" className="button success">Save Area</button>
                 </form>
-                <h4>Create Area Group</h4>
-                <AreaGroupNew />
+                <button onClick={ this.props.close } className="button cancel">Cancel</button>
+                <Modal
+                    close={ this.toggleProp('areaGroupNewFormShown') }
+                    shown={ this.state.areaGroupNewFormShown }
+                    title="Create Area Group"
+                >
+                    <AreaGroupNew />
+                </Modal>
             </div>
         );
     }
