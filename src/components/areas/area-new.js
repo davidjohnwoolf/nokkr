@@ -67,7 +67,8 @@ class AreaNew extends React.Component {
                 clearAreaGroups,
                 fetchAreaGroups,
                 areaGroups,
-                users
+                users,
+                areaGroupId
             },
             state: { isLoading }
         } = this;
@@ -112,10 +113,25 @@ class AreaNew extends React.Component {
             
             this.setState({ fields });
         }
+        
+        if (prevProps.areaGroups !== this.props.areaGroups) {
+            
+            if (areaGroupId) {
+                const fields = { ...this.state.fields };
+                
+                const areaGroupOptions = [
+                    ...this.state.areaGroupOptions,
+                    [areaGroups.find(areaGroup => areaGroup._id == areaGroupId).title, areaGroupId]
+                ];
+                
+                fields.areaGroupId.value = areaGroupId;
+                
+                this.setState({ fields, areaGroupOptions });
+            }
+        }
 
         if (success) {
             sendMessage(message);
-            //set new area on map, probably re fetch areas
             //use context?
             this.props.clearAreas();
             this.props.fetchAreas();
@@ -126,6 +142,8 @@ class AreaNew extends React.Component {
             sendMessage(areaGroupMessage);
             clearAreaGroups();
             fetchAreaGroups();
+            
+            this.setState({ areaGroupNewFormShown: false });
         }
     }
     
@@ -154,7 +172,6 @@ class AreaNew extends React.Component {
             state: {
                 isLoading,
                 formValid,
-                areaList,
                 userOptions,
                 areaGroupOptions,
                 fields: { title, areaGroupId, userId }
@@ -219,6 +236,7 @@ const mapStateToProps = state => ({
     users: state.users.users,
     areaGroupSuccess: state.areaGroups.success,
     areaGroupMessage: state.areaGroups.message,
+    areaGroupId: state.areaGroups.areaGroupId,
     areaGroups: state.areaGroups.areaGroups
 });
 
