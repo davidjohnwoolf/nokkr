@@ -66,8 +66,6 @@ class AreaIndex extends React.Component {
         //update area list on active toggle
         if (!isLoading && prevState.activeShown !== activeShown) {
             
-            console.log(areas)
-            
             const filteredList = areas.filter(area => {
                 return activeShown ? area.isActive : !area.isActive;
             });
@@ -78,6 +76,16 @@ class AreaIndex extends React.Component {
         //update area list on sort
         if (!isLoading && prevState.sortSettings !== sortSettings) {
             this.setState({ areaList: sortItems(areaList, sortSettings) });
+        }
+        
+        //if new area created
+        if (!isLoading && prevProps.areas !== areas) {
+            
+            const filteredList = areas.filter(area => {
+                return activeShown ? area.isActive : !area.isActive;
+            });
+            
+            this.setState({ areaList: sortItems(filteredList, sortSettings) });
         }
     }
 	
@@ -125,7 +133,7 @@ class AreaIndex extends React.Component {
     render() {
         
         const {
-            props: { history },
+            props: { history, fetchAreas, clearAreas },
             state: { sortSettings, isLoading, activeShown, areaCount, settingsModalShown, mapShown, areaGroups, areaList, mapType },
             sortList, renderAreas, toggleActive, toggleProp, toggleMapActive, setMapType
         } = this;
@@ -186,7 +194,7 @@ class AreaIndex extends React.Component {
                     </tbody>
                 </table>
                 
-                <MapIndex areas={ areaList } mapShown={ mapShown } mapType={ mapType } areaGroups={ areaGroups } activeShown={ activeShown } />
+                <MapIndex areas={ areaList } mapShown={ mapShown } mapType={ mapType } areaGroups={ areaGroups } fetchAreas={ fetchAreas } clearAreas={ clearAreas } activeShown={ activeShown } />
                 <p style={{ marginTop: '1rem' }}>Areas Shown: { areaCount }</p>
                 
                 <Modal close={ toggleProp('settingsModalShown') } shown={ settingsModalShown } title="Area Settings">

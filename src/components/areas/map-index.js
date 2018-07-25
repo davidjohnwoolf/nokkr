@@ -22,12 +22,13 @@ class MapIndex extends React.Component {
             groupMarkers: null,
             autocomplete: null,
             settingsModalShown: false,
-            isInitialized: false
+            isInitialized: false,
+            groupSelected: ''
         };
         
         this.goToGroup = this.goToGroup.bind(this);
         this.toggleProp = this.toggleProp.bind(this);
-        this.cancelCreateArea = this.cancelCreateArea.bind(this);
+        this.closeCreateArea = this.closeCreateArea.bind(this);
         
         //build get bounds function
         window.google.maps.Polygon.prototype.getBounds = getBounds(window.google.maps);
@@ -39,7 +40,6 @@ class MapIndex extends React.Component {
     }
     
     componentDidUpdate(prevProps, prevState) {
-        console.log(this.state.coords);
         if (!this.state.isInitialized) {
             const autocomplete = new window.google.maps.places.Autocomplete(document.getElementById('map-search'));
             //const groupPositions = {};
@@ -77,6 +77,7 @@ class MapIndex extends React.Component {
             drawingManager.setMap(this.state.map);
             drawingManager.setDrawingMode(null);
             
+            //rename overlay to polygon or new polygon or something in all cases
             drawingManager.addListener('overlaycomplete', e => {
                 
                 if (this.state.overlay) this.state.overlay.setMap(null);
@@ -138,10 +139,11 @@ class MapIndex extends React.Component {
                 window.google.maps.event.addListener(this.state.overlay.getPath(), 'insert_at', setCoords);
                 window.google.maps.event.addListener(this.state.overlay.getPath(), 'set_at', setCoords);
                 window.google.maps.event.addListener(this.state.overlay.getPath(), 'remove_at', setCoords);
-            } else {
-                window.google.maps.event.clearListeners(this.state.overlay.getPath(), 'insert_at');
-                window.google.maps.event.clearListeners(this.state.overlay.getPath(), 'set_at');
-                window.google.maps.event.clearListeners(this.state.overlay.getPath(), 'remove_at');
+                
+                //this.state.overlay.addListener('rightclick', e => {
+                //    console.log('show clear option')
+                //});
+                
             }
         }
         
@@ -163,10 +165,13 @@ class MapIndex extends React.Component {
             }
         });
         
+        //maybe run this in component did update on group selected change
         this.state.map.fitBounds(getGroupBounds(groupPolygons));
+        
+        this.setState({ groupSelected: groupId });
     }
     
-    cancelCreateArea() {
+    closeCreateArea() {
         if (this.state.overlay) this.state.overlay.setMap(null);
         this.setState({ areaNewFormShown: false, overlay: null, drawingModeActive: false })
     }
@@ -177,9 +182,9 @@ class MapIndex extends React.Component {
 
     render() {
         const {
-            props: { areaGroups },
-            state: { drawingModeActive, areaNewFormShown, coords },
-            goToGroup, toggleProp, cancelCreateArea
+            props: { areaGroups, clearAreas, fetchAreas },
+            state: { drawingModeActive, areaNewFormShown, coords, groupSelected },
+            goToGroup, toggleProp, closeCreateArea
         } = this;
         
         return (
@@ -192,7 +197,14 @@ class MapIndex extends React.Component {
                         <input id="map-search" type="text" placeholder="enter location to go to" className="map-input" style={{ width: '100%'}} />
                     </div>
                     <div id="map"></div>
-                    <AreaNew coords={ coords } shown={ areaNewFormShown } close={ cancelCreateArea } />
+                    <AreaNew
+                        coords={ coords }
+                        shown={ areaNewFormShown }
+                        close={ closeCreateArea }
+                        clearAreas={ clearAreas }
+                        fetchAreas={ fetchAreas }
+                        groupSelected={ groupSelected }
+                    />
                     <h4>Go To Group</h4>
                     <select onChange={ (e) => goToGroup(e.target.value) }>
                         <option value="">Go to Group</option>
@@ -205,9 +217,6 @@ class MapIndex extends React.Component {
                         }
                     </select>
                 </div>
-                { /*<Modal title="Create Area" close={ toggleProp('areaNewFormShown') } shown={ areaNewFormShown }>
-                    
-                </Modal> */ }
             </div>
         );
     }

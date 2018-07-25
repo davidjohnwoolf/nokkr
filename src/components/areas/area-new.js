@@ -13,7 +13,7 @@ import IconLink from '../layout/icon-link';
 
 import { createArea } from '../../actions/areas.action';
 import { fetchUsers } from '../../actions/users.action';
-import { fetchAreaGroups } from '../../actions/area-groups.action';
+import { clearAreaGroups, fetchAreaGroups } from '../../actions/area-groups.action';
 import { sendMessage } from '../../actions/flash.action';
 
 class AreaNew extends React.Component {
@@ -34,7 +34,7 @@ class AreaNew extends React.Component {
             fields: {
                 title: { value: '', error: '' },
                 areaGroupId: { value: '', error: '' },
-                coords: { value: props.coords || '', error: '' },
+                coords: { value: '', error: '' },
                 userId: { value: '', error: '' }
             },
             isLoading: true,
@@ -56,16 +56,14 @@ class AreaNew extends React.Component {
         this.props.fetchAreaGroups();
     }
     
-    componentDidUpdate() {
+    componentDidUpdate(prevProps, prevState) {
         const {
             props: {
                 success,
                 message,
-                history,
                 sendMessage,
                 areaGroupSuccess,
                 areaGroupMessage,
-                areaId,
                 clearAreaGroups,
                 fetchAreaGroups,
                 areaGroups,
@@ -98,10 +96,30 @@ class AreaNew extends React.Component {
                 areaList
             })
         }
+        
+        if (prevProps.coords !== this.props.coords) {
+            const fields = { ...this.state.fields };
+            
+            fields.coords.value = this.props.coords;
+            
+            this.setState({ fields });
+        }
+        
+        if (prevProps.groupSelected !== this.props.groupSelected) {
+            const fields = { ...this.state.fields };
+            
+            fields.areaGroupId.value = this.props.groupSelected;
+            
+            this.setState({ fields });
+        }
 
         if (success) {
             sendMessage(message);
-            history.push(AREA_PATH + areaId);
+            //set new area on map, probably re fetch areas
+            //use context?
+            this.props.clearAreas();
+            this.props.fetchAreas();
+            this.props.close();
         }
         
         if (areaGroupSuccess) {
@@ -124,9 +142,7 @@ class AreaNew extends React.Component {
         
         const { state: { fields }, props: { createArea } } = this;
         
-        console.log(fields)
-        
-        //formSubmit({ fields: { ...fields }, action: createArea });
+        formSubmit({ fields: { ...fields }, action: createArea });
     }
     
     toggleProp(prop) {
@@ -141,7 +157,7 @@ class AreaNew extends React.Component {
                 areaList,
                 userOptions,
                 areaGroupOptions,
-                fields: { title, areaGroupId, userId, coords }
+                fields: { title, areaGroupId, userId }
             },
             handleSubmit,
             handleUserInput,
@@ -179,8 +195,6 @@ class AreaNew extends React.Component {
                         error={ userId.error }
                         options={ userOptions }
                     />
-                    
-                    <input type="hidden" name="coords" value={ coords } />
 
                     <button type="submit" disabled={ !formValid } className="button success">Save Area</button>
                 </form>
@@ -208,4 +222,4 @@ const mapStateToProps = state => ({
     areaGroups: state.areaGroups.areaGroups
 });
 
-export default connect(mapStateToProps, { createArea, fetchUsers, sendMessage, fetchAreaGroups })(AreaNew);
+export default connect(mapStateToProps, { createArea, fetchUsers, sendMessage, clearAreaGroups, fetchAreaGroups })(AreaNew);
