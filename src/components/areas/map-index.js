@@ -39,7 +39,7 @@ class MapIndex extends React.Component {
     }
     
     componentDidUpdate(prevProps, prevState) {
-        console.log(this.state.areaNewFormShown)
+        console.log(this.state.coords);
         if (!this.state.isInitialized) {
             const autocomplete = new window.google.maps.places.Autocomplete(document.getElementById('map-search'));
             //const groupPositions = {};
@@ -77,18 +77,14 @@ class MapIndex extends React.Component {
             drawingManager.setMap(this.state.map);
             drawingManager.setDrawingMode(null);
             
-            //=====
-            //also make click give option to show form or remove overlay
-            //=====
             drawingManager.addListener('overlaycomplete', e => {
                 
-                if (this.state.overlay) {
-                    this.state.overlay.setMap(null);
-                }
-
+                if (this.state.overlay) this.state.overlay.setMap(null);
+                
                 //pass coords do area new
                 this.setState({ drawingModeActive: false, coords: e.overlay.getPath().getArray(), overlay: e.overlay });
             });
+            
             
             /*this.props.areaGroups.forEach(group => {
                 let groupPolygons = [];
@@ -135,14 +131,19 @@ class MapIndex extends React.Component {
             });
         }
         
-        /*if (prevState.overlay !== this.state.overlay) {
+        if (prevState.overlay !== this.state.overlay) {
+            const setCoords = () => this.setState({ coords: this.state.overlay.getPath().getArray() });
+            
             if (this.state.overlay) {
-                this.state.overlay.addListener('click', e => {
-                    //open area new
-                    this.setState({ areaNewFormShown: true });
-                });
+                window.google.maps.event.addListener(this.state.overlay.getPath(), 'insert_at', setCoords);
+                window.google.maps.event.addListener(this.state.overlay.getPath(), 'set_at', setCoords);
+                window.google.maps.event.addListener(this.state.overlay.getPath(), 'remove_at', setCoords);
+            } else {
+                window.google.maps.event.clearListeners(this.state.overlay.getPath(), 'insert_at');
+                window.google.maps.event.clearListeners(this.state.overlay.getPath(), 'set_at');
+                window.google.maps.event.clearListeners(this.state.overlay.getPath(), 'remove_at');
             }
-        }*/
+        }
         
         if (prevState.drawingModeActive !== this.state.drawingModeActive) {
             const drawingMode = this.state.drawingModeActive ? window.google.maps.drawing.OverlayType.POLYGON : null;
@@ -166,7 +167,6 @@ class MapIndex extends React.Component {
     }
     
     cancelCreateArea() {
-        console.log('test')
         if (this.state.overlay) this.state.overlay.setMap(null);
         this.setState({ areaNewFormShown: false, overlay: null, drawingModeActive: false })
     }

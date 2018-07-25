@@ -126,7 +126,7 @@ class AreaNew extends React.Component {
         
         console.log(fields)
         
-        formSubmit({ fields: { ...fields }, action: createArea });
+        //formSubmit({ fields: { ...fields }, action: createArea });
     }
     
     toggleProp(prop) {
@@ -164,7 +164,7 @@ class AreaNew extends React.Component {
                     />
                     <div style={{ display: 'flex' }}>
                         <FieldSelect
-                            name="areaGroup"
+                            name="areaGroupId"
                             value={ areaGroupId.value }
                             handleUserInput={ handleUserInput }
                             error={ areaGroupId.error }
@@ -182,7 +182,7 @@ class AreaNew extends React.Component {
                     
                     <input type="hidden" name="coords" value={ coords } />
 
-                    <button type="submit" disabled="true" className="button success">Save Area</button>
+                    <button type="submit" disabled={ !formValid } className="button success">Save Area</button>
                 </form>
                 <button onClick={ this.props.close } className="button cancel">Cancel</button>
                 <Modal
