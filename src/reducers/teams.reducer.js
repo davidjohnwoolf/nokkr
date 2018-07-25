@@ -26,7 +26,7 @@ export default function(state = {}, action) {
             return { ...state, success: true, deleted: true, message: action.message };
             
         case CLEAR_TEAMS:
-            return {};
+            return { ...state, success: false, deleted: false, message: '' };
             
         default:
             return state;

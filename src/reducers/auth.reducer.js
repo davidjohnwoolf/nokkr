@@ -17,7 +17,7 @@ export default function(state = { authenticated: false }, action) {
             return { fail: true, message: action.message };
             
         case CLEAR_AUTH:
-            return { authenticated: false };
+            return { ...state, success: false, authenticated: false, message: '' };
             
         default:
             return state;
