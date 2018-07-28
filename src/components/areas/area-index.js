@@ -194,7 +194,15 @@ class AreaIndex extends React.Component {
                     </tbody>
                 </table>
                 
-                <MapIndex areas={ areaList } mapShown={ mapShown } mapType={ mapType } areaGroups={ areaGroups } fetchAreas={ fetchAreas } clearAreas={ clearAreas } activeShown={ activeShown } />
+                <MapIndex
+                    areas={ areaList }
+                    mapShown={ mapShown }
+                    mapType={ mapType }
+                    areaGroups={ areaGroups }
+                    fetchAreas={ fetchAreas }
+                    clearAreas={ clearAreas }
+                    activeShown={ activeShown }
+                />
                 <p style={{ marginTop: '1rem' }}>Areas Shown: { areaCount }</p>
                 
                 <Modal close={ toggleProp('settingsModalShown') } shown={ settingsModalShown } title="Area Settings">
@@ -217,6 +225,12 @@ class AreaIndex extends React.Component {
                                 <label>Toggle Map View</label>
                                 <span onClick={ toggleMapActive }>
                                     <i className={ mapShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
+                                </span>
+                            </div>
+                            <div className="toggle">
+                                <label>Show Leads</label>
+                                <span>
+                                    <i className="fas fa-toggle-off"></i>
                                 </span>
                             </div>
                         </div>

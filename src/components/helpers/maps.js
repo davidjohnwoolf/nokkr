@@ -209,3 +209,48 @@ export const setAreas = (areas, map) => {
     
     return areaPolygons;
 }
+
+export const defineContextMenu = (pos, title) => {
+    class ContextMenu {
+        constructor(position) {
+            this.position = position;
+            
+            //just add class for the styles
+            this.menu = document.createElement('div');
+            this.menu.innerHTML = title;
+            this.menu.style.backgroundColor = '#fff';
+            this.menu.style.padding = '1rem';
+            this.menu.style.display = 'block';
+            this.menu.style.position = 'absolute';
+            this.menu.style.cursor = 'pointer';
+            
+            window.google.maps.event.addDomListener(this.menu, 'click', () => {
+                window.google.maps.event.trigger(this, 'click');
+            });
+        }
+        
+        onAdd() {
+            this.getPanes().overlayMouseTarget.appendChild(this.menu);
+            
+            
+        }
+        
+        draw() {
+            let divPosition = this.getProjection().fromLatLngToDivPixel(this.position);
+    
+            this.menu.style.left = divPosition.x + 'px';
+            this.menu.style.top = divPosition.y + 'px';
+    
+        }
+        
+        onRemove() {
+            if (this.menu.parentElement) {
+                this.menu.parentElement.removeChild(this.menu);
+            }
+        }
+    }
+    
+    Object.setPrototypeOf(ContextMenu.prototype, window.google.maps.OverlayView.prototype);
+    
+    return new ContextMenu(pos);
+}

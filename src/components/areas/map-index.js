@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { getBounds, createMap, setAreas, getGroupBounds } from '../helpers/maps';
+import { getBounds, createMap, setAreas, getGroupBounds, defineContextMenu } from '../helpers/maps';
 
 import AreaNew from './area-new';
 
@@ -22,7 +22,9 @@ class MapIndex extends React.Component {
             groupMarkers: null,
             autocomplete: null,
             settingsModalShown: false,
+            contextMenuActive: false,
             isInitialized: false,
+            contextMenu: null,
             groupSelected: ''
         };
         
@@ -140,9 +142,28 @@ class MapIndex extends React.Component {
                 window.google.maps.event.addListener(this.state.overlay.getPath(), 'set_at', setCoords);
                 window.google.maps.event.addListener(this.state.overlay.getPath(), 'remove_at', setCoords);
                 
-                //this.state.overlay.addListener('rightclick', e => {
-                //    console.log('show clear option')
-                //});
+                this.state.overlay.addListener('rightclick', e => {
+                    //add this stuff to the helper
+                    
+                    if (this.state.contextMenu) this.state.contextMenu.setMap(null);
+                    const contextMenu = defineContextMenu(
+                            new window.google.maps.LatLng(e.latLng.lat(), e.latLng.lng()),
+                            'Reset'
+                        );
+                    
+                    contextMenu.addListener('click', () => {
+                        contextMenu.setMap(null);
+                        this.state.overlay.setMap(null);
+                    });
+                    
+                    contextMenu.setMap(this.state.map);
+                    
+                    this.setState({ contextMenu });
+                });
+                
+                this.state.overlay.addListener('click', e => {
+                    if (this.state.contextMenu) this.state.contextMenu.setMap(null);
+                });
                 
             }
         }
@@ -183,7 +204,7 @@ class MapIndex extends React.Component {
     render() {
         const {
             props: { areaGroups, clearAreas, fetchAreas },
-            state: { drawingModeActive, areaNewFormShown, coords, groupSelected },
+            state: { drawingModeActive, areaNewFormShown, coords, groupSelected, contextMenuActive },
             goToGroup, toggleProp, closeCreateArea
         } = this;
         
@@ -205,6 +226,9 @@ class MapIndex extends React.Component {
                         fetchAreas={ fetchAreas }
                         groupSelected={ groupSelected }
                     />
+                    {/*<div className={ contextMenuActive ? 'overlay-menu' : 'invisible' } style={{ background: '#000' }}> 
+                        Clear
+                    </div>*/}
                     <h4>Go To Group</h4>
                     <select onChange={ (e) => goToGroup(e.target.value) }>
                         <option value="">Go to Group</option>
