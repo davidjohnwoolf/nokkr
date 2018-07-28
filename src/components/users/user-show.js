@@ -52,7 +52,7 @@ class UserShow extends React.Component {
                         <h4>Email</h4>
                         <address>{ user.email }</address>
                         <h4>Team</h4>
-                        <p>{ user.teamTitle }</p>
+                        <p>{ user.teamTitle || '---' }</p>
                         <h4>Role</h4>
                         <p>{ capitalize(user.role) + (isReadOnly ? ' Read Only' : '') }</p>
                     </section>

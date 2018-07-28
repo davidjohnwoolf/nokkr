@@ -96,7 +96,9 @@ class UserIndex extends React.Component {
                         <td>
                             <Link to={ `/users/${ user._id }` }>{ `${ user.firstName } ${ user.lastName }` }</Link>
                         </td>
-                        <td>{ user.teamTitle }</td>
+                        <td>
+                            { user.teamId ? <Link to={ `/teams/${ user.teamId }` }>{ user.teamTitle }</Link> : '---' } 
+                        </td>
                         <td>{ capitalize(user.role) + (user.isReadOnly ? ' Read Only' : '') }</td>
                     </tr>
                 );
