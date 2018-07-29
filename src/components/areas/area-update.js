@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { required, unique, validate, formSubmit } from '../helpers/forms';
+import { required, unique, validate, formSubmit, initializeForm } from '../helpers/forms';
 import { AREA_PATH } from '../../../lib/constants';
 
 import AreaGroupNew from '../area-groups/area-group-new';
@@ -11,12 +11,12 @@ import Loading from '../layout/loading';
 import Modal from '../layout/modal';
 import IconLink from '../layout/icon-link';
 
-import { createArea } from '../../actions/areas.action';
+import { updateArea } from '../../actions/areas.action';
 import { fetchUsers } from '../../actions/users.action';
 import { clearAreaGroups, fetchAreaGroups } from '../../actions/area-groups.action';
 import { sendMessage } from '../../actions/flash.action';
 
-class AreaNew extends React.Component {
+class AreaUpdate extends React.Component {
     
     constructor(props) {
         super(props);
@@ -67,11 +67,15 @@ class AreaNew extends React.Component {
                 clearAreaGroups,
                 fetchAreaGroups,
                 areaGroups,
+                //area passed in by area-index as props
+                area,
                 users,
                 areaGroupId
             },
-            state: { isLoading }
+            state: { isLoading, fields }
         } = this;
+        
+        console.log(area)
         
         if (areaGroups && users && isLoading) {
             
@@ -93,6 +97,7 @@ class AreaNew extends React.Component {
             this.setState({
                 isLoading: false,
                 userOptions,
+                fields: initializeForm({ ...fields }, area),
                 areaGroupOptions,
                 areaList
             })
@@ -158,9 +163,9 @@ class AreaNew extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         
-        const { state: { fields }, props: { createArea } } = this;
+        const { state: { fields }, props: { updateArea } } = this;
         
-        formSubmit({ fields: { ...fields }, action: createArea });
+        formSubmit({ fields: { ...fields }, action: updateArea });
     }
     
     toggleProp(prop) {
@@ -185,7 +190,7 @@ class AreaNew extends React.Component {
         return (
                 
             <div>
-                <h2>Create Area</h2>
+                <h2>Update Area</h2>
                 <form onSubmit={ handleSubmit }>
                     <FieldInput
                         name="title"
@@ -213,7 +218,7 @@ class AreaNew extends React.Component {
                         options={ userOptions }
                     />
 
-                    <button type="submit" disabled={ !formValid } className="button success">Save Area</button>
+                    <button type="submit" disabled={ !formValid } className="button success">Update Area</button>
                 </form>
                 <button onClick={ this.props.close } className="button cancel">Cancel</button>
                 <Modal
@@ -240,4 +245,4 @@ const mapStateToProps = state => ({
     areaGroups: state.areaGroups.areaGroups
 });
 
-export default connect(mapStateToProps, { createArea, fetchUsers, sendMessage, clearAreaGroups, fetchAreaGroups })(AreaNew);
+export default connect(mapStateToProps, { updateArea, fetchUsers, sendMessage, clearAreaGroups, fetchAreaGroups })(AreaUpdate);

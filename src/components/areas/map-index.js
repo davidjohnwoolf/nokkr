@@ -3,6 +3,7 @@ import React from 'react';
 import { getBounds, createMap, setAreas, getGroupBounds, defineContextMenu } from '../helpers/maps';
 
 import AreaNew from './area-new';
+import AreaUpdate from './area-update';
 
 //can you write your own react style listeners?
 
@@ -21,7 +22,8 @@ class MapIndex extends React.Component {
             map: null,
             groupMarkers: null,
             autocomplete: null,
-            areaEditing: null,
+            editableArea: null,
+            editableAreaId: undefined,
             settingsModalShown: false,
             isInitialized: false,
             overlayContextMenu: null,
@@ -32,6 +34,7 @@ class MapIndex extends React.Component {
         this.goToGroup = this.goToGroup.bind(this);
         this.toggleProp = this.toggleProp.bind(this);
         this.closeCreateArea = this.closeCreateArea.bind(this);
+        this.closeUpdateArea = this.closeUpdateArea.bind(this);
         
         //build get bounds function
         window.google.maps.Polygon.prototype.getBounds = getBounds(window.google.maps);
@@ -64,7 +67,7 @@ class MapIndex extends React.Component {
                     areaContextMenu.addListener('click', () => {
                         areaContextMenu.setMap(null);
                         areaPolygons[poly].polygon.setEditable(true);
-                        this.setState({ areaEditing: areaPolygons[poly]/*, areaContextMenu: null*/ });
+                        this.setState({ editableArea: areaPolygons[poly], editableAreaId: poly/*, areaContextMenu: null*/ });
                     });
                     
                     areaContextMenu.setMap(this.state.map);
@@ -202,6 +205,10 @@ class MapIndex extends React.Component {
         }
         
         if (prevProps.mapType !== this.props.mapType) this.state.map.setMapTypeId(this.props.mapType);
+        
+        if (prevState.editableArea !== this.state.editableArea) {
+            //stuff?
+        }
     }
     
     goToGroup(groupId) {
@@ -224,15 +231,20 @@ class MapIndex extends React.Component {
         this.setState({ areaNewFormShown: false, overlay: null, drawingModeActive: false })
     }
     
+    closeUpdateArea() {
+        if (this.state.editableArea) this.state.editableArea.polygon.setEditable(false);
+        this.setState({ editableAreaId: undefined, editableArea: null });
+    }
+    
     toggleProp(prop) {
         return () => this.setState({ [prop]: !this.state[prop] });
     }
 
     render() {
         const {
-            props: { areaGroups, clearAreas, fetchAreas },
-            state: { drawingModeActive, areaNewFormShown, coords, groupSelected },
-            goToGroup, toggleProp, closeCreateArea
+            props: { areaGroups, clearAreas, fetchAreas, areas },
+            state: { drawingModeActive, areaNewFormShown, coords, groupSelected, editableArea, editableAreaId },
+            goToGroup, toggleProp, closeCreateArea, closeUpdateArea
         } = this;
         
         return (
@@ -245,14 +257,22 @@ class MapIndex extends React.Component {
                         <input id="map-search" type="text" placeholder="enter location to go to" className="map-input" style={{ width: '100%'}} />
                     </div>
                     <div id="map"></div>
-                    <AreaNew
-                        coords={ coords }
-                        shown={ areaNewFormShown }
-                        close={ closeCreateArea }
-                        clearAreas={ clearAreas }
-                        fetchAreas={ fetchAreas }
-                        groupSelected={ groupSelected }
-                    />
+                    { areaNewFormShown ? (<AreaNew  //just use drawingModeActive and remove areaNewFormShown
+                            coords={ coords }
+                            close={ closeCreateArea }
+                            clearAreas={ clearAreas }
+                            fetchAreas={ fetchAreas }
+                            groupSelected={ groupSelected }
+                        />) : '' }
+                    { editableArea ? (<AreaUpdate
+                            area={ areas.find(area => area._id == editableAreaId) }
+                            coords={ editableArea.polygon.getPath().getArray() } //set the right coords here
+                            close={ closeUpdateArea }
+                            clearAreas={ clearAreas }
+                            fetchAreas={ fetchAreas }
+                            groupSelected={ groupSelected }
+                        />) : '' }
+                    
                     <h4>Go To Group</h4>
                     <select onChange={ (e) => goToGroup(e.target.value) }>
                         <option value="">Go to Group</option>

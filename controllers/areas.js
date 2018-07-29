@@ -40,6 +40,7 @@ router.get('/', requireUser, (req, res) => {
 
                     const newArea = Object.assign({
                         assignedUserName: user.firstName + ' ' + user.lastName,
+                        userId: user._id,
                         areaGroup,
                         teamTitle: areaTeam ? areaTeam.title : '-'
                     }, area._doc);
