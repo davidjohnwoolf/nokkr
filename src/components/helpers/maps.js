@@ -165,51 +165,6 @@ export const locationError = err => {
     alert('Error finding location');
 };
 
-export const setAreas = (areas, map) => {
-    const areaPolygons = {};
-    
-    areas.forEach(area => {
-        
-        let areaPolygon = new window.google.maps.Polygon({
-            paths: area.coords,
-            strokeColor: area.areaGroup.color,
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: area.areaGroup.color,
-            fillOpacity: 0.35
-        });
-        
-        let infowindow = new window.google.maps.InfoWindow({
-          content: `<h4>${ area.title }</h4><p>Group: ${ area.areaGroup.title }</p><p>Assigned User: ${ area.assignedUserName }</p><p>Times Knocked: ${ area.timesKnocked }</p>`,
-          position: areaPolygon.getBounds().getCenter()
-        });
-        
-        areaPolygon.addListener('click', e => {
-            //map.fitBounds(areaPolygons[area._id].bounds))
-            infowindow.open(map);
-            
-        });
-        
-        areaPolygons[area._id] = {
-            bounds: areaPolygon.getBounds(),
-            center: areaPolygon.getBounds().getCenter(),
-            polygon: areaPolygon
-        };
-        
-        return areaPolygons;
-        
-        //areaPolygon.addListener('click', () => map.fitBounds(areaPolygons[area._id].bounds));
-        
-    });
-    
-    //show areas
-    for (let poly in areaPolygons) {
-        areaPolygons[poly].polygon.setMap(map);
-    }
-    
-    return areaPolygons;
-}
-
 export const defineContextMenu = (pos, title) => {
     class ContextMenu {
         constructor(position) {
@@ -253,4 +208,44 @@ export const defineContextMenu = (pos, title) => {
     Object.setPrototypeOf(ContextMenu.prototype, window.google.maps.OverlayView.prototype);
     
     return new ContextMenu(pos);
+}
+
+export const setAreas = (areas, map, areaContextMenu) => {
+    const areaPolygons = {};
+    
+    areas.forEach(area => {
+        
+        let areaPolygon = new window.google.maps.Polygon({
+            paths: area.coords,
+            strokeColor: area.areaGroup.color,
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: area.areaGroup.color,
+            fillOpacity: 0.35
+        });
+        
+        let infowindow = new window.google.maps.InfoWindow({
+          content: `<h4>${ area.title }</h4><p>Group: ${ area.areaGroup.title }</p><p>Assigned User: ${ area.assignedUserName }</p><p>Times Knocked: ${ area.timesKnocked }</p>`,
+          position: areaPolygon.getBounds().getCenter()
+        });
+        
+        areaPolygons[area._id] = {
+            bounds: areaPolygon.getBounds(),
+            center: areaPolygon.getBounds().getCenter(),
+            polygon: areaPolygon,
+            infowindow: infowindow
+        };
+        
+        return areaPolygons;
+        
+        //areaPolygon.addListener('click', () => map.fitBounds(areaPolygons[area._id].bounds));
+        
+    });
+    
+    //show areas
+    for (let poly in areaPolygons) {
+        areaPolygons[poly].polygon.setMap(map);
+    }
+    
+    return areaPolygons;
 }

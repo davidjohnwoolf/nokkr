@@ -21,10 +21,11 @@ class MapIndex extends React.Component {
             map: null,
             groupMarkers: null,
             autocomplete: null,
+            areaEditing: null,
             settingsModalShown: false,
-            contextMenuActive: false,
             isInitialized: false,
-            contextMenu: null,
+            overlayContextMenu: null,
+            areaContextMenu: null,
             groupSelected: ''
         };
         
@@ -42,11 +43,58 @@ class MapIndex extends React.Component {
     }
     
     componentDidUpdate(prevProps, prevState) {
+        
+        //=====================
+        // set as helper
+        //=====================
+        
+        const areaContextSetup = (areaPolygons) =>{
+            for (let poly in areaPolygons) {
+                
+                areaPolygons[poly].polygon.addListener('rightclick', e => {
+        
+                    if (this.state.areaContextMenu) this.state.areaContextMenu.setMap(null);
+                    
+                    const areaContextMenu = defineContextMenu(
+                            new window.google.maps.LatLng(e.latLng.lat(), e.latLng.lng()),
+                            'Edit'
+                        );
+                    
+                    //should set area context menu state to null here but then it triggers the poly click
+                    areaContextMenu.addListener('click', () => {
+                        areaContextMenu.setMap(null);
+                        areaPolygons[poly].polygon.setEditable(true);
+                        this.setState({ areaEditing: areaPolygons[poly]/*, areaContextMenu: null*/ });
+                    });
+                    
+                    areaContextMenu.setMap(this.state.map);
+                    
+                    this.setState({ areaContextMenu });
+                });
+                
+                areaPolygons[poly].polygon.addListener('click', e => {
+                    //map.fitBounds(areaPolygons[area._id].bounds))
+                    
+                    if (!this.state.areaContextMenu) {
+                        areaPolygons[poly].infowindow.open(this.state.map);
+                    } else {
+                        this.state.areaContextMenu.setMap(null);
+                        this.setState({ areaContextMenu: null });
+                    }
+                });
+                
+            }
+        };
+        
+        //=====================
+        
         if (!this.state.isInitialized) {
             const autocomplete = new window.google.maps.places.Autocomplete(document.getElementById('map-search'));
             //const groupPositions = {};
             //const groupMarkers = {};
             const areaPolygons = setAreas(this.props.areas, this.state.map);
+            
+            areaContextSetup(areaPolygons);
                 
             autocomplete.addListener('place_changed', () => {
                 let place = autocomplete.getPlace();
@@ -88,50 +136,26 @@ class MapIndex extends React.Component {
                 this.setState({ drawingModeActive: false, coords: e.overlay.getPath().getArray(), overlay: e.overlay });
             });
             
-            
-            /*this.props.areaGroups.forEach(group => {
-                let groupPolygons = [];
-                this.props.areas.forEach(area => {
-                    
-                    if (area.areaGroupId == group._id) {
-                        groupPolygons.push(areaPolygons[area._id]);
-                    }
-                });
-                groupPositions[group._id] = getGroupBounds(groupPolygons);
-            });
-            
-            for (let key in groupPositions) {
-                let marker = new window.google.maps.Marker({
-                    position: groupPositions[key].getCenter(),
-                    map: this.state.map,
-                    label: this.props.areaGroups.find(group => group._id == key).title
-                });
-                
-                marker.addListener('click', e => {
-                    this.state.map.fitBounds(groupPositions[key]);
-                });
-                
-                groupMarkers[key] = marker;
-            }*/
-            
             this.setState({
                 autocomplete,
                 areaPolygons,
                 drawingManager,
-                //groupMarkers,
                 isInitialized: true
             });
         }
         
         if (prevProps.areas !== this.props.areas) {
+            
             //clear map
             for (let poly in this.state.areaPolygons) {
                 this.state.areaPolygons[poly].polygon.setMap(null);
             }
             
-            this.setState({
-                areaPolygons: setAreas(this.props.areas, this.state.map)
-            });
+            const areaPolygons = setAreas(this.props.areas, this.state.map);
+            
+            areaContextSetup(areaPolygons);
+            
+            this.setState({ areaPolygons });
         }
         
         if (prevState.overlay !== this.state.overlay) {
@@ -145,24 +169,27 @@ class MapIndex extends React.Component {
                 this.state.overlay.addListener('rightclick', e => {
                     //add this stuff to the helper
                     
-                    if (this.state.contextMenu) this.state.contextMenu.setMap(null);
-                    const contextMenu = defineContextMenu(
+                    if (this.state.overlayContextMenu) this.state.overlayContextMenu.setMap(null);
+                    const overlayContextMenu = defineContextMenu(
                             new window.google.maps.LatLng(e.latLng.lat(), e.latLng.lng()),
                             'Reset'
                         );
                     
-                    contextMenu.addListener('click', () => {
-                        contextMenu.setMap(null);
+                    overlayContextMenu.addListener('click', () => {
+                        overlayContextMenu.setMap(null);
                         this.state.overlay.setMap(null);
                     });
                     
-                    contextMenu.setMap(this.state.map);
+                    overlayContextMenu.setMap(this.state.map);
                     
-                    this.setState({ contextMenu });
+                    this.setState({ overlayContextMenu });
                 });
                 
                 this.state.overlay.addListener('click', e => {
-                    if (this.state.contextMenu) this.state.contextMenu.setMap(null);
+                    if (this.state.overlayContextMenu) {
+                        this.state.overlayContextMenu.setMap(null);
+                        this.setState({ overlayContextMenu: null });
+                    }
                 });
                 
             }
@@ -204,7 +231,7 @@ class MapIndex extends React.Component {
     render() {
         const {
             props: { areaGroups, clearAreas, fetchAreas },
-            state: { drawingModeActive, areaNewFormShown, coords, groupSelected, contextMenuActive },
+            state: { drawingModeActive, areaNewFormShown, coords, groupSelected },
             goToGroup, toggleProp, closeCreateArea
         } = this;
         
@@ -226,9 +253,6 @@ class MapIndex extends React.Component {
                         fetchAreas={ fetchAreas }
                         groupSelected={ groupSelected }
                     />
-                    {/*<div className={ contextMenuActive ? 'overlay-menu' : 'invisible' } style={{ background: '#000' }}> 
-                        Clear
-                    </div>*/}
                     <h4>Go To Group</h4>
                     <select onChange={ (e) => goToGroup(e.target.value) }>
                         <option value="">Go to Group</option>
