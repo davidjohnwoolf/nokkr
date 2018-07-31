@@ -15,6 +15,7 @@ class MapIndex extends React.Component {
         this.state = {
             overlay: null,
             coords: null,
+            editCoords: null,
             areaPolygons: null,
             areaNewFormShown: false,
             drawingManager: null,
@@ -67,7 +68,7 @@ class MapIndex extends React.Component {
                     areaContextMenu.addListener('click', () => {
                         areaContextMenu.setMap(null);
                         areaPolygons[poly].polygon.setEditable(true);
-                        this.setState({ editableArea: areaPolygons[poly], editableAreaId: poly/*, areaContextMenu: null*/ });
+                        this.setState({ editableArea: areaPolygons[poly], editableAreaId: poly, editCoords: areaPolygons[poly].polygon.getPath().getArray()/*, areaContextMenu: null*/ });
                     });
                     
                     areaContextMenu.setMap(this.state.map);
@@ -207,7 +208,13 @@ class MapIndex extends React.Component {
         if (prevProps.mapType !== this.props.mapType) this.state.map.setMapTypeId(this.props.mapType);
         
         if (prevState.editableArea !== this.state.editableArea) {
-            //stuff?
+            if (this.state.editableArea) {
+                const setCoords = () => this.setState({ editCoords: this.state.editableArea.polygon.getPath().getArray() });
+            
+                window.google.maps.event.addListener(this.state.editableArea.polygon.getPath(), 'insert_at', setCoords);
+                window.google.maps.event.addListener(this.state.editableArea.polygon.getPath(), 'set_at', setCoords);
+                window.google.maps.event.addListener(this.state.editableArea.polygon.getPath(), 'remove_at', setCoords);
+            }
         }
     }
     
@@ -242,8 +249,8 @@ class MapIndex extends React.Component {
 
     render() {
         const {
-            props: { areaGroups, clearAreas, fetchAreas, areas },
-            state: { drawingModeActive, areaNewFormShown, coords, groupSelected, editableArea, editableAreaId },
+            props: { areaGroups, clearAreas, fetchAreas },
+            state: { drawingModeActive, areaNewFormShown, coords, editCoords, groupSelected, editableArea, editableAreaId },
             goToGroup, toggleProp, closeCreateArea, closeUpdateArea
         } = this;
         
@@ -265,8 +272,9 @@ class MapIndex extends React.Component {
                             groupSelected={ groupSelected }
                         />) : '' }
                     { editableArea ? (<AreaUpdate
-                            area={ areas.find(area => area._id == editableAreaId) }
-                            coords={ editableArea.polygon.getPath().getArray() } //set the right coords here
+                            id={ editableAreaId }
+                            coords={ editCoords }
+                            random={ Math.random() }
                             close={ closeUpdateArea }
                             clearAreas={ clearAreas }
                             fetchAreas={ fetchAreas }

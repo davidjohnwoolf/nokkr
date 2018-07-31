@@ -54,18 +54,21 @@ export const unique = args => {
 export const validate = (e, rules, fields, candidates, data) => {
     let formValid = true;
     let error;
-    let fieldType = (CHECKED in fields[e.target.name]) ? CHECKED : VALUE;
     
-    fields[e.target.name][fieldType] = e.target[fieldType];
-    
-    //handle target rules
-    rules[e.target.name].forEach(rule => {
-        let result = rule({ value: e.target[fieldType], field: e.target.name, candidates, data, fields });
+    if (e) {
+        let fieldType = (CHECKED in fields[e.target.name]) ? CHECKED : VALUE;
         
-        if (result) error = result;
-
-        fields[e.target.name].error = error;
-    });
+        fields[e.target.name][fieldType] = e.target[fieldType];
+        
+        //handle target rules
+        rules[e.target.name].forEach(rule => {
+            let result = rule({ value: e.target[fieldType], field: e.target.name, candidates, data, fields });
+            
+            if (result) error = result;
+    
+            fields[e.target.name].error = error;
+        });
+    }
     
     //handle all rules
     for (let field in fields ) {
@@ -84,6 +87,8 @@ export const validate = (e, rules, fields, candidates, data) => {
             }
         });
     }
+    
+    console.log(formValid)
     
     return { fields, formValid };
 };

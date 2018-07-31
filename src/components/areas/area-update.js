@@ -38,7 +38,6 @@ class AreaUpdate extends React.Component {
                 userId: { value: '', error: '' }
             },
             isLoading: true,
-            coords: null,
             formValid: false,
             areaGroupNewFormShown: false,
             userOptions: [['Assign User', '']],
@@ -55,8 +54,9 @@ class AreaUpdate extends React.Component {
         this.props.fetchUsers();
         this.props.fetchAreaGroups();
     }
-    
-    componentDidUpdate(prevProps, prevState) {
+
+    componentDidUpdate(prevProps) {
+        
         const {
             props: {
                 success,
@@ -68,14 +68,13 @@ class AreaUpdate extends React.Component {
                 fetchAreaGroups,
                 areaGroups,
                 //area passed in by area-index as props
-                area,
+                id,
+                areas,
                 users,
                 areaGroupId
             },
             state: { isLoading, fields }
         } = this;
-        
-        console.log(area)
         
         if (areaGroups && users && isLoading) {
             
@@ -97,18 +96,21 @@ class AreaUpdate extends React.Component {
             this.setState({
                 isLoading: false,
                 userOptions,
-                fields: initializeForm({ ...fields }, area),
+                fields: initializeForm({ ...fields }, areas.find(area => area._id === id)),
                 areaGroupOptions,
                 areaList
             })
         }
         
-        if (prevProps.coords !== this.props.coords) {
-            const fields = { ...this.state.fields };
+        if (this.props.coords !== this.state.fields.coords.value) {
+            const { props: { areas, id }, state: { fields }, validationRules } = this;
+            const newFields = { ...fields };
             
-            fields.coords.value = this.props.coords;
-            
-            this.setState({ fields });
+            newFields.coords.value = this.props.coords;
+
+            this.setState(
+                validate(null, validationRules, newFields, areas, areas.find(area => area._id === id))
+            );
         }
         
         if (prevProps.groupSelected !== this.props.groupSelected) {
@@ -153,10 +155,10 @@ class AreaUpdate extends React.Component {
     }
     
     handleUserInput(e) {
-        const { state: { fields, areaList }, validationRules } = this;
+        const { state: { fields }, props: { areas }, validationRules } = this;
         
         this.setState(
-            validate(e, validationRules, { ...fields }, areaList, null)
+            validate(e, validationRules, { ...fields }, areas, null)
         );
     }
     
@@ -165,7 +167,7 @@ class AreaUpdate extends React.Component {
         
         const { state: { fields }, props: { updateArea } } = this;
         
-        formSubmit({ fields: { ...fields }, action: updateArea });
+        formSubmit({ fields: { ...fields }, action: updateArea, id: this.props.id });
     }
     
     toggleProp(prop) {
