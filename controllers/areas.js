@@ -129,14 +129,14 @@ router.put('/:id', requireUser, excludeReadOnly, (req, res) => {
         let user;
         
         users.forEach(currentUser => {
-            let currentAreaIndex = user.areas.findIndex(area => area.id === req.params.areaId)
-            if (currentAreaIndex) {
+            let currentAreaIndex = currentUser.areas.findIndex(area => area.id === req.params.id);
+            if (currentAreaIndex >= 0) {
                 areaIndex = currentAreaIndex;
                 user = currentUser;
             }
         });
         
-        if (!areaIndex) return res.json({ status: ERROR, data: err, code: 404, message: 'Area not found' });
+        if (areaIndex <= -1) return res.json({ status: ERROR, data: err, code: 404, message: 'Area not found' });
         
         //manager and not own team or user and not own area
         if ((loggedInUser.role === MANAGER && (user.team != loggedInUser.team)) || (loggedInUser.role === USER && (loggedInUser.id != user.id))) {
@@ -144,7 +144,7 @@ router.put('/:id', requireUser, excludeReadOnly, (req, res) => {
         }
         
         for (let key in req.body) {
-        	user[areaIndex][key] = req.body[key];
+        	user.areas[areaIndex][key] = req.body[key];
         }
         
         user.save((err, user) => {
