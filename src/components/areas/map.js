@@ -167,18 +167,11 @@ class Map extends React.Component {
                                 return <option key={ area._id } value={ area._id }>{ area.title } ({ area.assignedUserName })</option>;
                             }) }
                         </select>
-                        <div className="button-group">
-                            <button onClick={ () => console.log('go to leads') } className="button primary">
-                                Area Leads <i className="fas fa-users"></i>
-                            </button>
-                            {
-                                !isReadOnly && role !== USER
-                                    ? (<Link className="button primary" to={ AREA_PATH + id + '/edit' }>
-                                        Edit Area <i className="fas fa-edit"></i>
-                                    </Link>)
-                                    : ''
-                            }
-                        </div>
+
+                        <button onClick={ () => console.log('go to leads') } className="button primary">
+                            View Leads List <i className="fas fa-users"></i>
+                        </button>
+
                     </section>
                 </Modal>
                 <Modal close={ toggleProp(LEAD_MODAL_SHOWN) } shown={ leadModalShown } title="Create Lead">
