@@ -22,7 +22,6 @@ class AreaIndex extends React.Component {
         props.clearAreaGroups();
         
         this.state = {
-            mapType: 'roadmap',
             isLoading: true,
             areaList: null,
             settingsModalShown: false,
@@ -41,7 +40,6 @@ class AreaIndex extends React.Component {
         this.toggleActive = this.toggleActive.bind(this);
         this.toggleProp = this.toggleProp.bind(this);
         this.toggleMapActive = this.toggleMapActive.bind(this);
-        this.setMapType = this.setMapType.bind(this);
     }
     
     componentDidMount() {
@@ -126,16 +124,12 @@ class AreaIndex extends React.Component {
         return () => this.setState({ [prop]: !this.state[prop] });
     }
     
-    setMapType(type) {
-        return () => this.setState({ mapType: type });
-    }
-    
     render() {
         
         const {
             props: { history, fetchAreas, clearAreas },
-            state: { sortSettings, isLoading, activeShown, areaCount, settingsModalShown, mapShown, areaGroups, areaList, mapType },
-            sortList, renderAreas, toggleActive, toggleProp, toggleMapActive, setMapType
+            state: { sortSettings, isLoading, activeShown, areaCount, settingsModalShown, mapShown, areaGroups, areaList },
+            sortList, renderAreas, toggleActive, toggleProp, toggleMapActive
         } = this;
         
         if (isLoading) return <Loading />;
@@ -197,7 +191,6 @@ class AreaIndex extends React.Component {
                 <MapIndex
                     areas={ areaList }
                     mapShown={ mapShown }
-                    mapType={ mapType }
                     areaGroups={ areaGroups }
                     fetchAreas={ fetchAreas }
                     clearAreas={ clearAreas }
@@ -208,11 +201,6 @@ class AreaIndex extends React.Component {
                 <Modal close={ toggleProp('settingsModalShown') } shown={ settingsModalShown } title="Area Settings">
 
                     <section className="area-settings">
-                        <div className={ `button-toggle ${ mapShown ? '' : 'invisible' }` }>
-                            <button onClick={ setMapType('roadmap') } className={ mapType === 'roadmap' ? 'active' : '' }>Roadmap</button>
-                            <button onClick={ setMapType('satellite') } className={ mapType === 'satellite' ? 'active' : '' }>Satellite</button>
-                            <button onClick={ setMapType('hybrid') } className={ mapType === 'hybrid' ? 'active' : '' }>Hybrid</button>
-                        </div>
                         
                         <div className="button-group">
                             <div className="toggle">

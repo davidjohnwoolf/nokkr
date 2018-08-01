@@ -25,7 +25,6 @@ class Map extends React.Component {
             settingsModalShown: false,
             leadModalShown: false,
             overlayShown: true,
-            mapType: 'roadmap',
             isInitialized: false,
             settingPosition: false,
             positionMarker: null,
@@ -36,7 +35,6 @@ class Map extends React.Component {
         
         
         this.toggleProp = this.toggleProp.bind(this);
-        this.setMapType = this.setMapType.bind(this);
         this.goToArea = this.goToArea.bind(this);
         this.setLocation = this.setLocation.bind(this);
         
@@ -52,7 +50,7 @@ class Map extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         const {
             props: { areas, id },
-            state: { map, mapType, overlayShown, isInitialized },
+            state: { map, overlayShown, isInitialized },
             toggleProp, constants: { LEAD_MODAL_SHOWN }
         } = this;
         
@@ -64,8 +62,6 @@ class Map extends React.Component {
             
             this.setState({ isInitialized: true, ...setArea({ googleMaps: window.google.maps, map, id, areas }) });
         }
-        
-        if (prevState.mapType !== mapType) this.state.map.setMapTypeId(mapType);
         
         if (prevProps.id !== this.props.id) {
             //clear current overlay
@@ -129,10 +125,6 @@ class Map extends React.Component {
         return () => this.setState({ [prop]: !this.state[prop] });
     }
     
-    setMapType(type) {
-        return () => this.setState({ mapType: type });
-    }
-    
     goToArea(e) {
         window.google.maps.event.trigger(this.state.map, 'center_changed');
         this.props.history.push(AREA_PATH + e.target.value);
@@ -141,8 +133,8 @@ class Map extends React.Component {
     render() {
         const {
             props: { id, areas, isReadOnly, role },
-            state: { settingsModalShown, locationActive, mapType, overlayShown, leadModalShown },
-            setLocation, toggleProp, setMapType, goToArea,
+            state: { settingsModalShown, locationActive, overlayShown, leadModalShown },
+            setLocation, toggleProp, goToArea,
             constants: { SETTINGS_MODAL_SHOWN, LEAD_MODAL_SHOWN, OVERLAY_SHOWN }
         } = this;
         
@@ -161,11 +153,6 @@ class Map extends React.Component {
                 
                 <Modal close={ toggleProp(SETTINGS_MODAL_SHOWN) } shown={ settingsModalShown } title="Area Settings">
                     <section className="area-settings">
-                        <div className="button-toggle">
-                            <button onClick={ setMapType('roadmap') } className={ mapType === 'roadmap' ? 'active' : '' }>Roadmap</button>
-                            <button onClick={ setMapType('satellite') } className={ mapType === 'satellite' ? 'active' : '' }>Satellite</button>
-                            <button onClick={ setMapType('hybrid') } className={ mapType === 'hybrid' ? 'active' : '' }>Hybrid</button>
-                        </div>
                         
                         <div className="toggle" onClick={ toggleProp(OVERLAY_SHOWN) }>
                             <label>Show Overlay</label>

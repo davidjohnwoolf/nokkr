@@ -56,6 +56,7 @@ export const createMap = googleMaps => {
         zoom: 4,
         disableDefaultUI: true,
         zoomControl: true,
+        mapTypeControl: true,
         streetViewControl: true,
         styles: mapStyles
     });

@@ -207,8 +207,6 @@ class MapIndex extends React.Component {
             if (this.state.drawingModeActive) this.setState({ areaNewFormShown: true });
         }
         
-        if (prevProps.mapType !== this.props.mapType) this.state.map.setMapTypeId(this.props.mapType);
-        
         if (prevState.editableArea !== this.state.editableArea) {
             if (this.state.editableArea) {
                 const setCoords = () => this.setState({ editCoords: this.state.editableArea.polygon.getPath().getArray() });
