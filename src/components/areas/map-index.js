@@ -77,6 +77,7 @@ class MapIndex extends React.Component {
                             editCoords: areaPolygons[poly].polygon.getPath().getArray(),
                             drawingModeActive: false,
                             areaNewFormShown: false,
+                            coords: null,
                             overlay: null
                             //, areaContextMenu: null
                         });
@@ -218,6 +219,7 @@ class MapIndex extends React.Component {
                 this.setState({
                     areaNewFormShown: true,
                     editableArea: null,
+                    editCoords: null,
                     editableAreaId: undefined
                 });
             }
