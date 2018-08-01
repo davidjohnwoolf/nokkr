@@ -66,6 +66,8 @@ class MapIndex extends React.Component {
                     
                     //should set area context menu state to null here but then it triggers the poly click
                     areaContextMenu.addListener('click', () => {
+                        if (this.state.editableArea) this.state.editableArea.polygon.setEditable(false);
+                        
                         areaContextMenu.setMap(null);
                         areaPolygons[poly].polygon.setEditable(true);
                         this.setState({ editableArea: areaPolygons[poly], editableAreaId: poly, editCoords: areaPolygons[poly].polygon.getPath().getArray()/*, areaContextMenu: null*/ });

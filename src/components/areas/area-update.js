@@ -113,6 +113,12 @@ class AreaUpdate extends React.Component {
             );
         }
         
+        if (prevProps.id!== this.props.id) {
+            this.setState({
+                fields: initializeForm({ ...fields }, areas.find(area => area._id === id)),
+            })
+        }
+        
         if (prevProps.groupSelected !== this.props.groupSelected) {
             const fields = { ...this.state.fields };
             
