@@ -88,8 +88,6 @@ export const validate = (e, rules, fields, candidates, data) => {
         });
     }
     
-    console.log(formValid)
-    
     return { fields, formValid };
 };
 
