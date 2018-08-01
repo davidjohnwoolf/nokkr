@@ -25,7 +25,7 @@ class AreaIndex extends React.Component {
             isLoading: true,
             areaList: null,
             settingsModalShown: false,
-            mapShown: false,
+            mapShown: true,
             areaGroups: null,
             areaCount: 0,
             activeShown: true,

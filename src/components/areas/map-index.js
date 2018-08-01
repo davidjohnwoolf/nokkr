@@ -56,7 +56,7 @@ class MapIndex extends React.Component {
             for (let poly in areaPolygons) {
                 
                 areaPolygons[poly].polygon.addListener('rightclick', e => {
-        
+                    
                     if (this.state.areaContextMenu) this.state.areaContextMenu.setMap(null);
                     
                     const areaContextMenu = defineContextMenu(
@@ -67,10 +67,19 @@ class MapIndex extends React.Component {
                     //should set area context menu state to null here but then it triggers the poly click
                     areaContextMenu.addListener('click', () => {
                         if (this.state.editableArea) this.state.editableArea.polygon.setEditable(false);
-                        
+                        if (this.state.overlay) this.state.overlay.setMap(null);
+                        if (this.state.drawingModeActive) this.state.drawingModeActive
                         areaContextMenu.setMap(null);
                         areaPolygons[poly].polygon.setEditable(true);
-                        this.setState({ editableArea: areaPolygons[poly], editableAreaId: poly, editCoords: areaPolygons[poly].polygon.getPath().getArray()/*, areaContextMenu: null*/ });
+                        this.setState({
+                            editableArea: areaPolygons[poly],
+                            editableAreaId: poly,
+                            editCoords: areaPolygons[poly].polygon.getPath().getArray(),
+                            drawingModeActive: false,
+                            areaNewFormShown: false,
+                            overlay: null
+                            //, areaContextMenu: null
+                        });
                     });
                     
                     areaContextMenu.setMap(this.state.map);
@@ -204,7 +213,14 @@ class MapIndex extends React.Component {
         if (prevState.drawingModeActive !== this.state.drawingModeActive) {
             const drawingMode = this.state.drawingModeActive ? window.google.maps.drawing.OverlayType.POLYGON : null;
             this.state.drawingManager.setDrawingMode(drawingMode);
-            if (this.state.drawingModeActive) this.setState({ areaNewFormShown: true });
+            if (this.state.drawingModeActive) {
+                if (this.state.editableArea) this.state.editableArea.polygon.setEditable(false);
+                this.setState({
+                    areaNewFormShown: true,
+                    editableArea: null,
+                    editableAreaId: undefined
+                });
+            }
         }
         
         if (prevState.editableArea !== this.state.editableArea) {
