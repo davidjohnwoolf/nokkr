@@ -167,11 +167,11 @@ class Map extends React.Component {
                                 return <option key={ area._id } value={ area._id }>{ area.title } ({ area.assignedUserName })</option>;
                             }) }
                         </select>
-
+                        
                         <button onClick={ () => console.log('go to leads') } className="button primary">
                             View Leads List <i className="fas fa-users"></i>
                         </button>
-
+                        
                     </section>
                 </Modal>
                 <Modal close={ toggleProp(LEAD_MODAL_SHOWN) } shown={ leadModalShown } title="Create Lead">
