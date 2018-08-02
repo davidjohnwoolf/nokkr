@@ -25,37 +25,29 @@ router.get('/', requireUser, (req, res) => {
     
     User.find(userQuery, (err, users) => {
         if (err) return res.json({ status: ERROR, data: err, message: 'Error finding users' });
-        
+
         Account.findOne({}, (err, account) => {
             if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
             
             let leads = [];
-
-            users.forEach(user => {
         
-                const updatedLeads = user.leads.map(lead => {
-                    
-                    let areaGroup = account.areaGroups.find(group => group.id == lead.areaGroupId);
-                    let leadTeam = account.teams.find(team => team.id == user.teamId);
-
-                    const newLead = Object.assign({
+            users.forEach(user => {
+                let team = account.teams.find(team => team.id == user.teamId);
+                
+                let userLeads = user.leads.map(lead => {
+                    return Object.create({
                         assignedUserName: user.firstName + ' ' + user.lastName,
                         userId: user._id,
-                        areaGroup,
-                        teamTitle: leadTeam ? leadTeam.title : '-'
+                        teamTitle: team ? team.title : '-'
                     }, lead._doc);
-                    
-                    return newLead;
                 });
                 
-                leads = leads.concat(updatedLeads);
+                leads = leads.concat(userLeads);
             });
             
             return res.json({ status: SUCCESS, data: { payload: leads } });
-            
         });
     });
-    
 });
 
 //create
@@ -81,7 +73,7 @@ router.post('/', requireManager, excludeReadOnly, (req, res) => {
                 status: SUCCESS,
                 data: {
                     message: 'Lead created',
-                    payload: user.leads.find(lead => lead.title === req.body.title).id
+                    payload: user.leads.find(lead => lead.address === req.body.address).id
                 }
             });
         });
@@ -115,7 +107,6 @@ router.get('/:id', requireUser, (req, res) => {
         
         return res.json({ status: SUCCESS, data: { payload: lead } });
     });
-
 });
 
 //update
@@ -129,7 +120,7 @@ router.put('/:id', requireUser, excludeReadOnly, (req, res) => {
         let user;
         
         users.forEach(currentUser => {
-            let currentLeadIndex = user.leads.findIndex(lead => lead.id === req.params.leadId)
+            let currentLeadIndex = user.leads.findIndex(lead => lead.id === req.params.leadId);
             if (currentLeadIndex) {
                 leadIndex = currentLeadIndex;
                 user = currentUser;
@@ -144,10 +135,10 @@ router.put('/:id', requireUser, excludeReadOnly, (req, res) => {
         }
         
         for (let key in req.body) {
-        	user[leadIndex][key] = req.body[key];
+        	user.leads[leadIndex][key] = req.body[key];
         }
         
-        user.save((err, user) => {
+        user.save(err => {
             if (err) {
                 return res.json({
                     status: ERROR,
