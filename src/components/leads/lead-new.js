@@ -2,19 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Loading from '../layout/loading';
-import ContentHeader from '../layout/content-header';
 //import IconLink from '../layout/icon-link';
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
-import FieldCheckbox from '../forms/field-checkbox';
-import SubmitBlock from '../forms/submit-block';
 
 import { createLead, clearLeads, fetchLeads } from '../../actions/leads.action';
 import { sendMessage } from '../../actions/flash.action';
 
-import { required, email, unique, validate, formSubmit } from '../helpers/forms';
-import { ADMIN, MANAGER, USER } from '../../../lib/constants';
-import { capitalize } from '../../../lib/functions';
+import { required, unique, validate, formSubmit } from '../helpers/forms';
 
 class LeadNew extends React.Component {
     
@@ -30,9 +25,9 @@ class LeadNew extends React.Component {
             city: [required],
             state: [required],
             zipcode: [required],
-            email: [email],
-            primaryPhone: [/*phone*/],
-            secondaryPhone: [/*phone*/]
+            email: [],
+            primaryPhone: [],
+            secondaryPhone: []
         });
         
         this.state = {
