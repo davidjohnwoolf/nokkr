@@ -10,6 +10,7 @@ import { createLead, clearLeads, fetchLeads } from '../../actions/leads.action';
 import { sendMessage } from '../../actions/flash.action';
 
 import { required, unique, validate, formSubmit } from '../helpers/forms';
+import stateArray from '../helpers/state-array';
 
 class LeadNew extends React.Component {
     
@@ -25,9 +26,12 @@ class LeadNew extends React.Component {
             city: [required],
             state: [required],
             zipcode: [required],
+            userId: [required],
             email: [],
             primaryPhone: [],
-            secondaryPhone: []
+            secondaryPhone: [],
+            lat: [required],
+            lng: [required]
         });
         
         this.state = {
@@ -40,7 +44,10 @@ class LeadNew extends React.Component {
                 zipcode: { value: '', error: '' },
                 email: { value: '', error: '' },
                 primaryPhone: { value: '', error: '' },
-                secondaryPhone: { value: '', error: '' }
+                secondaryPhone: { value: '', error: '' },
+                userId: { value: '', error: '' },
+                lat: { value: '', error: '' },
+                lng: { value: '', error: '' }
             },
             isLoading: true,
             uniqueCandidateList: null,
@@ -55,17 +62,58 @@ class LeadNew extends React.Component {
         this.props.fetchLeads();
     }
     
-    componentDidUpdate() {
+    componentDidUpdate(prevProps) {
         const {
-            props: { success, message, history, sendMessage, leadId, leads },
+            props: {
+                success,
+                message,
+                history,
+                sendMessage,
+                leadId,
+                leads,
+                sessionId,
+                address,
+                city,
+                state,
+                zipcode,
+                latLng,
+                hasAddress
+            },
             state: { isLoading }
         } = this;
         
         if (leads && isLoading) {
+            const fields = { ...this.state.fields };
+            
+            fields.userId.value = sessionId;
+            
             this.setState({
                 isLoading: false,
+                fields,
                 uniqueCandidateList: leads
             });
+        }
+        
+        if (prevProps.hasAddress !== hasAddress) {
+            const fields = { ...this.state.fields };
+            if (hasAddress) {
+            
+                fields.address.value = address;
+                fields.city.value = city;
+                fields.state.value = state;
+                fields.zipcode.value = zipcode;
+                fields.lat.value = latLng.lat();
+                fields.lng.value = latLng.lng();
+            } else {
+                for (let field in fields) {
+                    //clear fields
+                    if (field !== 'userId') {
+                        fields[field].value = '';
+                    }
+                }
+            }
+            
+            this.setState({ fields });
         }
         
         if (success) {
@@ -155,11 +203,7 @@ class LeadNew extends React.Component {
                         value={ state.value }
                         handleUserInput={ handleUserInput }
                         error={ state.error }
-                        options={[
-                            ['Select State', ''],
-                            ['Utah', 'Utah'],
-                            ['Oregon', 'Oregon']
-                        ]}
+                        options={ stateArray }
                     />
                     <FieldInput
                         name="zipcode"
@@ -180,7 +224,7 @@ class LeadNew extends React.Component {
                     <FieldInput
                         name="primaryPhone"
                         type="primaryPhone"
-                        placeholder="phone"
+                        placeholder="tel"
                         value={ primaryPhone.value }
                         handleUserInput={ handleUserInput }
                         error={ primaryPhone.error }
@@ -188,7 +232,7 @@ class LeadNew extends React.Component {
                     <FieldInput
                         name="secondaryPhone"
                         type="secondaryPhone"
-                        placeholder="phone"
+                        placeholder="tel"
                         value={ secondaryPhone.value }
                         handleUserInput={ handleUserInput }
                         error={ secondaryPhone.error }
@@ -206,7 +250,8 @@ const mapStateToProps = state => ({
     message: state.leads.message,
     leadId: state.leads.leadId,
     success: state.leads.success,
-    leads: state.leads.leads
+    leads: state.leads.leads,
+    sessionId: state.auth.sessionId
 });
 
 export default connect(mapStateToProps, { fetchLeads, clearLeads, createLead, sendMessage })(LeadNew);

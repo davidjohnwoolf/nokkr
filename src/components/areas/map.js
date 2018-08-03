@@ -22,12 +22,19 @@ class Map extends React.Component {
         
         this.state = {
             locationActive: false,
+            geocoder: null,
             settingsModalShown: false,
             leadModalShown: false,
             overlayShown: true,
             isInitialized: false,
             settingPosition: false,
             positionMarker: null,
+            newLeadMarker: null,
+            newLeadAddress: undefined,
+            newLeadCity: undefined,
+            newLeadState: undefined,
+            newLeadZipcode: undefined,
+            newLeadLatLng: null,
             map: null,
             areaPolygon: null,
             outerPolygon: null
@@ -44,7 +51,7 @@ class Map extends React.Component {
     
     componentDidMount() {
         //component must be mounted to reference the map element
-        this.setState({ map: createMap(window.google.maps) });
+        this.setState({ map: createMap(window.google.maps), geocoder: new window.google.maps.Geocoder });
     }
     
     componentDidUpdate(prevProps, prevState) {
@@ -56,8 +63,35 @@ class Map extends React.Component {
         
         if (!isInitialized) {
             
-            this.state.map.addListener('click', () => {
-                toggleProp(LEAD_MODAL_SHOWN)();
+            this.state.map.addListener('click', e => {
+                console.log(e.latLng.lng())
+                this.state.geocoder.geocode({ 'location': e.latLng }, (results, status) => {
+                    if (status === 'OK') {
+                        if (results[0]) {
+                            let marker = new window.google.maps.Marker({
+                                position: e.latLng,
+                                map: map
+                            });
+                            let addressInfo = results[0].address_components
+                            
+                            this.setState({
+                                newLeadMarker: marker,
+                                newLeadAddress: addressInfo[0].short_name + ' ' + addressInfo[1].short_name,
+                                newLeadCity: addressInfo[3].short_name,
+                                newLeadState: addressInfo[5].short_name,
+                                newLeadZipcode: addressInfo[7].short_name,
+                                newLeadLatLng: e.latLng,
+                                leadModalShown: true
+                            });
+                            
+                            console.log(this.state.newLeadAddress)
+                        } else {
+                            window.alert('No results found');
+                        }
+                    } else {
+                        window.alert('Geocoder failed due to: ' + status);
+                    }
+                });
             });
             
             this.setState({ isInitialized: true, ...setArea({ googleMaps: window.google.maps, map, id, areas }) });
@@ -68,6 +102,13 @@ class Map extends React.Component {
             this.state.outerPolygon.setMap(null);
             
             this.setState(setArea({ googleMaps: window.google.maps, map, id, areas }));
+        }
+        
+        if (prevState.leadModalShown !== this.state.leadModalShown) {
+            if (!this.state.leadModalShown) {
+                this.state.newLeadMarker.setMap(null);
+                this.setState({ newLeadMarker: null });
+            }
         }
         
         if (prevState.overlayShown !== overlayShown) {
@@ -132,8 +173,18 @@ class Map extends React.Component {
 
     render() {
         const {
-            props: { id, areas, isReadOnly, role },
-            state: { settingsModalShown, locationActive, overlayShown, leadModalShown },
+            props: { id, areas },
+            state: {
+                settingsModalShown,
+                locationActive,
+                overlayShown,
+                leadModalShown,
+                newLeadAddress,
+                newLeadCity,
+                newLeadState,
+                newLeadZipcode,
+                newLeadLatLng
+            },
             setLocation, toggleProp, goToArea,
             constants: { SETTINGS_MODAL_SHOWN, LEAD_MODAL_SHOWN, OVERLAY_SHOWN }
         } = this;
@@ -175,7 +226,16 @@ class Map extends React.Component {
                     </section>
                 </Modal>
                 <Modal close={ toggleProp(LEAD_MODAL_SHOWN) } shown={ leadModalShown } title="Create Lead">
-                    <LeadNew close={ toggleProp(LEAD_MODAL_SHOWN) } />
+                    { /* make hasAddress more intuitive and certain, leadmoModalShown may not be best */ }
+                    <LeadNew
+                        close={ toggleProp(LEAD_MODAL_SHOWN) }
+                        address={ newLeadAddress }
+                        city={ newLeadCity }
+                        state={ newLeadState }
+                        zipcode={ newLeadZipcode }
+                        latLng={ newLeadLatLng }
+                        hasAddress={ leadModalShown }
+                    />
                 </Modal>
             </div>
         );
