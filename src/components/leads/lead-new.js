@@ -108,6 +108,7 @@ class LeadNew extends React.Component {
                     city,
                     state,
                     zipcode,
+                    email,
                     primaryPhone,
                     secondaryPhone
                 }
