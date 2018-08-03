@@ -64,7 +64,6 @@ class Map extends React.Component {
         if (!isInitialized) {
             
             this.state.map.addListener('click', e => {
-                console.log(e.latLng.lng())
                 this.state.geocoder.geocode({ 'location': e.latLng }, (results, status) => {
                     if (status === 'OK') {
                         if (results[0]) {
@@ -84,7 +83,6 @@ class Map extends React.Component {
                                 leadModalShown: true
                             });
                             
-                            console.log(this.state.newLeadAddress)
                         } else {
                             window.alert('No results found');
                         }
