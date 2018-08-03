@@ -5,6 +5,7 @@ import flash from './flash.reducer';
 import areas from './areas.reducer';
 import areaGroups from './area-groups.reducer';
 import teams from './teams.reducer';
+import leads from './leads.reducer';
 
 export default combineReducers({
 	flash,
@@ -12,5 +13,6 @@ export default combineReducers({
 	users,
 	teams,
 	areas,
-	areaGroups
+	areaGroups,
+	leads
 });

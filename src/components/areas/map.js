@@ -5,7 +5,7 @@ import { getBounds, createMap, setArea, setPosition, locationError } from '../he
 import { AREA_PATH, USER } from '../../../lib/constants';
 
 import Modal from '../layout/modal';
-import FieldInput from '../forms/field-input';
+import LeadNew from '../leads/lead-new';
 
 //can you write your own react style listeners for maps?
 
@@ -175,32 +175,7 @@ class Map extends React.Component {
                     </section>
                 </Modal>
                 <Modal close={ toggleProp(LEAD_MODAL_SHOWN) } shown={ leadModalShown } title="Create Lead">
-                    <form>
-                        <FieldInput
-                            name="firstName"
-                            type="text"
-                            placeholder="first name"
-                        />
-                        <FieldInput
-                            name="lastName"
-                            type="text"
-                            placeholder="last name"
-                        />
-                        <FieldInput
-                            name="address"
-                            type="text"
-                            placeholder="address"
-                        />
-                        <div className="button-group">
-                            <button
-                                disabled="true"
-                                className="button success"
-                                type="submit">
-                                Create Lead
-                            </button>
-                            <a onClick={ toggleProp(LEAD_MODAL_SHOWN) } className="button cancel">Cancel</a>
-                        </div>
-                    </form>
+                    <LeadNew close={ toggleProp(LEAD_MODAL_SHOWN) } />
                 </Modal>
             </div>
         );
