@@ -17,12 +17,12 @@ export const fetchLead = id => {
     return fetchObject({ url: LEAD_PATH + id, type: FETCH_LEAD });
 };
 
-export const createLead = user => {
-    return createObject({ url: LEAD_PATH, type: CREATE_LEAD, body: user });
+export const createLead = lead => {
+    return createObject({ url: LEAD_PATH, type: CREATE_LEAD, body: lead });
 };
 
-export const updateLead = (id, user) => {
-    return updateObject({ url: LEAD_PATH + id, type: UPDATE_LEAD, body: user });
+export const updateLead = (id, lead) => {
+    return updateObject({ url: LEAD_PATH + id, type: UPDATE_LEAD, body: lead });
 };
 
 export const deleteLead = id => {
