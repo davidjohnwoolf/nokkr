@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 
 const Area = require('./area');
+const Lead = require('./lead');
 
 const UserSchema = new Schema({
     firstName: { type: String, required: true },
@@ -26,6 +27,7 @@ const UserSchema = new Schema({
     isReadOnly: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
     areas: [Area.schema],
+    leads: [Lead.schema],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date }
 });

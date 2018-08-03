@@ -8,7 +8,7 @@ const LeadSchema = new Schema({
     lastName: { type: String, required: true },
     lat: { type: String, required: true },
     lng: { type: String, required: true },
-    address: { type: String, required: true, unique: true },
+    address: { type: String, required: true, unique: true, sparse: true },
     city: { type: String, required: true },
     state: { type: String, required: true }, //enum states
     zipcode: { type: String, required: true }, //length validation

@@ -15,8 +15,9 @@ const AreaGroups = require('./controllers/area-groups');
 const Teams = require('./controllers/teams');
 const Users = require('./controllers/users');
 const Areas = require('./controllers/areas');
+const Leads = require('./controllers/leads');
 
-const { ACCOUNT_PATH, TEAM_PATH, USER_PATH, FIELD_PATH, STATUS_PATH, AREA_PATH, AREA_GROUP_PATH } = require('./lib/constants');
+const { ACCOUNT_PATH, TEAM_PATH, USER_PATH, FIELD_PATH, STATUS_PATH, AREA_PATH, AREA_GROUP_PATH, LEAD_PATH } = require('./lib/constants');
 
 //connect database
 if (process.env.NODE_ENV !== 'test') {
@@ -44,6 +45,7 @@ app.use(AREA_GROUP_PATH, AreaGroups);
 app.use(TEAM_PATH, Teams);
 app.use(USER_PATH, Users);
 app.use(AREA_PATH, Areas);
+app.use(LEAD_PATH, Leads);
 
 //start server
 app.listen(process.env.PORT || 8080, () => console.log('server listening...'));
