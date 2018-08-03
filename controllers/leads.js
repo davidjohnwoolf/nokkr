@@ -180,7 +180,7 @@ router.delete('/:id', requireAdmin, excludeReadOnly, (req, res) => {
         
         user.leads[leadIndex].remove();
         
-        return res.json({ status: SUCCESS, data: { message: 'User deleted' } });
+        return res.json({ status: SUCCESS, data: { message: 'Lead deleted' } });
         
     });
 });
