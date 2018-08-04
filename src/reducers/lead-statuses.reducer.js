@@ -11,10 +11,10 @@ export default function(state = {}, action) {
 
     switch (action.type) {
         case FETCH_LEAD_STATUS:
-            return { ...state, lead: action.payload };
+            return { ...state, leadStatus: action.payload };
         
         case FETCH_LEAD_STATUSES:
-            return { ...state, leads: action.payload };
+            return { ...state, leadStatuses: action.payload };
         
         case CREATE_LEAD_STATUS:
             return { ...state, success: true, message: action.message, leadStatusId: action.payload };
