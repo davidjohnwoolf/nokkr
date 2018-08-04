@@ -33,9 +33,10 @@ import UserEdit from './components/users/user-edit';
 import UserShow from './components/users/user-show';
 import UserIndex from './components/users/user-index';
 
-import AreaNew from './components/areas/area-new';
 import AreaIndex from './components/areas/area-index';
 import AreaShow from './components/areas/area-show';
+
+import LeadStatusIndex from './components/lead-statuses/lead-status-index';
 
 import AreaGroupShow from './components/area-groups/area-group-show';
 
@@ -84,7 +85,6 @@ ReactDOM.render(
             <Router>
                 <div>
                     <Header />
-                    { /* add state for menu, on/off, and move menu to header */ }
                     <Switch>
                         <Route exact path="/login" render={ () => (
                             <ErrorBoundary><Login /></ErrorBoundary>
@@ -100,15 +100,8 @@ ReactDOM.render(
                         <PrivateRoute exact path="/users/:id" component={ UserShow } />
                 		<PrivateRoute exact path="/users" access={ ADMIN } component={ UserIndex } />
                 		
-                		<PrivateRoute exact path="/areas/new" access={ MANAGER } writeAccess="true" component={ AreaNew } />
                 		<PrivateRoute exact path="/areas" access={ MANAGER } component={ AreaIndex } />
                 		<PrivateRoute exact path="/areas/:id" component={ AreaShow } />
-                		
-                        { /*<PrivateRoute exact path="/areas/:id/edit" access={ MANAGER } writeAccess="true" component={ AreaEdit } />
-                        <PrivateRoute exact path="/areas/:id" component={ AreaShow } />
-                		<PrivateRoute exact path="/areas" access={ MANAGER } component={ AreaIndex } /> */ }
-                		
-                		<PrivateRoute exact path="/area-groups/:id" access={ MANAGER } component={ AreaGroupShow } />
                 		
                 		<PrivateRoute exact path="/" permission="user" component={ Dashboard } />
                 		
