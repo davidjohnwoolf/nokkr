@@ -103,6 +103,8 @@ ReactDOM.render(
                 		<PrivateRoute exact path="/areas" access={ MANAGER } component={ AreaIndex } />
                 		<PrivateRoute exact path="/areas/:id" component={ AreaShow } />
                 		
+                		<PrivateRoute exact path="/lead-statuses" component={ LeadStatusIndex } />
+                		
                 		<PrivateRoute exact path="/" permission="user" component={ Dashboard } />
                 		
                 		<Route exact path="/not-authorized" render={ () => (
