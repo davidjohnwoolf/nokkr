@@ -22,7 +22,7 @@ router.get('/', requireAdmin, (req, res) => {
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
-        return res.json({ status: SUCCESS, data: { areas: account.leadStatuses } });
+        return res.json({ status: SUCCESS, data: { payload: account.leadStatuses } });
     });
 });
 
@@ -35,7 +35,7 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
         
         account.leadStatuses.push(new LeadStatus(req.body));
         
-        account.save(err => {
+        account.save((err, leadStatus) => {
             if (err) {
                 return res.json({
                     status: ERROR,
@@ -44,7 +44,7 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
                 });
             }
             
-            return res.json({ status: SUCCESS, data: { message: 'Status created' } });
+            return res.json({ status: SUCCESS, data: { message: 'Status created', payload: leadStatus.id } });
         });
     });
 });
@@ -60,7 +60,7 @@ router.get('/:id', requireAdmin, (req, res) => {
         
         if (!leadStatus) return res.json({ status: ERROR, code: 404, message: 'Status not found' });
         
-        return res.json({ status: SUCCESS, data: { leadStatus } });
+        return res.json({ status: SUCCESS, data: { payload: leadStatus } });
     });
 });
 
