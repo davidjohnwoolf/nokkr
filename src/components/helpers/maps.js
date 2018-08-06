@@ -187,16 +187,13 @@ export const defineContextMenu = (pos, title) => {
         
         onAdd() {
             this.getPanes().overlayMouseTarget.appendChild(this.menu);
-            
-            
         }
         
         draw() {
             let divPosition = this.getProjection().fromLatLngToDivPixel(this.position);
-    
+            
             this.menu.style.left = divPosition.x + 'px';
             this.menu.style.top = divPosition.y + 'px';
-    
         }
         
         onRemove() {

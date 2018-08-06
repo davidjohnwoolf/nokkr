@@ -8,11 +8,15 @@ const FieldSelect = ({ name, value, handleUserInput, error, options, message }) 
             <div className="select">
                 <select name={ name } value={ value } onChange={ event => handleUserInput(event) }>
                     { options.map(option => {
-                        return (
+                        return Array.isArray(option) ? (
                             <option key={ option[1] } value={ option[1] }>
                                 { option[0] }
         			        </option>
-                        );
+                        ) : (
+                            <option key={ option } value={ option }>
+                                { option }
+        			        </option>
+                        )
                     }) }
                 </select>
             </div>
