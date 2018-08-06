@@ -56,6 +56,8 @@ class LeadStatusIndex extends React.Component {
     renderLeadStatuses() {
         const { leadStatuses } = this.props;
         
+        leadStatuses.sort((a, b) => a.order > b.order);
+        
         return (
             leadStatuses.map(leadStatus => {
                 return (
