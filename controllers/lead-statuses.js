@@ -33,9 +33,17 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
+        let orderTaken = account.leadStatuses.find(leadStatus => req.body.order == leadStatus.order);
+        
+        if (orderTaken) {
+            account.leadStatuses.forEach((leadStatus, i) => {
+                if (leadStatus.order >= req.body.order) account.leadStatuses[i].order += 1;
+            });
+        }
+        
         account.leadStatuses.push(new LeadStatus(req.body));
         
-        account.save((err, leadStatus) => {
+        account.save((err, account) => {
             if (err) {
                 return res.json({
                     status: ERROR,
@@ -44,7 +52,13 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
                 });
             }
             
-            return res.json({ status: SUCCESS, data: { message: 'Status created', payload: leadStatus.id } });
+            return res.json({
+                status: SUCCESS,
+                data: {
+                    message: 'Status created',
+                    payload: account.leadStatuses.find(leadStatus => leadStatus.title === req.body.title).id
+                }
+            });
         });
     });
 });
