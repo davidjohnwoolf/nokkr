@@ -2,9 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { required, unique, validate, formSubmit } from '../helpers/forms';
+
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 import FieldColor from '../forms/field-color';
+
 import { createLeadStatus, fetchLeadStatuses, clearLeadStatuses } from '../../actions/lead-statuses.action';
 import { sendMessage } from '../../actions/flash.action';
 
@@ -36,22 +38,10 @@ class LeadStatusNew extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     
-    componentDidMount() {
-        this.props.fetchLeadStatuses();
-    }
-    
     componentDidUpdate() {
         const {
-            props: { success, message, sendMessage, leadStatuses },
-            state: { isLoading }
+            props: { success, message, sendMessage },
         } = this;
-        
-        if (leadStatuses && isLoading) {
-            
-            this.setState({
-                isLoading: false
-            });
-        }
         
         if (success) {
             sendMessage(message);
@@ -78,7 +68,11 @@ class LeadStatusNew extends React.Component {
     }
     
     render() {
-        const {state: { fields: { title, type, order, color }, formValid }, handleUserInput, handleSubmit } = this;
+        const {
+            state: { fields: { title, type, order, color }, formValid },
+            props: { orderOptions },
+            handleUserInput, handleSubmit
+        } = this;
         
         //make const and add to lib including for model
         const typeOptions = ['Uncontacted', 'Contacted', 'Qualified', 'Sold', 'No Sale'];
@@ -110,13 +104,12 @@ class LeadStatusNew extends React.Component {
                         handleUserInput={ handleUserInput }
                         error={ color.error }
                     />
-                    <FieldInput
+                    <FieldSelect
                         name="order"
-                        type="number"
-                        placeholder="order"
                         value={ order.value }
                         handleUserInput={ handleUserInput }
                         error={ order.error }
+                        options={ orderOptions }
                     />
     
                     <button
@@ -133,8 +126,8 @@ class LeadStatusNew extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    leadStatuses: state.leadStatuses.leadStatuses,
-    message: state.leadStatuses.message
+    message: state.leadStatuses.message,
+    success: state.leadStatuses.success
 });
 
 export default connect(mapStateToProps, { createLeadStatus, clearLeadStatuses, fetchLeadStatuses, sendMessage })(LeadStatusNew);

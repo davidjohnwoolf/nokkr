@@ -36,7 +36,21 @@ class LeadStatusIndex extends React.Component {
             state: { isLoading }
         } = this;
         
-        if (leadStatuses && isLoading) this.setState({ isLoading: false });
+        if (leadStatuses && isLoading) {
+            
+            const orderOptions = [];
+            
+            leadStatuses.forEach(leadStatus => {
+                orderOptions.push(leadStatus.order);
+            });
+            
+            orderOptions.sort();
+            
+            orderOptions.push(orderOptions[orderOptions.length - 1] + 1);
+            orderOptions.unshift(['Select Order', '']);
+            
+            this.setState({ isLoading: false, orderOptions });
+        }
     }
 	
     renderLeadStatuses() {
@@ -71,8 +85,8 @@ class LeadStatusIndex extends React.Component {
     
     render() {
         const {
-            props: { isReadOnly, history },
-            state: { isLoading },
+            props: { isReadOnly, history, leadStatuses },
+            state: { isLoading, orderOptions },
             renderLeadStatuses
         } = this;
         
@@ -93,7 +107,7 @@ class LeadStatusIndex extends React.Component {
                     shown={ this.state.newModalShown }
                     title="Create Lead Status"
                 >
-                    <LeadStatusNew close={ this.toggleProp('newModalShown') } />
+                    <LeadStatusNew close={ this.toggleProp('newModalShown') } leadStatuses={ leadStatuses } orderOptions={ orderOptions } />
                 </Modal>
             </main>
         );
