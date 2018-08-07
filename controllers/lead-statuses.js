@@ -33,9 +33,9 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
-        let orderTaken = account.leadStatuses.find(leadStatus => req.body.order == leadStatus.order);
+        let statusWithOrder = account.leadStatuses.find(leadStatus => req.body.order == leadStatus.order);
         
-        if (orderTaken) {
+        if (statusWithOrder) {
             account.leadStatuses.forEach((leadStatus, i) => {
                 if (leadStatus.order >= req.body.order) account.leadStatuses[i].order += 1;
             });
@@ -85,7 +85,37 @@ router.put('/:id', requireAdmin, excludeReadOnly, (req, res) => {
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
-        const leadStatusIndex = account.leadStatuses.findIndex(leadStatus => leadStatus.id === req.params.id);
+        let statusWithOrderIndex = account.leadStatuses.findIndex(leadStatus => ((req.body.title !== leadStatus.title) && (req.body.order == leadStatus.order)));
+        
+        const leadStatusIndex = account.leadStatuses.findIndex(leadStatus => leadStatus.id == req.params.id);
+        
+        console.log('lead status index', leadStatusIndex)
+        
+        console.log('status with order', statusWithOrderIndex);
+        
+        if (statusWithOrderIndex) {
+            if (req.body.order > account.leadStatuses[leadStatusIndex].order) {
+                account.leadStatuses.forEach((leadStatus, i) => {
+                    if (
+                        (leadStatus.order > account.leadStatuses[leadStatusIndex].order)
+                        && (leadStatus.order <= req.body.order)
+                        && (leadStatus.id != req.params.id)
+                    ) {
+                        account.leadStatuses[i].order = account.leadStatuses[i].order - 1;
+                    }
+                });
+            } else {
+                account.leadStatuses.forEach((leadStatus, i) => {
+                    if (
+                        (leadStatus.order < account.leadStatuses[leadStatusIndex].order)
+                        && (leadStatus.order >= req.body.order)
+                        && (leadStatus.id != req.params.id)
+                    ) {
+                        account.leadStatuses[i].order += 1;
+                    }
+                });
+            }
+        }
         
         if (leadStatusIndex < 0) return res.json({ status: ERROR, code: 404, message: 'Status not found' });
         
