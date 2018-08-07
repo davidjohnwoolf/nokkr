@@ -6,6 +6,7 @@ import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
 import { fetchLeadStatuses } from '../../actions/lead-statuses.action';
 
 import LeadStatusNew from '../lead-statuses/lead-status-new';
+import LeadStatusEdit from '../lead-statuses/lead-status-edit';
 
 import Modal from '../layout/modal';
 import Loading from '../layout/loading';
@@ -27,22 +28,30 @@ class LeadStatusIndex extends React.Component {
         
         this.renderLeadStatuses = this.renderLeadStatuses.bind(this);
         this.setEditable = this.setEditable.bind(this);
+        this.resetEditable = this.resetEditable.bind(this);
         this.toggleProp = this.toggleProp.bind(this);
+        this.decreaseStatusOrder = this.decreaseStatusOrder.bind(this);
+        this.increaseStatusOrder = this.increaseStatusOrder.bind(this);
     }
     
     componentDidMount() {
         this.props.fetchLeadStatuses();
     }
     
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         const {
             props: { leadStatuses },
             state: { isLoading }
         } = this;
         
         if (leadStatuses && isLoading) {
-            const sortedStatuses = [...leadStatuses];
+            const sortedStatuses = [];
+            
             const orderOptions = [['Select Order', '']];
+            
+            leadStatuses.forEach(status => {
+                sortedStatuses.push(Object.create(status));
+            });
             
             sortedStatuses.sort((a, b) => a.order - b.order);
             
@@ -51,13 +60,15 @@ class LeadStatusIndex extends React.Component {
             orderOptions.push(orderOptions[orderOptions.length - 1] + 1);
             
             this.setState({ isLoading: false, sortedStatuses, orderOptions });
-            
-            console.log(this.state.orderOptions)
         }
         
         if (!isLoading && (prevProps.leadStatuses !== this.props.leadStatuses)) {
-            const sortedStatuses = [...leadStatuses];
+            const sortedStatuses = [];
             const orderOptions = [['Select Order', '']];
+            
+            leadStatuses.forEach(status => {
+                sortedStatuses.push(Object.create(status));
+            });
             
             sortedStatuses.sort((a, b) => a.order - b.order);
             
@@ -72,33 +83,75 @@ class LeadStatusIndex extends React.Component {
     setEditable(id) {
         this.setState({ editableStatusId: id });
     }
+    
+    resetEditable() {
+        //reset order
+        const sortedStatuses = [];
+        
+        this.props.leadStatuses.forEach(status => {
+            sortedStatuses.push(Object.create(status));
+        });
+        
+        sortedStatuses.sort((a, b) => a.order - b.order);
+        
+        this.setState({ editableStatusId: undefined, sortedStatuses });
+    }
+    
+    decreaseStatusOrder(id) {
+        const tempStatuses = [...this.state.sortedStatuses];
+        
+        const statusOrder = tempStatuses.find(status => status._id === id).order;
+        
+        tempStatuses.forEach(status => {
+            if (status._id === id) {
+                status.order = status.order - 1;
+            } else if (status.order === statusOrder - 1) {
+                status.order = status.order + 1;
+            }
+        });
+        
+        tempStatuses.sort((a, b) => a.order - b.order);
+        
+        this.setState({ sortedStatuses: tempStatuses });
+    }
+    
+    increaseStatusOrder(id) {
+        const tempStatuses = [...this.state.sortedStatuses];
+        
+        const statusOrder = tempStatuses.find(status => status._id === id).order;
+        
+        tempStatuses.forEach(status => {
+            if (status._id === id) {
+                status.order = status.order + 1;
+            } else if (status.order === statusOrder + 1) {
+                status.order = status.order - 1;
+            }
+        });
+        
+        tempStatuses.sort((a, b) => a.order - b.order);
+        
+        this.setState({ sortedStatuses: tempStatuses });
+    }
 	
     renderLeadStatuses() {
-        const { state: { sortedStatuses, editableStatusId }, setEditable } = this;
+        const {
+            state: { sortedStatuses, editableStatusId, orderOptions },
+            setEditable, resetEditable, decreaseStatusOrder, increaseStatusOrder
+        } = this;
         
         return (
             sortedStatuses.map(leadStatus => {
                 if (editableStatusId === leadStatus._id) {
                     return (
-                        <tr key={ leadStatus._id }>
-                            <td>
-                                <i className="fas fa-caret-up"></i>
-                                <i className="fas fa-caret-down"></i>
-                            </td>
-                            <td>
-                                <i style={{ color: leadStatus.color }} className="fas fa-home"></i>
-                                <input type="text" value={ leadStatus.title } />
-                            </td>
-                            <td>
-                                <select value={ leadStatus.type }>
-                                    <option>{ leadStatus.type }</option>
-                                </select>
-                            </td>
-                            <td>
-                                <i onClick={ () => console.log('cancel') } className="fas fa-times"></i>
-                                <i onClick={ () => console.log('save') } className="fas fa-check"></i>
-                            </td>
-                        </tr>
+                        <LeadStatusEdit
+                            key={ leadStatus._id }
+                            decreaseStatusOrder={ decreaseStatusOrder }
+                            increaseStatusOrder={ increaseStatusOrder }
+                            close={ resetEditable }
+                            leadStatus={ leadStatus }
+                            sortedStatuses={ sortedStatuses }
+                            orderOptions={ orderOptions }
+                        />
                     );
                 } else {
                     return (

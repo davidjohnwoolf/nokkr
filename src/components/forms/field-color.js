@@ -6,7 +6,7 @@ const FieldColor = ({ name, label, value, handleUserInput, error, message }) => 
         <div className="field">
             <small className={ message ? 'input-message' : 'invisible' }>{ message }</small>
             <div className="color-picker">
-                <label>{ label }</label>
+                { label ? <label>{ label }</label> : '' }
                 <input
                     className={ error ? 'input-error' : '' }
                     name={ name }

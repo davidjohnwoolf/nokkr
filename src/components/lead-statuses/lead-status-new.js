@@ -44,10 +44,10 @@ class LeadStatusNew extends React.Component {
     
     componentDidUpdate() {
         const {
-            props: { success, message, sendMessage, fetchLeadStatuses, close, clearLeadStatuses, deleted },
+            props: { success, message, sendMessage, fetchLeadStatuses, close, clearLeadStatuses, created },
         } = this;
         
-        if (success  && !deleted) {
+        if (success && created) {
             sendMessage(message);
             close();
             clearLeadStatuses();
@@ -133,7 +133,8 @@ class LeadStatusNew extends React.Component {
 
 const mapStateToProps = state => ({
     message: state.leadStatuses.message,
-    success: state.leadStatuses.success
+    success: state.leadStatuses.success,
+    created: state.leadStatuses.created
 });
 
 export default connect(mapStateToProps, { createLeadStatus, clearLeadStatuses, fetchLeadStatuses, sendMessage })(LeadStatusNew);
