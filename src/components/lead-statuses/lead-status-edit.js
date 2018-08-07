@@ -109,8 +109,8 @@ class LeadStatusEdit extends React.Component {
                 <td colSpan="4">
                     <form className="inline-form" style={{ display: 'flex', justifyContent: 'space-between' }} onSubmit={ handleSubmit }>
 
-                            <i onClick={ () => increaseOrder(leadStatus._id) } style={{ fontSize: '3rem' }} className="fas fa-caret-down"></i>
-                            <i onClick={ () => decreaseOrder(leadStatus._id) } style={{ fontSize: '3rem' }} className="fas fa-caret-up"></i>
+                            <i onClick={ () => increaseOrder(leadStatus._id) } style={{ fontSize: '3rem', marginTop: '.75rem' }} className="fas fa-caret-down"></i>
+                            <i onClick={ () => decreaseOrder(leadStatus._id) } style={{ fontSize: '3rem', marginTop: '.75rem' }} className="fas fa-caret-up"></i>
 
                         <FieldColor
                             name="color"
@@ -135,17 +135,23 @@ class LeadStatusEdit extends React.Component {
                         />
         
                         <button
-                            style={{ padding: '2rem', background: '#10a887', color: '#fff', border: 'none', cursor: 'pointer' }}
+                            style={{ marginTop: '1rem', padding: '1rem', height: '3.5rem', background: '#10a887', color: '#fff', border: 'none', cursor: 'pointer' }}
                             disabled={ !formValid }
                             type="submit"
                         >
-                            <i style={{ fontSize: '2rem'}} className="fas fa-check"></i>
+                            <i style={{ fontSize: '1.5rem'}} className="fas fa-check"></i>
                         </button>
                         <span
-                            style={{ padding: '2rem', background: '#999', color: '#fff', border: 'none', cursor: 'pointer' }}
+                            style={{ marginTop: '1rem', padding: '1rem', height: '3.5rem', background: '#999', color: '#fff', border: 'none', cursor: 'pointer' }}
                             onClick={ this.props.close }
                         >
-                            <i style={{ fontSize: '2rem'}} className="fas fa-times"></i>
+                            <i style={{ fontSize: '1.5rem'}} className="fas fa-times"></i>
+                        </span>
+                        <span
+                            style={{ marginTop: '1rem', padding: '1rem', height: '3.5rem', background: '#da3c3c', color: '#fff', border: 'none', cursor: 'pointer' }}
+                            onClick={ () => console.log('delete it') }
+                        >
+                            <i style={{ fontSize: '1.5rem'}} className="fas fa-trash"></i>
                         </span>
                     </form>
                 </td>
