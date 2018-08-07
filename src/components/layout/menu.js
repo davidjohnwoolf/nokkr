@@ -72,7 +72,7 @@ class Menu extends React.Component {
                                 <h5>Admin Options</h5>
                                 <ul>
                                     <li>
-                                        <Link onClick={ showMenu } to="/new">Dealer Account <i className="fas fa-cog"></i></Link>
+                                        <Link onClick={ showMenu } to="/lead-statuses">Account Settings <i className="fas fa-cog"></i></Link>
                                     </li>
                                     <li>
                                         <Link onClick={ showMenu } to="/teams">Team Management <i className="fas fa-users"></i></Link>
