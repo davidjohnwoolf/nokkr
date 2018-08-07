@@ -24,7 +24,14 @@ class LeadStatusNew extends React.Component {
             order: [required]
         });
         
-        this.state = {
+        this.state = this.getInitialState();
+
+        this.handleUserInput = this.handleUserInput.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    
+    getInitialState() {
+        return {
             fields: {
                 title: { value: '', error: '' },
                 type: { value: '', error: '' },
@@ -32,29 +39,28 @@ class LeadStatusNew extends React.Component {
                 color: { value: '#1e80c6', error: '' }
             },
             formValid: false
-        };
-
-        this.handleUserInput = this.handleUserInput.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        }
     }
     
     componentDidUpdate() {
         const {
-            props: { success, message, sendMessage },
+            props: { success, message, sendMessage, fetchLeadStatuses, close, clearLeadStatuses, deleted },
         } = this;
         
-        if (success) {
+        if (success  && !deleted) {
             sendMessage(message);
-            this.props.close();
-            this.props.clearLeadStatuses();
+            close();
+            clearLeadStatuses();
+            fetchLeadStatuses();
+            this.setState(this.getInitialState());
         }
     }
 
     handleUserInput(e) {
-        const { state: { fields }, props: { leadStatuses }, validationRules } = this
+        const { state: { fields }, props: { sortedStatuses }, validationRules } = this
         
         this.setState(
-            validate(e, validationRules, { ...fields }, leadStatuses, null)
+            validate(e, validationRules, { ...fields }, sortedStatuses, null)
         );
     }
     
@@ -75,7 +81,7 @@ class LeadStatusNew extends React.Component {
         } = this;
         
         //make const and add to lib including for model
-        const typeOptions = ['Uncontacted', 'Contacted', 'Qualified', 'Sold', 'No Sale'];
+        const typeOptions = [['Select a Type', ''], 'Uncontacted', 'Contacted', 'Qualified', 'Sold', 'No Sale'];
         
         //meant to render in modal
         return (

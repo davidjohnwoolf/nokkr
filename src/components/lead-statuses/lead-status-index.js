@@ -19,10 +19,14 @@ class LeadStatusIndex extends React.Component {
         
         this.state = {
             isLoading: true,
-            newModalShown: false
+            newModalShown: false,
+            orderOptions: null,
+            sortedStatuses: null,
+            editableStatusId: undefined
         };
         
         this.renderLeadStatuses = this.renderLeadStatuses.bind(this);
+        this.setEditable = this.setEditable.bind(this);
         this.toggleProp = this.toggleProp.bind(this);
     }
     
@@ -30,53 +34,90 @@ class LeadStatusIndex extends React.Component {
         this.props.fetchLeadStatuses();
     }
     
-    componentDidUpdate() {
+    componentDidUpdate(prevProps) {
         const {
             props: { leadStatuses },
             state: { isLoading }
         } = this;
         
         if (leadStatuses && isLoading) {
+            const sortedStatuses = [...leadStatuses];
+            const orderOptions = [['Select Order', '']];
             
-            const orderOptions = [];
+            sortedStatuses.sort((a, b) => a.order - b.order);
             
-            leadStatuses.forEach(leadStatus => {
-                orderOptions.push(leadStatus.order);
-            });
-            
-            orderOptions.sort();
+            sortedStatuses.forEach(leadStatus => orderOptions.push(leadStatus.order));
             
             orderOptions.push(orderOptions[orderOptions.length - 1] + 1);
-            orderOptions.unshift(['Select Order', '']);
             
-            this.setState({ isLoading: false, orderOptions });
+            this.setState({ isLoading: false, sortedStatuses, orderOptions });
+            
+            console.log(this.state.orderOptions)
         }
+        
+        if (!isLoading && (prevProps.leadStatuses !== this.props.leadStatuses)) {
+            const sortedStatuses = [...leadStatuses];
+            const orderOptions = [['Select Order', '']];
+            
+            sortedStatuses.sort((a, b) => a.order - b.order);
+            
+            sortedStatuses.forEach(leadStatus => orderOptions.push(leadStatus.order));
+            
+            orderOptions.push(orderOptions[orderOptions.length - 1] + 1);
+            
+            this.setState({ sortedStatuses, orderOptions });
+        }
+    }
+    
+    setEditable(id) {
+        this.setState({ editableStatusId: id });
     }
 	
     renderLeadStatuses() {
-        const { leadStatuses } = this.props;
-        
-        leadStatuses.sort((a, b) => a.order > b.order);
+        const { state: { sortedStatuses, editableStatusId }, setEditable } = this;
         
         return (
-            leadStatuses.map(leadStatus => {
-                return (
-                    //I think you need to create a doc for the db to add ids since you manually entered them
-                    <tr key={ leadStatus._id }>
-                        <td>
-                            <i className="fas fa-sort"></i>
-                        </td>
-                        <td>
-                            <i style={{ color: leadStatus.color }} className="fas fa-home"></i>
-                        </td>
-                        <td>
-                            { leadStatus.title }
-                        </td>
-                        <td>
-                            { leadStatus.type }
-                        </td>
-                    </tr>
-                );
+            sortedStatuses.map(leadStatus => {
+                if (editableStatusId === leadStatus._id) {
+                    return (
+                        <tr key={ leadStatus._id }>
+                            <td>
+                                <i className="fas fa-caret-up"></i>
+                                <i className="fas fa-caret-down"></i>
+                            </td>
+                            <td>
+                                <i style={{ color: leadStatus.color }} className="fas fa-home"></i>
+                                <input type="text" value={ leadStatus.title } />
+                            </td>
+                            <td>
+                                <select value={ leadStatus.type }>
+                                    <option>{ leadStatus.type }</option>
+                                </select>
+                            </td>
+                            <td>
+                                <i onClick={ () => console.log('cancel') } className="fas fa-times"></i>
+                                <i onClick={ () => console.log('save') } className="fas fa-check"></i>
+                            </td>
+                        </tr>
+                    );
+                } else {
+                    return (
+                        <tr key={ leadStatus._id }>
+                            <td>
+                                <i style={{ color: leadStatus.color }} className="fas fa-home"></i>
+                            </td>
+                            <td>
+                                { leadStatus.title }
+                            </td>
+                            <td>
+                                { leadStatus.type }
+                            </td>
+                            <td onClick={ () => setEditable(leadStatus._id) }>
+                                <i className="fas fa-edit"></i>
+                            </td>
+                        </tr>
+                    );
+                }
             })
         );
     }
@@ -87,8 +128,8 @@ class LeadStatusIndex extends React.Component {
     
     render() {
         const {
-            props: { isReadOnly, history, leadStatuses },
-            state: { isLoading, orderOptions },
+            props: { isReadOnly, history },
+            state: { isLoading, orderOptions, sortedStatuses },
             renderLeadStatuses
         } = this;
         
@@ -109,7 +150,11 @@ class LeadStatusIndex extends React.Component {
                     shown={ this.state.newModalShown }
                     title="Create Lead Status"
                 >
-                    <LeadStatusNew close={ this.toggleProp('newModalShown') } leadStatuses={ leadStatuses } orderOptions={ orderOptions } />
+                    <LeadStatusNew
+                        close={ this.toggleProp('newModalShown') }
+                        sortedStatuses={ sortedStatuses }
+                        orderOptions={ orderOptions }
+                    />
                 </Modal>
             </main>
         );
