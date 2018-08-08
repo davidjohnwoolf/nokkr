@@ -58,7 +58,7 @@ class Map extends React.Component {
         const {
             props: { areas, id },
             state: { map, overlayShown, isInitialized },
-            toggleProp, constants: { LEAD_MODAL_SHOWN }
+            constants: { LEAD_MODAL_SHOWN }
         } = this;
         
         if (!isInitialized) {
@@ -71,14 +71,27 @@ class Map extends React.Component {
                                 position: e.latLng,
                                 map: map
                             });
-                            let addressInfo = results[0].address_components
+                            
+                            let streetNumber;
+                            let street;
+                            let city;
+                            let state;
+                            let zipcode;
+                            
+                            results[0].address_components.forEach(component => {
+                                if (component.types.includes('street_number')) streetNumber = component.short_name || component.long_name;
+                                if (component.types.includes('route')) street = component.short_name || component.long_name;
+                                if (component.types.includes('locality')) city = component.short_name || component.long_name;
+                                if (component.types.includes('administrative_area_level_1')) state = component.short_name || component.long_name;
+                                if (component.types.includes('postal_code')) zipcode = component.short_name || component.long_name;
+                            });
                             
                             this.setState({
                                 newLeadMarker: marker,
-                                newLeadAddress: addressInfo[0].short_name + ' ' + addressInfo[1].short_name,
-                                newLeadCity: addressInfo[3].short_name,
-                                newLeadState: addressInfo[5].short_name,
-                                newLeadZipcode: addressInfo[7].short_name,
+                                newLeadAddress: streetNumber && street ? streetNumber + ' ' + street : '',
+                                newLeadCity: city || '',
+                                newLeadState: state || '',
+                                newLeadZipcode: zipcode || '',
                                 newLeadLatLng: e.latLng,
                                 leadModalShown: true
                             });
