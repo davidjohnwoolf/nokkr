@@ -16,7 +16,7 @@ const LeadSchema = new Schema({
     primaryPhone: { type: String }, //phone validation
     secondaryPhone: { type: String }, //phone validation
     areaId: { type: Schema.Types.ObjectId },
-    status: { type: Schema.Types.ObjectId },
+    leadStatus: { type: Schema.Types.ObjectId },
     //customFields: [Schema.Types.Mixed],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date }

@@ -6,6 +6,7 @@ import Loading from '../layout/loading';
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 
+import { fetchLeadStatuses } from '../../actions/lead-statuses.action';
 import { createLead, clearLeads, fetchLeads } from '../../actions/leads.action';
 import { sendMessage } from '../../actions/flash.action';
 
@@ -30,6 +31,7 @@ class LeadNew extends React.Component {
             email: [],
             primaryPhone: [],
             secondaryPhone: [],
+            leadStatus: [required],
             lat: [required],
             lng: [required]
         });
@@ -45,12 +47,14 @@ class LeadNew extends React.Component {
                 email: { value: '', error: '' },
                 primaryPhone: { value: '', error: '' },
                 secondaryPhone: { value: '', error: '' },
+                leadStatus: { value: '', error: '' },
                 userId: { value: '', error: '' },
                 lat: { value: '', error: '' },
                 lng: { value: '', error: '' }
             },
             isLoading: true,
             uniqueCandidateList: null,
+            leadStatusOptions: null,
             formValid: false
         };
 
@@ -60,6 +64,7 @@ class LeadNew extends React.Component {
     
     componentDidMount() {
         this.props.fetchLeads();
+        this.props.fetchLeadStatuses();
     }
     
     componentDidUpdate(prevProps) {
@@ -77,19 +82,27 @@ class LeadNew extends React.Component {
                 state,
                 zipcode,
                 latLng,
-                hasAddress
+                hasAddress,
+                leadStatuses
             },
             state: { isLoading }
         } = this;
         
-        if (leads && isLoading) {
+        if (leads && leadStatuses && isLoading) {
             const fields = { ...this.state.fields };
             
             fields.userId.value = sessionId;
             
+            const leadStatusOptions = [['Select a Status']];
+            
+            leadStatuses.forEach(status => {
+                leadStatusOptions.push([status.title, status._id])
+            })
+            
             this.setState({
                 isLoading: false,
                 fields,
+                leadStatusOptions,
                 uniqueCandidateList: leads
             });
         }
@@ -144,6 +157,7 @@ class LeadNew extends React.Component {
             state: {
                 formValid,
                 isLoading,
+                leadStatusOptions,
                 fields: {
                     firstName,
                     lastName,
@@ -153,7 +167,8 @@ class LeadNew extends React.Component {
                     zipcode,
                     email,
                     primaryPhone,
-                    secondaryPhone
+                    secondaryPhone,
+                    leadStatus
                 }
             },
             handleSubmit,
@@ -165,7 +180,14 @@ class LeadNew extends React.Component {
         return (
             <div>
                 <form onSubmit={ handleSubmit }>
-                
+                    
+                    <FieldSelect
+                        name="leadStatus"
+                        value={ leadStatus.value }
+                        handleUserInput={ handleUserInput }
+                        error={ leadStatus.error }
+                        options={ leadStatusOptions }
+                    />
                     <FieldInput
                         name="firstName"
                         type="text"
@@ -251,7 +273,8 @@ const mapStateToProps = state => ({
     leadId: state.leads.leadId,
     success: state.leads.success,
     leads: state.leads.leads,
+    leadStatuses: state.leadStatuses.leadStatuses,
     sessionId: state.auth.sessionId
 });
 
-export default connect(mapStateToProps, { fetchLeads, clearLeads, createLead, sendMessage })(LeadNew);
+export default connect(mapStateToProps, { fetchLeads, fetchLeadStatuses, clearLeads, createLead, sendMessage })(LeadNew);
