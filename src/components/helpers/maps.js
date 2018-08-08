@@ -62,49 +62,6 @@ export const createMap = googleMaps => {
     });
 };
 
-export const setArea = ({ googleMaps, areas, id, map }) => {
-    const areaCoords = areas.find(area => area._id === id).coords;
-    const polygon = new googleMaps.Polygon({ paths: areaCoords });
-    const outerBounds = [
-        new googleMaps.LatLng(85, 180),
-        new googleMaps.LatLng(85, 90),
-        new googleMaps.LatLng(85, 0),
-        new googleMaps.LatLng(85, -90),
-        new googleMaps.LatLng(85, -180),
-        new googleMaps.LatLng(0, -180),
-        new googleMaps.LatLng(-85, -180),
-        new googleMaps.LatLng(-85, -90),
-        new googleMaps.LatLng(-85, 0),
-        new googleMaps.LatLng(-85, 90),
-        new googleMaps.LatLng(-85, 180),
-        new googleMaps.LatLng(0, 180),
-        new googleMaps.LatLng(85, 180)
-    ];
-    //overlay for everything but area
-    //create world area with hole that is real area
-    const outerPolygon = new googleMaps.Polygon({
-        paths: [outerBounds, areaCoords],
-        strokeColor: 'red',
-        strokeOpacity: 0.8,
-        strokeWeight: 3,
-        fillColor: 'black',
-        fillOpacity: 0.5
-    });
-    const areaPolygon = {
-        bounds: polygon.getBounds(),
-        center: polygon.getBounds().getCenter(),
-        polygon: polygon
-    };
-    
-    //show area overlay
-    outerPolygon.setMap(map);
-    
-    //set area bounds
-    map.fitBounds(areaPolygon.bounds);
-    
-    return { outerPolygon, areaPolygon };
-};
-
 export const setPosition = ({ position, positionMarker, positionWatcher, map }) => {
     const result = { settingPosition: true, locationActive: true };
     let currentPositionMarker;
@@ -208,7 +165,50 @@ export const defineContextMenu = (pos, title) => {
     return new ContextMenu(pos);
 }
 
-export const setAreas = (areas, map, areaContextMenu) => {
+export const setArea = ({ googleMaps, areas, id, map }) => {
+    const areaCoords = areas.find(area => area._id === id).coords;
+    const polygon = new googleMaps.Polygon({ paths: areaCoords });
+    const outerBounds = [
+        new googleMaps.LatLng(85, 180),
+        new googleMaps.LatLng(85, 90),
+        new googleMaps.LatLng(85, 0),
+        new googleMaps.LatLng(85, -90),
+        new googleMaps.LatLng(85, -180),
+        new googleMaps.LatLng(0, -180),
+        new googleMaps.LatLng(-85, -180),
+        new googleMaps.LatLng(-85, -90),
+        new googleMaps.LatLng(-85, 0),
+        new googleMaps.LatLng(-85, 90),
+        new googleMaps.LatLng(-85, 180),
+        new googleMaps.LatLng(0, 180),
+        new googleMaps.LatLng(85, 180)
+    ];
+    //overlay for everything but area
+    //create world area with hole that is real area
+    const outerPolygon = new googleMaps.Polygon({
+        paths: [outerBounds, areaCoords],
+        strokeColor: 'red',
+        strokeOpacity: 0.8,
+        strokeWeight: 3,
+        fillColor: 'black',
+        fillOpacity: 0.5
+    });
+    const areaPolygon = {
+        bounds: polygon.getBounds(),
+        center: polygon.getBounds().getCenter(),
+        polygon: polygon
+    };
+    
+    //show area overlay
+    outerPolygon.setMap(map);
+    
+    //set area bounds
+    map.fitBounds(areaPolygon.bounds);
+    
+    return { outerPolygon, areaPolygon };
+};
+
+export const setAreas = (areas, map) => {
     const areaPolygons = {};
     
     areas.forEach(area => {
@@ -234,8 +234,6 @@ export const setAreas = (areas, map, areaContextMenu) => {
             infowindow: infowindow
         };
         
-        return areaPolygons;
-        
         //areaPolygon.addListener('click', () => map.fitBounds(areaPolygons[area._id].bounds));
         
     });
@@ -246,4 +244,38 @@ export const setAreas = (areas, map, areaContextMenu) => {
     }
     
     return areaPolygons;
+}
+
+export const setLeads = ({ leads, map }) => {
+    const leadMarkers = {};
+    
+    leads.forEach(lead => {
+        
+        let leadMarker = new window.google.maps.Marker({
+            position: { lat: Number(lead.lat), lng: Number(lead.lng) },
+            map,
+            title: lead.firstName + lead.lastName
+        });
+        
+        /*let infowindow = new window.google.maps.InfoWindow({
+          content: `<h4>${ area.title }</h4><p>Group: ${ area.areaGroup.title }</p><p>Assigned User: ${ area.assignedUserName }</p><p>Times Knocked: ${ area.timesKnocked }</p>`,
+          position: areaPolygon.getBounds().getCenter()
+        });*/
+        
+        leadMarkers[lead._id] = {
+            marker: leadMarker,
+            //infowindow: infowindow
+        };
+        
+        //areaPolygon.addListener('click', () => map.fitBounds(areaPolygons[area._id].bounds));
+        
+    });
+    
+    //show areas
+    for (let marker in leadMarkers) {
+        console.log(leadMarkers[marker].marker)
+        leadMarkers[marker].marker.setMap(map);
+    }
+    
+    return { leadMarkers };
 }

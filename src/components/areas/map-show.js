@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { getBounds, createMap, setArea, setPosition, locationError } from '../helpers/maps';
+import { getBounds, createMap, setArea, setPosition, setLeads, locationError } from '../helpers/maps';
 import { AREA_PATH, USER } from '../../../lib/constants';
 
 import Modal from '../layout/modal';
@@ -34,6 +34,7 @@ class Map extends React.Component {
             newLeadState: undefined,
             newLeadZipcode: undefined,
             newLeadLatLng: null,
+            leadMarkers: null,
             map: null,
             areaPolygon: null,
             outerPolygon: null
@@ -55,7 +56,7 @@ class Map extends React.Component {
     
     componentDidUpdate(prevProps, prevState) {
         const {
-            props: { areas, id },
+            props: { areas, leads, id },
             state: { map, overlayShown, isInitialized },
             constants: { LEAD_MODAL_SHOWN }
         } = this;
@@ -104,7 +105,7 @@ class Map extends React.Component {
                 });
             });
             
-            this.setState({ isInitialized: true, ...setArea({ googleMaps: window.google.maps, map, id, areas }) });
+            this.setState({ isInitialized: true, ...setArea({ googleMaps: window.google.maps, map, id, areas }), ...setLeads({ leads, map }) });
         }
         
         if (prevProps.id !== this.props.id) {
