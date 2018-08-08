@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Loading from '../layout/loading';
-import Map from './map';
+import MapShow from './map-show';
 
 import { fetchAreas } from '../../actions/areas.action';
 
@@ -38,7 +38,7 @@ class AreaShow extends React.Component {
         
         return (
             <main id="area-show" className="map-content">
-                <Map areas={ areaList } id={ params.id } history={ history } isReadOnly={ isReadOnly } role={ role } />
+                <MapShow areas={ areaList } id={ params.id } history={ history } isReadOnly={ isReadOnly } role={ role } />
             </main>
         );
     }
