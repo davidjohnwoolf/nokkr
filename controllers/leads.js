@@ -35,7 +35,7 @@ router.get('/', requireUser, (req, res) => {
                 let team = account.teams.find(team => team.id == user.teamId);
                 
                 let userLeads = user.leads.map(lead => {
-                    return Object.create({
+                    return Object.assign({
                         assignedUserName: user.firstName + ' ' + user.lastName,
                         userId: user._id,
                         teamTitle: team ? team.title : '-'
