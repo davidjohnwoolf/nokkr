@@ -36,7 +36,14 @@ class LeadNew extends React.Component {
             lng: [required]
         });
         
-        this.state = {
+        this.state = this.getInitialState();
+
+        this.handleUserInput = this.handleUserInput.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    
+    getInitialState() {
+        return {
             fields: {
                 firstName: { value: '', error: '' },
                 lastName: { value: '', error: '' },
@@ -56,10 +63,7 @@ class LeadNew extends React.Component {
             uniqueCandidateList: null,
             leadStatusOptions: null,
             formValid: false
-        };
-
-        this.handleUserInput = this.handleUserInput.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        }
     }
     
     componentDidMount() {
@@ -72,9 +76,9 @@ class LeadNew extends React.Component {
             props: {
                 success,
                 message,
-                history,
+                clearLeads,
+                close,
                 sendMessage,
-                leadId,
                 leads,
                 sessionId,
                 address,
@@ -85,7 +89,8 @@ class LeadNew extends React.Component {
                 hasAddress,
                 leadStatuses
             },
-            state: { isLoading }
+            state: { isLoading },
+            getInitialState
         } = this;
         
         if (leads && leadStatuses && isLoading) {
@@ -131,7 +136,9 @@ class LeadNew extends React.Component {
         
         if (success) {
             sendMessage(message);
-            history.push(`/leads/${ leadId }`);
+            clearLeads()
+            close();
+            this.setState(getInitialState())
         }
     }
     
@@ -245,16 +252,16 @@ class LeadNew extends React.Component {
                     />
                     <FieldInput
                         name="primaryPhone"
-                        type="primaryPhone"
-                        placeholder="tel"
+                        type="tel"
+                        placeholder="primary phone"
                         value={ primaryPhone.value }
                         handleUserInput={ handleUserInput }
                         error={ primaryPhone.error }
                     />
                     <FieldInput
                         name="secondaryPhone"
-                        type="secondaryPhone"
-                        placeholder="tel"
+                        type="tel"
+                        placeholder="secondary phone"
                         value={ secondaryPhone.value }
                         handleUserInput={ handleUserInput }
                         error={ secondaryPhone.error }
