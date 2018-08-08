@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 import { getBounds, createMap, setArea, setPosition, locationError } from '../helpers/maps';
 import { AREA_PATH, USER } from '../../../lib/constants';
