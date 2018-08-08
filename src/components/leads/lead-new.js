@@ -93,7 +93,7 @@ class LeadNew extends React.Component {
             
             fields.userId.value = sessionId;
             
-            const leadStatusOptions = [['Select a Status']];
+            const leadStatusOptions = [['Select a Status', '']];
             
             leadStatuses.forEach(status => {
                 leadStatusOptions.push([status.title, status._id])
