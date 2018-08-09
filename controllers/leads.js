@@ -35,10 +35,13 @@ router.get('/', requireUser, (req, res) => {
                 let team = account.teams.find(team => team.id == user.teamId);
                 
                 let userLeads = user.leads.map(lead => {
+                    console.log(account.leadStatuses.find(status => status.id == lead.leadStatus))
                     return Object.assign({
                         assignedUserName: user.firstName + ' ' + user.lastName,
                         userId: user._id,
-                        teamTitle: team ? team.title : '-'
+                        teamTitle: team ? team.title : '-',
+                        leadStatusTitle: account.leadStatuses.find(status => status.id == lead.leadStatus).title,
+                        leadStatusColor: account.leadStatuses.find(status => status.id == lead.leadStatus).color
                     }, lead._doc);
                 });
                 
