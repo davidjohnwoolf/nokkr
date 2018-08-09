@@ -87,7 +87,8 @@ class LeadNew extends React.Component {
                 zipcode,
                 latLng,
                 hasAddress,
-                leadStatuses
+                leadStatuses,
+                fetchLeads
             },
             state: { isLoading },
             getInitialState
@@ -136,7 +137,8 @@ class LeadNew extends React.Component {
         
         if (success) {
             sendMessage(message);
-            clearLeads()
+            clearLeads();
+            fetchLeads();
             close();
             this.setState(getInitialState())
         }

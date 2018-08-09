@@ -115,6 +115,10 @@ class Map extends React.Component {
             this.setState(setArea({ googleMaps: window.google.maps, map, id, areas }));
         }
         
+        if (prevProps.leads !== this.props.leads) {
+            this.setState(setLeads({ leads, map }));
+        }
+        
         if (prevState.leadModalShown !== this.state.leadModalShown) {
             if (!this.state.leadModalShown) {
                 this.state.newLeadMarker.setMap(null);
