@@ -251,8 +251,6 @@ export const setLeads = ({ leads, map }) => {
     
     leads.forEach(lead => {
         
-        console.log(lead.leadStatusColor)
-        
         let leadMarker = new window.google.maps.Marker({
             position: { lat: Number(lead.lat), lng: Number(lead.lng) },
             map,
@@ -262,8 +260,8 @@ export const setLeads = ({ leads, map }) => {
                 fillColor: lead.leadStatusColor,
                 fillOpacity: 1.0,
                 strokeColor: '#000000',
-                strokeWeight: 1,
-                scale: .04
+                strokeWeight: .5,
+                scale: .05
             },
         });
         
