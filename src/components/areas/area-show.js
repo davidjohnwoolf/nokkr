@@ -6,6 +6,7 @@ import MapShow from './map-show';
 
 import { fetchAreas } from '../../actions/areas.action';
 import { fetchLeads } from '../../actions/leads.action';
+import { fetchLeadStatuses } from '../../actions/lead-statuses.action';
 
 class AreaShow extends React.Component {
     
@@ -21,12 +22,13 @@ class AreaShow extends React.Component {
     componentDidMount() {
         this.props.fetchAreas();
         this.props.fetchLeads();
+        this.props.fetchLeadStatuses();
     }
     
     componentDidUpdate() {
-        const { props: { areas, leads }, state: { isLoading } } = this;
+        const { props: { areas, leads, leadStatuses }, state: { isLoading } } = this;
         
-        if (areas && leads && isLoading) {
+        if (areas && leads && leadStatuses && isLoading) {
             //filter out inactive
             const areaList = areas.filter(area => area.isActive);
             
@@ -36,13 +38,13 @@ class AreaShow extends React.Component {
     
     render() {
         
-        const { props: { history, isReadOnly, role, leads,  match: { params } }, state: { isLoading, areaList } } = this;
+        const { props: { history, isReadOnly, role, leads, leadStatuses, match: { params } }, state: { isLoading, areaList } } = this;
         
         if (isLoading) return <Loading />;
         
         return (
             <main id="area-show" className="map-content">
-                <MapShow areas={ areaList } leads={ leads } id={ params.id } history={ history } isReadOnly={ isReadOnly } role={ role } />
+                <MapShow areas={ areaList } leads={ leads } leadStatuses={ leadStatuses } id={ params.id } history={ history } isReadOnly={ isReadOnly } role={ role } />
             </main>
         );
     }
@@ -52,7 +54,8 @@ const mapStateToProps = state => ({
     areas: state.areas.areas,
     leads: state.leads.leads,
     isReadOnly: state.auth.isReadOnly,
+    leadStatuses: state.leadStatuses.leadStatuses,
     role: state.auth.role
 });
 
-export default connect(mapStateToProps, { fetchAreas, fetchLeads })(AreaShow);
+export default connect(mapStateToProps, { fetchAreas, fetchLeads, fetchLeadStatuses })(AreaShow);

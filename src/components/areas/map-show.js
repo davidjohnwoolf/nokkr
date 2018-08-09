@@ -4,11 +4,13 @@ import { getBounds, createMap, setArea, setPosition, setLeads, locationError } f
 import { AREA_PATH, USER } from '../../../lib/constants';
 
 import Modal from '../layout/modal';
+import { Link } from 'react-router-dom';
+
 import LeadNew from '../leads/lead-new';
 
 //can you write your own react style listeners for maps?
 
-class Map extends React.Component {
+class MapShow extends React.Component {
     
 	constructor(props) {
         super(props);
@@ -35,6 +37,7 @@ class Map extends React.Component {
             newLeadZipcode: undefined,
             newLeadLatLng: null,
             leadMarkers: null,
+            leadOptionsLead: null,
             map: null,
             areaPolygon: null,
             outerPolygon: null
@@ -44,6 +47,9 @@ class Map extends React.Component {
         this.toggleProp = this.toggleProp.bind(this);
         this.goToArea = this.goToArea.bind(this);
         this.setLocation = this.setLocation.bind(this);
+        this.showLeadOptions = this.showLeadOptions.bind(this);
+        this.hideLeadOptions = this.hideLeadOptions.bind(this);
+        this.renderLeadStatusOptions = this.renderLeadStatusOptions.bind(this);
         
         //build get bounds function
         window.google.maps.Polygon.prototype.getBounds = getBounds(window.google.maps);
@@ -58,7 +64,8 @@ class Map extends React.Component {
         const {
             props: { areas, leads, id },
             state: { map, overlayShown, isInitialized },
-            constants: { LEAD_MODAL_SHOWN }
+            constants: { LEAD_MODAL_SHOWN },
+            showLeadOptions
         } = this;
         
         if (!isInitialized) {
@@ -116,7 +123,7 @@ class Map extends React.Component {
         }
         
         if (prevProps.leads !== this.props.leads) {
-            this.setState(setLeads({ leads, map }));
+            this.setState(setLeads({ leads, map, showLeadOptions }));
         }
         
         if (prevState.leadModalShown !== this.state.leadModalShown) {
@@ -131,6 +138,14 @@ class Map extends React.Component {
                 ? this.state.outerPolygon.setOptions({ fillOpacity: .5 })
                 : this.state.outerPolygon.setOptions({ fillOpacity: 0 });
         }
+    }
+    
+    showLeadOptions(lead) {
+        this.setState({ leadOptionsLead: lead })
+    }
+    
+    hideLeadOptions() {
+        this.setState({ leadOptionsLead: null })
     }
     
     setLocation() {
@@ -185,6 +200,12 @@ class Map extends React.Component {
         window.google.maps.event.trigger(this.state.map, 'center_changed');
         this.props.history.push(AREA_PATH + e.target.value);
     }
+    
+    renderLeadStatusOptions() {
+        return this.props.leadStatuses.map(leadStatus => {
+            return <option key={ leadStatus._id } value={ leadStatus._id }>{ leadStatus.title }</option>;
+        });
+    }
 
     render() {
         const {
@@ -198,10 +219,11 @@ class Map extends React.Component {
                 newLeadCity,
                 newLeadState,
                 newLeadZipcode,
-                newLeadLatLng
+                newLeadLatLng,
+                leadOptionsLead
             },
-            setLocation, toggleProp, goToArea,
-            constants: { SETTINGS_MODAL_SHOWN, LEAD_MODAL_SHOWN, OVERLAY_SHOWN }
+            constants: { SETTINGS_MODAL_SHOWN, LEAD_MODAL_SHOWN, OVERLAY_SHOWN },
+            setLocation, toggleProp, goToArea, hideLeadOptions, renderLeadStatusOptions
         } = this;
         
         return (
@@ -252,9 +274,24 @@ class Map extends React.Component {
                         hasAddress={ leadModalShown }
                     />
                 </Modal>
+                <Modal close={ hideLeadOptions } shown={ leadOptionsLead ? true : false } title="Lead Options">
+                    { /* make hasAddress more intuitive and certain, leadmoModalShown may not be best */ }
+                    <h4>{ leadOptionsLead ? leadOptionsLead.firstName + ' ' + leadOptionsLead.lastName : '' }</h4>
+                    <select value={ leadOptionsLead ? leadOptionsLead.leadStatus : '' }>
+                        { renderLeadStatusOptions() }
+                    </select>
+                        {
+                        leadOptionsLead
+                            ? (
+                            <Link to={ `/leads/${leadOptionsLead._id }` } className="button primary">
+                                Go to Lead <i className="fas fa-caret-right"></i>
+                            </Link>
+                            ) : ''
+                        }
+                </Modal>
             </div>
         );
     }
 }
 
-export default Map;
+export default MapShow;
