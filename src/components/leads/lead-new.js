@@ -267,7 +267,7 @@ class LeadNew extends React.Component {
                         error={ secondaryPhone.error }
                     />
                     
-                    <button type="submit" disabled={ !formValid } className="button success">Save Area</button>
+                    <button type="submit" disabled={ !formValid } className="button success">Save Lead</button>
                 </form>
                 <button onClick={ close } className="button cancel">Cancel</button>
             </div>
