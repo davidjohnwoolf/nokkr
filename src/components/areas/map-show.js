@@ -281,12 +281,12 @@ class MapShow extends React.Component {
                         { renderLeadStatusOptions() }
                     </select>
                         {
-                        leadOptionsLead
-                            ? (
-                            <Link to={ `/leads/${leadOptionsLead._id }` } className="button primary">
-                                Go to Lead <i className="fas fa-caret-right"></i>
-                            </Link>
-                            ) : ''
+                            leadOptionsLead
+                                ? (
+                                <Link to={ `/leads/${leadOptionsLead._id }` } className="button primary">
+                                    Go to Lead <i className="fas fa-caret-right"></i>
+                                </Link>
+                                ) : ''
                         }
                 </Modal>
             </div>
