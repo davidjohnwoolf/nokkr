@@ -280,14 +280,19 @@ class MapShow extends React.Component {
                     <select value={ leadOptionsLead ? leadOptionsLead.leadStatus : '' }>
                         { renderLeadStatusOptions() }
                     </select>
-                        {
-                            leadOptionsLead
-                                ? (
+                    {
+                        leadOptionsLead
+                            ? (
+                            <div className="button-group">
+                                <Link to={ `/leads/${leadOptionsLead._id }/edit` } className="button primary">
+                                    Edit Lead <i className="fas fa-edit"></i>
+                                </Link>
                                 <Link to={ `/leads/${leadOptionsLead._id }` } className="button primary">
                                     Go to Lead <i className="fas fa-caret-right"></i>
                                 </Link>
-                                ) : ''
-                        }
+                            </div>
+                            ) : ''
+                    }
                 </Modal>
             </div>
         );
