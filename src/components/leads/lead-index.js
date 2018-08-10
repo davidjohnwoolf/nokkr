@@ -21,6 +21,15 @@ class LeadsIndex extends React.Component {
             activeShown: true,
             itemList: [],
             leadsCount: 0,
+            filterSettings: {
+                areaId: undefined,
+                areaGroupId: undefined,
+                city: undefined,
+                leadStatus: undefined,
+                userId: undefined,
+                teamId: undefined
+            },
+            leadStatusFilterOptions: null,
             sortSettings: {
                 column: undefined,
                 ascending: true
@@ -30,6 +39,7 @@ class LeadsIndex extends React.Component {
         this.toggleNoSales = this.toggleNoSales.bind(this);
         this.sortList = this.sortList.bind(this);
         this.renderLeads = this.renderLeads.bind(this);
+        this.filterList = this.filterList.bind(this);
     }
     
     componentDidMount() {
@@ -50,22 +60,39 @@ class LeadsIndex extends React.Component {
         //initialize
         if (leads && isLoading) {
             
+            const leadStatusFilterOptions = [['Filter by Status', '']];
+            const statusDupeCheck = [];
+            
+            leads.forEach(lead => {
+               if (!statusDupeCheck.includes(lead.leadStatus)) {
+                   statusDupeCheck.push(lead.leadStatus)
+                   leadStatusFilterOptions.push([lead.leadStatusTitle, lead.leadStatus]);
+               }
+            });
+            
             const filteredList = leads.filter(lead => {
                 return lead.leadStatusType !== 'No Sale';
             });
             
-            this.setState({ isLoading: false, leadsCount: leads.length, itemList: filteredList });
+            this.setState({ isLoading: false, leadsCount: leads.length, itemList: filteredList, leadStatusFilterOptions });
         }
         
         //update user list on active user toggle
         if (!isLoading && prevState.activeShown !== activeShown) {
-            
-            const filteredList = leads.filter(lead => {
-                if (activeShown) return lead.leadStatusType !== 'No Sale';
-                if (!activeShown) return lead.leadStatusType === 'No Sale';
+            const filterSettings = { ...this.state.filterSettings };
+        
+            const filteredList = this.props.leads.filter(lead => {
+                let notFiltered = false;
+                
+                for (let setting in filterSettings) {
+                    if (filterSettings[setting]) {
+                        if (lead[setting] === filterSettings[setting]) notFiltered = true;
+                    }
+                }
+                
+                if (this.state.activeShown) return (lead.leadStatusType !== 'No Sale') && notFiltered;
+                if (!this.state.activeShown) return (lead.leadStatusType === 'No Sale') && notFiltered;
             });
-            
-            console.log(filteredList)
             
             this.setState({ itemList: sortItems(filteredList, sortSettings), leadsCount: filteredList.length });
         }
@@ -78,6 +105,27 @@ class LeadsIndex extends React.Component {
     
     toggleNoSales() {
         this.setState({ activeShown: !this.state.activeShown});
+    }
+    
+    filterList(prop, value) {
+        const filterSettings = { ...this.state.filterSettings };
+        
+        filterSettings[prop] = value;
+        
+        const filteredList = this.props.leads.filter(lead => {
+            let notFiltered = false;
+            
+            for (let setting in filterSettings) {
+                if (filterSettings[setting]) {
+                    if (lead[setting] === filterSettings[setting]) notFiltered = true;
+                }
+            }
+            
+            if (this.state.activeShown) return (lead.leadStatusType !== 'No Sale') && notFiltered;
+            if (!this.state.activeShown) return (lead.leadStatusType === 'No Sale') && notFiltered;
+        });
+        
+        this.setState({ itemList: filteredList, filterSettings });
     }
     
     sortList(col) {
@@ -114,10 +162,8 @@ class LeadsIndex extends React.Component {
     render() {
         const {
             props: { isReadOnly, history },
-            state: { isLoading, activeShown, leadsCount, sortSettings },
-            toggleNoSales,
-            renderLeads,
-            sortList
+            state: { isLoading, activeShown, leadsCount, sortSettings, leadStatusFilterOptions, filterSettings },
+            toggleNoSales, renderLeads, sortList, filterList
         } = this;
         
         if (isLoading) return <Loading />;
@@ -134,7 +180,19 @@ class LeadsIndex extends React.Component {
                         <option>Filter by Area</option>
                     </select>
                     <select>
-                        <option>Filter by Status</option>
+                        <option>Filter by Area Group</option>
+                    </select>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <select style={{ marginRight: '1rem' }}>
+                        <option>Filter by City</option>
+                    </select>
+                    <select value={ filterSettings.leadStatusFilter } onChange={ e => filterList('leadStatus', e.target.value) }>
+                        {
+                            leadStatusFilterOptions.map(option => {
+                                return <option key={ option[1] } value={ option[1] }>{ option[0] }</option>
+                            })
+                        }
                     </select>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
