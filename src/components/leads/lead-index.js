@@ -125,9 +125,26 @@ class LeadsIndex extends React.Component {
         return (
             <main id="user-index" className="content">
                 <ContentHeader title="Lead Management" history={ history } chilrenAccess={ !isReadOnly }>
-                    <IconLink url="/leads/new" type="success" icon="plus" />
+                    <IconLink onClick={ () => console.log('search') } type="primary" icon="cog" />
                 </ContentHeader>
                 <input type="text" placeholder="search leads" />
+                <h4>Show Filters <i className="fas fa-caret-down"></i></h4>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <select style={{ marginRight: '1rem' }}>
+                        <option>Filter by Area</option>
+                    </select>
+                    <select>
+                        <option>Filter by Status</option>
+                    </select>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <select style={{ marginRight: '1rem' }}>
+                        <option>Filter by User</option>
+                    </select>
+                    <select>
+                        <option>Filter by Team</option>
+                    </select>
+                </div>
                 <table className="table">
                     <thead>
                         <tr>
