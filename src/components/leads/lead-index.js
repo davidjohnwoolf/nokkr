@@ -82,11 +82,11 @@ class LeadsIndex extends React.Component {
             const filterSettings = { ...this.state.filterSettings };
         
             const filteredList = this.props.leads.filter(lead => {
-                let notFiltered = false;
+                let notFiltered = true;
                 
                 for (let setting in filterSettings) {
                     if (filterSettings[setting]) {
-                        if (lead[setting] === filterSettings[setting]) notFiltered = true;
+                        if (lead[setting] !== filterSettings[setting]) notFiltered = false;
                     }
                 }
                 
@@ -113,11 +113,11 @@ class LeadsIndex extends React.Component {
         filterSettings[prop] = value;
         
         const filteredList = this.props.leads.filter(lead => {
-            let notFiltered = false;
+            let notFiltered = true;
             
             for (let setting in filterSettings) {
                 if (filterSettings[setting]) {
-                    if (lead[setting] === filterSettings[setting]) notFiltered = true;
+                    if (lead[setting] !== filterSettings[setting]) notFiltered = false;
                 }
             }
             
