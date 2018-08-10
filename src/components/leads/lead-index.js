@@ -21,6 +21,7 @@ class LeadsIndex extends React.Component {
             activeShown: true,
             itemList: [],
             leadsCount: 0,
+            filtersShown: false,
             filterSettings: {
                 areaId: undefined,
                 areaGroupId: undefined,
@@ -40,6 +41,7 @@ class LeadsIndex extends React.Component {
         this.sortList = this.sortList.bind(this);
         this.renderLeads = this.renderLeads.bind(this);
         this.filterList = this.filterList.bind(this);
+        this.toggleFilters = this.toggleFilters.bind(this);
     }
     
     componentDidMount() {
@@ -107,6 +109,10 @@ class LeadsIndex extends React.Component {
         this.setState({ activeShown: !this.state.activeShown});
     }
     
+    toggleFilters() {
+        this.setState({ filtersShown: !this.state.filtersShown});
+    }
+    
     filterList(prop, value) {
         const filterSettings = { ...this.state.filterSettings };
         
@@ -153,6 +159,9 @@ class LeadsIndex extends React.Component {
                         <td>
                             { lead.leadStatusTitle }
                         </td>
+                        <td>
+                            { lead.assignedUserName }
+                        </td>
                     </tr>
                 );
             })
@@ -162,8 +171,16 @@ class LeadsIndex extends React.Component {
     render() {
         const {
             props: { isReadOnly, history },
-            state: { isLoading, activeShown, leadsCount, sortSettings, leadStatusFilterOptions, filterSettings },
-            toggleNoSales, renderLeads, sortList, filterList
+            state: {
+                isLoading,
+                activeShown,
+                leadsCount,
+                sortSettings,
+                leadStatusFilterOptions,
+                filterSettings,
+                filtersShown
+            },
+            toggleNoSales, renderLeads, sortList, filterList, toggleFilters
         } = this;
         
         if (isLoading) return <Loading />;
@@ -174,34 +191,38 @@ class LeadsIndex extends React.Component {
                     <IconLink onClick={ () => console.log('search') } type="primary" icon="cog" />
                 </ContentHeader>
                 <input type="text" placeholder="search leads" />
-                <h4>Show Filters <i className="fas fa-caret-down"></i></h4>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <select style={{ marginRight: '1rem' }}>
-                        <option>Filter by Area</option>
-                    </select>
-                    <select>
-                        <option>Filter by Area Group</option>
-                    </select>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <select style={{ marginRight: '1rem' }}>
-                        <option>Filter by City</option>
-                    </select>
-                    <select value={ filterSettings.leadStatusFilter } onChange={ e => filterList('leadStatus', e.target.value) }>
-                        {
-                            leadStatusFilterOptions.map(option => {
-                                return <option key={ option[1] } value={ option[1] }>{ option[0] }</option>
-                            })
-                        }
-                    </select>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <select style={{ marginRight: '1rem' }}>
-                        <option>Filter by User</option>
-                    </select>
-                    <select>
-                        <option>Filter by Team</option>
-                    </select>
+                <a style={{ display: 'inline-block', margin: '1rem 0', cursor: 'pointer' }} onClick={ toggleFilters }>
+                    Show Filters <i className={ filtersShown ? 'fas fa-caret-up' : 'fas fa-caret-down' }></i>
+                </a>
+                <div className={ filtersShown ? 'list-filters' : 'invisible' }>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <select style={{ marginRight: '1rem' }}>
+                            <option>Filter by Area</option>
+                        </select>
+                        <select>
+                            <option>Filter by Area Group</option>
+                        </select>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <select style={{ marginRight: '1rem' }}>
+                            <option>Filter by City</option>
+                        </select>
+                        <select value={ filterSettings.leadStatusFilter } onChange={ e => filterList('leadStatus', e.target.value) }>
+                            {
+                                leadStatusFilterOptions.map(option => {
+                                    return <option key={ option[1] } value={ option[1] }>{ option[0] }</option>;
+                                })
+                            }
+                        </select>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <select style={{ marginRight: '1rem' }}>
+                            <option>Filter by User</option>
+                        </select>
+                        <select>
+                            <option>Filter by Team</option>
+                        </select>
+                    </div>
                 </div>
                 <table className="table">
                     <thead>
@@ -234,6 +255,15 @@ class LeadsIndex extends React.Component {
                                     }></i>
                                 </div>
                             </th>
+                            <th>
+                                <div onClick={ () => sortList('userId') } className="sort-control">
+                                    Assigned User <i className={
+                                        sortSettings.column === 'userId'
+                                            ? (sortSettings.ascending ? 'fas fa-caret-down' : 'fas fa-caret-up')
+                                            : 'fas fa-sort'
+                                    }></i>
+                                </div>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -242,7 +272,7 @@ class LeadsIndex extends React.Component {
                 </table>
                 <div className="button-group">
                     <div className="toggle">
-                        <label>Toggle No Sales</label>
+                        <label>Toggle Active</label>
                         <span onClick={ toggleNoSales }>
                             <i className={ !activeShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
                         </span>
