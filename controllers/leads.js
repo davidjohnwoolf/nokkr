@@ -35,7 +35,6 @@ router.get('/', requireUser, (req, res) => {
                 let team = account.teams.find(team => team.id == user.teamId);
                 
                 let userLeads = user.leads.map(lead => {
-                    console.log(account.leadStatuses.find(status => status.id == lead.leadStatus))
                     return Object.assign({
                         assignedUserName: user.firstName + ' ' + user.lastName,
                         userId: user._id,
@@ -123,7 +122,7 @@ router.put('/:id', requireUser, excludeReadOnly, (req, res) => {
         let user;
         
         users.forEach(currentUser => {
-            let currentLeadIndex = user.leads.findIndex(lead => lead.id === req.params.leadId);
+            let currentLeadIndex = currentUser.leads.findIndex(lead => lead.id === req.params.id);
             if (currentLeadIndex) {
                 leadIndex = currentLeadIndex;
                 user = currentUser;

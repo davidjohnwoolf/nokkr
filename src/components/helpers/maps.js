@@ -285,7 +285,6 @@ export const setLeads = ({ leads, map, showLeadOptions }) => {
     
     //show areas
     for (let marker in leadMarkers) {
-        console.log(leadMarkers[marker].marker)
         leadMarkers[marker].marker.setMap(map);
     }
     

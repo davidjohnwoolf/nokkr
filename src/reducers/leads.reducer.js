@@ -17,16 +17,16 @@ export default function(state = {}, action) {
             return { ...state, leads: action.payload };
         
         case CREATE_LEAD:
-            return { ...state, success: true, message: action.message, leadId: action.payload };
+            return { ...state, success: true, created: true, message: action.message, leadId: action.payload };
         
         case UPDATE_LEAD:
-            return { ...state, success: true, message: action.message };
+            return { ...state, success: true, updated: true, message: action.message };
             
         case DELETE_LEAD:
             return { ...state, success: true, deleted: true, message: action.message };
             
         case CLEAR_LEADS:
-            return { ...state, success: false, deleted: false, message: '' };
+            return { ...state, success: false, deleted: false, created: false, updated: false, message: '' };
             
         default:
             return state;

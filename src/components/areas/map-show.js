@@ -1,12 +1,12 @@
 import React from 'react';
 
 import { getBounds, createMap, setArea, setPosition, setLeads, locationError } from '../helpers/maps';
-import { AREA_PATH, USER } from '../../../lib/constants';
+import { AREA_PATH } from '../../../lib/constants';
 
 import Modal from '../layout/modal';
-import { Link } from 'react-router-dom';
 
 import LeadNew from '../leads/lead-new';
+import LeadEdit from '../leads/lead-edit';
 
 //can you write your own react style listeners for maps?
 
@@ -49,7 +49,6 @@ class MapShow extends React.Component {
         this.setLocation = this.setLocation.bind(this);
         this.showLeadOptions = this.showLeadOptions.bind(this);
         this.hideLeadOptions = this.hideLeadOptions.bind(this);
-        this.renderLeadStatusOptions = this.renderLeadStatusOptions.bind(this);
         
         //build get bounds function
         window.google.maps.Polygon.prototype.getBounds = getBounds(window.google.maps);
@@ -112,7 +111,7 @@ class MapShow extends React.Component {
                 });
             });
             
-            this.setState({ isInitialized: true, ...setArea({ googleMaps: window.google.maps, map, id, areas }), ...setLeads({ leads, map }) });
+            this.setState({ isInitialized: true, ...setArea({ googleMaps: window.google.maps, map, id, areas }), ...setLeads({ leads, map, showLeadOptions }) });
         }
         
         if (prevProps.id !== this.props.id) {
@@ -141,11 +140,11 @@ class MapShow extends React.Component {
     }
     
     showLeadOptions(lead) {
-        this.setState({ leadOptionsLead: lead })
+        this.setState({ leadOptionsLead: lead });
     }
     
     hideLeadOptions() {
-        this.setState({ leadOptionsLead: null })
+        this.setState({ leadOptionsLead: null });
     }
     
     setLocation() {
@@ -200,16 +199,10 @@ class MapShow extends React.Component {
         window.google.maps.event.trigger(this.state.map, 'center_changed');
         this.props.history.push(AREA_PATH + e.target.value);
     }
-    
-    renderLeadStatusOptions() {
-        return this.props.leadStatuses.map(leadStatus => {
-            return <option key={ leadStatus._id } value={ leadStatus._id }>{ leadStatus.title }</option>;
-        });
-    }
 
     render() {
         const {
-            props: { id, areas },
+            props: { id, areas, leads, leadStatuses },
             state: {
                 settingsModalShown,
                 locationActive,
@@ -223,7 +216,7 @@ class MapShow extends React.Component {
                 leadOptionsLead
             },
             constants: { SETTINGS_MODAL_SHOWN, LEAD_MODAL_SHOWN, OVERLAY_SHOWN },
-            setLocation, toggleProp, goToArea, hideLeadOptions, renderLeadStatusOptions
+            setLocation, toggleProp, goToArea, hideLeadOptions
         } = this;
         
         return (
@@ -274,23 +267,14 @@ class MapShow extends React.Component {
                         hasAddress={ leadModalShown }
                     />
                 </Modal>
-                <Modal close={ hideLeadOptions } shown={ leadOptionsLead ? true : false } title="Lead Options">
-                    { /* make hasAddress more intuitive and certain, leadmoModalShown may not be best */ }
-                    <h4>{ leadOptionsLead ? leadOptionsLead.firstName + ' ' + leadOptionsLead.lastName : '' }</h4>
-                    <select value={ leadOptionsLead ? leadOptionsLead.leadStatus : '' }>
-                        { renderLeadStatusOptions() }
-                    </select>
+                <Modal close={ hideLeadOptions } shown={ leadOptionsLead ? true : false } title={ leadOptionsLead ? leadOptionsLead.firstName + ' ' + leadOptionsLead.lastName : '' }>
                     {
                         leadOptionsLead
                             ? (
-                            <div className="button-group">
-                                <Link to={ `/leads/${leadOptionsLead._id }/edit` } className="button primary">
-                                    Edit Lead <i className="fas fa-edit"></i>
-                                </Link>
-                                <Link to={ `/leads/${leadOptionsLead._id }` } className="button primary">
-                                    Go to Lead <i className="fas fa-caret-right"></i>
-                                </Link>
-                            </div>
+                                <LeadEdit
+                                    close={ hideLeadOptions }
+                                    lead={ leadOptionsLead }
+                                />
                             ) : ''
                     }
                 </Modal>

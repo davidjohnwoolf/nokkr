@@ -6,13 +6,13 @@ import Loading from '../layout/loading';
 import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 
-import { createLead, clearLeads, fetchLeads } from '../../actions/leads.action';
+import { updateLead, clearLeads, fetchLeads } from '../../actions/leads.action';
 import { sendMessage } from '../../actions/flash.action';
 
-import { required, unique, validate, formSubmit } from '../helpers/forms';
+import { required, unique, validate, formSubmit, initializeForm } from '../helpers/forms';
 import stateArray from '../helpers/state-array';
 
-class LeadNew extends React.Component {
+class LeadEdit extends React.Component {
     
     constructor(props) {
         super(props);
@@ -65,6 +65,10 @@ class LeadNew extends React.Component {
         };
     }
     
+    componentDidMount() {
+        this.setState({ fields: initializeForm({ ...this.state.fields }, this.props.lead) });
+    }
+    
     componentDidUpdate(prevProps) {
         const {
             props: {
@@ -83,7 +87,7 @@ class LeadNew extends React.Component {
                 hasAddress,
                 leadStatuses,
                 fetchLeads,
-                created
+                updated
             },
             state: { isLoading },
             getInitialState
@@ -94,7 +98,7 @@ class LeadNew extends React.Component {
             
             fields.userId.value = sessionId;
             
-            const leadStatusOptions = [['Select a Status', '']];
+            const leadStatusOptions = [];
             
             leadStatuses.forEach(status => {
                 leadStatusOptions.push([status.title, status._id]);
@@ -130,7 +134,7 @@ class LeadNew extends React.Component {
             this.setState({ fields });
         }
         
-        if (success && created) {
+        if (success && updated) {
             sendMessage(message);
             clearLeads();
             fetchLeads();
@@ -143,16 +147,16 @@ class LeadNew extends React.Component {
         const { validationRules, state: { fields, uniqueCandidateList } } = this;
         
         this.setState(
-            validate(e, validationRules, { ...fields }, uniqueCandidateList, null)
+            validate(e, validationRules, { ...fields }, uniqueCandidateList, this.props.lead)
         );
     }
     
     handleSubmit(e) {
         e.preventDefault();
         
-        const { state: { fields }, props: { createLead } } = this;
+        const { state: { fields }, props: { updateLead } } = this;
         
-        formSubmit({ fields: { ...fields }, action: createLead });
+        formSubmit({ fields: { ...fields }, action: updateLead, id: this.props.lead._id });
     }
     
     render() {
@@ -264,7 +268,7 @@ class LeadNew extends React.Component {
                         error={ secondaryPhone.error }
                     />
                     
-                    <button type="submit" disabled={ !formValid } className="button success">Save Lead</button>
+                    <button type="submit" disabled={ !formValid } className="button success">Update Lead</button>
                 </form>
                 <button onClick={ close } className="button cancel">Cancel</button>
             </div>
@@ -276,10 +280,11 @@ const mapStateToProps = state => ({
     message: state.leads.message,
     leadId: state.leads.leadId,
     success: state.leads.success,
-    created: state.leads.created,
+    updated: state.leads.updated,
     leads: state.leads.leads,
     leadStatuses: state.leadStatuses.leadStatuses,
     sessionId: state.auth.sessionId
 });
 
-export default connect(mapStateToProps, { fetchLeads, clearLeads, createLead, sendMessage })(LeadNew);
+export default connect(mapStateToProps, { fetchLeads, clearLeads, updateLead, sendMessage })(LeadEdit);
+
