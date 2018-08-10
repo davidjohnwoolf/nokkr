@@ -3,16 +3,15 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
-import { capitalize } from '../../../lib/functions';
 import { sortItems } from '../helpers/list';
 
-import { fetchUsers } from '../../actions/users.action';
+import { fetchLeads } from '../../actions/leads.action';
 
 import Loading from '../layout/loading';
 import ContentHeader from '../layout/content-header';
 import IconLink from '../layout/icon-link';
 
-class UserIndex extends React.Component {
+class LeadsIndex extends React.Component {
 
     constructor(props) {
         super(props);
@@ -21,25 +20,25 @@ class UserIndex extends React.Component {
             isLoading: true,
             activeShown: true,
             itemList: [],
-            userCount: 0,
+            leadsCount: 0,
             sortSettings: {
                 column: undefined,
                 ascending: true
             }
         };
         
-        this.toggleActive = this.toggleActive.bind(this);
+        this.toggleNoSales = this.toggleNoSales.bind(this);
         this.sortList = this.sortList.bind(this);
-        this.renderUsers = this.renderUsers.bind(this);
+        this.renderLeads = this.renderLeads.bind(this);
     }
     
     componentDidMount() {
-        this.props.fetchUsers();
+        this.props.fetchLeads();
     }
     
     componentDidUpdate(prevProps, prevState) {
         const {
-            props: { users },
+            props: { leads },
             state: {
                 isLoading,
                 activeShown,
@@ -49,22 +48,26 @@ class UserIndex extends React.Component {
         } = this;
         
         //initialize
-        if (users && isLoading) {
+        if (leads && isLoading) {
             
-            //initialize with active leads
-            const initialList = users.filter(user => (user.role !== SU) && user.isActive);
+            const filteredList = leads.filter(lead => {
+                return lead.leadStatusType !== 'No Sale';
+            });
             
-            this.setState({ isLoading: false, userCount: initialList.length, itemList: initialList });
+            this.setState({ isLoading: false, leadsCount: leads.length, itemList: filteredList });
         }
         
         //update user list on active user toggle
         if (!isLoading && prevState.activeShown !== activeShown) {
             
-            const filteredList = users.filter(user => {
-                if (user.role !== SU) return activeShown ? user.isActive : !user.isActive;
+            const filteredList = leads.filter(lead => {
+                if (activeShown) return lead.leadStatusType !== 'No Sale';
+                if (!activeShown) return lead.leadStatusType === 'No Sale';
             });
             
-            this.setState({ itemList: sortItems(filteredList, sortSettings), userCount: filteredList.length });
+            console.log(filteredList)
+            
+            this.setState({ itemList: sortItems(filteredList, sortSettings), leadsCount: filteredList.length });
         }
         
         //update user list on sort
@@ -73,7 +76,7 @@ class UserIndex extends React.Component {
         }
     }
     
-    toggleActive() {
+    toggleNoSales() {
         this.setState({ activeShown: !this.state.activeShown});
     }
     
@@ -85,21 +88,23 @@ class UserIndex extends React.Component {
             : this.setState({ sortSettings: { column: col, ascending: true } });
     }
 	
-    renderUsers() {
+    renderLeads() {
         const { itemList } = this.state;
         
         return (
-            itemList.map(user => {
+            itemList.map(lead => {
 
                 return (
-                    <tr key={ user._id }>
+                    <tr key={ lead._id }>
                         <td>
-                            <Link to={ `/users/${ user._id }` }>{ `${ user.firstName } ${ user.lastName }` }</Link>
+                            <Link to={ `/leads/${ lead._id }` }>{ `${ lead.firstName } ${ lead.lastName }` }</Link>
                         </td>
                         <td>
-                            { user.teamId ? <Link to={ `/teams/${ user.teamId }` }>{ user.teamTitle }</Link> : '---' } 
+                            { `${ lead.address } ${ lead.city }, ${ lead.state }` }
                         </td>
-                        <td>{ capitalize(user.role) + (user.isReadOnly ? ' Read Only' : '') }</td>
+                        <td>
+                            { lead.leadStatusTitle }
+                        </td>
                     </tr>
                 );
             })
@@ -109,9 +114,9 @@ class UserIndex extends React.Component {
     render() {
         const {
             props: { isReadOnly, history },
-            state: { isLoading, activeShown, userCount, sortSettings },
-            toggleActive,
-            renderUsers,
+            state: { isLoading, activeShown, leadsCount, sortSettings },
+            toggleNoSales,
+            renderLeads,
             sortList
         } = this;
         
@@ -119,9 +124,10 @@ class UserIndex extends React.Component {
         
         return (
             <main id="user-index" className="content">
-                <ContentHeader title="User Management" history={ history } chilrenAccess={ !isReadOnly }>
-                    <IconLink url="/users/new" type="success" icon="plus" />
+                <ContentHeader title="Lead Management" history={ history } chilrenAccess={ !isReadOnly }>
+                    <IconLink url="/leads/new" type="success" icon="plus" />
                 </ContentHeader>
+                <input type="text" placeholder="search leads" />
                 <table className="table">
                     <thead>
                         <tr>
@@ -136,18 +142,18 @@ class UserIndex extends React.Component {
                                 </div>
                             </th>
                             <th>
-                                <div onClick={ () => sortList('teamTitle') } className="sort-control">
-                                    Team <i className={
-                                        sortSettings.column === 'teamTitle'
+                                <div onClick={ () => sortList('city') } className="sort-control">
+                                    Address <i className={
+                                        sortSettings.column === 'city'
                                             ? (sortSettings.ascending ? 'fas fa-caret-down' : 'fas fa-caret-up')
                                             : 'fas fa-sort'
                                     }></i>
                                 </div>
                             </th>
                             <th>
-                                <div onClick={ () => sortList('role') } className="sort-control">
-                                    Role <i className={
-                                        sortSettings.column === 'role'
+                                <div onClick={ () => sortList('leadStatusTitle') } className="sort-control">
+                                    Status <i className={
+                                        sortSettings.column === 'leadStatusTitle'
                                             ? (sortSettings.ascending ? 'fas fa-caret-down' : 'fas fa-caret-up')
                                             : 'fas fa-sort'
                                     }></i>
@@ -156,17 +162,17 @@ class UserIndex extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        { renderUsers() }
+                        { renderLeads() }
                     </tbody>
                 </table>
                 <div className="button-group">
                     <div className="toggle">
-                        <label>Toggle Inactive</label>
-                        <span onClick={ toggleActive }>
+                        <label>Toggle No Sales</label>
+                        <span onClick={ toggleNoSales }>
                             <i className={ !activeShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
                         </span>
                     </div>
-                    <p style={{ marginTop: '1rem' }}>Users Shown: { userCount }</p>
+                    <p style={{ marginTop: '1rem' }}>Leads Shown: { leadsCount }</p>
                 </div>
             </main>
         );
@@ -174,9 +180,9 @@ class UserIndex extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    users: state.users.users,
+    leads: state.leads.leads,
     isReadOnly: state.auth.isReadOnly
 });
 
 
-export default connect(mapStateToProps, { fetchUsers })(UserIndex);
+export default connect(mapStateToProps, { fetchLeads })(LeadsIndex);

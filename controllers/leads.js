@@ -40,6 +40,7 @@ router.get('/', requireUser, (req, res) => {
                         userId: user._id,
                         teamTitle: team ? team.title : '-',
                         leadStatusTitle: account.leadStatuses.find(status => status.id == lead.leadStatus).title,
+                        leadStatusType: account.leadStatuses.find(status => status.id == lead.leadStatus).type,
                         leadStatusColor: account.leadStatuses.find(status => status.id == lead.leadStatus).color
                     }, lead._doc);
                 });

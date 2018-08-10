@@ -36,6 +36,8 @@ import UserIndex from './components/users/user-index';
 import AreaIndex from './components/areas/area-index';
 import AreaShow from './components/areas/area-show';
 
+import LeadsIndex from './components/leads/lead-index';
+
 import LeadStatusIndex from './components/lead-statuses/lead-status-index';
 
 import AreaGroupShow from './components/area-groups/area-group-show';
@@ -103,7 +105,9 @@ ReactDOM.render(
                 		<PrivateRoute exact path="/areas" access={ MANAGER } component={ AreaIndex } />
                 		<PrivateRoute exact path="/areas/:id" component={ AreaShow } />
                 		
-                		<PrivateRoute exact path="/lead-statuses" component={ LeadStatusIndex } />
+                		<PrivateRoute exact path="/leads" component={ LeadsIndex } />
+                		
+                		<PrivateRoute exact path="/lead-statuses" access={ ADMIN } component={ LeadStatusIndex } />
                 		
                 		<PrivateRoute exact path="/" permission="user" component={ Dashboard } />
                 		
