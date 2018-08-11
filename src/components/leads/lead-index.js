@@ -37,7 +37,7 @@ class LeadsIndex extends React.Component {
             }
         };
         
-        this.toggleNoSales = this.toggleNoSales.bind(this);
+        this.toggleActive = this.toggleActive.bind(this);
         this.sortList = this.sortList.bind(this);
         this.renderLeads = this.renderLeads.bind(this);
         this.filterList = this.filterList.bind(this);
@@ -82,15 +82,19 @@ class LeadsIndex extends React.Component {
         //update user list on active user toggle
         if (!isLoading && prevState.activeShown !== activeShown) {
             const filterSettings = { ...this.state.filterSettings };
-        
+            
             const filteredList = this.props.leads.filter(lead => {
                 let notFiltered = true;
                 
                 for (let setting in filterSettings) {
                     if (filterSettings[setting]) {
-                        if (lead[setting] !== filterSettings[setting]) notFiltered = false;
+                        if (lead[setting] !== filterSettings[setting]) {
+                            notFiltered = false;
+                        }
                     }
                 }
+                
+                console.log(notFiltered)
                 
                 if (this.state.activeShown) return (lead.leadStatusType !== 'No Sale') && notFiltered;
                 if (!this.state.activeShown) return (lead.leadStatusType === 'No Sale') && notFiltered;
@@ -105,7 +109,7 @@ class LeadsIndex extends React.Component {
         }
     }
     
-    toggleNoSales() {
+    toggleActive() {
         this.setState({ activeShown: !this.state.activeShown});
     }
     
@@ -115,6 +119,7 @@ class LeadsIndex extends React.Component {
     
     filterList(prop, value) {
         const filterSettings = { ...this.state.filterSettings };
+        let activeShown = this.state.activeShown;
         
         filterSettings[prop] = value;
         
@@ -123,15 +128,21 @@ class LeadsIndex extends React.Component {
             
             for (let setting in filterSettings) {
                 if (filterSettings[setting]) {
-                    if (lead[setting] !== filterSettings[setting]) notFiltered = false;
+                    if (lead[setting] !== filterSettings[setting]) {
+                        notFiltered = false;
+                    } else {
+                        if (setting === 'leadStatus') {
+                            if (lead.leadStatusType === 'No Sale') activeShown = false;
+                            if (lead.leadStatusType !== 'No Sale') activeShown = true;
+                        }
+                    }
                 }
             }
-            
-            if (this.state.activeShown) return (lead.leadStatusType !== 'No Sale') && notFiltered;
-            if (!this.state.activeShown) return (lead.leadStatusType === 'No Sale') && notFiltered;
+                
+            return notFiltered;
         });
         
-        this.setState({ itemList: filteredList, filterSettings });
+        this.setState({ itemList: filteredList, filterSettings, activeShown });
     }
     
     sortList(col) {
@@ -180,7 +191,7 @@ class LeadsIndex extends React.Component {
                 filterSettings,
                 filtersShown
             },
-            toggleNoSales, renderLeads, sortList, filterList, toggleFilters
+            toggleActive, renderLeads, sortList, filterList, toggleFilters
         } = this;
         
         if (isLoading) return <Loading />;
@@ -272,8 +283,8 @@ class LeadsIndex extends React.Component {
                 </table>
                 <div className="button-group">
                     <div className="toggle">
-                        <label>Toggle Active</label>
-                        <span onClick={ toggleNoSales }>
+                        <label>Toggle Inactive</label>
+                        <span onClick={ toggleActive }>
                             <i className={ !activeShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
                         </span>
                     </div>
