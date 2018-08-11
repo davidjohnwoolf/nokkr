@@ -94,8 +94,6 @@ class LeadsIndex extends React.Component {
                     }
                 }
                 
-                console.log(notFiltered)
-                
                 if (this.state.activeShown) return (lead.leadStatusType !== 'No Sale') && notFiltered;
                 if (!this.state.activeShown) return (lead.leadStatusType === 'No Sale') && notFiltered;
             });
@@ -142,7 +140,7 @@ class LeadsIndex extends React.Component {
             return notFiltered;
         });
         
-        this.setState({ itemList: filteredList, filterSettings, activeShown });
+        this.setState({ itemList: sortItems(filteredList, this.state.sortSettings), filterSettings, activeShown });
     }
     
     sortList(col) {
