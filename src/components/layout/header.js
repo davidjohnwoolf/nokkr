@@ -38,13 +38,13 @@ class Header extends React.Component {
                                 <NavLink exact to="/" activeClassName="active"><i className="fas fa-home"></i></NavLink>
                             </li>
                             <li>
-                                <NavLink to={ `/users/${ sessionId }/areas` } activeClassName="active"><i className="fas fa-map-marker-alt"></i></NavLink>
+                                <NavLink to={ `/areas` } activeClassName="active"><i className="fas fa-map-marker-alt"></i></NavLink>
                             </li>
                             <li>
-                                <NavLink to={ `/users/${ sessionId }/leads` } activeClassName="active"><i className="fas fa-address-card"></i></NavLink>
+                                <NavLink to={ `/leads` } activeClassName="active"><i className="fas fa-address-card"></i></NavLink>
                             </li>
                             <li>
-                                <NavLink to={ `/users/${ sessionId }/appointments` } activeClassName="active"><i className="fas fa-calendar-alt"></i></NavLink>
+                                <NavLink to={ `/appointments` } activeClassName="active"><i className="fas fa-calendar-alt"></i></NavLink>
                             </li>
                             <li>
                                 <NavLink to="/new" activeClassName="active"><i className="fas fa-plus"></i></NavLink>
