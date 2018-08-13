@@ -31,7 +31,7 @@ class LeadNew extends React.Component {
             email: [],
             primaryPhone: [],
             secondaryPhone: [],
-            leadStatus: [required],
+            leadStatusId: [required],
             lat: [required],
             lng: [required]
         });
@@ -54,7 +54,7 @@ class LeadNew extends React.Component {
                 email: { value: '', error: '' },
                 primaryPhone: { value: '', error: '' },
                 secondaryPhone: { value: '', error: '' },
-                leadStatus: { value: '', error: '' },
+                leadStatusId: { value: '', error: '' },
                 userId: { value: '', error: '' },
                 areaId: { value: '', error: '' },
                 lat: { value: '', error: '' },
@@ -125,7 +125,6 @@ class LeadNew extends React.Component {
                     let polygon = new window.google.maps.Polygon({ paths: area.coords });
                     
                     if (window.google.maps.geometry.poly.containsLocation(latLng, polygon)) {
-                        console.log('contained in', area.title)
                         fields.areaId.value = area._id;
                     }
                 });
@@ -185,7 +184,7 @@ class LeadNew extends React.Component {
                     email,
                     primaryPhone,
                     secondaryPhone,
-                    leadStatus
+                    leadStatusId
                 }
             },
             handleSubmit,
@@ -199,10 +198,10 @@ class LeadNew extends React.Component {
                 <form onSubmit={ handleSubmit }>
                     
                     <FieldSelect
-                        name="leadStatus"
-                        value={ leadStatus.value }
+                        name="leadStatusId"
+                        value={ leadStatusId.value }
                         handleUserInput={ handleUserInput }
-                        error={ leadStatus.error }
+                        error={ leadStatusId.error }
                         options={ leadStatusOptions }
                     />
                     <FieldInput

@@ -26,7 +26,7 @@ class LeadsIndex extends React.Component {
                 areaId: undefined,
                 areaGroupId: undefined,
                 city: undefined,
-                leadStatus: undefined,
+                leadStatusId: undefined,
                 userId: undefined,
                 teamId: undefined
             },
@@ -67,7 +67,7 @@ class LeadsIndex extends React.Component {
         if (leads && isLoading) {
             
             const dupes = {
-                leadStatus: [],
+                leadStatusId: [],
                 city: [],
                 userId: [],
                 teamId: [],
@@ -94,7 +94,7 @@ class LeadsIndex extends React.Component {
 
             leads.forEach(lead => {
                 
-                buildOptionsFromList(lead, leadStatusFilterOptions, 'leadStatusTitle', 'leadStatus');
+                buildOptionsFromList(lead, leadStatusFilterOptions, 'leadStatusTitle', 'leadStatusId');
                 buildOptionsFromList(lead, cityFilterOptions, 'city', 'city');
                 buildOptionsFromList(lead, userFilterOptions, 'assignedUserName', 'userId');
                 buildOptionsFromList(lead, teamFilterOptions, 'teamTitle', 'teamId');
@@ -170,7 +170,7 @@ class LeadsIndex extends React.Component {
                     if (lead[setting] !== filterSettings[setting]) {
                         notFiltered = false;
                     } else {
-                        if (setting === 'leadStatus') {
+                        if (setting === 'leadStatusId') {
                             if (lead.leadStatusType === 'No Sale') activeShown = false;
                             if (lead.leadStatusType !== 'No Sale') activeShown = true;
                         }
@@ -275,7 +275,7 @@ class LeadsIndex extends React.Component {
                                 })
                             }
                         </select>
-                        <select value={ filterSettings.leadStatus } onChange={ e => filterList('leadStatus', e.target.value) }>
+                        <select value={ filterSettings.leadStatusId } onChange={ e => filterList('leadStatusId', e.target.value) }>
                             {
                                 leadStatusFilterOptions.map(option => {
                                     return <option key={ option[1] } value={ option[1] }>{ option[0] }</option>;

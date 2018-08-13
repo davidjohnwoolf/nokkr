@@ -38,7 +38,7 @@ router.get('/', requireUser, (req, res) => {
                 let team = account.teams.find(team => team.id == user.teamId);
                 
                 let userLeads = user.leads.map(lead => {
-                    let leadStatus = account.leadStatuses.find(status => status.id == lead.leadStatus);
+                    let leadStatus = account.leadStatuses.find(status => status.id == lead.leadStatusId);
                     let leadArea = areas.find(area => area.id == lead.areaId);
                     let areaGroup = account.areaGroups.find(areaGroup => areaGroup.id == leadArea.areaGroupId);
                     

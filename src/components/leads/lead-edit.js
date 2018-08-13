@@ -30,7 +30,7 @@ class LeadEdit extends React.Component {
             email: [],
             primaryPhone: [],
             secondaryPhone: [],
-            leadStatus: [required],
+            leadStatusId: [required],
             lat: [required],
             lng: [required]
         });
@@ -53,7 +53,7 @@ class LeadEdit extends React.Component {
                 email: { value: '', error: '' },
                 primaryPhone: { value: '', error: '' },
                 secondaryPhone: { value: '', error: '' },
-                leadStatus: { value: '', error: '' },
+                leadStatusId: { value: '', error: '' },
                 userId: { value: '', error: '' },
                 lat: { value: '', error: '' },
                 lng: { value: '', error: '' }
@@ -114,14 +114,22 @@ class LeadEdit extends React.Component {
         
         if (prevProps.hasAddress !== hasAddress) {
             const fields = { ...this.state.fields };
-            if (hasAddress) {
             
+            if (hasAddress) {
                 fields.address.value = address;
                 fields.city.value = city;
                 fields.state.value = state;
                 fields.zipcode.value = zipcode;
                 fields.lat.value = latLng.lat();
                 fields.lng.value = latLng.lng();
+                
+                this.props.areas.forEach(area => {
+                    let polygon = new window.google.maps.Polygon({ paths: area.coords });
+                    
+                    if (window.google.maps.geometry.poly.containsLocation(latLng, polygon)) {
+                        fields.areaId.value = area._id;
+                    }
+                });
             } else {
                 for (let field in fields) {
                     //clear fields
@@ -176,7 +184,7 @@ class LeadEdit extends React.Component {
                     email,
                     primaryPhone,
                     secondaryPhone,
-                    leadStatus
+                    leadStatusId
                 }
             },
             handleSubmit,
@@ -190,10 +198,10 @@ class LeadEdit extends React.Component {
                 <form onSubmit={ handleSubmit }>
                     
                     <FieldSelect
-                        name="leadStatus"
-                        value={ leadStatus.value }
+                        name="leadStatusId"
+                        value={ leadStatusId.value }
                         handleUserInput={ handleUserInput }
-                        error={ leadStatus.error }
+                        error={ leadStatusId.error }
                         options={ leadStatusOptions }
                     />
                     <FieldInput
@@ -281,6 +289,7 @@ const mapStateToProps = state => ({
     leadId: state.leads.leadId,
     success: state.leads.success,
     updated: state.leads.updated,
+    areas: state.areas.areas,
     leads: state.leads.leads,
     leadStatuses: state.leadStatuses.leadStatuses,
     sessionId: state.auth.sessionId
