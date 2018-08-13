@@ -64,33 +64,33 @@ class LeadsIndex extends React.Component {
         //initialize
         if (leads && isLoading) {
             
+            const dupeCheck = {
+                leadStatus: [],
+                city: [],
+                userId: [],
+                teamId: []
+            };
+            
             const leadStatusFilterOptions = [['Filter by Status', '']];
             const cityFilterOptions = [['Filter by City', '']];
             const userFilterOptions = [['Filter by User', '']];
             const teamFilterOptions = [['Filter by Team', '']];
-            const statusDupeCheck = [];
-            const cityDupeCheck = [];
-            const userDupeCheck = [];
-            const teamDupeCheck = [];
             
+            
+            const buildOptionsFromList = (lead, options, alias, property) => {
+                if (!dupeCheck[property].includes(lead[property])) {
+                    dupeCheck[property].push(lead[property]);
+                    options.push([lead[alias], lead[property]]);
+                }
+            };
+
             leads.forEach(lead => {
-               if (!statusDupeCheck.includes(lead.leadStatus)) {
-                   statusDupeCheck.push(lead.leadStatus);
-                   leadStatusFilterOptions.push([lead.leadStatusTitle, lead.leadStatus]);
-               }
-               if (!cityDupeCheck.includes(lead.city)) {
-                   cityDupeCheck.push(lead.city);
-                   cityFilterOptions.push([lead.city, lead.city]);
-               }
-               if (!userDupeCheck.includes(lead.userId)) {
-                   userDupeCheck.push(lead.userId);
-                   userFilterOptions.push([lead.assignedUserName, lead.userId]);
-               }
-               //make the team send false value for team if doesnt exist from api
-               if (!teamDupeCheck.includes(lead.teamId) && lead.teamId !== '-') {
-                   teamDupeCheck.push(lead.teamId);
-                   teamFilterOptions.push([lead.teamTitle, lead.teamId]);
-               }
+                
+                buildOptionsFromList(lead, leadStatusFilterOptions, 'leadStatusTitle', 'leadStatus');
+                buildOptionsFromList(lead, cityFilterOptions, 'city', 'city');
+                buildOptionsFromList(lead, userFilterOptions, 'assignedUserName', 'userId');
+                buildOptionsFromList(lead, teamFilterOptions, 'teamTitle', 'teamId');
+
             });
             
             const filteredList = leads.filter(lead => {
