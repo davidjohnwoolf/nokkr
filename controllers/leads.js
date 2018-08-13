@@ -40,6 +40,7 @@ router.get('/', requireUser, (req, res) => {
                 let userLeads = user.leads.map(lead => {
                     let leadStatus = account.leadStatuses.find(status => status.id == lead.leadStatus);
                     let leadArea = areas.find(area => area.id == lead.areaId);
+                    let areaGroup = account.areaGroups.find(areaGroup => areaGroup.id == leadArea.areaGroupId);
                     
                     return Object.assign({
                         assignedUserName: user.firstName + ' ' + user.lastName,
@@ -50,7 +51,9 @@ router.get('/', requireUser, (req, res) => {
                         leadStatusId: leadStatus._id,
                         leadStatusType: leadStatus.type,
                         leadStatusColor: leadStatus.color,
-                        areaTitle: (leadArea ? leadArea.title : undefined)
+                        areaTitle: (leadArea ? leadArea.title : undefined),
+                        areaGroupId: (areaGroup ? areaGroup.id : undefined),
+                        areaGroupTitle: (areaGroup ? areaGroup.title : undefined)
                     }, lead._doc);
                 });
                 
