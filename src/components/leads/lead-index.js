@@ -33,6 +33,7 @@ class LeadsIndex extends React.Component {
             leadStatusFilterOptions: null,
             cityFilterOptions: null,
             teamFilterOptions: null,
+            areaFilterOptions: null,
             sortSettings: {
                 column: undefined,
                 ascending: true
@@ -68,19 +69,23 @@ class LeadsIndex extends React.Component {
                 leadStatus: [],
                 city: [],
                 userId: [],
-                teamId: []
+                teamId: [],
+                areaId: []
             };
             
             const leadStatusFilterOptions = [['Filter by Status', '']];
             const cityFilterOptions = [['Filter by City', '']];
             const userFilterOptions = [['Filter by User', '']];
             const teamFilterOptions = [['Filter by Team', '']];
+            const areaFilterOptions = [['Filter by Area', '']];
             
             
             const buildOptionsFromList = (lead, options, alias, property) => {
-                if (!dupeCheck[property].includes(lead[property])) {
-                    dupeCheck[property].push(lead[property]);
-                    options.push([lead[alias], lead[property]]);
+                if (lead[property]) {
+                    if (!dupeCheck[property].includes(lead[property])) {
+                        dupeCheck[property].push(lead[property]);
+                        options.push([lead[alias], lead[property]]);
+                    }
                 }
             };
 
@@ -90,6 +95,7 @@ class LeadsIndex extends React.Component {
                 buildOptionsFromList(lead, cityFilterOptions, 'city', 'city');
                 buildOptionsFromList(lead, userFilterOptions, 'assignedUserName', 'userId');
                 buildOptionsFromList(lead, teamFilterOptions, 'teamTitle', 'teamId');
+                buildOptionsFromList(lead, areaFilterOptions, 'areaTitle', 'areaId');
 
             });
             
@@ -104,7 +110,8 @@ class LeadsIndex extends React.Component {
                 leadStatusFilterOptions,
                 cityFilterOptions,
                 userFilterOptions,
-                teamFilterOptions
+                teamFilterOptions,
+                areaFilterOptions
             });
         }
         
@@ -220,7 +227,8 @@ class LeadsIndex extends React.Component {
                 filtersShown,
                 cityFilterOptions,
                 userFilterOptions,
-                teamFilterOptions
+                teamFilterOptions,
+                areaFilterOptions
             },
             toggleActive, renderLeads, sortList, filterList, toggleFilters
         } = this;
@@ -238,8 +246,12 @@ class LeadsIndex extends React.Component {
                 </a>
                 <div className={ filtersShown ? 'list-filters' : 'invisible' }>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <select style={{ marginRight: '1rem' }}>
-                            <option>Filter by Area</option>
+                        <select style={{ marginRight: '1rem' }} value={ filterSettings.areaId } onChange={ e => filterList('areaId', e.target.value) }>
+                            {
+                                areaFilterOptions.map(option => {
+                                    return <option key={ option[1] } value={ option[1] }>{ option[0] }</option>;
+                                })
+                            }
                         </select>
                         <select>
                             <option>Filter by Area Group</option>

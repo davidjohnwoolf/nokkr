@@ -30,12 +30,16 @@ router.get('/', requireUser, (req, res) => {
             if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
             
             let leads = [];
+            let areas = [];
+            
+            users.forEach(user => areas = areas.concat(user.areas)); 
         
             users.forEach(user => {
                 let team = account.teams.find(team => team.id == user.teamId);
                 
                 let userLeads = user.leads.map(lead => {
                     let leadStatus = account.leadStatuses.find(status => status.id == lead.leadStatus);
+                    let leadArea = areas.find(area => area.id == lead.areaId);
                     
                     return Object.assign({
                         assignedUserName: user.firstName + ' ' + user.lastName,
@@ -45,7 +49,8 @@ router.get('/', requireUser, (req, res) => {
                         leadStatusTitle: leadStatus.title,
                         leadStatusId: leadStatus._id,
                         leadStatusType: leadStatus.type,
-                        leadStatusColor: leadStatus.color
+                        leadStatusColor: leadStatus.color,
+                        areaTitle: (leadArea ? leadArea.title : undefined)
                     }, lead._doc);
                 });
                 
