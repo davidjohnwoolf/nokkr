@@ -22,7 +22,7 @@ router.get('/', requireAdmin, (req, res) => {
         
         if (!account) return res.json({ status: ERROR, code: 404, message: 'Account not found' });
         
-        return res.json({ field: SUCCESS, data: { areas: account.leadFields } });
+        return res.json({ field: SUCCESS, data: { payload: account.leadFields } });
     });
 });
 
@@ -60,7 +60,7 @@ router.get('/:id', requireAdmin, (req, res) => {
         
         if (!leadField) return res.json({ field: ERROR, code: 404, message: 'Lead field not found' });
         
-        return res.json({ field: SUCCESS, data: { leadField } });
+        return res.json({ field: SUCCESS, data: { payload: leadField } });
     });
 });
 
