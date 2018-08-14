@@ -40,6 +40,8 @@ import LeadsIndex from './components/leads/lead-index';
 
 import LeadStatusIndex from './components/lead-statuses/lead-status-index';
 
+import LeadFieldIndex from './components/lead-fields/lead-field-index';
+
 import AreaGroupShow from './components/area-groups/area-group-show';
 
 import { SU, ADMIN, MANAGER, USER } from '../lib/constants';
@@ -108,6 +110,8 @@ ReactDOM.render(
                 		<PrivateRoute exact path="/leads" component={ LeadsIndex } />
                 		
                 		<PrivateRoute exact path="/lead-statuses" access={ ADMIN } component={ LeadStatusIndex } />
+                		
+                		<PrivateRoute exact path="/lead-fields" access={ ADMIN } component={ LeadFieldIndex } />
                 		
                 		<PrivateRoute exact path="/" permission="user" component={ Dashboard } />
                 		

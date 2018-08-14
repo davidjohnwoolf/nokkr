@@ -44,7 +44,7 @@ export const unique = args => {
     const { value, field, candidates, data } = args;
     
     //check if field exists and that field is not the one being edited
-    return (candidates.find(c => (value === c[field]) && (!data || (c._id !== data._id)))) ? `${ value } already exists` : undefined;
+    return candidates ? ((candidates.find(c => (value === c[field]) && (!data || (c._id !== data._id)))) ? `${ value } already exists` : undefined) : undefined;
 };
 
 //===============
