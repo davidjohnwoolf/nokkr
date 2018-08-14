@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const LeadFieldSchema = new Schema({
     label: { type: String, required: true, index: true, unique: true },
     name: { type: String, required: true, unique: true },
-    type: { type: String, required: true, enum: ['Text', 'Select', 'Radio', 'Checkbox', 'Date', 'Email', 'Text Area'] },
+    type: { type: String, required: true, enum: ['Text', 'Select', 'Checkbox', 'Date', 'Email', 'Text Area'] },
     options: [String],
     order: { type: Number },
     isActive: { type: Boolean, required: true, default: false },

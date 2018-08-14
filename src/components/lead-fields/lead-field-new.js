@@ -87,7 +87,7 @@ class LeadFieldNew extends React.Component {
         } = this;
         
         //make const and add to lib including for model
-        const typeOptions = [['Select a Type', ''], 'Text', 'Select', 'Radio', 'Checkbox', 'Date', 'Email'];
+        const typeOptions = [['Select a Type', ''], 'Text', 'Select', 'Checkbox', 'Date', 'Email', 'Text Area'];
         
         //meant to render in modal
         return (

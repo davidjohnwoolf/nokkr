@@ -158,6 +158,9 @@ class LeadFieldIndex extends React.Component {
                     return (
                         <tr key={ field._id }>
                             <td>
+                                { field.isActive ? <i className="fas fa-check"></i> : <i className="fas fa-times"></i> }
+                            </td>
+                            <td>
                                 { field.label }
                             </td>
                             <td>
@@ -194,6 +197,9 @@ class LeadFieldIndex extends React.Component {
                 <table className="table">
                     <thead>
                         <tr>
+                            <th>
+                                Active
+                            </th>
                             <th>
                                 Label
                             </th>
