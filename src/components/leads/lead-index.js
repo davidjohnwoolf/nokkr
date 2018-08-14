@@ -301,11 +301,11 @@ class LeadsIndex extends React.Component {
                                         </ul>
                                     </div>
                                 ) : <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                            <h3>No Results Found</h3>
-                                            <a className="icon-link cancel" onClick={ clearResults }>
-                                                <i className="fas fa-times"></i>
-                                            </a>
-                                        </div>
+                                        <h3>No Results Found</h3>
+                                        <a className="icon-link cancel" onClick={ clearResults }>
+                                            <i className="fas fa-times"></i>
+                                        </a>
+                                    </div>
                         ) : ''
                 }
                 <a style={{ display: 'inline-block', margin: '1rem 0', cursor: 'pointer' }} onClick={ toggleFilters }>
