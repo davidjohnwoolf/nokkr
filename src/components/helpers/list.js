@@ -12,3 +12,19 @@ export const sortItems = (originalList, sortSettings) => {
         
     } else { return originalList; }
 }
+
+export const searchItems = (items, query) => {
+    query = query.toLowerCase();
+    
+    let results = items.filter(item => {
+        let found = false;
+        
+        for (let prop in item) {
+            if (typeof prop === 'string' && item[prop].toLowerCase().includes(query)) found = true;
+        }
+        
+        return found;
+    });
+    
+    return results;
+}

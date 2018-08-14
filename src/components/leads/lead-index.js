@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { SU, ADMIN, MANAGER, USER } from '../../../lib/constants';
-import { sortItems } from '../helpers/list';
+import { SU, ADMIN, MANAGER, USER, LEAD_PATH } from '../../../lib/constants';
+import { sortItems, searchItems } from '../helpers/list';
 
 import { fetchLeads } from '../../actions/leads.action';
 
@@ -35,6 +35,8 @@ class LeadsIndex extends React.Component {
             teamFilterOptions: null,
             areaFilterOptions: null,
             areaGroupFilterOptions: null,
+            searchResults: null,
+            searchQuery: '',
             sortSettings: {
                 column: undefined,
                 ascending: true
@@ -46,6 +48,9 @@ class LeadsIndex extends React.Component {
         this.renderLeads = this.renderLeads.bind(this);
         this.filterList = this.filterList.bind(this);
         this.toggleFilters = this.toggleFilters.bind(this);
+        this.handleSearchInput = this.handleSearchInput.bind(this);
+        this.submitQuery = this.submitQuery.bind(this);
+        this.clearResults = this.clearResults.bind(this);
     }
     
     componentDidMount() {
@@ -192,6 +197,20 @@ class LeadsIndex extends React.Component {
             ? this.setState({ sortSettings: { column, ascending: !ascending } })
             : this.setState({ sortSettings: { column: col, ascending: true } });
     }
+    
+    handleSearchInput(value) {
+        this.setState({ searchQuery: value });
+    }
+    
+    submitQuery(e) {
+        e.preventDefault();
+        
+        this.setState({ searchResults: searchItems(this.props.leads, this.state.searchQuery) });
+    }
+    
+    clearResults() {
+        this.setState({ searchResults: null, searchQuery: '' });
+    }
 	
     renderLeads() {
         const { itemList } = this.state;
@@ -202,7 +221,7 @@ class LeadsIndex extends React.Component {
                 return (
                     <tr key={ lead._id }>
                         <td>
-                            <Link to={ `/leads/${ lead._id }` }>{ `${ lead.firstName } ${ lead.lastName }` }</Link>
+                            <Link to={ LEAD_PATH + lead._id }>{ `${ lead.firstName } ${ lead.lastName }` }</Link>
                         </td>
                         <td>
                             { `${ lead.address } ${ lead.city }, ${ lead.state }` }
@@ -234,9 +253,11 @@ class LeadsIndex extends React.Component {
                 userFilterOptions,
                 teamFilterOptions,
                 areaFilterOptions,
-                areaGroupFilterOptions
+                areaGroupFilterOptions,
+                searchQuery,
+                searchResults
             },
-            toggleActive, renderLeads, sortList, filterList, toggleFilters
+            toggleActive, renderLeads, sortList, filterList, toggleFilters, handleSearchInput, submitQuery, clearResults
         } = this;
         
         if (isLoading) return <Loading />;
@@ -246,7 +267,47 @@ class LeadsIndex extends React.Component {
                 <ContentHeader title="Lead Management" history={ history } chilrenAccess={ !isReadOnly }>
                     <IconLink onClick={ () => console.log('search') } type="primary" icon="cog" />
                 </ContentHeader>
-                <input type="text" placeholder="search leads" />
+                <form onSubmit={ submitQuery } style={{ display: 'flex' }}>
+                    <input type="text" placeholder="search leads" style={{ height: '3.9rem', marginTop: '1rem' }} name="searchQuery" value={ searchQuery } onChange={ (e) => handleSearchInput(e.target.value) } />
+                    <button className="button primary" type="submit"><i className="fas fa-search"></i></button>
+                </form>
+                {
+                    searchResults
+                        ? (
+                            searchResults.length
+                                ? (
+                                    <div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                            <h3>Results</h3>
+                                            <a className="icon-link cancel" onClick={ clearResults }>
+                                                <i className="fas fa-times"></i>
+                                            </a>
+                                        </div>
+                                        <ul style={{ listStyleType: 'none', padding: '0', paddingLeft: '0' }}>
+                                            {
+                                                searchResults.map(result => {
+                                                    return (
+                                                    <li key={ result._id } style={{ margin: '1rem 0' }}>
+                                                        <Link to={  LEAD_PATH + result._id } style={{ display: 'flex', justifyContent: 'space-between', border: '.1rem solid #ccc' }}>
+                                                            <span style={{ padding: '.5rem', borderRight: '.1rem solid #ccc' }}>{ `${ result.firstName } ${ result.lastName }` }</span>
+                                                            <span style={{ padding: '.5rem', borderRight: '.1rem solid #ccc' }}>{ result.address }</span>
+                                                            <span style={{ padding: '.5rem', borderRight: '.1rem solid #ccc' }}>{ result.leadStatusTitle }</span>
+                                                            <span style={{ padding: '.5rem' }}>{ result.assignedUserName }</span>
+                                                        </Link>
+                                                    </li>
+                                                    );
+                                                })
+                                            }
+                                        </ul>
+                                    </div>
+                                ) : <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                            <h3>No Results Found</h3>
+                                            <a className="icon-link cancel" onClick={ clearResults }>
+                                                <i className="fas fa-times"></i>
+                                            </a>
+                                        </div>
+                        ) : ''
+                }
                 <a style={{ display: 'inline-block', margin: '1rem 0', cursor: 'pointer' }} onClick={ toggleFilters }>
                     Show Filters <i className={ filtersShown ? 'fas fa-caret-up' : 'fas fa-caret-down' }></i>
                 </a>
