@@ -189,7 +189,7 @@ class LeadStatusIndex extends React.Component {
         if (isLoading) return <Loading />;
         
         return (
-            <main id="user-index" className="content">
+            <main id="lead-status-index" className="content">
                 <ContentHeader title="Lead Status Management" history={ history } chilrenAccess={ !isReadOnly }>
                     <IconLink clickEvent={ this.toggleProp('newModalShown') } type="success" icon="plus" />
                 </ContentHeader>
