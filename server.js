@@ -17,7 +17,7 @@ const Users = require('./controllers/users');
 const Areas = require('./controllers/areas');
 const Leads = require('./controllers/leads');
 
-const { ACCOUNT_PATH, TEAM_PATH, USER_PATH, FIELD_PATH, LEAD_STATUS_PATH, AREA_PATH, AREA_GROUP_PATH, LEAD_PATH } = require('./lib/constants');
+const { ACCOUNT_PATH, TEAM_PATH, USER_PATH, LEAD_FIELD_PATH, LEAD_STATUS_PATH, AREA_PATH, AREA_GROUP_PATH, LEAD_PATH } = require('./lib/constants');
 
 //connect database
 if (process.env.NODE_ENV !== 'test') {
@@ -40,7 +40,7 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.use('/', Authentication);
 app.use(ACCOUNT_PATH, Accounts);
 app.use(LEAD_STATUS_PATH, LeadStatuses);
-app.use(FIELD_PATH, LeadFields);
+app.use(LEAD_FIELD_PATH, LeadFields);
 app.use(AREA_GROUP_PATH, AreaGroups);
 app.use(TEAM_PATH, Teams);
 app.use(USER_PATH, Users);
