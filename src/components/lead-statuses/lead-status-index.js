@@ -72,9 +72,10 @@ class LeadStatusIndex extends React.Component {
             
             sortedStatuses.sort((a, b) => a.order - b.order);
             
-            sortedStatuses.forEach(leadStatus => orderOptions.push(leadStatus.order));
-            
-            orderOptions.push(orderOptions[orderOptions.length - 1] + 1);
+            if (sortedStatuses.length) {
+                sortedStatuses.forEach(status => orderOptions.push(status.order));
+                orderOptions.push(orderOptions[orderOptions.length - 1] + 1);
+            } else { orderOptions.push(1) }
             
             this.setState({ sortedStatuses, orderOptions });
         }
