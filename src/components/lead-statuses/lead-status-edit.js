@@ -61,7 +61,7 @@ class LeadStatusEdit extends React.Component {
         const { state: { fields }, props: { sortedStatuses }, validationRules } = this
         
         this.setState(
-            validate(e, validationRules, { ...fields }, sortedStatuses, null)
+            validate(e, validationRules, { ...fields }, sortedStatuses, this.props.leadStatus)
         );
     }
     
@@ -109,8 +109,8 @@ class LeadStatusEdit extends React.Component {
                 <td colSpan="4">
                     <form className="inline-form" style={{ display: 'flex', justifyContent: 'space-between' }} onSubmit={ handleSubmit }>
 
-                            <i onClick={ () => increaseOrder(leadStatus._id) } style={{ fontSize: '3rem', marginTop: '.75rem' }} className="fas fa-caret-down"></i>
-                            <i onClick={ () => decreaseOrder(leadStatus._id) } style={{ fontSize: '3rem', marginTop: '.75rem' }} className="fas fa-caret-up"></i>
+                        <i onClick={ () => increaseOrder(leadStatus._id) } style={{ fontSize: '3rem', marginTop: '.75rem' }} className="fas fa-caret-down"></i>
+                        <i onClick={ () => decreaseOrder(leadStatus._id) } style={{ fontSize: '3rem', marginTop: '.75rem' }} className="fas fa-caret-up"></i>
 
                         <FieldColor
                             name="color"
