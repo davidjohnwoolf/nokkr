@@ -23,7 +23,7 @@ class LeadFieldNew extends React.Component {
             type: [required],
             order: [required],
             options: [/*requiredIfTypeSelect*/],
-            isActive: [required],
+            isActive: [],
         });
         
         this.state = this.getInitialState();

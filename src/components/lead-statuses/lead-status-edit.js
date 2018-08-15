@@ -96,7 +96,7 @@ class LeadStatusEdit extends React.Component {
     
     render() {
         const {
-            state: { fields: { title, type, order, color }, formValid },
+            state: { fields: { title, type, color }, formValid },
             props: { leadStatus },
             handleUserInput, handleSubmit, increaseOrder, decreaseOrder
         } = this;

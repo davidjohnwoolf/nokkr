@@ -149,7 +149,7 @@ class LeadFieldIndex extends React.Component {
                             decreaseFieldOrder={ decreaseFieldOrder }
                             increaseFieldOrder={ increaseFieldOrder }
                             close={ resetEditable }
-                            leadStatus={ field }
+                            leadField={ field }
                             sortedFields={ sortedFields }
                             orderOptions={ orderOptions }
                         />
