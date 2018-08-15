@@ -101,8 +101,8 @@ class LeadFieldEdit extends React.Component {
     
     render() {
         const {
-            state: { fields: { label, type, isActive }, formValid },
-            props: { leadField },
+            state: { fields: { label, type, isActive, order }, formValid },
+            props: { leadField, leadFields },
             handleUserInput, handleSubmit, increaseOrder, decreaseOrder
         } = this;
         
@@ -115,8 +115,36 @@ class LeadFieldEdit extends React.Component {
                 <td colSpan="4">
                     <form style={{ display: 'flex', justifyContent: 'space-between' }} onSubmit={ handleSubmit }>
                     
-                        <i onClick={ () => increaseOrder(leadField._id) } style={{ fontSize: '3rem', marginTop: '.75rem' }} className="fas fa-caret-down"></i>
-                        <i onClick={ () => decreaseOrder(leadField._id) } style={{ fontSize: '3rem', marginTop: '.75rem' }} className="fas fa-caret-up"></i>
+                        {
+                            order.value > 1
+                                ? (
+                                    <i
+                                        onClick={ () => decreaseOrder(leadField._id) }
+                                        style={{ fontSize: '3rem', marginTop: '.75rem', cursor: 'pointer' }}
+                                        className="fas fa-caret-up">
+                                    </i>
+                                ) : (
+                                    <i
+                                        style={{ fontSize: '3rem', marginTop: '.75rem', color: '#999' }}
+                                        className="fas fa-caret-up">
+                                    </i>
+                                )
+                        }
+                        {
+                            order.value < leadFields.length
+                                ? (
+                                    <i
+                                        onClick={ () => increaseOrder(leadField._id) }
+                                        style={{ fontSize: '3rem', marginTop: '.75rem', cursor: 'pointer' }}
+                                        className="fas fa-caret-down">
+                                    </i>
+                                ) : (
+                                    <i
+                                        style={{ fontSize: '3rem', marginTop: '.75rem', color: '#999' }}
+                                        className="fas fa-caret-down">
+                                    </i>
+                                )
+                        }
                         
                         <FieldCheckbox
                             name="isActive"
@@ -171,6 +199,7 @@ class LeadFieldEdit extends React.Component {
 const mapStateToProps = state => ({
     message: state.leadFields.message,
     success: state.leadFields.success,
+    leadFields: state.leadFields.leadFields,
     updated: state.leadFields.updated
 });
 

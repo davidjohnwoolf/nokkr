@@ -96,8 +96,8 @@ class LeadStatusEdit extends React.Component {
     
     render() {
         const {
-            state: { fields: { title, type, color }, formValid },
-            props: { leadStatus },
+            state: { fields: { title, type, color, order }, formValid },
+            props: { leadStatus, leadStatuses },
             handleUserInput, handleSubmit, increaseOrder, decreaseOrder
         } = this;
         
@@ -108,9 +108,37 @@ class LeadStatusEdit extends React.Component {
             <tr>
                 <td colSpan="4">
                     <form className="inline-form" style={{ display: 'flex', justifyContent: 'space-between' }} onSubmit={ handleSubmit }>
-
-                        <i onClick={ () => increaseOrder(leadStatus._id) } style={{ fontSize: '3rem', marginTop: '.75rem' }} className="fas fa-caret-down"></i>
-                        <i onClick={ () => decreaseOrder(leadStatus._id) } style={{ fontSize: '3rem', marginTop: '.75rem' }} className="fas fa-caret-up"></i>
+                        
+                        {
+                            order.value > 1
+                                ? (
+                                    <i
+                                        onClick={ () => decreaseOrder(leadStatus._id) }
+                                        style={{ fontSize: '3rem', marginTop: '.75rem', cursor: 'pointer' }}
+                                        className="fas fa-caret-up">
+                                    </i>
+                                ) : (
+                                    <i
+                                        style={{ fontSize: '3rem', marginTop: '.75rem', color: '#999' }}
+                                        className="fas fa-caret-up">
+                                    </i>
+                                )
+                        }
+                        {
+                            order.value < leadStatuses.length
+                                ? (
+                                    <i
+                                        onClick={ () => increaseOrder(leadStatus._id) }
+                                        style={{ fontSize: '3rem', marginTop: '.75rem', cursor: 'pointer' }}
+                                        className="fas fa-caret-down">
+                                    </i>
+                                ) : (
+                                    <i
+                                        style={{ fontSize: '3rem', marginTop: '.75rem', color: '#999' }}
+                                        className="fas fa-caret-down">
+                                    </i>
+                                )
+                        }
 
                         <FieldColor
                             name="color"
@@ -163,6 +191,7 @@ class LeadStatusEdit extends React.Component {
 const mapStateToProps = state => ({
     message: state.leadStatuses.message,
     success: state.leadStatuses.success,
+    leadStatuses: state.leadStatuses.leadStatuses,
     updated: state.leadStatuses.updated
 });
 
