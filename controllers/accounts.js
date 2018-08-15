@@ -19,7 +19,7 @@ router.get('/', requireAdmin, (req, res) => {
         
         if (!account) return res.json({ status: ERROR, data: err, code: 404, message: 'Account not found' });
         
-        return res.json({ status: SUCCESS, data: { account } });
+        return res.json({ status: SUCCESS, data: { payload: account } });
     });
 });
 

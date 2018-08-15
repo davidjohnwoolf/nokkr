@@ -8,6 +8,7 @@ import teams from './teams.reducer';
 import leads from './leads.reducer';
 import leadStatuses from './lead-statuses.reducer';
 import leadFields from './lead-fields.reducer';
+import account from './account.reducer';
 
 export default combineReducers({
 	flash,
@@ -18,5 +19,6 @@ export default combineReducers({
 	areaGroups,
 	leads,
 	leadStatuses,
-	leadFields
+	leadFields,
+	account
 });
