@@ -89,10 +89,6 @@ router.put('/:id', requireAdmin, excludeReadOnly, (req, res) => {
         
         const leadStatusIndex = account.leadStatuses.findIndex(leadStatus => leadStatus.id == req.params.id);
         
-        console.log('lead status index', leadStatusIndex)
-        
-        console.log('status with order', statusWithOrderIndex);
-        
         if (statusWithOrderIndex) {
             if (req.body.order > account.leadStatuses[leadStatusIndex].order) {
                 account.leadStatuses.forEach((leadStatus, i) => {
