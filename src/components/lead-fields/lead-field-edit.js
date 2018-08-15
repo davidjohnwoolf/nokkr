@@ -74,9 +74,9 @@ class LeadFieldEdit extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         
-        const { state: { fields }, props: { updateLeadField } } = this;
+        const { state: { fields }, props: { updateLeadField, leadField } } = this;
         
-        formSubmit({ fields: { ...fields }, action: updateLeadField });
+        formSubmit({ fields: { ...fields }, action: updateLeadField, id: leadField._id });
     }
     
     increaseOrder(id) {

@@ -33,6 +33,14 @@ router.post('/', requireAdmin, excludeReadOnly, (req, res) => {
         
         if (!account) return res.json({ field: ERROR, code: 404, message: 'Account not found' });
         
+        let fieldWithOrder = account.leadFields.find(leadStatus => req.body.order == leadStatus.order);
+        
+        if (fieldWithOrder) {
+            account.leadFields.forEach((field, i) => {
+                if (field.order >= req.body.order) account.leadFields[i].order += 1;
+            });
+        }
+        
         account.leadFields.push(new LeadField(req.body));
         
         account.save(err => {
@@ -74,6 +82,32 @@ router.put('/:id', requireAdmin, excludeReadOnly, (req, res) => {
         const leadFieldIndex = account.leadFields.findIndex(leadField => leadField.id === req.params.id);
         
         if (leadFieldIndex < 0) return res.json({ status: ERROR, code: 404, message: 'Lead field not found' });
+        
+        let fieldWithOrderIndex = account.leadFields.findIndex(field => ((req.body.title !== field.title) && (req.body.order == field.order)));
+        
+        if (fieldWithOrderIndex) {
+            if (req.body.order > account.leadFields[leadFieldIndex].order) {
+                account.leadFields.forEach((field, i) => {
+                    if (
+                        (field.order > account.leadStatuses[leadFieldIndex].order)
+                        && (field.order <= req.body.order)
+                        && (field.id != req.params.id)
+                    ) {
+                        account.leadFields[i].order = account.leadFields[i].order - 1;
+                    }
+                });
+            } else {
+                account.leadFields.forEach((field, i) => {
+                    if (
+                        (field.order < account.leadFields[leadFieldIndex].order)
+                        && (field.order >= req.body.order)
+                        && (field.id != req.params.id)
+                    ) {
+                        account.leadFields[i].order += 1;
+                    }
+                });
+            }
+        }
         
         for (let key in req.body) {
         	account.leadFields[leadFieldIndex][key] = req.body[key];
