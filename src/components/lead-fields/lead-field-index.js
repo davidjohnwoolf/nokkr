@@ -20,7 +20,7 @@ class LeadFieldIndex extends React.Component {
         
         this.state = {
             isLoading: true,
-            newModalShown: false,
+            newFormShown: false,
             orderOptions: null,
             sortedFields: null,
             editableFieldId: undefined
@@ -192,7 +192,7 @@ class LeadFieldIndex extends React.Component {
         return (
             <main id="user-index" className="content">
                 <ContentHeader title="Lead Field Management" history={ history } chilrenAccess={ !isReadOnly }>
-                    <IconLink clickEvent={ this.toggleProp('newModalShown') } type="success" icon="plus" />
+                    <IconLink clickEvent={ this.toggleProp('newFormShown') } type="success" icon="plus" />
                 </ContentHeader>
                 <table className="table">
                     <thead>
@@ -213,19 +213,17 @@ class LeadFieldIndex extends React.Component {
                     </thead>
                     <tbody>
                         { renderLeadFields() }
+                        { this.state.newFormShown
+                            ? (
+                                <LeadFieldNew
+                                    close={ this.toggleProp('newFormShown') }
+                                    sortedFields={ sortedFields }
+                                    orderOptions={ orderOptions }
+                                />
+                            ) : undefined
+                        }
                     </tbody>
                 </table>
-                <Modal
-                    close={ this.toggleProp('newModalShown') }
-                    shown={ this.state.newModalShown }
-                    title="Create Lead Field"
-                >
-                    <LeadFieldNew
-                        close={ this.toggleProp('newModalShown') }
-                        sortedFields={ sortedFields }
-                        orderOptions={ orderOptions }
-                    />
-                </Modal>
             </main>
         );
     }

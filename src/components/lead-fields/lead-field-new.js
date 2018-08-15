@@ -91,49 +91,63 @@ class LeadFieldNew extends React.Component {
         
         //meant to render in modal
         return (
-            <div>
-                <form onSubmit={ handleSubmit }>
-                
-                    <FieldInput
-                        name="label"
-                        type="text"
-                        placeholder="label"
-                        value={ label.value }
-                        handleUserInput={ handleUserInput }
-                        error={ label.error }
-                    />
-                    <FieldSelect
-                        name="type"
-                        value={ type.value }
-                        handleUserInput={ handleUserInput }
-                        error={ type.error }
-                        options={ typeOptions }
-                    />
-                    <FieldSelect
-                        name="order"
-                        value={ order.value }
-                        handleUserInput={ handleUserInput }
-                        error={ order.error }
-                        options={ orderOptions }
-                    />
-                    <FieldCheckbox
-                        name="isActive"
-                        label="Active"
-                        value="true"
-                        checked={ isActive.checked }
-                        handleUserInput={ handleUserInput }
-                        error={ isActive.error }
-                    />
-    
-                    <button
-                        disabled={ !formValid }
-                        className="button success"
-                        type="submit">
-                        Save
-                    </button>
-                </form>
-                <button onClick={ this.props.close } className="button cancel">Cancel</button>
-            </div>
+            <tr>
+                <td colSpan="4">
+                    <form style={{ display: 'flex', justifyContent: 'space-between' }} onSubmit={ handleSubmit }>
+                        
+                        <FieldCheckbox
+                            name="isActive"
+                            label="Active"
+                            value="true"
+                            checked={ isActive.checked }
+                            handleUserInput={ handleUserInput }
+                            error={ isActive.error }
+                        />
+                        <FieldSelect
+                            name="order"
+                            value={ order.value }
+                            handleUserInput={ handleUserInput }
+                            error={ order.error }
+                            options={ orderOptions }
+                        />
+                        <FieldInput
+                            name="label"
+                            type="text"
+                            placeholder="label"
+                            value={ label.value }
+                            handleUserInput={ handleUserInput }
+                            error={ label.error }
+                        />
+                        <FieldSelect
+                            name="type"
+                            value={ type.value }
+                            handleUserInput={ handleUserInput }
+                            error={ type.error }
+                            options={ typeOptions }
+                        />
+                        
+                        <button
+                            style={{ marginTop: '1rem', padding: '1rem', height: '3.5rem', background: '#10a887', color: '#fff', border: 'none', cursor: 'pointer' }}
+                            disabled={ !formValid }
+                            type="submit"
+                        >
+                            <i style={{ fontSize: '1.5rem'}} className="fas fa-check"></i>
+                        </button>
+                        <span
+                            style={{ marginTop: '1rem', padding: '1rem', height: '3.5rem', background: '#999', color: '#fff', border: 'none', cursor: 'pointer' }}
+                            onClick={ this.props.close }
+                        >
+                            <i style={{ fontSize: '1.5rem'}} className="fas fa-times"></i>
+                        </span>
+                        <span
+                            style={{ marginTop: '1rem', padding: '1rem', height: '3.5rem', background: '#da3c3c', color: '#fff', border: 'none', cursor: 'pointer' }}
+                            onClick={ () => console.log('delete it') }
+                        >
+                            <i style={{ fontSize: '1.5rem'}} className="fas fa-trash"></i>
+                        </span>
+                    </form>
+                </td>
+            </tr>
         );
     }
 }
