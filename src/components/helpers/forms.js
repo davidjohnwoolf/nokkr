@@ -1,4 +1,10 @@
+import React from 'react';
 import { USER, MANAGER, PW_REGEX } from '../../../lib/constants.js';
+
+import FieldInput from '../forms/field-input';
+import FieldCheckbox from '../forms/field-checkbox';
+import FieldSelect from '../forms/field-select';
+import FieldTextarea from '../forms/field-textarea';
 
 const CHECKED = 'checked';
 const VALUE = 'value';
@@ -91,6 +97,48 @@ export const validate = (e, rules, fields, candidates, data) => {
     return { fields, formValid };
 };
 
+//will replace validate
+export const customValidate = ({ event, customFields, candidates, data }) => {
+    let formValid = true;
+    let error;
+    
+    [ ...customFields].forEach(field => {
+        
+        if (event && (field.name === event.target.name)) {
+            (field.type === 'checkbox')
+                ? field.checked = event.target.checked
+                : field.value = event.target.value;
+        }
+        
+        field.rules.forEach(rule => {
+            let result = rule({
+                value: (field.type === 'checkbox' ? event.target.checked : event.target.value),
+                field: field.name,
+                candidates,
+                data
+            });
+            
+            //handle target rules
+            if (event && (field.name === event.target.name)) {
+                if (result) error = result;
+                field.error = error;
+            }
+            
+            //handle all rules
+            if (result) {
+                //update match error
+                if (rule === passwordMatch) customFields.passwordConfirmation.error = 'Passwords must match';
+                
+                formValid = false;
+            } else {
+                if (rule === passwordMatch) customFields.passwordConfirmation.error = undefined;
+            }
+        });
+    });
+    
+    return { customFields, formValid };
+};
+
 //===============
 // form helpers
 //===============
@@ -123,56 +171,56 @@ export const formSubmit = ({ fields, excludeKeys, action, id }) => {
     id ? action(id, fields) : action(fields);
 };
 
-//buildForm
-/*export const buildForm = ({ formOptions, handleUserInput, handleSubmit, formValid, history, submitText, fields, state }) => {
-    
-    let inputs = []
-    for (let input in formOptions) {
-        switch (formOptions[input].type) {
-            case 'select':
-                inputs.push(<FieldSelect
-                    name={ input }
-                    value={ fields[input].value }
-                    handleUserInput={ handleUserInput }
-                    error={ fields[input].error }
-                    options={ state[formOptions[input].options] }
-                />);
-                
-            case 'checkbox':
-                inputs.push(<FieldCheckbox
-                    name={ input }
-                    label={ formOptions[input].label }
-                    checked={ fields[input].checked }
-                    value="true"
-                    handleUserInput={ handleUserInput }
-                    error={ fields[input].error }
-                />)
-                
-            default:
-                inputs.push(<FieldInput
-                    name={ input }
-                    type={ formOptions[input].type }
-                    placeholder={ formOptions[input].label }
-                    value={ fields[input].value }
-                    handleUserInput={ handleUserInput }
-                    error={ fields[input].error }
-                />);
+//buildFields
+export const buildFields = ({ fields, handleUserInput }) => {
+    return fields.map(field => {
+        switch(field.type) {
+            case ('text' || 'email' || 'number'):
+                return (
+                    <FieldInput
+                        key={ field.name }
+                        name={ field.name }
+                        type={ field.type }
+                        placeholder={ field.label }
+                        value={ field.value }
+                        handleUserInput={ handleUserInput }
+                        error={ field.error }
+                    />
+                );
+            case ('checkbox'):
+                return (
+                    <FieldCheckbox
+                        key={ field.name }
+                        name={ field.name }
+                        label={ field.label }
+                        value="true"
+                        checked={ field.checked }
+                        handleUserInput={ handleUserInput }
+                        error={ field.error }
+                    />
+                );
+            case ('textarea'):
+                return (
+                    <FieldTextarea
+                        key={ field.name }
+                        name={ field.name }
+                        label={ field.label }
+                        value={ field.value }
+                        handleUserInput={ handleUserInput }
+                        error={ field.error }
+                    />
+                );
+            case ('select'):
+                return (
+                    <FieldSelect
+                        key={ field.name }
+                        name={ field.name }
+                        value={ field.value }
+                        handleUserInput={ handleUserInput }
+                        error={ field.error }
+                        options={ field.options }
+                    />
+                );
         }
-    };
-    
-    return (
-        <form onSubmit={ handleSubmit }>
-            { inputs }
-            <div className="btn-group">
-                <button
-                    disabled={ !formValid }
-                    className="btn btn-primary"
-                    type="submit">
-                    { submitText }
-                </button>
-                <a onClick={ history.goBack } className="btn btn-cancel">Cancel</a>
-            </div>
-        </form>
-    )
-};
-*/
+    });
+}

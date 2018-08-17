@@ -7,9 +7,10 @@ import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 
 import { createLead, clearLeads, fetchLeads } from '../../actions/leads.action';
+import { fetchLeadFields } from '../../actions/lead-fields.action';
 import { sendMessage } from '../../actions/flash.action';
 
-import { required, unique, validate, formSubmit } from '../helpers/forms';
+import { required, unique, validate, formSubmit, buildFields, customValidate } from '../helpers/forms';
 import stateArray from '../helpers/state-array';
 
 class LeadNew extends React.Component {
@@ -40,6 +41,7 @@ class LeadNew extends React.Component {
 
         this.handleUserInput = this.handleUserInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.customHandleUserInput = this.customHandleUserInput.bind(this);
     }
     
     getInitialState() {
@@ -60,6 +62,7 @@ class LeadNew extends React.Component {
                 lat: { value: '', error: '' },
                 lng: { value: '', error: '' }
             },
+            customFields: null,
             isLoading: true,
             uniqueCandidateList: null,
             leadStatusOptions: null,
@@ -67,7 +70,12 @@ class LeadNew extends React.Component {
         };
     }
     
+    componentDidMount() {
+        this.props.fetchLeadFields();
+    }
+    
     componentDidUpdate(prevProps) {
+        console.log(this.state.customFields)
         const {
             props: {
                 success,
@@ -85,14 +93,16 @@ class LeadNew extends React.Component {
                 hasAddress,
                 leadStatuses,
                 fetchLeads,
-                created
+                created,
+                leadFields
             },
             state: { isLoading },
             getInitialState
         } = this;
         
-        if (leads && leadStatuses && isLoading) {
+        if (leads && leadStatuses && leadFields && isLoading) {
             const fields = { ...this.state.fields };
+            const customFields = [];
             
             fields.userId.value = sessionId;
             
@@ -102,9 +112,59 @@ class LeadNew extends React.Component {
                 leadStatusOptions.push([status.title, status._id]);
             });
             
+            leadFields.forEach(field => {
+                if (field.isActive) {
+                    switch(field.type) {
+                        case 'Checkbox':
+                            customFields.push({
+                                name: field.name,
+                                label: field.label,
+                                type: field.type.toLowerCase(),
+                                rules: [],
+                                value: '',
+                                error: ''
+                            });
+                            break;
+                        
+                        case 'Select':
+                            customFields.push({
+                                name: field.name,
+                                label: field.label,
+                                type: field.type.toLowerCase(),
+                                rules: [],
+                                value: '',
+                                error: ''
+                            });
+                            break;
+                        
+                        case 'Text Area':
+                            customFields.push({
+                                name: field.name,
+                                label: field.label,
+                                type: 'textarea',
+                                rules: [],
+                                value: '',
+                                error: ''
+                            });
+                            break;
+                        
+                        default:
+                            customFields.push({
+                                name: field.name,
+                                label: field.label,
+                                type: field.type.toLowerCase(),
+                                rules: [],
+                                value: '',
+                                error: ''
+                            });
+                    }
+                }
+            });
+            
             this.setState({
                 isLoading: false,
                 fields,
+                customFields,
                 leadStatusOptions,
                 uniqueCandidateList: leads
             });
@@ -159,6 +219,14 @@ class LeadNew extends React.Component {
         );
     }
     
+    customHandleUserInput(event) {
+        const { state: { customFields, uniqueCandidateList: candidates } } = this;
+        
+        this.setState(
+            customValidate({ event, customFields, candidates, data: null })
+        );
+    }
+    
     handleSubmit(e) {
         e.preventDefault();
         
@@ -174,6 +242,7 @@ class LeadNew extends React.Component {
                 formValid,
                 isLoading,
                 leadStatusOptions,
+                customFields,
                 fields: {
                     firstName,
                     lastName,
@@ -188,7 +257,8 @@ class LeadNew extends React.Component {
                 }
             },
             handleSubmit,
-            handleUserInput
+            handleUserInput,
+            customHandleUserInput
         } = this;
         
         if (isLoading) return <Loading />;
@@ -276,6 +346,8 @@ class LeadNew extends React.Component {
                         error={ secondaryPhone.error }
                     />
                     
+                    { buildFields({ fields: customFields, handleUserInput: customHandleUserInput }) }
+                    
                     <button type="submit" disabled={ !formValid } className="button success">Save Lead</button>
                 </form>
                 <button onClick={ close } className="button cancel">Cancel</button>
@@ -292,7 +364,8 @@ const mapStateToProps = state => ({
     areas: state.areas.areas,
     leads: state.leads.leads,
     leadStatuses: state.leadStatuses.leadStatuses,
+    leadFields: state.leadFields.leadFields,
     sessionId: state.auth.sessionId
 });
 
-export default connect(mapStateToProps, { fetchLeads, clearLeads, createLead, sendMessage })(LeadNew);
+export default connect(mapStateToProps, { fetchLeads, clearLeads, createLead, fetchLeadFields, sendMessage })(LeadNew);
