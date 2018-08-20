@@ -157,7 +157,8 @@ export const initializeForm = (fields, data) => {
 };
 
 //formSubmit
-export const formSubmit = ({ fields, excludeKeys, action, id }) => {
+export const formSubmit = ({ fields, excludeKeys, customFields, action, id }) => {
+    console.log('on submit', customFields)
     for (let key in fields) {
         let fieldType = (CHECKED in fields[key]) ? CHECKED : VALUE;
 
@@ -166,6 +167,15 @@ export const formSubmit = ({ fields, excludeKeys, action, id }) => {
         } else {
             fields[key] = fields[key][fieldType];
         }
+    }
+    
+    if (customFields) {
+        fields.customFields = {};
+    
+        customFields.forEach(field => {
+            if (field.type === 'checkbox' && field.checked) fields.customFields[field.name] = field.checked;
+            if (field.type !== 'checkbox' && field.value) fields.customFields[field.name] = field.value;
+        });
     }
     
     id ? action(id, fields) : action(fields);

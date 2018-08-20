@@ -230,9 +230,9 @@ class LeadNew extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         
-        const { state: { fields }, props: { createLead } } = this;
+        const { state: { fields, customFields }, props: { createLead } } = this;
         
-        formSubmit({ fields: { ...fields }, action: createLead });
+        formSubmit({ fields: { ...fields }, customFields, action: createLead });
     }
     
     render() {
