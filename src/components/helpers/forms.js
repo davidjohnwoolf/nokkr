@@ -98,45 +98,55 @@ export const validate = (e, rules, fields, candidates, data) => {
 };
 
 //will replace validate
-export const customValidate = ({ event, customFields, candidates, data }) => {
+export const customValidate = ({ event, fields, customFields, candidates, data }) => {
     let formValid = true;
     let error;
     
-    [ ...customFields].forEach(field => {
-        
-        if (event && (field.name === event.target.name)) {
-            (field.type === 'checkbox')
-                ? field.checked = event.target.checked
-                : field.value = event.target.value;
-        }
-        
-        field.rules.forEach(rule => {
-            let result = rule({
-                value: (field.type === 'checkbox' ? event.target.checked : event.target.value),
-                field: field.name,
-                candidates,
-                data
-            });
-            
-            //handle target rules
+    const validateFields = (fields) => {
+        fields.forEach(field => {
             if (event && (field.name === event.target.name)) {
-                if (result) error = result;
-                field.error = error;
+                (field.type === 'checkbox')
+                    ? field.checked = event.target.checked
+                    : field.value = event.target.value;
             }
             
-            //handle all rules
-            if (result) {
-                //update match error
-                if (rule === passwordMatch) customFields.passwordConfirmation.error = 'Passwords must match';
-                
-                formValid = false;
-            } else {
-                if (rule === passwordMatch) customFields.passwordConfirmation.error = undefined;
+            if (field.rules) {
+                field.rules.forEach(rule => {
+                    let result = rule({
+                        value: (field.type === 'checkbox' ? event.target.checked : event.target.value),
+                        field: field.name,
+                        candidates,
+                        data
+                    });
+                    
+                    //handle target rules
+                    if (event && (field.name === event.target.name)) {
+                        if (result) error = result;
+                        field.error = error;
+                    }
+                    
+                    //handle all rules
+                    if (result) {
+                        //update match error
+                        if (rule === passwordMatch) customFields.passwordConfirmation.error = 'Passwords must match';
+                        
+                        formValid = false;
+                    } else {
+                        if (rule === passwordMatch) customFields.passwordConfirmation.error = undefined;
+                    }
+                });
             }
         });
-    });
+    };
     
-    return { customFields, formValid };
+    validateFields(fields);
+    
+    if (customFields) {
+        validateFields(customFields);
+        return { fields, customFields, formValid };
+    }
+    
+    return { fields, formValid };
 };
 
 //===============
@@ -190,6 +200,29 @@ export const formSubmit = ({ fields, excludeKeys, customFields, action, id }) =>
     }
     
     id ? action(id, fields) : action(fields);
+};
+
+//formSubmit
+export const formSubmit2 = ({ fields, customFields, excludeKeys, action, id }) => {
+    const data = {};
+
+    fields.forEach(field => {
+        if (!excludeKeys || !excludeKeys.find(excludeKey => excludeKey === field.name)) {
+            if (field.type === 'checkbox' && field.checked) data[field.name] = field.checked;
+            if (field.type !== 'checkbox' && field.value) data[field.name] = field.value;
+        }
+    });
+    
+    if (customFields) {
+        data.customFields = {};
+    
+        customFields.forEach(field => {
+            if (field.type === 'checkbox' && field.checked) data.customFields[field.name] = field.checked;
+            if (field.type !== 'checkbox' && field.value) data.customFields[field.name] = field.value;
+        });
+    }
+    
+    id ? action(id, data) : action(data);
 };
 
 //buildFields

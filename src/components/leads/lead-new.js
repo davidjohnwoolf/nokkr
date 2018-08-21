@@ -9,8 +9,8 @@ import FieldSelect from '../forms/field-select';
 import { createLead, clearLeads, fetchLeads } from '../../actions/leads.action';
 import { sendMessage } from '../../actions/flash.action';
 
-import { required, unique, validate, formSubmit, buildFields, customValidate } from '../helpers/forms';
-import stateArray from '../helpers/state-array';
+import { validate, formSubmit, formSubmit2, buildFields, customValidate } from '../helpers/forms';
+import { LEAD_FORM_MODEL } from '../helpers/form-models';
 
 class LeadNew extends React.Component {
     
@@ -18,23 +18,6 @@ class LeadNew extends React.Component {
         super(props);
         
         props.clearLeads();
-        
-        this.validationRules = Object.freeze({
-            firstName: [required],
-            lastName: [required],
-            address: [required, unique],
-            city: [required],
-            state: [required],
-            zipcode: [required],
-            userId: [required],
-            areaId: [],
-            email: [],
-            primaryPhone: [],
-            secondaryPhone: [],
-            leadStatusId: [required],
-            lat: [required],
-            lng: [required]
-        });
         
         this.state = this.getInitialState();
 
@@ -45,26 +28,10 @@ class LeadNew extends React.Component {
     
     getInitialState() {
         return {
-            fields: {
-                firstName: { value: '', error: '' },
-                lastName: { value: '', error: '' },
-                address: { value: '', error: '' },
-                city: { value: '', error: '' },
-                state: { value: '', error: '' },
-                zipcode: { value: '', error: '' },
-                email: { value: '', error: '' },
-                primaryPhone: { value: '', error: '' },
-                secondaryPhone: { value: '', error: '' },
-                leadStatusId: { value: '', error: '' },
-                userId: { value: '', error: '' },
-                areaId: { value: '', error: '' },
-                lat: { value: '', error: '' },
-                lng: { value: '', error: '' }
-            },
+            fields: LEAD_FORM_MODEL.map(field => Object.create(field)),
             customFields: null,
             isLoading: true,
             uniqueCandidateList: null,
-            leadStatusOptions: null,
             formValid: false
         };
     }
@@ -95,15 +62,13 @@ class LeadNew extends React.Component {
         } = this;
         
         if (leads && leadStatuses && leadFields && isLoading) {
-            const fields = { ...this.state.fields };
+            const fields = this.state.fields.map(field => Object.create(field));
             const customFields = [];
             
-            fields.userId.value = sessionId;
-            
-            const leadStatusOptions = [['Select a Status', '']];
+            fields.find(field => field.name === 'userId').value = sessionId;
             
             leadStatuses.forEach(status => {
-                leadStatusOptions.push([status.title, status._id]);
+                fields.find(field => field.name === 'leadStatusId').options.push([status.title, status._id]);
             });
             
             leadFields.forEach(field => {
@@ -160,38 +125,36 @@ class LeadNew extends React.Component {
                 isLoading: false,
                 fields,
                 customFields,
-                leadStatusOptions,
                 uniqueCandidateList: leads
             });
         }
         
         if (prevProps.hasAddress !== hasAddress) {
-            const fields = { ...this.state.fields };
+            const fields = this.state.fields.map(field => Object.create(field));
             
             if (hasAddress) {
-                fields.address.value = address;
-                fields.city.value = city;
-                fields.state.value = state;
-                fields.zipcode.value = zipcode;
-                fields.lat.value = latLng.lat();
-                fields.lng.value = latLng.lng();
+                fields.find(field => field.name === 'address').value = address;
+                fields.find(field => field.name === 'city').value = city;
+                fields.find(field => field.name === 'state').value = state;
+                fields.find(field => field.name === 'zipcode').value = zipcode;
+                fields.find(field => field.name === 'lat').value = latLng.lat();
+                fields.find(field => field.name === 'lng').value = latLng.lng();
                 
                 this.props.areas.forEach(area => {
                     let polygon = new window.google.maps.Polygon({ paths: area.coords });
                     
                     if (window.google.maps.geometry.poly.containsLocation(latLng, polygon)) {
-                        fields.areaId.value = area._id;
+                        fields.find(field => field.name === 'areaId').value = area._id;
                     }
                 });
                 
-                //google.maps.geometry.poly.containsLocation(e.latLng, bermudaTriangle)
             } else {
-                for (let field in fields) {
-                    //clear fields
-                    if (field !== 'userId') {
-                        fields[field].value = '';
+                //clear fields
+                fields.forEach(field => {
+                    if (field.name !== 'userId') {
+                        field.value = '';
                     }
-                }
+                })
             }
             
             this.setState({ fields });
@@ -215,10 +178,16 @@ class LeadNew extends React.Component {
     }
     
     customHandleUserInput(event) {
-        const { state: { customFields, uniqueCandidateList: candidates } } = this;
+        const { state: { fields, customFields, uniqueCandidateList: candidates } } = this;
         
         this.setState(
-            customValidate({ event, customFields, candidates, data: null })
+            customValidate({
+                event,
+                fields: fields.map(field => Object.create(field)),
+                customFields: customFields.map(field => Object.create(field)),
+                candidates,
+                data: null
+            })
         );
     }
     
@@ -227,7 +196,7 @@ class LeadNew extends React.Component {
         
         const { state: { fields, customFields }, props: { createLead } } = this;
         
-        formSubmit({ fields: { ...fields }, customFields, action: createLead });
+        formSubmit2({ fields, customFields, action: createLead });
     }
     
     render() {
@@ -238,21 +207,9 @@ class LeadNew extends React.Component {
                 isLoading,
                 leadStatusOptions,
                 customFields,
-                fields: {
-                    firstName,
-                    lastName,
-                    address,
-                    city,
-                    state,
-                    zipcode,
-                    email,
-                    primaryPhone,
-                    secondaryPhone,
-                    leadStatusId
-                }
+                fields
             },
             handleSubmit,
-            handleUserInput,
             customHandleUserInput
         } = this;
         
@@ -262,86 +219,7 @@ class LeadNew extends React.Component {
             <div>
                 <form onSubmit={ handleSubmit }>
                     
-                    <FieldSelect
-                        name="leadStatusId"
-                        value={ leadStatusId.value }
-                        handleUserInput={ handleUserInput }
-                        error={ leadStatusId.error }
-                        options={ leadStatusOptions }
-                    />
-                    <FieldInput
-                        name="firstName"
-                        type="text"
-                        placeholder="first name"
-                        value={ firstName.value }
-                        handleUserInput={ handleUserInput }
-                        error={ firstName.error }
-                    />
-                    <FieldInput
-                        name="lastName"
-                        type="text"
-                        placeholder="last name"
-                        value={ lastName.value }
-                        handleUserInput={ handleUserInput }
-                        error={ lastName.error }
-                    />
-                    <FieldInput
-                        name="address"
-                        type="text"
-                        placeholder="address"
-                        value={ address.value }
-                        handleUserInput={ handleUserInput }
-                        error={ address.error }
-                    />
-                    <FieldInput
-                        name="city"
-                        type="city"
-                        placeholder="city"
-                        value={ city.value }
-                        handleUserInput={ handleUserInput }
-                        error={ city.error }
-                    />
-                    <FieldSelect
-                        name="state"
-                        value={ state.value }
-                        handleUserInput={ handleUserInput }
-                        error={ state.error }
-                        options={ stateArray }
-                    />
-                    <FieldInput
-                        name="zipcode"
-                        type="zipcode"
-                        placeholder="zipcode"
-                        value={ zipcode.value }
-                        handleUserInput={ handleUserInput }
-                        error={ zipcode.error }
-                    />
-                    <FieldInput
-                        name="email"
-                        type="email"
-                        placeholder="email"
-                        value={ email.value }
-                        handleUserInput={ handleUserInput }
-                        error={ email.error }
-                    />
-                    <FieldInput
-                        name="primaryPhone"
-                        type="tel"
-                        placeholder="primary phone"
-                        value={ primaryPhone.value }
-                        handleUserInput={ handleUserInput }
-                        error={ primaryPhone.error }
-                    />
-                    <FieldInput
-                        name="secondaryPhone"
-                        type="tel"
-                        placeholder="secondary phone"
-                        value={ secondaryPhone.value }
-                        handleUserInput={ handleUserInput }
-                        error={ secondaryPhone.error }
-                    />
-                    
-                    { buildFields({ fields: customFields, handleUserInput: customHandleUserInput }) }
+                    { buildFields({ fields: fields.concat(customFields), handleUserInput: customHandleUserInput }) }
                     
                     <button type="submit" disabled={ !formValid } className="button success">Save Lead</button>
                 </form>

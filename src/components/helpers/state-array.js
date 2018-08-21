@@ -1,5 +1,4 @@
 export default [
-    ['Select State', ''],
     ['Alabama', 'AL'],
 	['Alaska', 'AK'],
 	['Arizona', 'AZ'],
