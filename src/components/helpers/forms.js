@@ -170,7 +170,6 @@ export const initializeCustomFields = (customFields, data) => {
 
 //formSubmit
 export const formSubmit = ({ fields, excludeKeys, customFields, action, id }) => {
-    console.log('on submit', customFields)
     for (let key in fields) {
         let fieldType = (CHECKED in fields[key]) ? CHECKED : VALUE;
 
@@ -234,7 +233,6 @@ export const buildFields = ({ fields, handleUserInput }) => {
                     />
                 );
             case ('select'):
-                console.log(field.options)
                 return (
                     <FieldSelect
                         key={ field.name }
