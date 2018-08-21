@@ -158,10 +158,12 @@ export const initializeForm = (fields, data) => {
 
 export const initializeCustomFields = (customFields, data) => {
     
-    customFields.forEach(field => {
-        if (field.type === 'checkbox' && data.customFields[0][field.name]) field.checked = data.customFields[0][field.name];
-        if (field.type !== 'checkbox' && data.customFields[0][field.name]) field.value = data.customFields[0][field.name];
-    });
+    if (data.customFields[0]) {
+        customFields.forEach(field => {
+            if (field.type === 'checkbox' && data.customFields[0][field.name]) field.checked = data.customFields[0][field.name];
+            if (field.type !== 'checkbox' && data.customFields[0][field.name]) field.value = data.customFields[0][field.name];
+        });
+    }
     
     return customFields;
 };
@@ -194,7 +196,6 @@ export const formSubmit = ({ fields, excludeKeys, customFields, action, id }) =>
 //buildFields
 export const buildFields = ({ fields, handleUserInput }) => {
     
-    console.log(fields)
     return fields.map(field => {
         switch(field.type) {
             case ('text' || 'email' || 'number'):
@@ -233,6 +234,7 @@ export const buildFields = ({ fields, handleUserInput }) => {
                     />
                 );
             case ('select'):
+                console.log(field.options)
                 return (
                     <FieldSelect
                         key={ field.name }
@@ -240,7 +242,7 @@ export const buildFields = ({ fields, handleUserInput }) => {
                         value={ field.value }
                         handleUserInput={ handleUserInput }
                         error={ field.error }
-                        options={ field.options }
+                        options={ [['Select ' + field.label, '']].concat(field.options) }
                     />
                 );
         }

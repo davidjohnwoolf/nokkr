@@ -1,6 +1,6 @@
 import React from 'react';
 
-const FieldInput = ({ name, type, placeholder, value, handleUserInput, error, message }) => {
+const FieldInput = ({ name, type, placeholder, value, handleUserInput, error, message, inputStyles }) => {
 
     return (
         <div className="field">
@@ -8,6 +8,7 @@ const FieldInput = ({ name, type, placeholder, value, handleUserInput, error, me
             <div className="input">
                 <input
                     className={ error ? 'input-error' : '' }
+                    style={ inputStyles }
                     name={ name }
                     type={ type }
                     placeholder={ placeholder || '' }

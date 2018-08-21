@@ -38,7 +38,7 @@ class LeadFieldIndex extends React.Component {
         this.props.fetchLeadFields();
     }
     
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         const {
             props: { leadFields },
             state: { isLoading }

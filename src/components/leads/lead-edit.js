@@ -128,6 +128,7 @@ class LeadEdit extends React.Component {
                                 label: field.label,
                                 type: field.type.toLowerCase(),
                                 rules: [],
+                                options: field.options,
                                 value: '',
                                 error: ''
                             });

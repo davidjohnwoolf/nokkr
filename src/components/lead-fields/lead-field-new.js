@@ -42,14 +42,23 @@ class LeadFieldNew extends React.Component {
                 options: { value: '', error: '' }, //update validation to include arrays
                 isActive: { checked: true, error: '' }
             },
-            formValid: false
+            formValid: false,
+            optionFields: false
         }
     }
     
-    componentDidUpdate() {
+    componentDidUpdate(prevProps, prevState) {
         const {
             props: { success, message, sendMessage, fetchLeadFields, close, clearLeadFields, created },
         } = this;
+        
+        if (prevState.fields.type.value !== this.state.fields.type.value) {
+            if (this.state.fields.type.value === 'Select') {
+                this.setState({ optionFields: true })
+            } else {
+                this.setState({ optionFields: false })
+            }
+        }
         
         if (success && created) {
             sendMessage(message);
@@ -63,10 +72,17 @@ class LeadFieldNew extends React.Component {
     handleUserInput(e) {
         const { state: { fields }, props: { sortedStatuses }, validationRules } = this;
         
-        fields.name.value = fields.label.value.toLowerCase().replace(/[^\w]/gi, '');
+        const fieldsClone = {};
+        
+        for (let field in fields) {
+            fieldsClone[field] = Object.create(fields[field]);
+        }
+        
+        fieldsClone.name.value = fields.label.value.toLowerCase().replace(/[^\w]/gi, '');
+        
         
         this.setState(
-            validate(e, validationRules, { ...fields }, sortedStatuses, null)
+            validate(e, validationRules, { ...fieldsClone }, sortedStatuses, null)
         );
     }
     
@@ -76,14 +92,28 @@ class LeadFieldNew extends React.Component {
         
         const { state: { fields }, props: { createLeadField } } = this;
         
-        formSubmit({ fields: { ...fields }, action: createLeadField });
+        const fieldsClone = {};
+        
+        for (let field in fields) {
+            fieldsClone[field] = Object.create(fields[field]);
+        }
+        
+        fieldsClone.options.value = fieldsClone.options.value.split(',');
+        
+        fieldsClone.options.value = fieldsClone.options.value.map(option => option.trim());
+        
+        formSubmit({ fields: fieldsClone, action: createLeadField });
+    }
+    
+    addOption() {
+        this.setState({ optionFields: this.state.optionFields + 1 })
     }
     
     render() {
         const {
-            state: { fields: { label, type, order, isActive }, formValid },
+            state: { fields: { label, type, order, isActive, options }, formValid, optionFields },
             props: { orderOptions },
-            handleUserInput, handleSubmit
+            handleUserInput, handleSubmit, addOption
         } = this;
         
         //make const and add to lib including for model
@@ -93,58 +123,78 @@ class LeadFieldNew extends React.Component {
         return (
             <tr>
                 <td colSpan="4">
-                    <form style={{ display: 'flex', justifyContent: 'space-between' }} onSubmit={ handleSubmit }>
+                    <form onSubmit={ handleSubmit }>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <FieldCheckbox
+                                name="isActive"
+                                label="Active"
+                                value="true"
+                                checked={ isActive.checked }
+                                handleUserInput={ handleUserInput }
+                                error={ isActive.error }
+                            />
+                            <FieldSelect
+                                name="order"
+                                value={ order.value }
+                                handleUserInput={ handleUserInput }
+                                error={ order.error }
+                                options={ orderOptions }
+                            />
+                            <FieldInput
+                                name="label"
+                                type="text"
+                                placeholder="label"
+                                value={ label.value }
+                                handleUserInput={ handleUserInput }
+                                error={ label.error }
+                            />
+                            <FieldSelect
+                                name="type"
+                                value={ type.value }
+                                handleUserInput={ handleUserInput }
+                                error={ type.error }
+                                options={ typeOptions }
+                            />
+                            
+                            <button
+                                style={{ marginTop: '1rem', padding: '1rem', height: '3.5rem', background: '#10a887', color: '#fff', border: 'none', cursor: 'pointer' }}
+                                disabled={ !formValid }
+                                type="submit"
+                            >
+                                <i style={{ fontSize: '1.5rem'}} className="fas fa-check"></i>
+                            </button>
+                            <span
+                                style={{ marginTop: '1rem', padding: '1rem', height: '3.5rem', background: '#999', color: '#fff', border: 'none', cursor: 'pointer' }}
+                                onClick={ this.props.close }
+                            >
+                                <i style={{ fontSize: '1.5rem'}} className="fas fa-times"></i>
+                            </span>
+                            <span
+                                style={{ marginTop: '1rem', padding: '1rem', height: '3.5rem', background: '#da3c3c', color: '#fff', border: 'none', cursor: 'pointer' }}
+                                onClick={ () => console.log('delete it') }
+                            >
+                                <i style={{ fontSize: '1.5rem'}} className="fas fa-trash"></i>
+                            </span>
+                        </div>
                         
-                        <FieldCheckbox
-                            name="isActive"
-                            label="Active"
-                            value="true"
-                            checked={ isActive.checked }
-                            handleUserInput={ handleUserInput }
-                            error={ isActive.error }
-                        />
-                        <FieldSelect
-                            name="order"
-                            value={ order.value }
-                            handleUserInput={ handleUserInput }
-                            error={ order.error }
-                            options={ orderOptions }
-                        />
-                        <FieldInput
-                            name="label"
-                            type="text"
-                            placeholder="label"
-                            value={ label.value }
-                            handleUserInput={ handleUserInput }
-                            error={ label.error }
-                        />
-                        <FieldSelect
-                            name="type"
-                            value={ type.value }
-                            handleUserInput={ handleUserInput }
-                            error={ type.error }
-                            options={ typeOptions }
-                        />
-                        
-                        <button
-                            style={{ marginTop: '1rem', padding: '1rem', height: '3.5rem', background: '#10a887', color: '#fff', border: 'none', cursor: 'pointer' }}
-                            disabled={ !formValid }
-                            type="submit"
-                        >
-                            <i style={{ fontSize: '1.5rem'}} className="fas fa-check"></i>
-                        </button>
-                        <span
-                            style={{ marginTop: '1rem', padding: '1rem', height: '3.5rem', background: '#999', color: '#fff', border: 'none', cursor: 'pointer' }}
-                            onClick={ this.props.close }
-                        >
-                            <i style={{ fontSize: '1.5rem'}} className="fas fa-times"></i>
-                        </span>
-                        <span
-                            style={{ marginTop: '1rem', padding: '1rem', height: '3.5rem', background: '#da3c3c', color: '#fff', border: 'none', cursor: 'pointer' }}
-                            onClick={ () => console.log('delete it') }
-                        >
-                            <i style={{ fontSize: '1.5rem'}} className="fas fa-trash"></i>
-                        </span>
+                        {
+                            optionFields
+                                ? (
+                                    <div>
+                                        <h4>Select Options</h4>
+                                        <p>(separate options by commas)</p>
+                                        <FieldInput
+                                            inputStyles={{ width: '100%' }}
+                                            name="options"
+                                            type="text"
+                                            placeholder="example, example 2"
+                                            value={ options.value }
+                                            handleUserInput={ handleUserInput }
+                                            error={ options.error }
+                                        />
+                                    </div>
+                                ) : ''
+                        }
                     </form>
                 </td>
             </tr>
