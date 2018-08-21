@@ -49,7 +49,7 @@ class MapShow extends React.Component {
         this.toggleProp = this.toggleProp.bind(this);
         this.goToArea = this.goToArea.bind(this);
         this.setLocation = this.setLocation.bind(this);
-        this.showLeadOptions = this.showLeadOptions.bind(this);
+        this.showLeadOverview = this.showLeadOverview.bind(this);
         this.hideLeadOptions = this.hideLeadOptions.bind(this);
         this.showEditLeadForm = this.showEditLeadForm.bind(this);
         
@@ -67,7 +67,7 @@ class MapShow extends React.Component {
             props: { areas, leads, id },
             state: { map, overlayShown, isInitialized },
             constants: { LEAD_MODAL_SHOWN },
-            showLeadOptions
+            showLeadOverview
         } = this;
         
         if (!isInitialized) {
@@ -114,7 +114,7 @@ class MapShow extends React.Component {
                 });
             });
             
-            this.setState({ isInitialized: true, ...setArea({ googleMaps: window.google.maps, map, id, areas }), ...setLeads({ leads, map, showLeadOptions }) });
+            this.setState({ isInitialized: true, ...setArea({ googleMaps: window.google.maps, map, id, areas }), ...setLeads({ leads, map, showLeadOverview }) });
         }
         
         if (prevProps.id !== this.props.id) {
@@ -125,7 +125,7 @@ class MapShow extends React.Component {
         }
         
         if (prevProps.leads !== this.props.leads) {
-            this.setState(setLeads({ leads, map, showLeadOptions }));
+            this.setState(setLeads({ leads, map, showLeadOverview }));
         }
         
         if (prevState.leadModalShown !== this.state.leadModalShown) {
@@ -142,11 +142,11 @@ class MapShow extends React.Component {
         }
     }
     
-    showLeadOptions(lead) {
+    showLeadOverview(lead) {
         this.setState({ leadOptionsLead: lead, leadOverviewShown: true });
     }
     
-    showEditLeadForm(lead) {
+    showEditLeadForm() {
         this.setState({ leadOverlayShown: false, editLeadModalShown: true, leadOverviewShown: false });
     }
     
@@ -209,7 +209,7 @@ class MapShow extends React.Component {
 
     render() {
         const {
-            props: { id, areas, leads, leadStatuses },
+            props: { id, areas },
             state: {
                 settingsModalShown,
                 locationActive,
@@ -261,7 +261,6 @@ class MapShow extends React.Component {
                         <button onClick={ () => console.log('go to leads') } className="button primary">
                             View Leads List <i className="fas fa-users"></i>
                         </button>
-                        
                     </section>
                 </Modal>
                 <Modal close={ toggleProp(LEAD_MODAL_SHOWN) } shown={ leadModalShown } title="Create Lead">
