@@ -38,6 +38,8 @@ class MapShow extends React.Component {
             newLeadLatLng: null,
             leadMarkers: null,
             leadOptionsLead: null,
+            editLeadModalShown: false,
+            leadOverviewShown: false,
             map: null,
             areaPolygon: null,
             outerPolygon: null
@@ -49,6 +51,7 @@ class MapShow extends React.Component {
         this.setLocation = this.setLocation.bind(this);
         this.showLeadOptions = this.showLeadOptions.bind(this);
         this.hideLeadOptions = this.hideLeadOptions.bind(this);
+        this.showEditLeadForm = this.showEditLeadForm.bind(this);
         
         //build get bounds function
         window.google.maps.Polygon.prototype.getBounds = getBounds(window.google.maps);
@@ -140,11 +143,15 @@ class MapShow extends React.Component {
     }
     
     showLeadOptions(lead) {
-        this.setState({ leadOptionsLead: lead });
+        this.setState({ leadOptionsLead: lead, leadOverviewShown: true });
+    }
+    
+    showEditLeadForm(lead) {
+        this.setState({ leadOverlayShown: false, editLeadModalShown: true, leadOverviewShown: false });
     }
     
     hideLeadOptions() {
-        this.setState({ leadOptionsLead: null });
+        this.setState({ leadOptionsLead: null, leadOverlayShown: false, editLeadModalShown: false });
     }
     
     setLocation() {
@@ -213,10 +220,12 @@ class MapShow extends React.Component {
                 newLeadState,
                 newLeadZipcode,
                 newLeadLatLng,
-                leadOptionsLead
+                leadOptionsLead,
+                leadOverviewShown,
+                editLeadModalShown
             },
             constants: { SETTINGS_MODAL_SHOWN, LEAD_MODAL_SHOWN, OVERLAY_SHOWN },
-            setLocation, toggleProp, goToArea, hideLeadOptions
+            setLocation, toggleProp, goToArea, hideLeadOptions, showEditLeadForm
         } = this;
         
         return (
@@ -267,9 +276,9 @@ class MapShow extends React.Component {
                         hasAddress={ leadModalShown }
                     />
                 </Modal>
-                <Modal close={ hideLeadOptions } shown={ leadOptionsLead ? true : false } title={ leadOptionsLead ? leadOptionsLead.firstName + ' ' + leadOptionsLead.lastName : '' }>
+                <Modal close={ hideLeadOptions } shown={ leadOptionsLead && editLeadModalShown ? true : false } title={ leadOptionsLead ? leadOptionsLead.firstName + ' ' + leadOptionsLead.lastName : '' }>
                     {
-                        leadOptionsLead
+                        leadOptionsLead && editLeadModalShown
                             ? (
                                 <LeadEdit
                                     close={ hideLeadOptions }
@@ -278,6 +287,17 @@ class MapShow extends React.Component {
                             ) : ''
                     }
                 </Modal>
+                {
+                    leadOptionsLead && leadOverviewShown
+                        ? (
+                            <div style={{ display: 'flex', justifyContent: 'space-between', position: 'fixed', bottom: '0', width: '100%', background: '#fff', padding: '10px', borderTop: '2px #999 solid' }}>
+                                <h4>{ leadOptionsLead.firstName + ' ' + leadOptionsLead.lastName }</h4>
+                                <p>{ leadOptionsLead.address }</p>
+                                <a onClick={ showEditLeadForm } className="button primary">Show Lead</a>
+                                <a onClick={ hideLeadOptions } className="icon-link cancel"><i className="fas fa-times"></i></a>
+                            </div>
+                        ) : ''
+                }
             </div>
         );
     }
