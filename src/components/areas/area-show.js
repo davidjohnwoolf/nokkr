@@ -6,6 +6,7 @@ import MapShow from './map-show';
 
 import { fetchAreas } from '../../actions/areas.action';
 import { fetchLeads } from '../../actions/leads.action';
+import { fetchLeadFields } from '../../actions/lead-fields.action';
 import { fetchLeadStatuses } from '../../actions/lead-statuses.action';
 
 class AreaShow extends React.Component {
@@ -23,6 +24,7 @@ class AreaShow extends React.Component {
         this.props.fetchAreas();
         this.props.fetchLeads();
         this.props.fetchLeadStatuses();
+        this.props.fetchLeadFields();
     }
     
     componentDidUpdate() {
@@ -58,4 +60,4 @@ const mapStateToProps = state => ({
     role: state.auth.role
 });
 
-export default connect(mapStateToProps, { fetchAreas, fetchLeads, fetchLeadStatuses })(AreaShow);
+export default connect(mapStateToProps, { fetchAreas, fetchLeads, fetchLeadStatuses, fetchLeadFields })(AreaShow);

@@ -7,7 +7,6 @@ import FieldInput from '../forms/field-input';
 import FieldSelect from '../forms/field-select';
 
 import { createLead, clearLeads, fetchLeads } from '../../actions/leads.action';
-import { fetchLeadFields } from '../../actions/lead-fields.action';
 import { sendMessage } from '../../actions/flash.action';
 
 import { required, unique, validate, formSubmit, buildFields, customValidate } from '../helpers/forms';
@@ -70,12 +69,7 @@ class LeadNew extends React.Component {
         };
     }
     
-    componentDidMount() {
-        this.props.fetchLeadFields();
-    }
-    
     componentDidUpdate(prevProps) {
-        console.log(this.state.customFields)
         const {
             props: {
                 success,
@@ -368,4 +362,4 @@ const mapStateToProps = state => ({
     sessionId: state.auth.sessionId
 });
 
-export default connect(mapStateToProps, { fetchLeads, clearLeads, createLead, fetchLeadFields, sendMessage })(LeadNew);
+export default connect(mapStateToProps, { fetchLeads, clearLeads, createLead, sendMessage })(LeadNew);

@@ -156,6 +156,16 @@ export const initializeForm = (fields, data) => {
     return { ...fields };
 };
 
+export const initializeCustomFields = (customFields, data) => {
+    
+    customFields.forEach(field => {
+        if (field.type === 'checkbox' && data.customFields[0][field.name]) field.checked = data.customFields[0][field.name];
+        if (field.type !== 'checkbox' && data.customFields[0][field.name]) field.value = data.customFields[0][field.name];
+    });
+    
+    return customFields;
+};
+
 //formSubmit
 export const formSubmit = ({ fields, excludeKeys, customFields, action, id }) => {
     console.log('on submit', customFields)
@@ -183,6 +193,8 @@ export const formSubmit = ({ fields, excludeKeys, customFields, action, id }) =>
 
 //buildFields
 export const buildFields = ({ fields, handleUserInput }) => {
+    
+    console.log(fields)
     return fields.map(field => {
         switch(field.type) {
             case ('text' || 'email' || 'number'):

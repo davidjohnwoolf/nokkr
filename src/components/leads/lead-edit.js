@@ -9,7 +9,7 @@ import FieldSelect from '../forms/field-select';
 import { updateLead, clearLeads, fetchLeads } from '../../actions/leads.action';
 import { sendMessage } from '../../actions/flash.action';
 
-import { required, unique, validate, formSubmit, initializeForm } from '../helpers/forms';
+import { required, unique, validate, formSubmit, initializeForm, initializeCustomFields, buildFields, customValidate } from '../helpers/forms';
 import stateArray from '../helpers/state-array';
 
 class LeadEdit extends React.Component {
@@ -39,6 +39,7 @@ class LeadEdit extends React.Component {
 
         this.handleUserInput = this.handleUserInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.customHandleUserInput = this.customHandleUserInput.bind(this);
     }
     
     getInitialState() {
@@ -60,6 +61,7 @@ class LeadEdit extends React.Component {
             },
             isLoading: true,
             uniqueCandidateList: null,
+            customFields: null,
             leadStatusOptions: null,
             formValid: false
         };
@@ -87,14 +89,16 @@ class LeadEdit extends React.Component {
                 hasAddress,
                 leadStatuses,
                 fetchLeads,
-                updated
+                updated,
+                leadFields
             },
             state: { isLoading },
             getInitialState
         } = this;
         
-        if (leads && leadStatuses && isLoading) {
+        if (leads && leadStatuses && leadFields && isLoading) {
             const fields = { ...this.state.fields };
+            const customFields = [];
             
             fields.userId.value = sessionId;
             
@@ -104,9 +108,59 @@ class LeadEdit extends React.Component {
                 leadStatusOptions.push([status.title, status._id]);
             });
             
+            leadFields.forEach(field => {
+                if (field.isActive) {
+                    switch(field.type) {
+                        case 'Checkbox':
+                            customFields.push({
+                                name: field.name,
+                                label: field.label,
+                                type: field.type.toLowerCase(),
+                                rules: [],
+                                value: '',
+                                error: ''
+                            });
+                            break;
+                        
+                        case 'Select':
+                            customFields.push({
+                                name: field.name,
+                                label: field.label,
+                                type: field.type.toLowerCase(),
+                                rules: [],
+                                value: '',
+                                error: ''
+                            });
+                            break;
+                        
+                        case 'Text Area':
+                            customFields.push({
+                                name: field.name,
+                                label: field.label,
+                                type: 'textarea',
+                                rules: [],
+                                value: '',
+                                error: ''
+                            });
+                            break;
+                        
+                        default:
+                            customFields.push({
+                                name: field.name,
+                                label: field.label,
+                                type: field.type.toLowerCase(),
+                                rules: [],
+                                value: '',
+                                error: ''
+                            });
+                    }
+                }
+            });
+            
             this.setState({
                 isLoading: false,
                 fields,
+                customFields: initializeCustomFields([...customFields], this.props.lead),
                 leadStatusOptions,
                 uniqueCandidateList: leads
             });
@@ -159,12 +213,20 @@ class LeadEdit extends React.Component {
         );
     }
     
+    customHandleUserInput(event) {
+        const { state: { customFields, uniqueCandidateList: candidates } } = this;
+        
+        this.setState(
+            customValidate({ event, customFields, candidates, data: null })
+        );
+    }
+    
     handleSubmit(e) {
         e.preventDefault();
         
-        const { state: { fields }, props: { updateLead } } = this;
+        const { state: { fields, customFields }, props: { updateLead } } = this;
         
-        formSubmit({ fields: { ...fields }, action: updateLead, id: this.props.lead._id });
+        formSubmit({ fields: { ...fields }, customFields, action: updateLead, id: this.props.lead._id });
     }
     
     render() {
@@ -276,6 +338,8 @@ class LeadEdit extends React.Component {
                         error={ secondaryPhone.error }
                     />
                     
+                    { buildFields({ fields: this.state.customFields, handleUserInput: this.customHandleUserInput }) }
+                    
                     <button type="submit" disabled={ !formValid } className="button success">Update Lead</button>
                 </form>
                 <button onClick={ close } className="button cancel">Cancel</button>
@@ -292,6 +356,7 @@ const mapStateToProps = state => ({
     areas: state.areas.areas,
     leads: state.leads.leads,
     leadStatuses: state.leadStatuses.leadStatuses,
+    leadFields: state.leadFields.leadFields,
     sessionId: state.auth.sessionId
 });
 
