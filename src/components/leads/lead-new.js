@@ -26,7 +26,7 @@ class LeadNew extends React.Component {
     
     getInitialState() {
         return {
-            fields: LEAD_FORM_MODEL.map(field => Object.create(field)),
+            fields: LEAD_FORM_MODEL.map(field => Object.assign(field)),
             customFields: null,
             isLoading: true,
             uniqueCandidateList: null,
@@ -171,7 +171,7 @@ class LeadNew extends React.Component {
         } = this;
         
         /*if (leads && users && leadStatuses && leadFields && isLoading) {
-            const fields = this.state.fields.map(field => Object.create(field));
+            const fields = this.state.fields.map(field => Object.assign(field));
             const customFields = [];
             
             if (hasAddress) {
@@ -282,8 +282,8 @@ class LeadNew extends React.Component {
         this.setState(
             customValidate({
                 event,
-                fields: fields.map(field => Object.create(field)),
-                customFields: customFields.map(field => Object.create(field)),
+                fields: fields.map(field => Object.assign(field)),
+                customFields: customFields.map(field => Object.assign(field)),
                 candidates,
                 data: null
             })
@@ -313,7 +313,7 @@ class LeadNew extends React.Component {
         
         if (isLoading) return <Loading />;
         
-        let totalFields = fields.map(field => Object.create(field)).concat(customFields.map(field => Object.create(field)))
+        let totalFields = fields.map(field => Object.assign(field)).concat(customFields.map(field => Object.assign(field)))
         
         return (
             <div>

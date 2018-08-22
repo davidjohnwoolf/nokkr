@@ -246,7 +246,7 @@ export const setAreas = (areas, map) => {
     return areaPolygons;
 }
 
-export const setLeads = ({ leads, map, showLeadOptions }) => {
+export const setLeads = ({ leads, map, showLeadOverview }) => {
     const leadMarkers = {};
     
     leads.forEach(lead => {
@@ -266,7 +266,7 @@ export const setLeads = ({ leads, map, showLeadOptions }) => {
         });
         
         leadMarker.addListener('click', () => {
-            showLeadOptions(lead);
+            showLeadOverview(lead);
         });
         
         /*let infowindow = new window.google.maps.InfoWindow({
