@@ -2,14 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Loading from '../layout/loading';
-//import IconLink from '../layout/icon-link';
-import FieldInput from '../forms/field-input';
-import FieldSelect from '../forms/field-select';
 
 import { createLead, clearLeads, fetchLeads } from '../../actions/leads.action';
 import { sendMessage } from '../../actions/flash.action';
 
-import { validate, formSubmit, formSubmit2, buildFields, customValidate } from '../helpers/forms';
+import { validate, formSubmit2, buildFields, customValidate } from '../helpers/forms';
 import { LEAD_FORM_MODEL } from '../helpers/form-models';
 
 class LeadNew extends React.Component {
@@ -18,6 +15,7 @@ class LeadNew extends React.Component {
         super(props);
         
         props.clearLeads();
+        console.log('yo')
         
         this.state = this.getInitialState();
 
@@ -36,14 +34,14 @@ class LeadNew extends React.Component {
         };
     }
     
-    componentDidUpdate(prevProps) {
+    componentWillUnmount() {
+        //this.setState(this.getInitialState)
+        console.log('will unmount')
+    }
+    
+    componentDidMount() {
         const {
             props: {
-                success,
-                message,
-                clearLeads,
-                close,
-                sendMessage,
                 leads,
                 sessionId,
                 address,
@@ -53,23 +51,41 @@ class LeadNew extends React.Component {
                 latLng,
                 hasAddress,
                 leadStatuses,
-                fetchLeads,
-                created,
-                leadFields
+                leadFields,
+                users
             },
-            state: { isLoading },
-            getInitialState
+            state: { isLoading }
         } = this;
         
-        if (leads && leadStatuses && leadFields && isLoading) {
-            const fields = this.state.fields.map(field => Object.create(field));
+        if (leads && users && leadStatuses && leadFields && isLoading) {
+            const fields = this.state.fields.map(field => Object.assign(field))
             const customFields = [];
+            const leadStatusOptions = [];
+            const userOptions = [];
             
+            leadStatuses.forEach(status => leadStatusOptions.push([status.title, status._id]));
+            users.forEach(user => userOptions.push([user.firstName + ' ' + user.lastName, user._id]));
+            
+            fields.find(field => field.name === 'leadStatusId').options = leadStatusOptions;
+            fields.find(field => field.name === 'userId').options = userOptions;
             fields.find(field => field.name === 'userId').value = sessionId;
             
-            leadStatuses.forEach(status => {
-                fields.find(field => field.name === 'leadStatusId').options.push([status.title, status._id]);
-            });
+            if (hasAddress) {
+                fields.find(field => field.name === 'address').value = address;
+                fields.find(field => field.name === 'city').value = city;
+                fields.find(field => field.name === 'state').value = state;
+                fields.find(field => field.name === 'zipcode').value = zipcode;
+                fields.find(field => field.name === 'lat').value = latLng.lat();
+                fields.find(field => field.name === 'lng').value = latLng.lng();
+                
+                this.props.areas.forEach(area => {
+                    let polygon = new window.google.maps.Polygon({ paths: area.coords });
+                    
+                    if (window.google.maps.geometry.poly.containsLocation(latLng, polygon)) {
+                        fields.find(field => field.name === 'areaId').value = area._id;
+                    }
+                });
+            }
             
             leadFields.forEach(field => {
                 if (field.isActive) {
@@ -128,9 +144,35 @@ class LeadNew extends React.Component {
                 uniqueCandidateList: leads
             });
         }
+    }
+    
+    componentDidUpdate() {
+        console.log('leads', leads)
+        console.log('users', leads)
+        console.log('leadStatuses', leadStatuses)
+        console.log('leadFields', leadFields)
+        console.log('isLoading', isLoading)
+        console.log('=====================')
+        const {
+            props: {
+                success,
+                message,
+                clearLeads,
+                close,
+                sendMessage,
+                leads,
+                leadStatuses,
+                fetchLeads,
+                created,
+                leadFields
+            },
+            state: { isLoading },
+            getInitialState
+        } = this;
         
-        if (prevProps.hasAddress !== hasAddress) {
+        /*if (leads && users && leadStatuses && leadFields && isLoading) {
             const fields = this.state.fields.map(field => Object.create(field));
+            const customFields = [];
             
             if (hasAddress) {
                 fields.find(field => field.name === 'address').value = address;
@@ -147,25 +189,82 @@ class LeadNew extends React.Component {
                         fields.find(field => field.name === 'areaId').value = area._id;
                     }
                 });
-                
-            } else {
-                //clear fields
-                fields.forEach(field => {
-                    if (field.name !== 'userId') {
-                        field.value = '';
-                    }
-                })
             }
             
-            this.setState({ fields });
-        }
+            leadStatuses.forEach(status => {
+                fields.find(field => field.name === 'leadStatusId').options.push([status.title, status._id]);
+            });
+            
+            users.forEach(user => {
+                fields.find(field => field.name === 'userId').options.push([user.firstName + ' ' + user.lastName, user._id]);
+            });
+            
+            fields.find(field => field.name === 'userId').value = sessionId;
+            
+            leadFields.forEach(field => {
+                if (field.isActive) {
+                    switch(field.type) {
+                        case 'Checkbox':
+                            customFields.push({
+                                name: field.name,
+                                label: field.label,
+                                type: field.type.toLowerCase(),
+                                rules: [],
+                                value: '',
+                                error: ''
+                            });
+                            break;
+                        
+                        case 'Select':
+                            customFields.push({
+                                name: field.name,
+                                label: field.label,
+                                type: field.type.toLowerCase(),
+                                rules: [],
+                                options: field.options,
+                                value: '',
+                                error: ''
+                            });
+                            break;
+                        
+                        case 'Text Area':
+                            customFields.push({
+                                name: field.name,
+                                label: field.label,
+                                type: 'textarea',
+                                rules: [],
+                                value: '',
+                                error: ''
+                            });
+                            break;
+                        
+                        default:
+                            customFields.push({
+                                name: field.name,
+                                label: field.label,
+                                type: field.type.toLowerCase(),
+                                rules: [],
+                                value: '',
+                                error: ''
+                            });
+                    }
+                }
+            });
+            
+            this.setState({
+                isLoading: false,
+                fields,
+                customFields,
+                uniqueCandidateList: leads
+            });
+        }*/
         
         if (success && created) {
             sendMessage(message);
             clearLeads();
             fetchLeads();
-            close();
             this.setState(getInitialState())
+            close();
         }
     }
     
@@ -205,7 +304,6 @@ class LeadNew extends React.Component {
             state: {
                 formValid,
                 isLoading,
-                leadStatusOptions,
                 customFields,
                 fields
             },
@@ -215,11 +313,13 @@ class LeadNew extends React.Component {
         
         if (isLoading) return <Loading />;
         
+        let totalFields = fields.map(field => Object.create(field)).concat(customFields.map(field => Object.create(field)))
+        
         return (
             <div>
                 <form onSubmit={ handleSubmit }>
                     
-                    { buildFields({ fields: fields.concat(customFields), handleUserInput: customHandleUserInput }) }
+                    { buildFields({ fields: totalFields, handleUserInput: customHandleUserInput }) }
                     
                     <button type="submit" disabled={ !formValid } className="button success">Save Lead</button>
                 </form>
@@ -238,6 +338,7 @@ const mapStateToProps = state => ({
     leads: state.leads.leads,
     leadStatuses: state.leadStatuses.leadStatuses,
     leadFields: state.leadFields.leadFields,
+    users: state.users.users,
     sessionId: state.auth.sessionId
 });
 

@@ -265,15 +265,20 @@ class MapShow extends React.Component {
                 </Modal>
                 <Modal close={ toggleProp(LEAD_MODAL_SHOWN) } shown={ leadModalShown } title="Create Lead">
                     { /* make hasAddress more intuitive and certain, leadmoModalShown may not be best */ }
-                    <LeadNew
-                        close={ toggleProp(LEAD_MODAL_SHOWN) }
-                        address={ newLeadAddress }
-                        city={ newLeadCity }
-                        state={ newLeadState }
-                        zipcode={ newLeadZipcode }
-                        latLng={ newLeadLatLng }
-                        hasAddress={ leadModalShown }
-                    />
+                    {
+                        leadModalShown
+                            ? (
+                                <LeadNew
+                                    close={ toggleProp(LEAD_MODAL_SHOWN) }
+                                    address={ newLeadAddress }
+                                    city={ newLeadCity }
+                                    state={ newLeadState }
+                                    zipcode={ newLeadZipcode }
+                                    latLng={ newLeadLatLng }
+                                    hasAddress={ leadModalShown }
+                                />
+                            ) : ''
+                    }
                 </Modal>
                 <Modal close={ hideLeadOptions } shown={ leadOptionsLead && editLeadModalShown ? true : false } title={ leadOptionsLead ? leadOptionsLead.firstName + ' ' + leadOptionsLead.lastName : '' }>
                     {
