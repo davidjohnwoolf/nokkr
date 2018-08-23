@@ -138,17 +138,14 @@ class LeadNew extends React.Component {
     
     componentDidUpdate() {
         const {
-            props: {
-                success,
-                message,
-                clearLeads,
-                close,
-                sendMessage,
-                fetchLeads,
-                created,
-            },
-            getInitialState
-        } = this;
+            success,
+            message,
+            clearLeads,
+            close,
+            sendMessage,
+            fetchLeads,
+            created
+        } = this.props;
         
         if (success && created) {
             sendMessage(message);

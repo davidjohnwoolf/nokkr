@@ -104,6 +104,8 @@ export const customValidate = ({ event, fields, customFields, candidates, data }
     
     const validateFields = (fields) => {
         fields.forEach(field => {
+            
+            //update target field value
             if (event && (field.name === event.target.name)) {
                 (field.type === 'checkbox')
                     ? field.checked = event.target.checked
@@ -112,24 +114,21 @@ export const customValidate = ({ event, fields, customFields, candidates, data }
             
             if (field.rules) {
                 field.rules.forEach(rule => {
-                    let result = rule({
-                        value: (field.type === 'checkbox' ? event.target.checked : event.target.value),
-                        field: field.name,
-                        candidates,
-                        data
-                    });
+                    let value = field.type === 'checkbox' ? field.checked : field.value;
                     
-                    //handle target rules
+                    let result = rule({ value: value, field: field.name, candidates, data });
+                    
+                    //handle target error
                     if (event && (field.name === event.target.name)) {
                         if (result) error = result;
                         field.error = error;
                     }
                     
-                    //handle all rules
                     if (result) {
                         //update match error
                         if (rule === passwordMatch) customFields.passwordConfirmation.error = 'Passwords must match';
                         
+                        //set formValid false if the field in question has an error
                         formValid = false;
                     } else {
                         if (rule === passwordMatch) customFields.passwordConfirmation.error = undefined;
