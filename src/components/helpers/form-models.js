@@ -3,6 +3,15 @@ import stateArray from './state-array';
 
 export const LEAD_FORM_MODEL = Object.freeze([
     {
+        name: 'leadStatusId',
+        label: 'status',
+        type: 'select',
+        rules: [required],
+        options: [],
+        value: '',
+        error: ''
+    },
+    {
         name: 'firstName',
         label: 'first name',
         type: 'text',
@@ -62,15 +71,6 @@ export const LEAD_FORM_MODEL = Object.freeze([
         name: 'secondaryPhone',
         label: 'cell phone',
         type: 'tel',
-        value: '',
-        error: ''
-    },
-    {
-        name: 'leadStatusId',
-        label: 'status',
-        type: 'select',
-        rules: [required],
-        options: [],
         value: '',
         error: ''
     },
