@@ -165,12 +165,25 @@ export const initializeForm = (fields, data) => {
     return { ...fields };
 };
 
+export const initializeForm2 = (fields, data) => {
+    fields.forEach(field => {
+        let fieldType = (field.type === 'checkbox') ? CHECKED : VALUE;
+        
+        if (!field.name.includes('password')) {
+            field[fieldType] = data[field.name];
+        }
+    });
+    
+    return fields;
+};
+
 export const initializeCustomFields = (customFields, data) => {
     
     if (data.customFields[0]) {
         customFields.forEach(field => {
-            if (field.type === 'checkbox' && data.customFields[0][field.name]) field.checked = data.customFields[0][field.name];
-            if (field.type !== 'checkbox' && data.customFields[0][field.name]) field.value = data.customFields[0][field.name];
+            let fieldType = (field.type === 'checkbox') ? CHECKED : VALUE;
+            
+            if (data.customFields[0][field.name]) field[fieldType] = data.customFields[0][field.name];
         });
     }
     
