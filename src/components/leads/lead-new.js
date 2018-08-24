@@ -58,6 +58,7 @@ class LeadNew extends React.Component {
             fields.find(field => field.name === 'leadStatusId').options = leadStatusOptions;
             fields.find(field => field.name === 'userId').options = userOptions;
             fields.find(field => field.name === 'userId').value = sessionId;
+            fields.find(field => field.name === 'createdBy').value = sessionId;
             
             if (hasAddress) {
                 fields.find(field => field.name === 'address').value = address;

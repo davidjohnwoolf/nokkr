@@ -18,6 +18,7 @@ const LeadSchema = new Schema({
     areaId: { type: Schema.Types.ObjectId },
     leadStatusId: { type: Schema.Types.ObjectId, required: true },
     customFields: [Schema.Types.Mixed],
+    createdBy: { type: Schema.Types.ObjectId, required: true },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date }
 });

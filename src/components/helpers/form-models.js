@@ -96,6 +96,12 @@ export const LEAD_FORM_MODEL = Object.freeze([
         error: ''
     },
     {
+        name: 'createdBy',
+        rules: [required],
+        value: '',
+        error: ''
+    },
+    {
         name: 'lng',
         rules: [required],
         value: '',
