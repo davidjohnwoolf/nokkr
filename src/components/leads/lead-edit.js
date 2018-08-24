@@ -161,15 +161,12 @@ class LeadEdit extends React.Component {
 
 const mapStateToProps = state => ({
     message: state.leads.message,
-    leadId: state.leads.leadId,
     success: state.leads.success,
     updated: state.leads.updated,
-    areas: state.areas.areas,
     users: state.users.users,
     leads: state.leads.leads,
     leadStatuses: state.leadStatuses.leadStatuses,
-    leadFields: state.leadFields.leadFields,
-    sessionId: state.auth.sessionId
+    leadFields: state.leadFields.leadFields
 });
 
 export default connect(mapStateToProps, { fetchLeads, clearLeads, updateLead, sendMessage })(LeadEdit);
