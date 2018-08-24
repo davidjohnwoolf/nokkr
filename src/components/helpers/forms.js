@@ -278,3 +278,59 @@ export const buildFields = ({ fields, handleUserInput }) => {
         }
     });
 }
+
+export const buildCustomFieldsModel = leadFields => {
+    const customFields = [];
+    
+    leadFields.forEach(field => {
+        if (field.isActive) {
+            switch(field.type) {
+                case 'Checkbox':
+                    customFields.push({
+                        name: field.name,
+                        label: field.label,
+                        type: field.type.toLowerCase(),
+                        rules: [],
+                        value: '',
+                        error: ''
+                    });
+                    break;
+                
+                case 'Select':
+                    customFields.push({
+                        name: field.name,
+                        label: field.label,
+                        type: field.type.toLowerCase(),
+                        rules: [],
+                        options: field.options,
+                        value: '',
+                        error: ''
+                    });
+                    break;
+                
+                case 'Text Area':
+                    customFields.push({
+                        name: field.name,
+                        label: field.label,
+                        type: 'textarea',
+                        rules: [],
+                        value: '',
+                        error: ''
+                    });
+                    break;
+                
+                default:
+                    customFields.push({
+                        name: field.name,
+                        label: field.label,
+                        type: field.type.toLowerCase(),
+                        rules: [],
+                        value: '',
+                        error: ''
+                    });
+            }
+        }
+    });
+    
+    return customFields;
+}

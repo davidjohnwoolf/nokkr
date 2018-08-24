@@ -6,7 +6,7 @@ import Loading from '../layout/loading';
 import { createLead, clearLeads, fetchLeads } from '../../actions/leads.action';
 import { sendMessage } from '../../actions/flash.action';
 
-import { formSubmit2, buildFields, customValidate } from '../helpers/forms';
+import { formSubmit2, buildFields, buildCustomFieldsModel, customValidate } from '../helpers/forms';
 import { LEAD_FORM_MODEL } from '../helpers/form-models';
 
 class LeadNew extends React.Component {
@@ -41,14 +41,14 @@ class LeadNew extends React.Component {
                 hasAddress,
                 leadStatuses,
                 leadFields,
-                users
+                users,
+                areas
             },
             state: { isLoading }
         } = this;
         
-        if (leads && users && leadStatuses && leadFields && isLoading) {
+        if (leads && users && leadStatuses && leadFields && areas && isLoading) {
             const fields = LEAD_FORM_MODEL.map(field => Object.create(field));
-            const customFields = [];
             const leadStatusOptions = [];
             const userOptions = [];
             
@@ -67,7 +67,7 @@ class LeadNew extends React.Component {
                 fields.find(field => field.name === 'lat').value = latLng.lat();
                 fields.find(field => field.name === 'lng').value = latLng.lng();
                 
-                this.props.areas.forEach(area => {
+                areas.forEach(area => {
                     let polygon = new window.google.maps.Polygon({ paths: area.coords });
                     
                     if (window.google.maps.geometry.poly.containsLocation(latLng, polygon)) {
@@ -76,60 +76,10 @@ class LeadNew extends React.Component {
                 });
             }
             
-            leadFields.forEach(field => {
-                if (field.isActive) {
-                    switch(field.type) {
-                        case 'Checkbox':
-                            customFields.push({
-                                name: field.name,
-                                label: field.label,
-                                type: field.type.toLowerCase(),
-                                rules: [],
-                                value: '',
-                                error: ''
-                            });
-                            break;
-                        
-                        case 'Select':
-                            customFields.push({
-                                name: field.name,
-                                label: field.label,
-                                type: field.type.toLowerCase(),
-                                rules: [],
-                                options: field.options,
-                                value: '',
-                                error: ''
-                            });
-                            break;
-                        
-                        case 'Text Area':
-                            customFields.push({
-                                name: field.name,
-                                label: field.label,
-                                type: 'textarea',
-                                rules: [],
-                                value: '',
-                                error: ''
-                            });
-                            break;
-                        
-                        default:
-                            customFields.push({
-                                name: field.name,
-                                label: field.label,
-                                type: field.type.toLowerCase(),
-                                rules: [],
-                                value: '',
-                                error: ''
-                            });
-                    }
-                }
-            });
-            
             this.setState({
                 isLoading: false,
                 fields,
-                customFields,
+                customFields: buildCustomFieldsModel(leadFields),
                 uniqueCandidateList: leads
             });
             
