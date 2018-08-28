@@ -106,7 +106,7 @@ router.get('/:id', requireUser, (req, res) => {
         let user;
         
         users.forEach(currentUser => {
-            let currentLead = user.leads.find(lead => lead.id === req.params.leadId);
+            let currentLead = currentUser.leads.find(lead => lead.id === req.params.id);
             if (currentLead) {
                 lead = currentLead;
                 user = currentUser;

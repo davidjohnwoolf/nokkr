@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-//const AreaGroup = require('./area-group');
 const LeadField = require('./lead-field');
 const LeadStatus = require('./lead-status');
 const AreaGroup = require('./area-group');
@@ -20,6 +19,7 @@ const AccountSchema = new Schema({
     areaGroups: [AreaGroup.schema],
     leadFields: [LeadField.schema],
     leadStatuses: [LeadStatus.schema],
+    //leadFieldColumns: [leadFieldColumn.schema],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date }
 });

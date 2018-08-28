@@ -20,7 +20,7 @@ export const searchItems = (items, query) => {
         let found = false;
         
         for (let prop in item) {
-            if (typeof prop === 'string' && item[prop].toLowerCase().includes(query)) found = true;
+            if (typeof item[prop] === 'string' && item[prop].toLowerCase().includes(query)) found = true;
         }
         
         return found;

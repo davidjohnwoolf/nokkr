@@ -37,6 +37,7 @@ import AreaIndex from './components/areas/area-index';
 import AreaShow from './components/areas/area-show';
 
 import LeadsIndex from './components/leads/lead-index';
+import LeadsShow from './components/leads/lead-show';
 
 import LeadStatusIndex from './components/lead-statuses/lead-status-index';
 
@@ -104,9 +105,10 @@ ReactDOM.render(
                         <PrivateRoute exact path="/users/:id" component={ UserShow } />
                 		<PrivateRoute exact path="/users" access={ ADMIN } component={ UserIndex } />
                 		
-                		<PrivateRoute exact path="/areas" access={ MANAGER } component={ AreaIndex } />
                 		<PrivateRoute exact path="/areas/:id" component={ AreaShow } />
+                		<PrivateRoute exact path="/areas" access={ MANAGER } component={ AreaIndex } />
                 		
+                		<PrivateRoute exact path="/leads/:id" component={ LeadsShow } />
                 		<PrivateRoute exact path="/leads" component={ LeadsIndex } />
                 		
                 		<PrivateRoute exact path="/lead-statuses" access={ ADMIN } component={ LeadStatusIndex } />
@@ -115,7 +117,7 @@ ReactDOM.render(
                 		
                 		<PrivateRoute exact path="/lead-fields" access={ ADMIN } component={ LeadFieldIndex } />
                 		
-                		<PrivateRoute exact path="/" permission="user" component={ Dashboard } />
+                		<PrivateRoute exact path="/" component={ Dashboard } />
                 		
                 		<Route exact path="/not-authorized" render={ () => (
                             <ErrorBoundary><NotAuthorized /></ErrorBoundary>
