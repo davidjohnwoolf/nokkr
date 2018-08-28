@@ -113,14 +113,24 @@ router.get('/:id', requireUser, (req, res) => {
             }
         });
         
+        users.forEach(currentUser => {
+            if (lead.createdBy == currentUser.id) lead.createdByName = currentUser.firstName + ' ' + currentUser.lastName;
+        });
+        
         if (!lead) return res.json({ status: ERROR, data: err, code: 404, message: 'Lead not found' });
         
-        //manager and not own team or user and not own lead
-        if ((loggedInUser.role === MANAGER && (user.team != loggedInUser.team)) || (loggedInUser.role === USER && (loggedInUser.id != user.id))) {
-            return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
-        }
-        
-        return res.json({ status: SUCCESS, data: { payload: lead } });
+        Account.findOne({}, (err, account) => {
+            if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
+            
+            lead.leadStatusTitle = account.leadStatuses.find(status => status.id == lead.leadStatusId).title;
+            
+            //manager and not own team or user and not own lead
+            if ((loggedInUser.role === MANAGER && (user.team != loggedInUser.team)) || (loggedInUser.role === USER && (loggedInUser.id != user.id))) {
+                return res.json({ status: ERROR, code: 403, message: 'Permission Denied' });
+            }
+            
+            return res.json({ status: SUCCESS, data: { payload: lead } });
+        });
     });
 });
 
