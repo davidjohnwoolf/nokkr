@@ -19,7 +19,8 @@ class LeadsIndex extends React.Component {
         this.state = {
             isLoading: true,
             activeShown: true,
-            itemList: [],
+            itemsShown: [],
+            items: [],
             leadsCount: 0,
             filtersShown: false,
             filterSettings: {
@@ -35,6 +36,7 @@ class LeadsIndex extends React.Component {
             teamFilterOptions: null,
             areaFilterOptions: null,
             areaGroupFilterOptions: null,
+            selectAllActive: false,
             searchResults: null,
             searchQuery: '',
             sortSettings: {
@@ -51,6 +53,8 @@ class LeadsIndex extends React.Component {
         this.handleSearchInput = this.handleSearchInput.bind(this);
         this.submitQuery = this.submitQuery.bind(this);
         this.clearResults = this.clearResults.bind(this);
+        this.selectAllItems = this.selectAllItems.bind(this);
+        this.selectItem = this.selectItem.bind(this);
     }
     
     componentDidMount() {
@@ -59,17 +63,22 @@ class LeadsIndex extends React.Component {
     
     componentDidUpdate(prevProps, prevState) {
         const {
-            props: { leads },
             state: {
                 isLoading,
                 activeShown,
-                itemList, 
+                itemsShown, 
                 sortSettings
             }
         } = this;
         
         //initialize
-        if (leads && isLoading) {
+        if (this.props.leads && isLoading) {
+
+            const items = this.props.leads.map(lead => {
+                let newItem = Object.create(lead);
+                newItem.selected = false;
+                return newItem;
+            });
             
             const dupes = {
                 leadStatusId: [],
@@ -97,7 +106,7 @@ class LeadsIndex extends React.Component {
                 }
             };
 
-            leads.forEach(lead => {
+            items.forEach(lead => {
                 
                 buildOptionsFromList(lead, leadStatusFilterOptions, 'leadStatusTitle', 'leadStatusId');
                 buildOptionsFromList(lead, cityFilterOptions, 'city', 'city');
@@ -108,14 +117,13 @@ class LeadsIndex extends React.Component {
 
             });
             
-            const filteredList = leads.filter(lead => {
-                return lead.leadStatusType !== 'No Sale';
-            });
+            const filteredList = items.filter(lead => lead.leadStatusType !== 'No Sale');
             
             this.setState({
                 isLoading: false,
-                leadsCount: leads.length,
-                itemList: filteredList,
+                items: items,
+                leadsCount: filteredList.length,
+                itemsShown: filteredList,
                 leadStatusFilterOptions,
                 cityFilterOptions,
                 userFilterOptions,
@@ -129,7 +137,7 @@ class LeadsIndex extends React.Component {
         if (!isLoading && prevState.activeShown !== activeShown) {
             const filterSettings = { ...this.state.filterSettings };
             
-            const filteredList = this.props.leads.filter(lead => {
+            const filteredList = this.state.items.filter(lead => {
                 let notFiltered = true;
                 
                 for (let setting in filterSettings) {
@@ -144,12 +152,12 @@ class LeadsIndex extends React.Component {
                 if (!this.state.activeShown) return (lead.leadStatusType === 'No Sale') && notFiltered;
             });
             
-            this.setState({ itemList: sortItems(filteredList, sortSettings), leadsCount: filteredList.length });
+            this.setState({ itemsShown: sortItems(filteredList, sortSettings), leadsCount: filteredList.length });
         }
         
         //update user list on sort
         if (!isLoading && prevState.sortSettings !== sortSettings) {
-            this.setState({ itemList: sortItems(itemList, sortSettings) });
+            this.setState({ itemsShown: sortItems(itemsShown, sortSettings) });
         }
     }
     
@@ -167,7 +175,7 @@ class LeadsIndex extends React.Component {
         
         filterSettings[prop] = value;
         
-        const filteredList = this.props.leads.filter(lead => {
+        const filteredList = this.state.items.filter(lead => {
             let notFiltered = true;
             
             for (let setting in filterSettings) {
@@ -187,7 +195,7 @@ class LeadsIndex extends React.Component {
             if (!activeShown) return (lead.leadStatusType === 'No Sale') && notFiltered;
         });
         
-        this.setState({ itemList: sortItems(filteredList, this.state.sortSettings), filterSettings, activeShown });
+        this.setState({ itemsShown: sortItems(filteredList, this.state.sortSettings), filterSettings, activeShown });
     }
     
     sortList(col) {
@@ -205,7 +213,7 @@ class LeadsIndex extends React.Component {
     submitQuery(e) {
         e.preventDefault();
         
-        this.setState({ searchResults: searchItems(this.props.leads, this.state.searchQuery) });
+        this.setState({ searchResults: searchItems(this.state.items, this.state.searchQuery) });
     }
     
     clearResults() {
@@ -213,13 +221,18 @@ class LeadsIndex extends React.Component {
     }
 	
     renderLeads() {
-        const { itemList } = this.state;
+        const { itemsShown } = this.state;
         
         return (
-            itemList.map(lead => {
+            itemsShown.map(lead => {
 
                 return (
                     <tr key={ lead._id }>
+                        <td>
+                            <div className="sort-control">
+                                <input type="checkbox" checked={ lead.selected } onChange={ e => this.selectItem(e, lead._id) } />
+                            </div>
+                        </td>
                         <td>
                             <Link to={ LEAD_PATH + lead._id }>{ `${ lead.firstName } ${ lead.lastName }` }</Link>
                         </td>
@@ -236,6 +249,29 @@ class LeadsIndex extends React.Component {
                 );
             })
         );
+    }
+    
+    selectItem(event, id) {
+        const itemsShown = this.state.itemsShown.map(item => Object.create(item));
+        const selectAllActive = event.target.checked ? this.state.selectAllActive : false;
+        
+        event.target.checked
+            ? itemsShown.find(item => item._id === id).selected = true
+            : itemsShown.find(item => item._id === id).selected = false;
+        
+        this.setState({ itemsShown, selectAllActive });
+        
+    }
+    
+    selectAllItems(event) {
+        const itemsShown = this.state.itemsShown.map(item => Object.create(item));
+        const selectAllActive = event.target.checked ? true : false;
+        
+        event.target.checked
+            ? itemsShown.forEach(item => item.selected = true)
+            : itemsShown.forEach(item => item.selected = false)
+        
+        this.setState({ itemsShown, selectAllActive });
     }
     
     render() {
@@ -364,7 +400,11 @@ class LeadsIndex extends React.Component {
                 <table className="table">
                     <thead>
                         <tr>
-                            
+                            <th>
+                                <div className="sort-control">
+                                    <input type="checkbox" checked={ this.state.selectAllActive } onChange={ e => this.selectAllItems(e) } />
+                                </div>
+                            </th>
                             <th>
                                 <div onClick={ () => sortList('firstName') } className="sort-control">
                                     Name <i className={
@@ -416,6 +456,13 @@ class LeadsIndex extends React.Component {
                     </div>
                     <p style={{ marginTop: '1rem' }}>Leads Shown: { leadsCount }</p>
                 </div>
+                <h4>Bulk Actions</h4>
+                <select onChange={ e => console.log(e.target.value) }>
+                    <option>Select action</option>
+                    <option>Reassign selected leads</option>
+                    <option>Changed selected lead statuses</option>
+                    <option>Delete selected leads</option>
+                </select>
             </main>
         );
     }
