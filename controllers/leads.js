@@ -134,6 +134,43 @@ router.get('/:id', requireUser, (req, res) => {
     });
 });
 
+//bulk status update
+router.put('/bulk-update-status', requireAdmin, excludeReadOnly, (req, res) => {
+    const loggedInUser = req.loggedInUser;
+    
+    /*User.find({}, (err, users) => {
+        if (err) return res.json({ status: ERROR, data: err, code: 500, message: 'Error finding user' });
+        
+        users.forEach(user => {
+            let userUpdated = false;
+            user.leads.forEach(lead => {
+                req.body.leadIds.forEach(id => {
+                    if (lead.id == id) {
+                        lead.leadStatus = req.body.leadStatus;
+                        userUpdated = true;
+                })
+            });
+        });
+    });*/
+    
+    //_id: { $in: req.body.leadIds }
+    
+    User.updateMany({ 'leads._id': { $in: req.body.leadIds } }, { $set: { 'leads.leadStatusId' : req.body.leadStatusId } }, err => {
+        if (err) return res.json({ status: ERROR, message: 'Error updating leads in bulk action' });
+        
+        return res.json({ status: SUCCESS, data: { message: 'Lead statuses updated' } });
+    });
+    
+    /*let bulk = User.collection.initializeOrderedBulkOp();
+    
+    bulk.find({ 'leads._id': { $in: req.body.leadIds } }).update({ $set: { 'leads.leadStatusId' : req.body.leadStatusId } });
+    bulk.execute(err => {
+        if (err) return res.json({ status: ERROR, message: 'Error updating leads in bulk action' });
+        
+        return res.json({ status: SUCCESS, data: { message: 'Lead statuses updated' } });
+    });*/
+});
+
 //update
 router.put('/:id', requireUser, excludeReadOnly, (req, res) => {
     const loggedInUser = req.loggedInUser;

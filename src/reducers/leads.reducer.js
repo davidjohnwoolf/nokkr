@@ -4,7 +4,8 @@ import {
     CREATE_LEAD,
     UPDATE_LEAD,
     DELETE_LEAD,
-    CLEAR_LEADS
+    CLEAR_LEADS,
+    BULK_UPDATE_STATUS
 } from '../actions/leads.action';
 
 export default function(state = {}, action) {
@@ -27,6 +28,9 @@ export default function(state = {}, action) {
             
         case CLEAR_LEADS:
             return { ...state, success: false, deleted: false, created: false, updated: false, message: '' };
+            
+        case BULK_UPDATE_STATUS:
+            return { ...state, success: true, updated: true, message: action.message };
             
         default:
             return state;

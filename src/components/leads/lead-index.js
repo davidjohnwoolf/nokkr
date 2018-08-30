@@ -5,11 +5,13 @@ import { Link } from 'react-router-dom';
 import { SU, ADMIN, MANAGER, USER, LEAD_PATH } from '../../../lib/constants';
 import { sortItems, searchItems } from '../helpers/list';
 
-import { fetchLeads } from '../../actions/leads.action';
+import { fetchLeads, clearLeads, bulkLeadStatusUpdate } from '../../actions/leads.action';
+import { sendMessage } from '../../actions/flash.action';
 
 import Loading from '../layout/loading';
 import ContentHeader from '../layout/content-header';
 import IconLink from '../layout/icon-link';
+import Modal from '../layout/modal';
 
 class LeadsIndex extends React.Component {
 
@@ -36,8 +38,10 @@ class LeadsIndex extends React.Component {
             teamFilterOptions: null,
             areaFilterOptions: null,
             areaGroupFilterOptions: null,
+            settingsModalShown: false,
             selectAllActive: false,
             searchResults: null,
+            columnSettingsModalShown: false,
             searchQuery: '',
             sortSettings: {
                 column: undefined,
@@ -55,6 +59,10 @@ class LeadsIndex extends React.Component {
         this.clearResults = this.clearResults.bind(this);
         this.selectAllItems = this.selectAllItems.bind(this);
         this.selectItem = this.selectItem.bind(this);
+        this.bulkUpdate = this.bulkUpdate.bind(this);
+        this.bulkUpdateConfig = this.bulkUpdateConfig.bind(this);
+        this.downloadCSV = this.downloadCSV.bind(this);
+        this.toggleProp = this.toggleProp.bind(this);
     }
     
     componentDidMount() {
@@ -63,6 +71,7 @@ class LeadsIndex extends React.Component {
     
     componentDidUpdate(prevProps, prevState) {
         const {
+            props: { success, updated, message, clearLeads, fetchLeads },
             state: {
                 isLoading,
                 activeShown,
@@ -158,6 +167,12 @@ class LeadsIndex extends React.Component {
         //update user list on sort
         if (!isLoading && prevState.sortSettings !== sortSettings) {
             this.setState({ itemsShown: sortItems(itemsShown, sortSettings) });
+        }
+        
+        if (success && updated) {
+            sendMessage(message);
+            clearLeads();
+            fetchLeads();
         }
     }
     
@@ -274,6 +289,82 @@ class LeadsIndex extends React.Component {
         this.setState({ itemsShown, selectAllActive });
     }
     
+    bulkUpdate(type) {
+        /*const leadIds = [];
+        
+        this.state.itemsShown.forEach(lead => {
+            if (lead.selected) {
+                leadIds.push(lead._id);
+            }
+        });
+        
+        if (event.target.value === 'status') {
+            console.log(leadIds)
+            this.props.bulkLeadStatusUpdate(leadIds, '5b687c62b8c07a1d37b7a40a');
+        }*/
+        console.log('bulk update' + type)
+    }
+    
+    bulkUpdateConfig(event) {
+        console.log('bulk update' + event.target.value)
+    }
+    
+    downloadCSV() {
+        function convertArrayOfObjectsToCSV(data) {  
+            let result, ctr, keys, columnDelimiter, lineDelimiter;
+        
+            columnDelimiter = data.columnDelimiter || ',';
+            lineDelimiter = data.lineDelimiter || '\n';
+        
+            keys = Object.keys(data[0]);
+        
+            result = '';
+            result += keys.join(columnDelimiter);
+            result += lineDelimiter;
+        
+            data.forEach(function(item) {
+                ctr = 0;
+                keys.forEach(function(key) {
+                    if (ctr > 0) result += columnDelimiter;
+        
+                    result += item[key];
+                    ctr++;
+                });
+                result += lineDelimiter;
+            });
+        
+            return result;
+        }
+        
+        let data = [];
+        
+        this.state.itemsShown.forEach(item => {
+            if (item.selected) {
+                data.push(this.props.leads.find(lead => item._id === lead._id));
+            }
+        })
+        
+        if (!data.length) {
+            alert('No leads selected');
+        } else {
+            //window.open('data:text/csv;charset=utf-8,' + convertArrayOfObjectsToCSV(data), 'leads-' + Date.now + '.csv');
+            
+            let uri = 'data:text/csv;charset=utf-8,' + convertArrayOfObjectsToCSV(data);
+            let currentDate = new Date();
+            let downloadLink = document.createElement('a');
+            downloadLink.href = uri;
+            downloadLink.download = `leads_${ currentDate.getMonth() }-${ currentDate.getDate() }-${ currentDate.getFullYear() }.csv`;
+            
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+    }
+    
+    toggleProp(prop) {
+        return () => this.setState({ [prop]: !this.state[prop] });
+    }
+    
     render() {
         const {
             props: { isReadOnly, history },
@@ -301,7 +392,7 @@ class LeadsIndex extends React.Component {
         return (
             <main id="user-index" className="content">
                 <ContentHeader title="Lead Management" history={ history } chilrenAccess={ !isReadOnly }>
-                    <IconLink onClick={ () => console.log('search') } type="primary" icon="cog" />
+                    <IconLink clickEvent={ this.toggleProp('settingsModalShown') } icon="cog" />
                 </ContentHeader>
                 <form onSubmit={ submitQuery } style={{ display: 'flex' }}>
                     <input type="text" placeholder="search leads" style={{ height: '3.9rem', marginTop: '1rem' }} name="searchQuery" value={ searchQuery } onChange={ (e) => handleSearchInput(e.target.value) } />
@@ -344,9 +435,14 @@ class LeadsIndex extends React.Component {
                                     </div>
                         ) : ''
                 }
-                <a style={{ display: 'inline-block', margin: '1rem 0', cursor: 'pointer' }} onClick={ toggleFilters }>
-                    Show Filters <i className={ filtersShown ? 'fas fa-caret-up' : 'fas fa-caret-down' }></i>
-                </a>
+                <div className="button-group">
+                    <a style={{ display: 'inline-block', margin: '1rem 0', cursor: 'pointer' }} onClick={ toggleFilters }>
+                        Show Filters <i className={ filtersShown ? 'fas fa-caret-up' : 'fas fa-caret-down' }></i>
+                    </a>
+                    <a style={{ display: 'inline-block', margin: '1rem 0', cursor: 'pointer' }} onClick={ this.toggleProp('columnSettingsModalShown') }>
+                        Column Settings <i className="fas fa-caret-right"></i>
+                    </a>
+                </div>
                 <div className={ filtersShown ? 'list-filters' : 'invisible' }>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <select style={{ marginRight: '1rem' }} value={ filterSettings.areaId } onChange={ e => filterList('areaId', e.target.value) }>
@@ -456,13 +552,26 @@ class LeadsIndex extends React.Component {
                     </div>
                     <p style={{ marginTop: '1rem' }}>Leads Shown: { leadsCount }</p>
                 </div>
-                <h4>Bulk Actions</h4>
-                <select onChange={ e => console.log(e.target.value) }>
-                    <option>Select action</option>
-                    <option>Reassign selected leads</option>
-                    <option>Changed selected lead statuses</option>
-                    <option>Delete selected leads</option>
-                </select>
+                <Modal close={ this.toggleProp('settingsModalShown') } shown={ this.state.settingsModalShown } title="Lead Settings">
+
+                    <section className="lead-settings">
+                        <button onClick={ this.downloadCSV }>Export Selected as CSV</button>
+                        
+                        <h4>Bulk Actions</h4>
+                        <select onChange={ e => this.bulkUpdateConfig(e) }>
+                            <option>Select action</option>
+                            <option value="reassignUser">Reassign selected leads</option>
+                            <option value="updateStatus">Changed selected leads statuses</option>
+                            <option value="delete">Delete selected leads</option>
+                        </select>
+                    </section>
+                </Modal>
+                <Modal close={ this.toggleProp('columnSettingsModalShown') } shown={ this.state.columnSettingsModalShown } title="Column Settings">
+
+                    <section className="column-settings">
+                        <p>settings</p>
+                    </section>
+                </Modal>
             </main>
         );
     }
@@ -470,8 +579,10 @@ class LeadsIndex extends React.Component {
 
 const mapStateToProps = state => ({
     leads: state.leads.leads,
+    success: state.leads.success,
+    updated: state.leads.updated,
     isReadOnly: state.auth.isReadOnly
 });
 
 
-export default connect(mapStateToProps, { fetchLeads })(LeadsIndex);
+export default connect(mapStateToProps, { fetchLeads, bulkLeadStatusUpdate, clearLeads })(LeadsIndex);

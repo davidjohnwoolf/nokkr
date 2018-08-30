@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 
 import { fetchLead, clearLeads } from '../../actions/leads.action';
 
+import { formatLabel } from '../../../lib/functions';
+
 import Loading from '../layout/loading';
 import ContentHeader from '../layout/content-header';
 import IconLink from '../layout/icon-link';
@@ -45,10 +47,6 @@ class LeadShow extends React.Component {
             }
         }
         
-        const formatLabel = name => {
-            return name.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-        }
-        
         return fields.map(field => {
             return (
                 <div key={ field[0] }>
@@ -65,7 +63,6 @@ class LeadShow extends React.Component {
                 lead,
                 //role,
                 //isReadOnly,
-                leadStatuses,
                 history,
                 match: { params }
             },

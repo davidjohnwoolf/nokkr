@@ -19,7 +19,8 @@ const AccountSchema = new Schema({
     areaGroups: [AreaGroup.schema],
     leadFields: [LeadField.schema],
     leadStatuses: [LeadStatus.schema],
-    //leadFieldColumns: [leadFieldColumn.schema],
+    //leadFieldColumns: [String],
+    //customLeadFieldColumns: [Schema.Types.ObjectId],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date }
 });
