@@ -161,7 +161,7 @@ class LeadsIndex extends React.Component {
                 if (!this.state.activeShown) return (lead.leadStatusType === 'No Sale') && notFiltered;
             });
             
-            this.setState({ itemsShown: sortItems(filteredList, sortSettings), leadsCount: filteredList.length });
+            this.setState({ itemsShown: sortItems(filteredList, sortSettings), leadsCount: filteredList.length, selectAllActive: false });
         }
         
         //update user list on sort
@@ -210,7 +210,7 @@ class LeadsIndex extends React.Component {
             if (!activeShown) return (lead.leadStatusType === 'No Sale') && notFiltered;
         });
         
-        this.setState({ itemsShown: sortItems(filteredList, this.state.sortSettings), filterSettings, activeShown });
+        this.setState({ itemsShown: sortItems(filteredList, this.state.sortSettings), filterSettings, leadsCount: filteredList.length, activeShown, selectAllActive: false });
     }
     
     sortList(col) {
