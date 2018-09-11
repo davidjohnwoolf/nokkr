@@ -13,7 +13,7 @@ const AreaSchema = new Schema({
 });
 
 AreaSchema.pre('save', function(next) {
-    this.updatedAt = Date.now();
+    if (this.isModified()) this.updatedAt = Date.now();
     next();
 });
 

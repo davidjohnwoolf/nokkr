@@ -26,7 +26,7 @@ const AccountSchema = new Schema({
 });
 
 AccountSchema.pre('save', function(next) {
-    this.updatedAt = Date.now();
+    if (this.isModified()) this.updatedAt = Date.now();
     next();
 });
 

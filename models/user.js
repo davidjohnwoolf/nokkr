@@ -35,7 +35,7 @@ const UserSchema = new Schema({
 UserSchema.pre('save', function(next) {
     const user = this;
     
-    user.updatedAt = Date.now();
+    if (this.isModified()) this.updatedAt = Date.now();
     
     // check if user password is new or modified
     if (!user.isModified('password')) return next();
