@@ -476,21 +476,21 @@ class LeadsIndex extends React.Component {
                 <div className={ filtersShown ? 'list-filters' : 'invisible' }>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <div style={{ width: '49%' }}>
-                            <h4 style={{ margin: '1rem 0' }}>Updated After</h4>
+                            <h4 style={{ margin: '1rem 0 .5rem 0' }}>Updated After</h4>
                             <input type="date" value={ filterSettings.updatedStartDate } onChange={ e => filterList('updatedStartDate', e.target.value) } />
                         </div>
                         <div style={{ width: '49%' }}>
-                            <h4 style={{ margin: '1rem 0' }}>Updated Before</h4>
+                            <h4 style={{ margin: '1rem 0 .5rem 0' }}>Updated Before</h4>
                             <input type="date" value={ filterSettings.updatedEndDate } onChange={ e => filterList('updatedEndDate', e.target.value) } />
                         </div>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <div style={{ width: '49%' }}>
-                            <h4 style={{ margin: '1rem 0' }}>Created After</h4>
+                            <h4 style={{ margin: '1rem 0 .5rem 0' }}>Created After</h4>
                             <input type="date" value={ filterSettings.createdStartDate } onChange={ e => filterList('createdStartDate', e.target.value) } />
                         </div>
                         <div style={{ width: '49%' }}>
-                            <h4 style={{ margin: '1rem 0' }}>Created Before</h4>
+                            <h4 style={{ margin: '1rem 0 .5rem 0' }}>Created Before</h4>
                             <input type="date" value={ filterSettings.createdEndDate } onChange={ e => filterList('createdEndDate', e.target.value) } />
                         </div>
                     </div>
