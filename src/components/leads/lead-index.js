@@ -265,7 +265,9 @@ class LeadsIndex extends React.Component {
         
         return (
             itemsShown.map(lead => {
-
+                let updatedAt = new Date(lead.updatedAt);
+                let formattedDate = `${ updatedAt.getMonth() }-${ updatedAt.getDate() }-${ updatedAt.getFullYear() } ${ updatedAt.toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3") }`;
+                
                 return (
                     <tr key={ lead._id }>
                         <td>
@@ -289,7 +291,7 @@ class LeadsIndex extends React.Component {
                             { lead.createdByName }
                         </td>
                         <td>
-                            { lead.createdAt }
+                            { formattedDate }
                         </td>
                     </tr>
                 );
@@ -595,9 +597,9 @@ class LeadsIndex extends React.Component {
                                 </div>
                             </th>
                             <th>
-                                <div onClick={ () => sortList('createdAt') } className="sort-control">
-                                    Created At <i className={
-                                        sortSettings.column === 'createdAt'
+                                <div onClick={ () => sortList('updatedAt') } className="sort-control">
+                                    Updated At <i className={
+                                        sortSettings.column === 'updatedAt'
                                             ? (sortSettings.ascending ? 'fas fa-caret-down' : 'fas fa-caret-up')
                                             : 'fas fa-sort'
                                     }></i>
