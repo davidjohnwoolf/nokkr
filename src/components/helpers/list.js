@@ -13,17 +13,43 @@ export const sortItems = (originalList, sortSettings) => {
     } else { return originalList; }
 }
 
+//this is specific to leads
 export const searchItems = (items, query) => {
-    query = query.toLowerCase();
+    const formattedQuery = query.toLowerCase().replace(/[^\w]/gi, '');
     
     let results = items.filter(item => {
-        let found = false;
+        let match = false;
+        
+        //make this specific to leads somehow
+        let fullName = (item.firstName + ' ' + item.lastName).toLowerCase().replace(/[^\w]/gi, '');
+
+        if (fullName.includes(formattedQuery)) match = true;
         
         for (let prop in item) {
-            if (typeof item[prop] === 'string' && item[prop].toLowerCase().includes(query)) found = true;
+            if (prop === 'customFields') {
+                let customFields = item[prop][0];
+                
+                for (let key in customFields) {
+                    if (typeof customFields[key] === 'string'
+                        && customFields[key].toLowerCase().replace(/[^\w]/gi, '').includes(formattedQuery))
+                    {
+                        match = true;
+                    }
+                }
+            }
+            
+            //use whitelist here and on lead show etc, not black list
+            if (typeof item[prop] === 'string'
+                && item[prop].toLowerCase().replace(/[^\w]/gi, '').includes(formattedQuery)
+                && (prop !== 'leadStatusId') && (prop !== '_id')
+                && (prop !== 'areaId') && (prop !== 'lat') && (prop !== 'lng')
+                && (prop !== 'lng') && (prop !== 'createdBy'))
+            {
+                match = true;
+            }
         }
         
-        return found;
+        return match;
     });
     
     return results;

@@ -40,10 +40,14 @@ class LeadShow extends React.Component {
         const fields = [];
         for (let key in lead) {
             if ((key !== 'leadStatusId') && (key !== '_id') && (key !== 'areaId') && (key !== 'lat') && (key !== 'lng') && (key !== 'lng') && (key !== 'createdBy') && lead[key])
-            if (key === 'customFields') {
-                lead[key].forEach(customField => fields.push([customField.name, customField.type === 'checkbox' ? customField.checked : customField.value]))
+            if (key === 'customFields' && lead[key][0]) {
+                let customFields = lead[key][0];
+                for (let prop in customFields) {
+                    console.log(customFields[prop])
+                    fields.push([prop, customFields[prop]]);
+                }
             } else {
-                fields.push([key, lead[key]])
+                fields.push([key, lead[key]]);
             }
         }
         
@@ -54,7 +58,7 @@ class LeadShow extends React.Component {
                     <p>{ field[1] }</p>
                 </div>
             );
-        })
+        });
     }
     
     render() {
