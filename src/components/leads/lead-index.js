@@ -26,12 +26,14 @@ class LeadsIndex extends React.Component {
             leadsCount: 0,
             filtersShown: false,
             filterSettings: {
-                areaId: undefined,
-                areaGroupId: undefined,
-                city: undefined,
-                leadStatusId: undefined,
-                userId: undefined,
-                teamId: undefined
+                areaId: '',
+                areaGroupId: '',
+                city: '',
+                leadStatusId: '',
+                userId: '',
+                teamId: '',
+                startDate: '',
+                endDate: ''
             },
             leadStatusFilterOptions: null,
             cityFilterOptions: null,
@@ -195,13 +197,19 @@ class LeadsIndex extends React.Component {
             
             for (let setting in filterSettings) {
                 if (filterSettings[setting]) {
-                    if (lead[setting] !== filterSettings[setting]) {
-                        notFiltered = false;
-                    } else {
-                        if (setting === 'leadStatusId') {
-                            if (lead.leadStatusType === 'No Sale') activeShown = false;
-                            if (lead.leadStatusType !== 'No Sale') activeShown = true;
+                    
+                    if ((setting === 'startDate') || (setting === 'endDate')) {
+                        if ((setting === 'startDate') && (lead.updatedAt < filterSettings[setting])) {
+                            notFiltered = false;
                         }
+                        if ((setting === 'endDate') && (lead.updatedAt > filterSettings[setting])) {
+                            notFiltered = false;
+                        }
+                    } else if (lead[setting] !== filterSettings[setting]) {
+                        notFiltered = false;
+                    } else if (setting === 'leadStatusId') {
+                        if (lead.leadStatusType === 'No Sale') activeShown = false;
+                        if (lead.leadStatusType !== 'No Sale') activeShown = true;
                     }
                 }
             }
@@ -259,6 +267,12 @@ class LeadsIndex extends React.Component {
                         </td>
                         <td>
                             { lead.assignedUserName }
+                        </td>
+                        <td>
+                            { lead.createdByName }
+                        </td>
+                        <td>
+                            { lead.createdAt }
                         </td>
                     </tr>
                 );
@@ -439,12 +453,19 @@ class LeadsIndex extends React.Component {
                     <a style={{ display: 'inline-block', margin: '1rem 0', cursor: 'pointer' }} onClick={ toggleFilters }>
                         Show Filters <i className={ filtersShown ? 'fas fa-caret-up' : 'fas fa-caret-down' }></i>
                     </a>
-                    <a style={{ display: 'inline-block', margin: '1rem 0', cursor: 'pointer' }} onClick={ this.toggleProp('columnSettingsModalShown') }>
-                        Column Settings <i className="fas fa-caret-right"></i>
-                    </a>
                 </div>
                 <div className={ filtersShown ? 'list-filters' : 'invisible' }>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <div style={{ width: '49%' }}>
+                            <h4>Updated After</h4>
+                            <input type="date" value={ filterSettings.startDate } onChange={ e => filterList('startDate', e.target.value) } />
+                        </div>
+                        <div style={{ width: '49%' }}>
+                            <h4>Updated Before</h4>
+                            <input type="date" value={ filterSettings.endDate } onChange={ e => filterList('endDate', e.target.value) } />
+                        </div>
+                    </div>
+                    <div style={{ display: 'flex', marginTop: '1rem', justifyContent: 'space-between' }}>
                         <select style={{ marginRight: '1rem' }} value={ filterSettings.areaId } onChange={ e => filterList('areaId', e.target.value) }>
                             {
                                 areaFilterOptions.map(option => {
@@ -532,6 +553,24 @@ class LeadsIndex extends React.Component {
                                 <div onClick={ () => sortList('userId') } className="sort-control">
                                     Assigned User <i className={
                                         sortSettings.column === 'userId'
+                                            ? (sortSettings.ascending ? 'fas fa-caret-down' : 'fas fa-caret-up')
+                                            : 'fas fa-sort'
+                                    }></i>
+                                </div>
+                            </th>
+                            <th>
+                                <div onClick={ () => sortList('createdBy') } className="sort-control">
+                                    Created By <i className={
+                                        sortSettings.column === 'createdBy'
+                                            ? (sortSettings.ascending ? 'fas fa-caret-down' : 'fas fa-caret-up')
+                                            : 'fas fa-sort'
+                                    }></i>
+                                </div>
+                            </th>
+                            <th>
+                                <div onClick={ () => sortList('createdAt') } className="sort-control">
+                                    Created At <i className={
+                                        sortSettings.column === 'createdAt'
                                             ? (sortSettings.ascending ? 'fas fa-caret-down' : 'fas fa-caret-up')
                                             : 'fas fa-sort'
                                     }></i>

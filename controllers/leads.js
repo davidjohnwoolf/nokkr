@@ -41,9 +41,11 @@ router.get('/', requireUser, (req, res) => {
                     let leadStatus = account.leadStatuses.find(status => status.id == lead.leadStatusId);
                     let leadArea = areas.find(area => area.id == lead.areaId);
                     let areaGroup = account.areaGroups.find(areaGroup => areaGroup.id == leadArea.areaGroupId);
+                    let createdByUser = users.find(user => user.id == lead.createdBy);
                     
                     return Object.assign({
                         assignedUserName: user.firstName + ' ' + user.lastName,
+                        createdByName: createdByUser.firstName + ' ' + createdByUser.lastName,
                         userId: user._id,
                         teamTitle: team ? team.title : '-',
                         teamId: team ? team._id : '-',
