@@ -32,8 +32,10 @@ class LeadsIndex extends React.Component {
                 leadStatusId: '',
                 userId: '',
                 teamId: '',
-                startDate: '',
-                endDate: ''
+                createdStartDate: '',
+                createdEndDate: '',
+                updatedStartDate: '',
+                updatedEndDate: ''
             },
             leadStatusFilterOptions: null,
             cityFilterOptions: null,
@@ -147,20 +149,34 @@ class LeadsIndex extends React.Component {
         //update user list on active user toggle
         if (!isLoading && prevState.activeShown !== activeShown) {
             const filterSettings = { ...this.state.filterSettings };
+            let activeShownTemp = activeShown;
             
+            //make the contents of this a function as it is used elsewhere
             const filteredList = this.state.items.filter(lead => {
                 let notFiltered = true;
-                
+            
                 for (let setting in filterSettings) {
                     if (filterSettings[setting]) {
-                        if (lead[setting] !== filterSettings[setting]) {
+                        
+                        if (setting.includes('Date')) {
+                            let filterDate = filterSettings[setting];
+                            
+                            if ((setting === 'updatedStartDate') && (lead.updatedAt < filterDate)) notFiltered = false;
+                            if ((setting === 'updatedEndDate') && (lead.updatedAt > filterDate)) notFiltered = false;
+                            if ((setting === 'createdStartDate') && (lead.createdAt < filterDate)) notFiltered = false;
+                            if ((setting === 'createdEndDate') && (lead.createdAt > filterDate)) notFiltered = false;
+                            
+                        } else if (lead[setting] !== filterSettings[setting]) {
                             notFiltered = false;
+                        } else if (setting === 'leadStatusId') {
+                            if (lead.leadStatusType === 'No Sale') activeShownTemp = false;
+                            if (lead.leadStatusType !== 'No Sale') activeShownTemp = true;
                         }
                     }
                 }
                 
-                if (this.state.activeShown) return (lead.leadStatusType !== 'No Sale') && notFiltered;
-                if (!this.state.activeShown) return (lead.leadStatusType === 'No Sale') && notFiltered;
+                if (activeShownTemp) return (lead.leadStatusType !== 'No Sale') && notFiltered;
+                if (!activeShownTemp) return (lead.leadStatusType === 'No Sale') && notFiltered;
             });
             
             this.setState({ itemsShown: sortItems(filteredList, sortSettings), leadsCount: filteredList.length, selectAllActive: false });
@@ -198,13 +214,14 @@ class LeadsIndex extends React.Component {
             for (let setting in filterSettings) {
                 if (filterSettings[setting]) {
                     
-                    if ((setting === 'startDate') || (setting === 'endDate')) {
-                        if ((setting === 'startDate') && (lead.updatedAt < filterSettings[setting])) {
-                            notFiltered = false;
-                        }
-                        if ((setting === 'endDate') && (lead.updatedAt > filterSettings[setting])) {
-                            notFiltered = false;
-                        }
+                    if (setting.includes('Date')) {
+                        let filterDate = filterSettings[setting];
+                        
+                        if ((setting === 'updatedStartDate') && (lead.updatedAt < filterDate)) notFiltered = false;
+                        if ((setting === 'updatedEndDate') && (lead.updatedAt > filterDate)) notFiltered = false;
+                        if ((setting === 'createdStartDate') && (lead.createdAt < filterDate)) notFiltered = false;
+                        if ((setting === 'createdEndDate') && (lead.createdAt > filterDate)) notFiltered = false;
+                        
                     } else if (lead[setting] !== filterSettings[setting]) {
                         notFiltered = false;
                     } else if (setting === 'leadStatusId') {
@@ -457,15 +474,25 @@ class LeadsIndex extends React.Component {
                 <div className={ filtersShown ? 'list-filters' : 'invisible' }>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <div style={{ width: '49%' }}>
-                            <h4>Updated After</h4>
-                            <input type="date" value={ filterSettings.startDate } onChange={ e => filterList('startDate', e.target.value) } />
+                            <h4 style={{ margin: '1rem 0' }}>Updated After</h4>
+                            <input type="date" value={ filterSettings.updatedStartDate } onChange={ e => filterList('updatedStartDate', e.target.value) } />
                         </div>
                         <div style={{ width: '49%' }}>
-                            <h4>Updated Before</h4>
-                            <input type="date" value={ filterSettings.endDate } onChange={ e => filterList('endDate', e.target.value) } />
+                            <h4 style={{ margin: '1rem 0' }}>Updated Before</h4>
+                            <input type="date" value={ filterSettings.updatedEndDate } onChange={ e => filterList('updatedEndDate', e.target.value) } />
                         </div>
                     </div>
-                    <div style={{ display: 'flex', marginTop: '1rem', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <div style={{ width: '49%' }}>
+                            <h4 style={{ margin: '1rem 0' }}>Created After</h4>
+                            <input type="date" value={ filterSettings.createdStartDate } onChange={ e => filterList('createdStartDate', e.target.value) } />
+                        </div>
+                        <div style={{ width: '49%' }}>
+                            <h4 style={{ margin: '1rem 0' }}>Created Before</h4>
+                            <input type="date" value={ filterSettings.createdEndDate } onChange={ e => filterList('createdEndDate', e.target.value) } />
+                        </div>
+                    </div>
+                    <div style={{ display: 'flex', marginTop: '.5rem', justifyContent: 'space-between' }}>
                         <select style={{ marginRight: '1rem' }} value={ filterSettings.areaId } onChange={ e => filterList('areaId', e.target.value) }>
                             {
                                 areaFilterOptions.map(option => {
