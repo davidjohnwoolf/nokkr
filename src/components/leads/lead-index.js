@@ -443,22 +443,48 @@ class LeadsIndex extends React.Component {
                                                 <i className="fas fa-times"></i>
                                             </a>
                                         </div>
-                                        <ul style={{ listStyleType: 'none', padding: '0', paddingLeft: '0' }}>
-                                            {
-                                                searchResults.map(result => {
-                                                    return (
-                                                    <li key={ result._id } style={{ margin: '1rem 0' }}>
-                                                        <Link to={  LEAD_PATH + result._id } style={{ display: 'flex', justifyContent: 'space-between', border: '.1rem solid #ccc' }}>
-                                                            <span style={{ padding: '.5rem', borderRight: '.1rem solid #ccc' }}>{ `${ result.firstName } ${ result.lastName }` }</span>
-                                                            <span style={{ padding: '.5rem', borderRight: '.1rem solid #ccc' }}>{ result.address }</span>
-                                                            <span style={{ padding: '.5rem', borderRight: '.1rem solid #ccc' }}>{ result.leadStatusTitle }</span>
-                                                            <span style={{ padding: '.5rem' }}>{ result.assignedUserName }</span>
-                                                        </Link>
-                                                    </li>
-                                                    );
-                                                })
-                                            }
-                                        </ul>
+                                        <table className="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <div className="sort-control">
+                                                            Name
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div className="sort-control">
+                                                            Address
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div className="sort-control">
+                                                            Status
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div className="sort-control">
+                                                            User
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    searchResults.map(result => {
+                                                        return (
+                                                        <tr key={ result._id }>
+                                                            
+                                                                <td><Link to={  LEAD_PATH + result._id }>{ `${ result.firstName } ${ result.lastName }` }</Link></td>
+                                                                <td>{ result.address }</td>
+                                                                <td>{ result.leadStatusTitle }</td>
+                                                                <td>{ result.assignedUserName }</td>
+                                                            
+                                                        </tr>
+                                                        );
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
                                     </div>
                                 ) : <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                         <h3>No Results Found</h3>
