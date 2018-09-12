@@ -598,7 +598,7 @@ class LeadsIndex extends React.Component {
                             </th>
                             <th>
                                 <div onClick={ () => sortList('updatedAt') } className="sort-control">
-                                    Updated At <i className={
+                                    Last Updated <i className={
                                         sortSettings.column === 'updatedAt'
                                             ? (sortSettings.ascending ? 'fas fa-caret-down' : 'fas fa-caret-up')
                                             : 'fas fa-sort'
