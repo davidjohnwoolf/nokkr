@@ -297,6 +297,7 @@ class MapShow extends React.Component {
                             <div style={{ display: 'flex', justifyContent: 'space-between', position: 'fixed', bottom: '0', width: '100%', background: '#fff', padding: '10px', borderTop: '2px #999 solid' }}>
                                 <h4>{ leadOptionsLead.firstName + ' ' + leadOptionsLead.lastName }</h4>
                                 <p>{ leadOptionsLead.address }</p>
+                                <p>{ leadOptionsLead.leadStatusTitle }</p>
                                 <a onClick={ showEditLeadForm } className="button primary">Show Lead</a>
                                 <a onClick={ hideLeadOptions } className="icon-link cancel"><i className="fas fa-times"></i></a>
                             </div>

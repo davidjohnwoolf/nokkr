@@ -110,15 +110,15 @@ router.get('/:id', requireUser, (req, res) => {
         users.forEach(currentUser => {
             let currentLead = currentUser.leads.find(lead => lead.id === req.params.id);
             if (currentLead) {
-                lead = Object.assign({}, currentLead._doc);
+                lead = Object.assign({ assignedUserName: currentUser.firstName + ' ' + currentUser.lastName }, currentLead._doc);
                 user = currentUser;
             }
         });
         
         users.forEach(currentUser => {
-            if (lead.createdBy == currentUser.id) lead.createdByName = currentUser.firstName + ' ' + currentUser.lastName;
+            if (lead.createdBy == currentUser.id) lead.createdByUser = currentUser.firstName + ' ' + currentUser.lastName;
             currentUser.areas.forEach(area => {
-                if (lead.areaId == area.id) lead.areaTitle = area.title;
+                if (lead.areaId == area.id) lead.area = area.title;
             });
         });
         
@@ -127,7 +127,7 @@ router.get('/:id', requireUser, (req, res) => {
         Account.findOne({}, (err, account) => {
             if (err) return res.json({ status: ERROR, data: err, message: 'Error finding account' });
             
-            lead.leadStatusTitle = account.leadStatuses.find(status => status.id == lead.leadStatusId).title;
+            lead.leadStatus = account.leadStatuses.find(status => status.id == lead.leadStatusId).title;
             
             //manager and not own team or user and not own lead
             if ((loggedInUser.role === MANAGER && (user.team != loggedInUser.team)) || (loggedInUser.role === USER && (loggedInUser.id != user.id))) {
@@ -187,14 +187,14 @@ router.put('/:id', requireUser, excludeReadOnly, (req, res) => {
         let user;
         
         users.forEach(currentUser => {
-            let currentLeadIndex = currentUser.leads.findIndex(lead => lead.id === req.params.id);
-            if (currentLeadIndex) {
+            let currentLeadIndex = currentUser.leads.findIndex(lead => lead.id == req.params.id);
+            if (currentLeadIndex > -1) {
                 leadIndex = currentLeadIndex;
                 user = currentUser;
             }
         });
         
-        if (!leadIndex) return res.json({ status: ERROR, data: err, code: 404, message: 'Lead not found' });
+        if (leadIndex < 0) return res.json({ status: ERROR, data: err, code: 404, message: 'Lead not found' });
         
         //manager and not own team or user and not own lead
         if ((loggedInUser.role === MANAGER && (user.team != loggedInUser.team)) || (loggedInUser.role === USER && (loggedInUser.id != user.id))) {

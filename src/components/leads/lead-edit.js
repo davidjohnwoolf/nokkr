@@ -125,9 +125,9 @@ class LeadEdit extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
         
-        const { state: { fields, customFields }, props: { updateLead } } = this;
+        const { state: { fields, customFields }, props: { updateLead, lead } } = this;
         
-        formSubmit2({ fields, customFields, action: updateLead, id: this.props.lead._id });
+        formSubmit2({ fields, customFields, action: updateLead, id: lead._id });
     }
     
     render() {
