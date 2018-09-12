@@ -38,16 +38,20 @@ class LeadShow extends React.Component {
     renderLeadFields() {
         const { lead } = this.props;
         const fields = [];
+        
+        console.log(lead)
         for (let key in lead) {
-            if ((key !== 'leadStatusId') && (key !== '_id') && (key !== 'areaId') && (key !== 'lat') && (key !== 'lng') && (key !== 'lng') && (key !== 'createdBy') && lead[key])
-            if (key === 'customFields' && lead[key][0]) {
-                let customFields = lead[key][0];
-                for (let prop in customFields) {
-                    console.log(customFields[prop])
-                    fields.push([prop, customFields[prop]]);
+            if (key === 'customFields') {
+                if (lead[key][0]) {
+                    let customFields = lead[key][0];
+                    for (let prop in customFields) {
+                        fields.push([prop, customFields[prop]]);
+                    }
                 }
             } else {
-                fields.push([key, lead[key]]);
+                if ((key !== '_id') && (key !== 'lat') && (key !== 'lng') && (key !== 'areaId') && (key !== 'leadStatusId') && (key !== 'createdBy') && lead[key]) {
+                    fields.push([key, lead[key]]);
+                }
             }
         }
         

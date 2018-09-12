@@ -110,13 +110,16 @@ router.get('/:id', requireUser, (req, res) => {
         users.forEach(currentUser => {
             let currentLead = currentUser.leads.find(lead => lead.id === req.params.id);
             if (currentLead) {
-                lead = currentLead;
+                lead = Object.assign({}, currentLead._doc);
                 user = currentUser;
             }
         });
         
         users.forEach(currentUser => {
             if (lead.createdBy == currentUser.id) lead.createdByName = currentUser.firstName + ' ' + currentUser.lastName;
+            currentUser.areas.forEach(area => {
+                if (lead.areaId == area.id) lead.areaTitle = area.title;
+            });
         });
         
         if (!lead) return res.json({ status: ERROR, data: err, code: 404, message: 'Lead not found' });

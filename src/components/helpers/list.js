@@ -43,7 +43,7 @@ export const searchItems = (items, query) => {
                 && item[prop].toLowerCase().replace(/[^\w]/gi, '').includes(formattedQuery)
                 && (prop !== 'leadStatusId') && (prop !== '_id')
                 && (prop !== 'areaId') && (prop !== 'lat') && (prop !== 'lng')
-                && (prop !== 'lng') && (prop !== 'createdBy'))
+                && (prop !== 'lng'))
             {
                 match = true;
             }
