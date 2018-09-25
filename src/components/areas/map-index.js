@@ -274,42 +274,44 @@ class MapIndex extends React.Component {
         
         return (
             <div>
-                <div className={ `map-container ${ this.props.mapShown ? '' : 'invisible' }` }>
-                    <div style={{ display: 'flex' }}>
-                        <button onClick={ toggleProp('drawingModeActive') } className={ drawingModeActive ? 'button success' : 'button cancel' }>
-                            <i className="fas fa-pencil-alt"></i>
-                        </button>
-                        <input id="map-search" type="text" placeholder="enter location to go to" className="map-input" style={{ width: '100%'}} />
+                <div className="map-container">
+                    <div style={{ margin: '1rem' }}>
+                        <div style={{ display: 'flex' }}>
+                            <button onClick={ toggleProp('drawingModeActive') } className={ drawingModeActive ? 'button success' : 'button cancel' }>
+                                <i className="fas fa-pencil-alt"></i>
+                            </button>
+                            <input id="map-search" type="text" placeholder="enter location to go to" className="map-input" style={{ width: '100%'}} />
+                        </div>
+                        { areaNewFormShown ? (<AreaNew  //just use drawingModeActive and remove areaNewFormShown
+                                coords={ coords }
+                                close={ closeCreateArea }
+                                clearAreas={ clearAreas }
+                                fetchAreas={ fetchAreas }
+                                groupSelected={ groupSelected }
+                            />) : '' }
+                        { editableArea ? (<AreaUpdate
+                                id={ editableAreaId }
+                                coords={ editCoords }
+                                random={ Math.random() }
+                                close={ closeUpdateArea }
+                                clearAreas={ clearAreas }
+                                fetchAreas={ fetchAreas }
+                                groupSelected={ groupSelected }
+                            />) : '' }
+                        
+                        <h4>Go To Group</h4>
+                        <select onChange={ (e) => goToGroup(e.target.value) }>
+                            <option value="">Go to Group</option>
+                            {
+                                areaGroups.map(group => {
+                                    return (
+                                        <option key={ group._id } value={ group._id }>{ group.title }</option>
+                                    );
+                                })
+                            }
+                        </select>
                     </div>
                     <div id="map"></div>
-                    { areaNewFormShown ? (<AreaNew  //just use drawingModeActive and remove areaNewFormShown
-                            coords={ coords }
-                            close={ closeCreateArea }
-                            clearAreas={ clearAreas }
-                            fetchAreas={ fetchAreas }
-                            groupSelected={ groupSelected }
-                        />) : '' }
-                    { editableArea ? (<AreaUpdate
-                            id={ editableAreaId }
-                            coords={ editCoords }
-                            random={ Math.random() }
-                            close={ closeUpdateArea }
-                            clearAreas={ clearAreas }
-                            fetchAreas={ fetchAreas }
-                            groupSelected={ groupSelected }
-                        />) : '' }
-                    
-                    <h4>Go To Group</h4>
-                    <select onChange={ (e) => goToGroup(e.target.value) }>
-                        <option value="">Go to Group</option>
-                        {
-                            areaGroups.map(group => {
-                                return (
-                                    <option key={ group._id } value={ group._id }>{ group.title }</option>
-                                );
-                            })
-                        }
-                    </select>
                 </div>
             </div>
         );

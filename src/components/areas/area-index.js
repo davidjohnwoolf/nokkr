@@ -24,10 +24,9 @@ class AreaIndex extends React.Component {
         this.state = {
             isLoading: true,
             areaList: null,
-            settingsModalShown: false,
-            mapShown: true,
             areaGroups: null,
             areaCount: 0,
+            tableShown: false,
             activeShown: true,
             sortSettings: {
                 column: undefined,
@@ -39,7 +38,6 @@ class AreaIndex extends React.Component {
         this.renderAreas = this.renderAreas.bind(this);
         this.toggleActive = this.toggleActive.bind(this);
         this.toggleProp = this.toggleProp.bind(this);
-        this.toggleMapActive = this.toggleMapActive.bind(this);
     }
     
     componentDidMount() {
@@ -108,10 +106,6 @@ class AreaIndex extends React.Component {
         this.setState({ activeShown: !this.state.activeShown});
     }
     
-    toggleMapActive() {
-        this.setState({ mapShown: !this.state.mapShown });
-    }
-    
     sortList(col) {
         const { sortSettings: { column, ascending } } = this.state;
         
@@ -128,101 +122,89 @@ class AreaIndex extends React.Component {
         
         const {
             props: { history, fetchAreas, clearAreas },
-            state: { sortSettings, isLoading, activeShown, areaCount, settingsModalShown, mapShown, areaGroups, areaList },
-            sortList, renderAreas, toggleActive, toggleProp, toggleMapActive
+            state: { sortSettings, isLoading, activeShown, areaCount, areaGroups, areaList, tableShown },
+            sortList, renderAreas, toggleActive, toggleProp
         } = this;
         
         if (isLoading) return <Loading />;
         
         return (
-            <main id="area-index" className="content">
-                
-                <ContentHeader title="Area Management" history={ history } chilrenAccess={ /*!isReadOnly*/ true }>
-                    { /*<IconLink url="/areas/new" type="success" icon="plus" /> */ }
-                    <IconLink clickEvent={ toggleProp('settingsModalShown') } icon="cog" />
-                </ContentHeader>
-                <table className={ `table ${ !mapShown ? '' : 'invisible' }` }>
-                    <thead>
-                        <tr>
-                            
-                            <th>
-                                <div onClick={ () => sortList('title') } className="sort-control">
-                                    Title <i className={
-                                        sortSettings.column === 'title'
-                                            ? (sortSettings.ascending ? 'fas fa-caret-down' : 'fas fa-caret-up')
-                                            : 'fas fa-sort'
-                                    }></i>
-                                </div>
-                            </th>
-                            <th>
-                                <div onClick={ () => sortList('assignedUserName') } className="sort-control">
-                                    User <i className={
-                                        sortSettings.column === 'assignedUserName'
-                                            ? (sortSettings.ascending ? 'fas fa-caret-down' : 'fas fa-caret-up')
-                                            : 'fas fa-sort'
-                                    }></i>
-                                </div>
-                            </th>
-                            <th>
-                                <div onClick={ () => sortList('groupTitle') } className="sort-control">
-                                    Group <i className={
-                                        sortSettings.column === 'groupTitle'
-                                            ? (sortSettings.ascending ? 'fas fa-caret-down' : 'fas fa-caret-up')
-                                            : 'fas fa-sort'
-                                    }></i>
-                                </div>
-                            </th>
-                            <th>
-                                <div onClick={ () => sortList('teamTitle') } className="sort-control">
-                                    Team <i className={
-                                        sortSettings.column === 'teamTitle'
-                                            ? (sortSettings.ascending ? 'fas fa-caret-down' : 'fas fa-caret-up')
-                                            : 'fas fa-sort'
-                                    }></i>
-                                </div>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        { renderAreas() }
-                    </tbody>
-                </table>
+            <main id="area-index" className="map-content">
+                <div style={{ margin: '1rem' }}>
+                    <ContentHeader title="Area Management" history={ history } />
+                    <div className="button-group">
+                        <button onClick={ toggleProp('tableShown') }>Show List</button>
+                        <div className="toggle">
+                            <label>Show Inactive Areas</label>
+                            <span onClick={ toggleActive }>
+                                <i className={ !activeShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
+                            </span>
+                        </div>
+                        <div className="toggle">
+                            <label>Show Leads</label>
+                            <span>
+                                <i className="fas fa-toggle-off"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
                 
                 <MapIndex
                     areas={ areaList }
-                    mapShown={ mapShown }
                     areaGroups={ areaGroups }
                     fetchAreas={ fetchAreas }
                     clearAreas={ clearAreas }
                     activeShown={ activeShown }
                 />
-                <p style={{ marginTop: '1rem' }}>Areas Shown: { areaCount }</p>
                 
-                <Modal close={ toggleProp('settingsModalShown') } shown={ settingsModalShown } title="Area Settings">
-
-                    <section className="area-settings">
-                        
-                        <div className="button-group">
-                            <div className="toggle">
-                                <label>Show Inactive Areas</label>
-                                <span onClick={ toggleActive }>
-                                    <i className={ !activeShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
-                                </span>
-                            </div>
-                            <div className="toggle">
-                                <label>Toggle Map View</label>
-                                <span onClick={ toggleMapActive }>
-                                    <i className={ mapShown ? 'fas fa-toggle-on' : 'fas fa-toggle-off' }></i>
-                                </span>
-                            </div>
-                            <div className="toggle">
-                                <label>Show Leads</label>
-                                <span>
-                                    <i className="fas fa-toggle-off"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </section>
+                <Modal close={ toggleProp('tableShown') } shown={ tableShown } title="Area List">
+                    <table className={ tableShown ? 'table' : 'invisible' }>
+                        <thead>
+                            <tr>
+                                
+                                <th>
+                                    <div onClick={ () => sortList('title') } className="sort-control">
+                                        Title <i className={
+                                            sortSettings.column === 'title'
+                                                ? (sortSettings.ascending ? 'fas fa-caret-down' : 'fas fa-caret-up')
+                                                : 'fas fa-sort'
+                                        }></i>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div onClick={ () => sortList('assignedUserName') } className="sort-control">
+                                        User <i className={
+                                            sortSettings.column === 'assignedUserName'
+                                                ? (sortSettings.ascending ? 'fas fa-caret-down' : 'fas fa-caret-up')
+                                                : 'fas fa-sort'
+                                        }></i>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div onClick={ () => sortList('groupTitle') } className="sort-control">
+                                        Group <i className={
+                                            sortSettings.column === 'groupTitle'
+                                                ? (sortSettings.ascending ? 'fas fa-caret-down' : 'fas fa-caret-up')
+                                                : 'fas fa-sort'
+                                        }></i>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div onClick={ () => sortList('teamTitle') } className="sort-control">
+                                        Team <i className={
+                                            sortSettings.column === 'teamTitle'
+                                                ? (sortSettings.ascending ? 'fas fa-caret-down' : 'fas fa-caret-up')
+                                                : 'fas fa-sort'
+                                        }></i>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            { renderAreas() }
+                        </tbody>
+                    </table>
+                    <p style={{ marginTop: '1rem' }}>Areas Shown: { areaCount }</p>
                 </Modal>
             </main>
         );
