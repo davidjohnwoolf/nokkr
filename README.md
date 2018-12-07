@@ -1,3 +1,3 @@
 # nokkr
 
-### A door to door sales and dealer management platform
+### A door to door sales CRM and dealer management platform
